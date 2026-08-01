@@ -198,6 +198,8 @@ def build():
 </body></html>"""
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(doc)
+    # index.html so a static host serves the showroom at "/"
+    (OUT.parent / "index.html").write_text(doc)
     return len(components), len(patterns), len(themes)
 
 if __name__ == "__main__":
