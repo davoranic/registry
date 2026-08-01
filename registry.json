@@ -4,6 +4,27 @@
   "homepage": "https://github.com/davoranic/registry",
   "items": [
     {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "The exemplar component (contract/authoring.md): structure from contract/anatomy/button.json, recipe on contract slots only. Wears the active theme's character entirely.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/button/button.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/button.tsx"
+        },
+        {
+          "path": "registry/button/button.css",
+          "type": "registry:ui",
+          "target": "components/ui/button.css"
+        }
+      ]
+    },
+    {
       "name": "theme-shadcn",
       "type": "registry:theme",
       "title": "Theme: shadcn neutral",

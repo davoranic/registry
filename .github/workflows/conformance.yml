@@ -17,6 +17,8 @@ jobs:
         run: python3 scripts/check-conformance.py
       - name: Anatomy conformance (slots, states, axes, icon roles)
         run: python3 scripts/check-anatomy.py
+      - name: Component conformance (anatomy parts, contract-only CSS)
+        run: python3 scripts/check-component.py
       - name: Theme compile
         run: python3 scripts/build-themes.py
       - name: dist is fresh (no hand edits, no drift)
