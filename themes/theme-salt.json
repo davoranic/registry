@@ -293,5 +293,22 @@
     "segmented-button-group",
     "flush-input (bottom-border input treatment)",
     "density provider"
-  ]
+  ],
+  "variantMaps": {
+    "button": {
+      "emphasis:primary+prominence:solid": "sentiment=accented appearance=solid",
+      "emphasis:secondary+prominence:solid": "sentiment=neutral appearance=solid",
+      "emphasis:danger+prominence:solid": "sentiment=negative appearance=solid",
+      "emphasis:primary+prominence:outline": "sentiment=accented appearance=bordered",
+      "emphasis:secondary+prominence:ghost": "sentiment=neutral appearance=transparent",
+      "emphasis:danger+prominence:ghost": "sentiment=negative appearance=transparent",
+      "fallbacks": {
+        "emphasis:primary+prominence:link": "render as Link component (link color, no action case)"
+      }
+    },
+    "badge": {
+      "tone:*": "status-<tone>-surface + status-<tone> (pill anatomy, radius-pill)",
+      "neutral": "pill neutral (surface-sunken)"
+    }
+  }
 }

@@ -116,6 +116,54 @@
       ]
     },
     {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "A process progress indicator: steps with indicator, label, sublabel, and connector, in horizontal or vertical orientation. Per-step stages: pending, active (aria-current), completed (check), error (destructive). Adopted from Salt DS through the contract.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/stepper/stepper.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/stepper.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rating",
+      "type": "registry:ui",
+      "title": "Rating",
+      "description": "An accessible rating input built as a radio group with hover preview, read-only and disabled states, and a consumer-swappable icon (star by default). Adopted from Salt DS through the contract.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/rating/rating.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/rating.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tree",
+      "type": "registry:ui",
+      "title": "Tree",
+      "description": "An APG TreeView: expandable nested items with roving tabindex, full arrow-key navigation, typeahead, selection, and per-item icons. Adopted from Salt DS through the contract.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/tree/tree.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/tree.tsx"
+        }
+      ]
+    },
+    {
       "name": "theme-shadcn",
       "type": "registry:theme",
       "title": "Theme: shadcn neutral",
