@@ -122,6 +122,16 @@ so every portrait states which sitting it was painted from. Installed
 component code follows open-code rules: updates are reviewed diffs
 (`shadcn diff`), adopted deliberately, never auto-applied.
 
+**Stocked (lifted) components — the new-edition rule:** staleness is
+measured against ANATOMY, not against the upstream diff. Because lifted
+components carry zero values (character lives in themes), upstream STYLE
+changes never require re-translation — bin 1 absorbs them in the theme
+layer. Only changes that would alter the anatomy (new part, new variant
+axis, behavior/a11y change) trigger a re-lift + review; the weekly canary
+(.github/workflows/canary.yml) detects new editions whose vocabulary the
+dictionary doesn't know. Re-translation = re-run lift.py + re-apply review
+against the unchanged validator — a diff, not a redo.
+
 ## Current adapters
 
 | System | Adapter | Map | Status |
