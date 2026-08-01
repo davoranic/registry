@@ -3,6 +3,27 @@
   "name": "salt",
   "title": "Salt DS",
   "description": "JPMorgan Salt character: sharp corners, Salt blue actions, Open Sans, uppercase action text, density-scaled rhythm. Derived from @salt-ds/theme (clone: salt-ds/packages/theme).",
+  "sourceRef": "salt-ds/packages/theme/css",
+  "sources": {
+    "color": "legacy/foundations/color.css + legacy/foundations/alpha.css (raw ramps) via legacy/palette/*.css and legacy/characteristics/*.css (Salt's own semantic layer)",
+    "action": "legacy/palette/interact.css (interact-cta-*) + legacy/characteristics/actionable.css",
+    "interaction": "legacy/palette/interact.css (interact-background-*) + legacy/characteristics/selectable.css",
+    "link": "legacy/palette/accent.css (accent-foreground-informative) via characteristics/content.css",
+    "separators": "legacy/characteristics/separable.css + legacy/palette/alpha.css + legacy/palette/neutral.css",
+    "scrim": "legacy/characteristics/overlayable.css (overlayable-background) + legacy/palette/alpha.css",
+    "data": "legacy/characteristics/category.css + legacy/palette/categorical.css (20-series; contract takes the first 12)",
+    "status": "legacy/palette/{info,success,warning,error}.css via legacy/characteristics/status.css",
+    "typography": "foundations/typography.css (families + weights) + legacy/characteristics/text.css (density size ramps)",
+    "space": "foundations/spacing.css (spacing-100 grid) + legacy/characteristics/layout.css (page margin)",
+    "size": "foundations/size.css (size-base, size-icon, size-fixed-*)",
+    "shape": "foundations/curve.css (curve-0 / curve-999) + foundations/borderStyle.css + foundations/size.css (size-fixed-100/200)",
+    "cursor": "foundations/cursor.css",
+    "elevation": "legacy/palette/shadow.css via legacy/characteristics/overlayable.css",
+    "motion": "foundations/duration.css + foundations/animation.css",
+    "layers": "foundations/zindex.css",
+    "focus": "legacy/characteristics/focused.css",
+    "icons": "packages/icons/src/icon/Icon.css + foundations/size.css (size-icon)"
+  },
   "capabilities": {
     "modes": [
       "light",
@@ -26,20 +47,23 @@
         "tabler",
         "radix"
       ],
-      "mechanism": "SemanticIconProvider \u2014 33 semantic slots (CloseIcon, ChevronDownIcon, CalendarIcon, \u2026), each accepts any React icon component; components resolve icons by ROLE, not by import"
+      "mechanism": "SemanticIconProvider — 33 semantic slots (CloseIcon, ChevronDownIcon, CalendarIcon, …), each accepts any React icon component; components resolve icons by ROLE, not by import"
     },
     "fonts": [
       "open-sans"
     ]
   },
   "constraints": [
-    "Radius is NOT a knob \u2014 Salt is sharp (0) everywhere except pills (999px).",
-    "Density rescales control heights, spacing, text and icon size together.",
-    "Actions are uppercase 600 with 0.6px tracking \u2014 not configurable.",
+    "Radius is NOT a knob — Salt is sharp (0) everywhere except pills (999px).",
+    "Density rescales control heights, spacing, text, type roles and icon size together — there is no per-instance size prop.",
+    "Actions are uppercase 600 with 0.6px tracking — not configurable.",
+    "Salt ships ONE icon size per density (size-icon) with an integer multiplier; inline and control icons are therefore the same size, emphasis = multiplier 2.",
+    "Salt has no separate caption ramp — caption resolves to the label ramp at regular weight.",
     "Default icon set is Salt's own 12px first-party set (~548 icons; 62 SVGs mirrored in themes/salt/assets). Swapping is per semantic role via SemanticIconProvider, not per-import like shadcn's migrate."
   ],
   "tokens": {
     "light": {
+      "source": "legacy/palette/*.css @ data-mode=light",
       "surface": "#FFFFFF",
       "on-surface": "#161616",
       "surface-raised": "#FFFFFF",
@@ -48,20 +72,42 @@
       "on-surface-overlay": "#161616",
       "action": "#155C93",
       "on-action": "#FFFFFF",
+      "action-hover": "#2670A9",
+      "action-active": "#00477B",
       "action-secondary": "#EAEDEF",
       "on-action-secondary": "#161616",
       "surface-sunken": "#EAEDEF",
       "content-secondary": "#61656E",
       "interaction-hover": "#CBE7F9",
-      "on-interaction-selected": "#161616",
+      "interaction-active": "#A4D5F4",
+      "interaction-selected": "#A4D5F4",
+      "on-interaction-selected": "#155C93",
       "status-critical": "#C42010",
       "status-success": "#18723D",
       "status-warning": "#CC440D",
       "border": "#CED2D9",
+      "border-strong": "rgba(0, 0, 0, 0.4)",
       "field-border": "#61656E",
-      "focus": "#155C93"
+      "link": "#155C93",
+      "focus": "#155C93",
+      "overlay-scrim": "rgba(255, 255, 255, 0.65)",
+      "inverse-surface": "#242526",
+      "on-inverse-surface": "#FFFFFF",
+      "data-1": "#355FA1",
+      "data-2": "#8F521F",
+      "data-3": "#8343A1",
+      "data-4": "#1F6D6F",
+      "data-5": "#545F7A",
+      "data-6": "#924382",
+      "data-7": "#58673A",
+      "data-8": "#9A4043",
+      "data-9": "#6255AA",
+      "data-10": "#216F35",
+      "data-11": "#72620C",
+      "data-12": "#994912"
     },
     "dark": {
+      "source": "legacy/palette/*.css @ data-mode=dark",
       "surface": "#242526",
       "on-surface": "#FFFFFF",
       "surface-raised": "#2A2C2F",
@@ -70,64 +116,214 @@
       "on-surface-overlay": "#FFFFFF",
       "action": "#2670A9",
       "on-action": "#FFFFFF",
+      "action-hover": "#2670A9",
+      "action-active": "#00477B",
       "action-secondary": "#2F3136",
       "on-action-secondary": "#FFFFFF",
       "surface-sunken": "#2F3136",
       "content-secondary": "#B4B7BE",
       "interaction-hover": "#1A2A38",
-      "on-interaction-selected": "#FFFFFF",
+      "interaction-active": "#00477B",
+      "interaction-selected": "#00477B",
+      "on-interaction-selected": "#64B1E4",
       "status-critical": "#FF5942",
       "status-success": "#24874B",
       "status-warning": "#EA7319",
       "border": "#4C505B",
+      "border-strong": "rgba(255, 255, 255, 0.4)",
       "field-border": "#B4B7BE",
-      "focus": "#4B9FD8"
+      "link": "#4B9FD8",
+      "focus": "#4B9FD8",
+      "overlay-scrim": "rgba(0, 0, 0, 0.65)",
+      "inverse-surface": "#FFFFFF",
+      "on-inverse-surface": "#161616",
+      "data-1": "#7694CF",
+      "data-2": "#DB8A48",
+      "data-3": "#BC73DE",
+      "data-4": "#5AABAD",
+      "data-5": "#8691AC",
+      "data-6": "#D175BD",
+      "data-7": "#95A671",
+      "data-8": "#DE7878",
+      "data-9": "#9581E5",
+      "data-10": "#5CAD6A",
+      "data-11": "#B29C42",
+      "data-12": "#DE7E40"
     },
     "shape": {
-      "radius": "0rem"
+      "source": "foundations/curve.css + foundations/borderStyle.css + foundations/size.css",
+      "radius": "0rem",
+      "radius-control": "0rem",
+      "radius-container": "0rem",
+      "radius-overlay": "0rem",
+      "radius-field-control": "0rem",
+      "radius-pill": "999px",
+      "border-width": "1px",
+      "border-width-strong": "2px",
+      "rule": "curve-0 = 0 for every surface role (fixed-sharp corner capability); curve-999 = 999px drives radius-pill only. border widths = size-fixed-100 / size-fixed-200."
     },
     "rhythm": {
+      "source": "foundations/spacing.css + foundations/size.css + legacy/characteristics/{text,layout}.css",
+      "target-min": "2.75rem",
+      "rule": "target-min is density-independent: it is size-base at touch density (44px), the accessibility floor every density must still be able to reach.",
       "byDensity": {
         "high": {
           "spacing": "0.125rem",
+          "space-unit": "0.25rem",
           "control-h": "1.25rem",
           "control-px": "0.5rem",
           "text-ui": "0.6875rem",
-          "icon-size": "0.625rem"
+          "icon-size": "0.625rem",
+          "space-inline-sm": "0.125rem",
+          "space-inline-md": "0.25rem",
+          "space-inline-lg": "0.5rem",
+          "space-stack-sm": "0.25rem",
+          "space-stack-md": "0.5rem",
+          "space-stack-lg": "0.75rem",
+          "inset-control-x": "0.5rem",
+          "inset-container": "0.75rem",
+          "control-height-sm": "1.25rem",
+          "control-height-md": "1.25rem",
+          "control-height-lg": "1.75rem",
+          "icon-size-inline": "0.625rem",
+          "icon-size-control": "0.625rem",
+          "icon-size-emphasis": "1.25rem",
+          "type-display": "600 2.625rem/3.375rem var(--family-display)",
+          "type-heading-1": "600 1.125rem/1.5rem var(--family-display)",
+          "type-heading-2": "600 0.875rem/1.125rem var(--family-display)",
+          "type-heading-3": "600 0.75rem/1rem var(--family-display)",
+          "type-body": "400 0.6875rem/0.875rem var(--family-body)",
+          "type-body-strong": "600 0.6875rem/0.875rem var(--family-body)",
+          "type-label": "400 0.625rem/0.8125rem var(--family-body)",
+          "type-action": "600 0.6875rem/0.875rem var(--family-body)",
+          "type-caption": "400 0.625rem/0.8125rem var(--family-body)",
+          "type-code": "400 0.6875rem/0.875rem var(--family-code)",
+          "type-data": "400 0.6875rem/0.875rem var(--family-code)"
         },
         "medium": {
           "spacing": "0.25rem",
+          "space-unit": "0.5rem",
           "control-h": "1.75rem",
           "control-px": "0.75rem",
           "text-ui": "0.75rem",
-          "icon-size": "0.75rem"
+          "icon-size": "0.75rem",
+          "space-inline-sm": "0.25rem",
+          "space-inline-md": "0.5rem",
+          "space-inline-lg": "1rem",
+          "space-stack-sm": "0.5rem",
+          "space-stack-md": "1rem",
+          "space-stack-lg": "1.5rem",
+          "inset-control-x": "0.75rem",
+          "inset-container": "1.5rem",
+          "control-height-sm": "1.25rem",
+          "control-height-md": "1.75rem",
+          "control-height-lg": "2.25rem",
+          "icon-size-inline": "0.75rem",
+          "icon-size-control": "0.75rem",
+          "icon-size-emphasis": "1.5rem",
+          "type-display": "600 3.375rem/4.375rem var(--family-display)",
+          "type-heading-1": "600 1.5rem/2rem var(--family-display)",
+          "type-heading-2": "600 1.125rem/1.5rem var(--family-display)",
+          "type-heading-3": "600 0.875rem/1.125rem var(--family-display)",
+          "type-body": "400 0.75rem/1rem var(--family-body)",
+          "type-body-strong": "600 0.75rem/1rem var(--family-body)",
+          "type-label": "400 0.6875rem/0.875rem var(--family-body)",
+          "type-action": "600 0.75rem/1rem var(--family-body)",
+          "type-caption": "400 0.6875rem/0.875rem var(--family-body)",
+          "type-code": "400 0.75rem/1rem var(--family-code)",
+          "type-data": "400 0.75rem/1rem var(--family-code)"
         },
         "low": {
           "spacing": "0.375rem",
+          "space-unit": "0.75rem",
           "control-h": "2.25rem",
           "control-px": "1rem",
           "text-ui": "0.875rem",
-          "icon-size": "0.875rem"
+          "icon-size": "0.875rem",
+          "space-inline-sm": "0.375rem",
+          "space-inline-md": "0.75rem",
+          "space-inline-lg": "1.5rem",
+          "space-stack-sm": "0.75rem",
+          "space-stack-md": "1.5rem",
+          "space-stack-lg": "2.25rem",
+          "inset-control-x": "1rem",
+          "inset-container": "2.25rem",
+          "control-height-sm": "1.75rem",
+          "control-height-md": "2.25rem",
+          "control-height-lg": "2.75rem",
+          "icon-size-inline": "0.875rem",
+          "icon-size-control": "0.875rem",
+          "icon-size-emphasis": "1.75rem",
+          "type-display": "600 4.25rem/5.5rem var(--family-display)",
+          "type-heading-1": "600 2rem/2.625rem var(--family-display)",
+          "type-heading-2": "600 1.5rem/2rem var(--family-display)",
+          "type-heading-3": "600 1.125rem/1.5rem var(--family-display)",
+          "type-body": "400 0.875rem/1.125rem var(--family-body)",
+          "type-body-strong": "600 0.875rem/1.125rem var(--family-body)",
+          "type-label": "400 0.75rem/1rem var(--family-body)",
+          "type-action": "600 0.875rem/1.125rem var(--family-body)",
+          "type-caption": "400 0.75rem/1rem var(--family-body)",
+          "type-code": "400 0.875rem/1.125rem var(--family-code)",
+          "type-data": "400 0.875rem/1.125rem var(--family-code)"
         },
         "touch": {
           "spacing": "0.5rem",
+          "space-unit": "1rem",
           "control-h": "2.75rem",
           "control-px": "1.25rem",
           "text-ui": "0.875rem",
-          "icon-size": "1rem"
+          "icon-size": "1rem",
+          "space-inline-sm": "0.5rem",
+          "space-inline-md": "1rem",
+          "space-inline-lg": "2rem",
+          "space-stack-sm": "1rem",
+          "space-stack-md": "2rem",
+          "space-stack-lg": "3rem",
+          "inset-control-x": "1.25rem",
+          "inset-container": "3rem",
+          "control-height-sm": "2.25rem",
+          "control-height-md": "2.75rem",
+          "control-height-lg": "2.75rem",
+          "icon-size-inline": "1rem",
+          "icon-size-control": "1rem",
+          "icon-size-emphasis": "2rem",
+          "type-display": "600 5.25rem/6.8125rem var(--family-display)",
+          "type-heading-1": "600 2.625rem/3.375rem var(--family-display)",
+          "type-heading-2": "600 2rem/2.625rem var(--family-display)",
+          "type-heading-3": "600 1.5rem/2rem var(--family-display)",
+          "type-body": "400 1rem/1.25rem var(--family-body)",
+          "type-body-strong": "600 1rem/1.25rem var(--family-body)",
+          "type-label": "400 0.875rem/1.125rem var(--family-body)",
+          "type-action": "600 1rem/1.25rem var(--family-body)",
+          "type-caption": "400 0.875rem/1.125rem var(--family-body)",
+          "type-code": "400 1rem/1.25rem var(--family-code)",
+          "type-data": "400 1rem/1.25rem var(--family-code)"
         }
       }
     },
     "type": {
+      "source": "foundations/typography.css (fontFamily-openSans / -ptMono, fontWeight-semiBold) + legacy/characteristics/text.css",
       "font-sans": "'Open Sans', -apple-system, system-ui, sans-serif",
+      "family-display": "'Open Sans', -apple-system, system-ui, sans-serif",
+      "family-body": "'Open Sans', -apple-system, system-ui, sans-serif",
+      "family-code": "'PT Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
       "ui-weight": "600",
       "ui-case": "uppercase",
-      "ui-tracking": "0.6px"
+      "ui-tracking": "0.6px",
+      "rule": "Amplitude is the licensed brand display face; text.css ships display1-4 on Open Sans, so family-display resolves to Open Sans and stays swappable."
     },
     "focus": {
+      "source": "legacy/characteristics/focused.css (outlineWidth = size-fixed-200, outlineColor = interact-outline)",
       "focus-width": "2px",
       "focus-style": "outline",
       "focus-offset": "2px"
+    },
+    "icons": {
+      "source": "packages/icons/src/icon/Icon.css (icon-base-size x integer multiplier, 12px floor) + foundations/size.css (size-icon)",
+      "icon-style": "outline",
+      "icon-stroke": "1.5",
+      "default-set": "salt",
+      "note": "Salt's first-party set is fill-based SVG drawn on a 12px grid, so stroke is inert for it; 1.5 applies when an alternate outline set (lucide/tabler/radix) is mounted through SemanticIconProvider. Sizes are density-scaled — see rhythm.byDensity icon-size-*."
     },
     "growth-1.2.0": {
       "cursor-interactive": "pointer",
@@ -136,21 +332,26 @@
       "cursor-grab": "grab",
       "border-style-emphasis": "dashed",
       "link-decoration": "underline",
+      "link-decoration-offset": "2px",
       "size-overlay": {
-        "rule": "density-scaled; medium \u2248 24/32/40rem"
+        "sm": "24rem",
+        "md": "32rem",
+        "lg": "40rem",
+        "rule": "Salt ships no overlay width tokens — dialogs are content-sized. The ramp is declared here at medium density (24/32/40rem) so overlay components have a resolvable width; it scales with the density text ramp in practice."
       },
-      "source": "salt foundations cursor.css (10 cursors) + borderStyle.css"
+      "source": "foundations/cursor.css (cursor-hover/active=pointer, cursor-disabled=not-allowed, cursor-pending=progress, cursor-grab) + foundations/borderStyle.css (dashed)"
     },
     "growth-1.1.0": {
+      "source": "legacy/characteristics/{separable,editable,content,navigable,target}.css",
       "border-subtle": {
         "light": "#E6E6E6",
         "dark": "#38383A",
-        "source": "separable-tertiary"
+        "source": "separable-tertiary-borderColor = alpha-contrast-mediumLow"
       },
       "field-surface": {
         "light": "#FFFFFF",
         "dark": "#2A2C2F",
-        "source": "editable-primary-background"
+        "source": "editable-primary-background = neutral-primary-background"
       },
       "field-surface-hover": {
         "light": "#F2F4F6",
@@ -160,38 +361,41 @@
       "field-border-hover": {
         "light": "#155C93",
         "dark": "#4B9FD8",
-        "source": "editable-borderColor-hover"
+        "source": "editable-borderColor-hover = interact-border-hover"
       },
       "field-border-active": {
         "light": "#155C93",
         "dark": "#4B9FD8",
-        "source": "editable-borderColor-active"
+        "source": "editable-borderColor-active = interact-border-active"
       },
       "content-disabled": {
-        "rule": "explicit 40% (Salt disabled alpha)",
-        "source": "content characteristic"
+        "light": "rgba(22, 22, 22, 0.4)",
+        "dark": "rgba(255, 255, 255, 0.4)",
+        "rule": "explicit 40% — Salt values disabled content rather than deriving it",
+        "source": "content-primary-foreground-disabled = neutral-primary-foreground-disabled (gray-900-40a / white-40a)"
       },
       "selected-indicator": {
         "light": "#155C93",
         "dark": "#4B9FD8",
-        "source": "navigable-accent-indicator-active"
+        "source": "navigable-accent-borderColor-active = interact-border-active"
       },
       "target-surface-hover": {
         "light": "#EAF4FB",
         "dark": "#1A2A38",
-        "source": "target-background-hover"
+        "source": "target-background-hover = interact-background-hover"
       },
       "target-border-hover": {
         "light": "#2670A9",
         "dark": "#4B9FD8",
-        "source": "target-borderColor-hover"
+        "source": "target-borderColor-hover = interact-border-hover"
       },
       "data-7..12": {
-        "rule": "Salt categorical ramp cobalt/cider/plum/aqua/slate/rose (600 step)",
-        "source": "category characteristic (100 tokens; 20 series supported)"
+        "rule": "valued, not derived — Salt's categorical series continues olive/salmon/indigo/jade/citrine/autumn at the same step as data-1..6",
+        "source": "category characteristic (20 series x 5 tokens); light takes the 600 step (categorical-N-strong), dark the 400 step"
       }
     },
     "status": {
+      "source": "legacy/palette/{info,success,warning,error}.css via legacy/characteristics/status.css",
       "info": {
         "base": "#155C93",
         "surface": "#EAF4FB",
@@ -219,11 +423,11 @@
     },
     "elevation": {
       "strategy": "border",
-      "resting": "none \u2014 1px #CED2D9 border",
+      "resting": "none — 1px #CED2D9 border",
       "raised": "0 1px 3px 0 rgba(0,0,0,0.10)",
       "overlay": "0 4px 8px 0 rgba(0,0,0,0.15)",
       "modal": "0 12px 40px 0 rgba(0,0,0,0.30)",
-      "source": "salt-ds/packages/theme css/foundations + palette/shadow"
+      "source": "legacy/palette/shadow.css (shadow-lowest/low/medium) mapped through legacy/characteristics/overlayable.css"
     },
     "motion": {
       "duration": {
@@ -238,7 +442,7 @@
         "exit": "ease-in",
         "emphasized": "ease-in-out"
       },
-      "source": "salt duration foundation: instant 0 / perceptible 300 / notable 1000 / cutoff 10000"
+      "source": "foundations/duration.css: instant 0 / perceptible 300 / notable 1000 / cutoff 10000 — fast 150ms is the half-step Salt uses for hover transitions"
     },
     "layers": {
       "base": 1,
@@ -248,17 +452,89 @@
       "modal": 1300,
       "notification": 1400,
       "tooltip": 1500,
-      "source": "salt zindex foundation (appHeader=1100, drawer=1200, flyover=1500)"
+      "source": "foundations/zindex.css (default=1, popout=1000, appHeader=1100, drawer=1200, modal=1300, notification=1400, flyover=1500)"
     },
     "typeRoles": {
+      "source": "legacy/characteristics/text.css — every role's size/line-height is density-scaled, so the composite --type-* values live in rhythm.byDensity; the descriptors below record family, weight and case per role",
+      "display": {
+        "salt": "display1",
+        "family": "family-display",
+        "weight": "600",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "heading-1": {
+        "salt": "h1",
+        "family": "family-display",
+        "weight": "600",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "heading-2": {
+        "salt": "h2",
+        "family": "family-display",
+        "weight": "600",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "heading-3": {
+        "salt": "h3",
+        "family": "family-display",
+        "weight": "600",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "body": {
+        "salt": "text",
+        "family": "family-body",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "body-strong": {
+        "salt": "text fontWeight-strong",
+        "family": "family-body",
+        "weight": "600",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "label": {
+        "salt": "label",
+        "family": "family-body",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em"
+      },
       "action": {
+        "salt": "action",
+        "family": "family-body",
         "weight": "600",
         "case": "uppercase",
         "tracking": "0.6px"
       },
-      "heading": "600 Open Sans (display tiers: Amplitude, licensed)",
-      "label": "600 11px",
-      "data": "PT Mono tabular"
+      "caption": {
+        "salt": "label",
+        "family": "family-body",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em",
+        "rule": "Salt has no caption ramp — caption = the label ramp at regular weight"
+      },
+      "code": {
+        "salt": "code",
+        "family": "family-code",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "data": {
+        "salt": "code",
+        "family": "family-code",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em",
+        "rule": "PT Mono at body size; tabular figures come from the face itself"
+      }
     },
     "iconRoles": {
       "mechanism": "provider (SemanticIconProvider, 33 slots)",

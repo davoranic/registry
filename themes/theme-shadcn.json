@@ -3,6 +3,17 @@
   "name": "shadcn",
   "title": "shadcn neutral",
   "description": "The default character: neutral oklch, soft radius, system sans, quiet shadows.",
+  "sourceRef": "shadcn-ui/ui — registry/new-york-v4 base tokens + tailwind v4 theme layer",
+  "sources": {
+    "color": "shadcn/ui base 'neutral' oklch token set (globals.css :root / .dark)",
+    "data": "--chart-1..5 from the same base set; 6..12 are a declared hue-rotated extension",
+    "typography": "tailwind text-* scale (text-4xl…text-xs) as used by the shipped components",
+    "space": "tailwind 4px spacing grid (--spacing: 0.25rem)",
+    "shape": "tailwind v4 radius ladder: --radius-sm/md/lg/xl derived from the --radius knob",
+    "elevation": "tailwind shadow-xs/sm/md/lg",
+    "motion": "tailwind + tw-animate-css defaults",
+    "icons": "lucide-react at size-4 (control), size-3 (inline), size-6 (emphasis), stroke 2"
+  },
   "capabilities": {
     "modes": [
       "light",
@@ -21,11 +32,14 @@
     ]
   },
   "constraints": [
-    "No density switching \u2014 the scale is fixed to the 4px grid.",
-    "Radius is a free knob (--radius); all derived radii follow."
+    "No density switching — the scale is fixed to the 4px grid.",
+    "Radius is a free knob (--radius); all derived radii follow.",
+    "No dedicated inverse surface — inverse-* is the opposite mode's surface pair.",
+    "Fields are transparent-filled: field-surface tracks surface and does not change on hover."
   ],
   "tokens": {
     "light": {
+      "source": "shadcn base neutral :root",
       "surface": "oklch(1 0 0)",
       "on-surface": "oklch(0.145 0 0)",
       "surface-raised": "oklch(1 0 0)",
@@ -34,20 +48,42 @@
       "on-surface-overlay": "oklch(0.145 0 0)",
       "action": "oklch(0.205 0 0)",
       "on-action": "oklch(0.985 0 0)",
+      "action-hover": "oklch(0.205 0 0 / 90%)",
+      "action-active": "oklch(0.145 0 0)",
       "action-secondary": "oklch(0.97 0 0)",
       "on-action-secondary": "oklch(0.205 0 0)",
       "surface-sunken": "oklch(0.97 0 0)",
       "content-secondary": "oklch(0.556 0 0)",
       "interaction-hover": "oklch(0.97 0 0)",
+      "interaction-active": "oklch(0.922 0 0)",
+      "interaction-selected": "oklch(0.97 0 0)",
       "on-interaction-selected": "oklch(0.205 0 0)",
       "status-critical": "oklch(0.577 0.245 27.325)",
       "status-success": "oklch(0.627 0.17 149.2)",
       "status-warning": "oklch(0.666 0.179 58.3)",
       "border": "oklch(0.922 0 0)",
+      "border-strong": "oklch(0.708 0 0)",
       "field-border": "oklch(0.922 0 0)",
-      "focus": "oklch(0.708 0 0)"
+      "link": "oklch(0.205 0 0)",
+      "focus": "oklch(0.708 0 0)",
+      "overlay-scrim": "oklch(0 0 0 / 50%)",
+      "inverse-surface": "oklch(0.205 0 0)",
+      "on-inverse-surface": "oklch(0.985 0 0)",
+      "data-1": "oklch(0.646 0.222 41.116)",
+      "data-2": "oklch(0.6 0.118 184.704)",
+      "data-3": "oklch(0.398 0.07 227.392)",
+      "data-4": "oklch(0.828 0.189 84.429)",
+      "data-5": "oklch(0.769 0.188 70.08)",
+      "data-6": "oklch(0.627 0.265 303.9)",
+      "data-7": "oklch(0.55 0.15 20)",
+      "data-8": "oklch(0.6 0.13 130)",
+      "data-9": "oklch(0.5 0.12 280)",
+      "data-10": "oklch(0.65 0.1 200)",
+      "data-11": "oklch(0.7 0.14 100)",
+      "data-12": "oklch(0.45 0.09 330)"
     },
     "dark": {
+      "source": "shadcn base neutral .dark",
       "surface": "oklch(0.145 0 0)",
       "on-surface": "oklch(0.985 0 0)",
       "surface-raised": "oklch(0.205 0 0)",
@@ -56,39 +92,95 @@
       "on-surface-overlay": "oklch(0.985 0 0)",
       "action": "oklch(0.922 0 0)",
       "on-action": "oklch(0.205 0 0)",
+      "action-hover": "oklch(0.922 0 0 / 90%)",
+      "action-active": "oklch(0.985 0 0)",
       "action-secondary": "oklch(0.269 0 0)",
       "on-action-secondary": "oklch(0.985 0 0)",
       "surface-sunken": "oklch(0.269 0 0)",
       "content-secondary": "oklch(0.708 0 0)",
       "interaction-hover": "oklch(0.371 0 0)",
+      "interaction-active": "oklch(0.439 0 0)",
+      "interaction-selected": "oklch(0.371 0 0)",
       "on-interaction-selected": "oklch(0.985 0 0)",
       "status-critical": "oklch(0.704 0.191 22.216)",
       "status-success": "oklch(0.723 0.192 149.6)",
       "status-warning": "oklch(0.769 0.188 70.1)",
       "border": "oklch(1 0 0 / 10%)",
+      "border-strong": "oklch(0.556 0 0)",
       "field-border": "oklch(1 0 0 / 15%)",
-      "focus": "oklch(0.556 0 0)"
+      "link": "oklch(0.985 0 0)",
+      "focus": "oklch(0.556 0 0)",
+      "overlay-scrim": "oklch(0 0 0 / 80%)",
+      "inverse-surface": "oklch(0.985 0 0)",
+      "on-inverse-surface": "oklch(0.145 0 0)",
+      "data-1": "oklch(0.488 0.243 264.376)",
+      "data-2": "oklch(0.696 0.17 162.48)",
+      "data-3": "oklch(0.769 0.188 70.08)",
+      "data-4": "oklch(0.627 0.265 303.9)",
+      "data-5": "oklch(0.645 0.246 16.439)",
+      "data-6": "oklch(0.6 0.118 184.704)",
+      "data-7": "oklch(0.65 0.2 20)",
+      "data-8": "oklch(0.7 0.16 130)",
+      "data-9": "oklch(0.6 0.16 280)",
+      "data-10": "oklch(0.72 0.12 200)",
+      "data-11": "oklch(0.78 0.15 100)",
+      "data-12": "oklch(0.58 0.13 330)"
     },
     "shape": {
-      "radius": "0.625rem"
+      "source": "tailwind v4 radius ladder derived from the --radius knob; border widths from border / border-2",
+      "radius": "0.625rem",
+      "radius-field-control": "calc(var(--radius-knob) - 4px)",
+      "radius-control": "calc(var(--radius-knob) - 2px)",
+      "radius-container": "var(--radius-knob)",
+      "radius-overlay": "var(--radius-knob)",
+      "radius-pill": "999px",
+      "border-width": "1px",
+      "border-width-strong": "2px",
+      "rule": "radius-sm = knob-4px (checkbox/chip), radius-md = knob-2px (button/input), radius-lg = knob (card, popover, dialog). Every role tracks the knob — this is shadcn's corner capability."
     },
     "rhythm": {
+      "source": "tailwind 4px spacing grid; control heights from the shipped button/input size variants",
       "spacing": "0.25rem",
+      "space-unit": "0.25rem",
       "control-h": "2.25rem",
-      "control-px": "1rem"
+      "control-px": "1rem",
+      "space-inline-sm": "0.25rem",
+      "space-inline-md": "0.5rem",
+      "space-inline-lg": "1rem",
+      "space-stack-sm": "0.5rem",
+      "space-stack-md": "1rem",
+      "space-stack-lg": "1.5rem",
+      "inset-control-x": "1rem",
+      "inset-container": "1.5rem",
+      "control-height-sm": "2rem",
+      "control-height-md": "2.25rem",
+      "control-height-lg": "2.5rem",
+      "target-min": "2.75rem",
+      "rule": "space-inline-* = 1/2/4 units, space-stack-* = 2/4/6 units. control-height-sm/md/lg = h-8/h-9/h-10 (button size variants). target-min is the WCAG 44px floor, not a shadcn token — declared, and met by padding rather than by height."
     },
     "type": {
+      "source": "tailwind font stacks; text-ui = text-sm, the size every control label uses",
       "font-sans": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+      "family-display": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+      "family-body": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+      "family-code": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
       "text-ui": "0.875rem",
       "ui-weight": "500",
       "ui-case": "none",
       "ui-tracking": "0em"
     },
     "icons": {
+      "source": "lucide-react defaults as used by the shipped components (size-3 / size-4 / size-6, stroke-2)",
       "icon-size": "1rem",
+      "icon-size-inline": "0.75rem",
+      "icon-size-control": "1rem",
+      "icon-size-emphasis": "1.5rem",
+      "icon-style": "outline",
+      "icon-stroke": "2",
       "default-set": "lucide"
     },
     "focus": {
+      "source": "focus-visible:ring-[3px] focus-visible:ring-ring/50",
       "focus-width": "3px",
       "focus-style": "ring",
       "focus-offset": "0px"
@@ -101,46 +193,68 @@
       "cursorNote": "shadcn v4 character: no pointer on buttons; the CLI --pointer flag flips cursor-interactive to pointer as a user choice",
       "border-style-emphasis": "dashed",
       "link-decoration": "underline",
-      "link-decoration-offset": "3px (underline-offset-4 idiom)",
+      "link-decoration-offset": "3px",
       "size-overlay": {
-        "sm": "24rem (max-w-sm dialogs)",
-        "md": "32rem (max-w-lg)",
-        "lg": "40rem"
-      }
+        "sm": "24rem",
+        "md": "32rem",
+        "lg": "40rem",
+        "rule": "max-w-sm / max-w-lg / max-w-2xl — the widths the shipped dialog, sheet and popover use"
+      },
+      "source": "shipped component classnames (border-dashed drop zones, underline-offset-4 links, max-w-* overlays)"
     },
     "growth-1.1.0": {
+      "source": "derived from the base token set — shadcn has no explicit token for these; each rule below is the idiom the shipped components use, now valued so the slot resolves in CSS",
       "border-subtle": {
+        "light": "oklch(0.922 0 0 / 50%)",
+        "dark": "oklch(1 0 0 / 5%)",
         "rule": "border at 50% alpha"
       },
       "field-surface": {
-        "rule": "= surface (transparent fill convention)"
+        "light": "oklch(1 0 0)",
+        "dark": "oklch(0.205 0 0 / 30%)",
+        "rule": "= surface (transparent fill convention); dark inputs use bg-input/30"
       },
       "field-surface-hover": {
-        "rule": "= surface (no hover fill in shadcn idiom)"
+        "light": "oklch(1 0 0)",
+        "dark": "oklch(0.205 0 0 / 30%)",
+        "rule": "= field-surface (no hover fill in shadcn idiom)"
       },
       "field-border-hover": {
+        "light": "oklch(0.922 0 0)",
+        "dark": "oklch(1 0 0 / 15%)",
         "rule": "= field-border (shadcn fields don't shift on hover)"
       },
       "field-border-active": {
+        "light": "oklch(0.708 0 0)",
+        "dark": "oklch(0.556 0 0)",
         "rule": "= focus (ring color)"
       },
       "content-disabled": {
+        "light": "oklch(0.145 0 0 / 50%)",
+        "dark": "oklch(0.985 0 0 / 50%)",
         "rule": "content at 50% opacity (opacity-50 idiom)"
       },
       "selected-indicator": {
+        "light": "oklch(0.205 0 0)",
+        "dark": "oklch(0.922 0 0)",
         "rule": "= action (primary underline/edge)"
       },
       "target-surface-hover": {
+        "light": "oklch(0.97 0 0)",
+        "dark": "oklch(0.371 0 0)",
         "rule": "= interaction-hover"
       },
       "target-border-hover": {
+        "light": "oklch(0.708 0 0)",
+        "dark": "oklch(0.556 0 0)",
         "rule": "= focus"
       },
       "data-7..12": {
-        "rule": "hue-rotated extension of chart-1..5 (no upstream values)"
+        "rule": "hue-rotated extension of chart-1..5 — no upstream values; valued in the light/dark blocks so charts with >6 series resolve"
       }
     },
     "status": {
+      "source": "destructive is upstream; info/success/warning are the registry's own sentiment family in the same oklch neutral idiom",
       "info": {
         "base": "oklch(0.488 0.1 240)",
         "surface": "oklch(0.97 0.02 240)",
@@ -172,7 +286,8 @@
       "raised": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
       "overlay": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
       "modal": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-      "darkModeNote": "borders carry depth in dark (white/10%)"
+      "darkModeNote": "borders carry depth in dark (white/10%)",
+      "source": "tailwind shadow-xs / shadow-sm / shadow-md / shadow-lg"
     },
     "motion": {
       "duration": {
@@ -196,17 +311,88 @@
       "overlay": 1200,
       "modal": 1300,
       "notification": 1400,
-      "tooltip": 1500
+      "tooltip": 1500,
+      "source": "radix portal ladder as used by the shipped overlays (z-50 in-tree, ordered here)"
     },
     "typeRoles": {
-      "action": {
+      "source": "tailwind text-* scale as used by the shipped components; sizes are fixed (no density axis), so each role carries its composite font shorthand",
+      "display": {
+        "tailwind": "text-4xl font-semibold",
+        "font": "600 2.25rem/2.5rem var(--family-display)",
+        "weight": "600",
+        "case": "none",
+        "tracking": "-0.02em"
+      },
+      "heading-1": {
+        "tailwind": "text-3xl font-semibold tracking-tight",
+        "font": "600 1.875rem/2.25rem var(--family-display)",
+        "weight": "600",
+        "case": "none",
+        "tracking": "-0.025em"
+      },
+      "heading-2": {
+        "tailwind": "text-2xl font-semibold tracking-tight",
+        "font": "600 1.5rem/2rem var(--family-display)",
+        "weight": "600",
+        "case": "none",
+        "tracking": "-0.025em"
+      },
+      "heading-3": {
+        "tailwind": "text-lg font-semibold",
+        "font": "600 1.125rem/1.75rem var(--family-display)",
+        "weight": "600",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "body": {
+        "tailwind": "text-base",
+        "font": "400 1rem/1.5rem var(--family-body)",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "body-strong": {
+        "tailwind": "text-base font-semibold",
+        "font": "600 1rem/1.5rem var(--family-body)",
+        "weight": "600",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "label": {
+        "tailwind": "text-sm font-medium leading-none",
+        "font": "500 0.875rem/1.25rem var(--family-body)",
         "weight": "500",
         "case": "none",
         "tracking": "0em"
       },
-      "heading": "600 tracking-tight",
-      "label": "500 text-sm",
-      "data": "tabular-nums mono"
+      "action": {
+        "tailwind": "text-sm font-medium",
+        "font": "500 0.875rem/1.25rem var(--family-body)",
+        "weight": "500",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "caption": {
+        "tailwind": "text-xs text-muted-foreground",
+        "font": "400 0.75rem/1rem var(--family-body)",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "code": {
+        "tailwind": "font-mono text-[0.8125rem]",
+        "font": "400 0.8125rem/1.25rem var(--family-code)",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "data": {
+        "tailwind": "font-mono text-sm tabular-nums",
+        "font": "400 0.875rem/1.25rem var(--family-code)",
+        "weight": "400",
+        "case": "none",
+        "tracking": "0em"
+      }
     },
     "iconRoles": {
       "mechanism": "import",

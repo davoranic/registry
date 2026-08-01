@@ -31,8 +31,11 @@ def emit(pairs):
 
 
 def color_pairs(tokens, mode):
-    pairs = [(k, clean(v)) for k, v in tokens.get(mode, {}).items()]
+    pairs = [(k, clean(v)) for k, v in tokens.get(mode, {}).items()
+             if k not in NOTE_KEYS]
     for tone, parts in tokens.get("status", {}).items():
+        if tone in NOTE_KEYS or not isinstance(parts, dict):
+            continue
         pairs.append((f"status-{tone}", clean(parts.get("base"))))
         pairs.append((f"status-{tone}-surface", clean(parts.get("surface"))))
         pairs.append((f"status-{tone}-border", clean(parts.get("border"))))
@@ -62,8 +65,10 @@ def character_pairs(tokens):
             if k == "radius":  # keep compat --radius in sync with the knob
                 pairs.append(("radius", clean(v)))
     rhythm = tokens.get("rhythm", {})
-    if "byDensity" not in rhythm:
-        pairs += [(CHAR_MAP.get(k, k), clean(v)) for k, v in rhythm.items()]
+    # density-independent rhythm keys always land in :root; a byDensity block
+    # (when present) supplies the scaled ones and is emitted separately.
+    pairs += [(CHAR_MAP.get(k, k), clean(v)) for k, v in rhythm.items()
+              if k != "byDensity" and k not in NOTE_KEYS]
     for k, v in tokens.get("motion", {}).get("duration", {}).items():
         pairs.append((f"duration-{k}", clean(v)))
     for k, v in tokens.get("motion", {}).get("easing", {}).items():
@@ -74,11 +79,19 @@ def character_pairs(tokens):
     for k, v in tokens.get("elevation", {}).items():
         if k not in NOTE_KEYS:
             pairs.append((f"elevation-{k}", clean(v)))
-    action = tokens.get("typeRoles", {}).get("action", {})
+    type_roles = tokens.get("typeRoles", {})
+    action = type_roles.get("action", {})
     if isinstance(action, dict):
         pairs.append(("action-case", clean(action.get("case"))))
         pairs.append(("action-tracking", clean(action.get("tracking"))))
         pairs.append(("ui-weight", clean(action.get("weight"))))
+    # composite type roles: {"font": "<weight> <size>/<line> <family>"} -> --type-<role>
+    # (roles a theme scales with density instead live in rhythm.byDensity)
+    for role, spec in type_roles.items():
+        if role in NOTE_KEYS or not isinstance(spec, dict):
+            continue
+        if spec.get("font"):
+            pairs.append((f"type-{role}", clean(spec["font"])))
     for k, v in tokens.get("growth-1.2.0", {}).items():
         if k in NOTE_KEYS or isinstance(v, dict):
             continue
@@ -89,6 +102,11 @@ def character_pairs(tokens):
             if s in size:
                 pairs.append((f"size-overlay-{s}", clean(size[s])))
     return pairs
+
+
+def density_pairs(values):
+    return [(CHAR_MAP.get(k, k), clean(v)) for k, v in values.items()
+            if k not in NOTE_KEYS]
 
 
 def build(path):
@@ -104,10 +122,10 @@ def build(path):
     if by_density:
         default = theme["capabilities"]["density"]["default"]
         out.append(f'/* density (default: {default}) */\n')
-        out.append(":root {\n" + emit([(k, clean(v)) for k, v in by_density[default].items()]) + "}\n")
+        out.append(":root {\n" + emit(density_pairs(by_density[default])) + "}\n")
         for density, values in by_density.items():
             out.append(f'[data-density="{density}"] {{\n'
-                       + emit([(k, clean(v)) for k, v in values.items()]) + "}\n")
+                       + emit(density_pairs(values)) + "}\n")
     dist = ROOT / "dist"
     dist.mkdir(exist_ok=True)
     target = dist / f"theme-{name}.css"
