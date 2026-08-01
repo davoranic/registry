@@ -56,22 +56,12 @@ npx shadcn@latest add davoranic/registry/stepper      # an adopted component
 | `rating` | ui | Adopted from Salt via the contract — star/icon rating, APG radio behavior. |
 | `tree` | ui | Adopted from Salt via the contract — APG TreeView with full keyboard map. |
 
-## Usage
+## Component layer — intentionally empty
 
-```tsx
-import { Stepper, StepperItem } from "@/components/ui/stepper"
-import { Tree, TreeItem } from "@/components/ui/tree"
-```
-
-Components are authored against the semantic contract (`contract/anatomy/`)
-and carry no token values — install a theme and they wear its character.
-
-## Conventions
-
-Items follow shadcn/ui new-york-v4 conventions: semantic tokens only
-(never raw colors in components), cva variants, `data-slot` attributes,
-Lucide icons at `size-4`. New tokens ship via the item's `cssVars`
-(light + dark + `@theme` mapping) so installs stay one command.
+Components were reset to be rebuilt contract-first (docs/ROADMAP.md Phase 1):
+authored FROM contract/anatomy/*.json, wearing token values from themes only.
+The discovery layer — contract, anatomy, themes, patterns, docs — is the
+permanent record; components are its regenerable output.
 
 ## Adding a new item
 
