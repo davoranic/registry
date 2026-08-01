@@ -17,10 +17,16 @@ OUT = ROOT / "dist" / "showroom.html"
 
 SAMPLE = {
     "label": "Submit order", "title": "Card title",
-    "description": "Supporting description text.", "value": "184.32",
+    "description": "Supporting description.", "value": "184.32",
     "content": "Content", "fallback": "DA", "caption": "4 of 24 rows",
-    "text": "Item", "error": "Enter a valid value.",
+    "text": "Item", "error": "Enter a valid value.", "root": "Badge",
+    "trigger": "Open", "option": "Option", "cell": "184.32",
+    "header-cell": "Amount", "item": "Item", "panel": "Panel body",
 }
+# structural parts render as shape, never as their own name
+STRUCTURAL = {"scrim", "panel", "track", "thumb", "indicator", "option-indicator",
+              "selected-indicator", "control", "image", "list", "row", "header-row",
+              "control-slot", "close", "footer", "header", "group"}
 
 def anatomy_specimen(name, anatomy):
     """Build a representative instance from anatomy parts alone."""
@@ -36,11 +42,11 @@ def anatomy_specimen(name, anatomy):
         slot = p["part"]
         if slot == "root":
             continue
-        text = SAMPLE.get(slot, slot.replace("-", " "))
-        selfish = slot in ("thumb", "indicator", "track", "scrim")
-        inner.append(f'<span data-slot="{slot}">{"" if selfish else text}</span>')
+        text = "" if slot in STRUCTURAL else SAMPLE.get(slot, slot.replace("-", " "))
+        inner.append(f'<span data-slot="{slot}">{text}</span>')
     tag = "button" if name in ("button",) else "div"
-    return f'<{tag} data-slot="{name}"{attrs}>{"".join(inner)}</{tag}>'
+    body = "".join(inner) or SAMPLE.get("root", name)
+    return f'<{tag} data-slot="{name}"{attrs}>{body}</{tag}>'
 
 def build():
     themes = {}
@@ -112,8 +118,12 @@ def build():
     .card { border:var(--border-width) solid var(--border);
       border-radius:var(--radius-container); background:var(--surface-raised);
       overflow:hidden; display:flex; flex-direction:column; }
-    .stage { min-height:120px; display:grid; place-items:center; padding:24px;
+    .stage { position:relative; min-height:120px; display:grid; place-items:center;
+      padding:24px; overflow:hidden; isolation:isolate;
+      transform:translateZ(0);          /* contains position:fixed specimens */
       border-block-end:var(--border-width) solid var(--border-subtle); }
+    .stage [data-slot="scrim"] { position:absolute; }
+    .stage > [data-slot] { max-width:100%; }
     .meta { padding:10px 14px; display:flex; flex-direction:column; gap:4px; }
     .meta b { font:var(--type-label); }
     .meta small { font:var(--type-caption); color:var(--content-secondary); }
@@ -145,8 +155,10 @@ def build():
         const ctl = b.closest(".ctl").dataset.ctl;
         b.setAttribute("aria-pressed", String(state[ctl] === b.dataset.v));
       });
+      const cons = THEMES[state.theme].constraints;
       document.getElementById("constraints").textContent =
-        THEMES[state.theme].constraints.join(" · ");
+        cons.slice(0, 2).join(" · ");
+      document.getElementById("constraints").title = cons.join("\n");
     }
     document.addEventListener("click", e => {
       const b = e.target.closest(".seg button"); if (!b) return;
