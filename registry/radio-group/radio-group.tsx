@@ -7,6 +7,7 @@ interface RadioGroupContextValue {
   setValue: (value: string) => void
   name: string
   disabled?: boolean
+  defaultStop: React.MutableRefObject<string | null>
 }
 const RadioGroupContext = React.createContext<RadioGroupContextValue | null>(null)
 
@@ -28,9 +29,12 @@ function RadioGroup({
   ...props
 }: RadioGroupProps) {
   const name = React.useId()
+  // First enabled item claims the group's tab stop while nothing is selected
+  // (APG radio group: exactly one tab stop at all times).
+  const defaultStop = React.useRef<string | null>(null)
   return (
     <RadioGroupContext.Provider
-      value={{ value, setValue: (v) => onValueChange?.(v), name, disabled }}
+      value={{ value, setValue: (v) => onValueChange?.(v), name, disabled, defaultStop }}
     >
       <div
         role="radiogroup"
@@ -57,6 +61,15 @@ function RadioGroupItem({ value, label, disabled, id, ...props }: RadioGroupItem
   const controlId = id ?? reactId
   const selected = ctx?.value === value
   const isDisabled = disabled || ctx?.disabled
+  if (
+    ctx &&
+    !isDisabled &&
+    (ctx.defaultStop.current === null || ctx.defaultStop.current === value)
+  ) {
+    ctx.defaultStop.current = value
+  }
+  const isTabStop =
+    selected || (ctx?.value == null && ctx?.defaultStop.current === value)
 
   // APG radio group: roving tabindex — only the selected item is tabbable.
   function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
@@ -84,7 +97,7 @@ function RadioGroupItem({ value, label, disabled, id, ...props }: RadioGroupItem
         data-slot="control"
         data-state={selected ? "selected" : undefined}
         aria-checked={selected}
-        tabIndex={selected ? 0 : -1}
+        tabIndex={isTabStop ? 0 : -1}
         disabled={isDisabled}
         onClick={() => ctx?.setValue(value)}
         onKeyDown={onKeyDown}

@@ -87,6 +87,58 @@ DICT = {
     "opacity-50": "opacity: 0.5",
     "pointer-events-none": "pointer-events: none",
     "cursor-not-allowed": "cursor: var(--cursor-disabled)",
+    # ---- growth pass (words met while lifting the showroom set) ----
+    "bg-card": "background: var(--surface-raised)",
+    "text-card-foreground": "color: var(--on-surface-raised)",
+    "bg-border": "background: var(--border)",
+    "bg-black/50": "background: var(--overlay-scrim)",
+    "border-b": "border-block-end: var(--border-width) solid var(--border)",
+    "border-t": "border-block-start: var(--border-width) solid var(--border)",
+    "font-semibold": "font-weight: 600",
+    "items-start": "align-items: flex-start",
+    "self-start": "align-self: flex-start",
+    "justify-self-end": "justify-self: end",
+    "flex-1": "flex: 1",
+    "flex-col-reverse": "flex-direction: column-reverse",
+    "aspect-square": "aspect-ratio: 1 / 1",
+    "text-left": "text-align: left",
+    "text-center": "text-align: center",
+    "align-middle": "vertical-align: middle",
+    "caption-bottom": "caption-side: bottom",
+    "overflow-x-auto": "overflow-x: auto",
+    "overflow-y-auto": "overflow-y: auto",
+    "overflow-x-hidden": "overflow-x: hidden",
+    "fixed": "position: fixed",
+    "inset-0": "inset: 0",
+    "z-50": "z-index: var(--layer-modal)",
+    "z-10": "z-index: var(--layer-sticky)",
+    "size-full": "width: 100%; height: 100%",
+    "h-px": "height: var(--border-width)",
+    "gap-4": "gap: calc(var(--space-unit) * 4)",
+    "gap-6": "gap: var(--inset-container)",
+    "p-1": "padding: var(--space-unit)",
+    "p-2": "padding: calc(var(--space-unit) * 2)",
+    "px-6": "padding-inline: var(--inset-container)",
+    "py-6": "padding-block: var(--inset-container)",
+    "py-1.5": "padding-block: calc(var(--space-unit) * 1.5)",
+    "pl-2": "padding-inline-start: calc(var(--space-unit) * 2)",
+    "pr-8": "padding-inline-end: calc(var(--space-unit) * 8)",
+    "mt-4": "margin-block-start: calc(var(--space-unit) * 4)",
+    "my-1": "margin-block: var(--space-unit)",
+    "rounded-sm": "border-radius: calc(var(--radius-knob) * 0.6)",
+    "rounded-xs": "border-radius: calc(var(--radius-knob) * 0.4)",
+    "size-4": "width: var(--icon-size-control); height: var(--icon-size-control)",
+    "size-3": "width: var(--icon-size-inline); height: var(--icon-size-inline)",
+    "size-3.5": "width: var(--icon-size-inline); height: var(--icon-size-inline)",
+    "text-lg": "font: var(--type-heading-3)",
+    "opacity-70": "opacity: 0.7",
+    "sr-only": ("position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; "
+                "overflow: hidden; clip-path: inset(50%); white-space: nowrap"),
+    "transition-all": "transition: all var(--duration-fast) var(--easing-standard)",
+    "transition-opacity": "transition: opacity var(--duration-fast) var(--easing-standard)",
+    "duration-200": "transition-duration: var(--duration-base)",
+    "focus-visible:outline-ring": "outline-color: var(--focus)",
+    "focus:ring-ring": "outline-color: var(--focus)",
 }
 
 PREFIX_SELECTOR = {
@@ -108,7 +160,9 @@ def lift(name):
     if not src_path.exists():
         sys.exit(f"no source: {src_path}")
     src = src_path.read_text()
-    class_strings = re.findall(r'(?:className=|cn\()\s*"([^"]+)"', src)
+    # class strings appear in className="…", cn("…"), and cva("…", {variants})
+    class_strings = re.findall(r'(?:className=|cn\(|cva\()\s*"([^"]+)"', src)
+    class_strings += re.findall(r'"([a-z][^"]*?(?:bg-|text-|border-|rounded-|h-|px-|py-|gap-|shadow-)[^"]*)"', src)
     utilities = [u for s in class_strings for u in s.split()]
 
     base_sel = f'[data-slot="{name}"]'
