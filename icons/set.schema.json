@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://registry.davoranic.com/schema/icon-set.json",
+  "title": "Icon set",
+  "description": "One icon library's glyphs for the canonical semantic roles (icons/roles.json). A theme declares which sets it allows and by what mechanism they swap.",
+  "type": "object",
+  "required": ["set", "roles"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "set": { "type": "string", "enum": ["lucide", "tabler", "radix", "salt"] },
+    "package": { "type": "string" },
+    "grid": { "type": "string", "description": "e.g. '24 outline stroke-2' or '12 filled'" },
+    "source": { "type": "string" },
+    "roles": {
+      "type": "object",
+      "description": "role -> glyph. Must cover every role in icons/roles.json (enforced by scripts/check-icons.py).",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["viewBox", "path"],
+        "properties": {
+          "name": { "type": "string", "description": "The library's own export name" },
+          "viewBox": { "type": "string" },
+          "path": { "type": "string" },
+          "fill": { "type": "string" },
+          "stroke": { "type": ["number", "null"] },
+          "fillRule": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "icon",
+  "behavior": "presentational (aria-hidden) unless labelled — no APG interaction pattern",
+  "parts": [
+    { "part": "root", "tokens": ["icon-size-inline", "icon-size-control", "icon-size-emphasis", "icon-style"], "note": "the svg box. Sized by the icon ramp, never by control-height-* — an icon is a glyph, not a control. Colour is inherited (currentColor), so the icon takes the voice of whatever contains it; it declares no colour slot of its own. Carries aria-hidden=true by default; a labelled icon becomes role=img with an accessible name and is then the only part that is exposed." },
+    { "part": "glyph", "tokens": ["icon-style", "icon-stroke"], "note": "the path data resolved from role + set (icons/roles.json, icons/sets/*.json). icon-style decides whether the glyph is stroked or filled; icon-stroke is the outline weight and is a theme decision, so it overrides whatever weight the source set shipped." }
+  ],
+  "variantAxes": { "size": ["sm", "md", "lg"] },
+  "states": ["rest", "loading"],
+  "anatomyNotes": "The icon is the one component with no interaction and no theme-specific structure: every design system draws a 24-, 15- or 12-grid box with one glyph in it, so root + glyph is the whole honest intersection. What varies between systems is the SWAP MECHANISM, not the anatomy — shadcn swaps by import (lucide-react), Salt swaps by provider (SemanticIconProvider, 33 semantic slots). The contract sidesteps both by resolving a semantic ROLE against a set file at render time, which is why the component takes role rather than a glyph component. The size axis binds to the icon ramp — sm=icon-size-inline, md=icon-size-control, lg=icon-size-emphasis — and NOT to control-height-*, matching the spinner. Fill vs stroke is not a variant axis: it is icon-style, a theme token, and the set file's own style field must agree with it. loading is the only state, and only for the loading role: the rotation is decorative motion, so the glyph still carries no meaning that text does not already carry, and it degrades under prefers-reduced-motion.",
+  "motion": { "spin": { "duration": "duration-slow", "easing": "easing-standard", "appliesTo": "role=loading only" } }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://registry.davoranic.com/schema/anatomy.json",
+  "title": "Component anatomy",
+  "description": "Theme-invariant structure of a component (contract/authoring.md step 1). Parts, states, variant axes and behavior are decided here; themes change the recipe per part, never the parts.",
+  "type": "object",
+  "required": ["name", "behavior", "parts"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "behavior": { "type": "string", "description": "WAI-ARIA APG pattern name, or an explicit statement that the component is presentational." },
+    "parts": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["part"],
+        "additionalProperties": false,
+        "properties": {
+          "part": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "optional": { "type": "boolean" },
+          "contentSlot": { "type": "boolean" },
+          "iconRole": { "type": "string", "description": "A role from icons/roles.json" },
+          "tokens": { "type": "array", "items": { "type": "string" }, "description": "Contract slots this part consumes (tokens/semantic.md)" },
+          "note": { "type": "string" },
+          "statesNote": { "type": "string" }
+        }
+      }
+    },
+    "variantAxes": {
+      "type": "object",
+      "description": "Canonical axes only (contract/variants.md)",
+      "propertyNames": { "enum": ["emphasis", "prominence", "size", "orientation", "tone", "edge", "label-placement", "activation"] },
+      "additionalProperties": { "type": "array", "items": { "type": "string" } }
+    },
+    "states": {
+      "type": "array",
+      "items": { "enum": ["rest", "hover", "active", "focus-visible", "disabled", "loading", "selected", "indeterminate", "invalid", "readonly", "open", "dragging", "checked", "determinate"] }
+    },
+    "motion": { "type": "object", "description": "Named transitions referencing duration-*/easing-* roles" },
+    "anatomyNotes": { "type": "string", "description": "Recipe differences between source systems that are NOT anatomy" },
+    "compound": { "type": "array", "items": { "type": "string" } }
+  }
+}

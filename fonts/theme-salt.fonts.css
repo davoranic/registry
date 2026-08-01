@@ -1,0 +1,67 @@
+/* ============================================================
+   FONT DELIVERY — theme: Salt DS
+   Program: fonts/fonts.json (themes.salt) · Roles: contract/typography.md
+   Slots:   tokens/base.css §2 · Adapter: themes/theme-salt.json
+
+   Load order:  tokens/base.css
+             -> dist/theme-salt.css        (generated colours/rhythm/density)
+             -> fonts/theme-salt.fonts.css     (this file — families + roles)
+
+   CSP-safe by policy: no @import, no @font-face, no remote src. Stacks only.
+
+   Webfonts a consumer MAY self-host (none are shipped or fetched here):
+     · Open Sans  — SIL OFL 1.1, weights 300/400/600/700. Salt's UI and prose
+       face. Self-host the woff2 files and the stacks below pick them up.
+     · PT Mono    — SIL OFL 1.1, weight 400. Salt's figure/code face.
+     · Amplitude  — COMMERCIALLY LICENSED (Font Bureau). Salt's display tier.
+       NOT redistributable, NOT shipped, NOT fetched. It is named first in
+       --family-display so a licensee who self-hosts it gets Salt's true
+       display voice; without a licence the stack falls through to Open Sans
+       and nothing breaks. Recorded in theme-salt.json typeRoles.heading.
+   ============================================================ */
+
+:root {
+  /* ---- families ---- */
+  --family-display: "Amplitude", "Open Sans", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  --family-body: "Open Sans", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  --family-code: "PT Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ---- prose + heading roles (fixed) -------------------------------------
+     Reading text does not shrink with control density — only chrome does.
+     Display uses Open Sans Light (300) where Amplitude is unavailable.
+     -------------------------------------------------------------------- */
+  --type-display:     300 2.5rem/3rem       var(--family-display);
+  --type-heading-1:   600 1.75rem/2.25rem   var(--family-display);
+  --type-heading-2:   600 1.375rem/1.75rem  var(--family-display);
+  --type-heading-3:   600 1.125rem/1.5rem   var(--family-display);
+  --type-body:        400 0.875rem/1.25rem  var(--family-body);
+  --type-body-strong: 600 0.875rem/1.25rem  var(--family-body);
+  --type-caption:     400 0.75rem/1rem      var(--family-body);
+  --type-code:        400 0.8125rem/1.25rem var(--family-code);
+
+  /* ---- chrome roles (density-driven) -------------------------------------
+     --text-ui is rescaled by dist/theme-salt.css per [data-density]
+     (high 11px · medium 12px · low/touch 14px), so label/action/data track
+     control size the way Salt's density provider intends.
+     -------------------------------------------------------------------- */
+  --type-label:       600 var(--text-ui)/1.25 var(--family-body);
+  --type-data:        400 var(--text-ui)/1.25 var(--family-code);
+
+  /* ---- the action role — Salt's signature --------------------------------
+     Uppercase, 600, 0.6px tracking. theme-salt.json lists this as a
+     CONSTRAINT ("not configurable"): it is the single most recognisable
+     thing about a Salt button. Delivered through three contract slots so a
+     component only ever writes:
+         font: var(--type-action);
+         text-transform: var(--action-case);
+         letter-spacing: var(--action-tracking);
+     --ui-weight is 600 under this theme (typeRoles.action.weight).
+     -------------------------------------------------------------------- */
+  --type-action:     var(--ui-weight) var(--text-ui)/1.25 var(--family-body);
+  --action-case:     uppercase;
+  --action-tracking: 0.6px;
+}
+
+/* PT Mono is already monospaced, but numeric columns should still opt in to
+   tabular figures so digit widths survive a family fallback:
+     [data-slot="cell"][data-numeric] { font: var(--type-data); font-variant-numeric: tabular-nums; } */

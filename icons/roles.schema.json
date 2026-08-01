@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://registry.davoranic.com/schema/icon-roles.json",
+  "title": "Semantic icon roles",
+  "description": "The canonical role list — the contract's icon vocabulary. Components reference roles, never library glyph names, which is what makes icon sets swappable.",
+  "type": "object",
+  "required": ["roles"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "roles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["meaning"],
+        "properties": {
+          "meaning": { "type": "string" },
+          "consumers": { "type": "array", "items": { "type": "string" } },
+          "reserved": { "type": "boolean", "description": "In the contract but not yet consumed by a component" }
+        }
+      }
+    }
+  }
+}
