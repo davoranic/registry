@@ -17,17 +17,23 @@ ordered by dependency; each has a definition of done.
 - **0.3 Themes as registry items** (`registry:theme` in registry.json) so any
   app installs a theme with one command.
 
-## Phase 1 — Contract-native components
+## Phase 1R — The stocked dictionary (revised after the library-vs-dictionary challenge)
 
-- **1.1 Anatomy files** for the core 20 (all form controls, button family,
-  overlay family, table, tabs, card), then the long tail to ~58.
-- **1.2 Variant maps** per component family in both adapters (button pattern
-  exists; replicate).
-- **1.3 Migrate the 4 registry components** (status-pill, stat-card,
-  timeline, tag) from shadcn-convention names to native contract slots.
-- **1.4 First adoptions** through the full pipeline: stepper, rating, tree
-  (Salt → contract → both accents) + input-otp (reverse). *These four prove
-  the adoption rule end-to-end.*
+The registry's product is the reference shelf (contract/ — dictionary,
+grammar, phrasebook, translation manual, style manual), NOT a third component
+library. Cloned sources remain the bookshelf of originals. We stock exactly
+one shelf natively:
+
+- **1R.1 The showroom set (~14):** button, input, field, checkbox,
+  radio-group, switch, select, tabs, card, badge, table, separator, dialog,
+  avatar — machine-lifted via scripts/lift.py, review-fixed against anatomy,
+  validator-enforced. This keeps the machinery exercised daily, gives the
+  showroom real inventory, and keeps the native tier inhabited.
+- **1R.2 Everything else: on demand.** Lift when a real screen needs it;
+  judgment spent only where value is collected.
+- **1R.3 The canary:** CI re-lifts a fixed component weekly against the live
+  clone and fails if unmapped words grow — upstream drift becomes a failing
+  check, not a future mystery.
 
 ## Phase 2 — Patterns
 
