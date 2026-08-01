@@ -1,0 +1,16 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "native-select",
+  "behavior": "None beyond the platform's own — a native <select>. The user agent supplies the listbox behaviour (open, typeahead, arrow navigation, Esc), so no APG implementation is authored here; the component must not intercept those keys. Labelling and description come from field composition.",
+  "parts": [
+    { "part": "root", "tokens": ["radius-control", "control-height-md", "focus"], "note": "positioning wrapper — holds the control and the decorative indicator; it exists because the native control cannot paint its own chevron" },
+    { "part": "control", "tokens": ["field-border", "field-surface", "on-surface", "radius-control", "control-height-md", "inset-control-x", "type-label", "field-border-hover", "field-surface-hover", "focus", "duration-fast", "easing-standard"], "statesNote": "hover uses field-border-hover/field-surface-hover; invalid swaps field-border for status-critical per states.md — identical recipe to anatomy/input.json's root" },
+    { "part": "indicator", "iconRole": "expand", "tokens": ["icon-size-control", "content-secondary"], "note": "decorative chevron, aria-hidden and pointer-inert; the native appearance is suppressed so this is the only visible affordance. It does NOT rotate on open — the platform popup is not a state this component can observe" },
+    { "part": "option", "contentSlot": true, "tokens": ["type-label"], "note": "native <option>; the platform paints the popup, so nothing beyond colour-scheme is themeable inside it" },
+    { "part": "group-label", "optional": true, "tokens": ["type-caption", "content-secondary"], "note": "native <optgroup label>" }
+  ],
+  "variantAxes": { "size": ["sm", "md", "lg"] },
+  "states": ["rest", "hover", "focus-visible", "disabled", "invalid", "readonly"],
+  "anatomyNotes": "Salt has no native-select: its Dropdown is a fully authored listbox, so this anatomy is shadcn-only and its Salt translation falls back to anatomy/select.json (contract/variants.md §Fallback ladder). The trigger recipe is deliberately identical to select's root and input's root — a native select must be visually indistinguishable from the authored one. The open state is absent from the state list on purpose: the popup belongs to the user agent and cannot be observed or styled.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

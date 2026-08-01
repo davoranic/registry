@@ -1,0 +1,17 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "input-otp",
+  "behavior": "Native text-input semantics on a single visually segmented field. ONE control owns the value, the focus and the tab stop (inputMode=numeric, autoComplete=one-time-code, maxLength=length); the cells are presentational (aria-hidden) and mirror the control's characters, with the caret drawn on the active cell. ArrowLeft/ArrowRight/Home/End/Backspace therefore behave natively, paste fills every cell at once, and screen readers announce one field — never N fields. Labelling and error wiring come from the field composition.",
+  "parts": [
+    { "part": "root", "tokens": ["space-inline-md", "duration-fast", "easing-standard"], "note": "the wrapper; hosts the single control and the cell rows" },
+    { "part": "control", "contentSlot": true, "tokens": [], "note": "the one real input — visually hidden over the cells, carrying the whole value" },
+    { "part": "group", "tokens": ["space-inline-sm"], "note": "a run of adjacent cells; multiple groups exist only when a separator splits the code" },
+    { "part": "cell", "tokens": ["field-border", "field-surface", "control-height-md", "radius-control", "type-label", "on-surface", "focus", "field-border-active", "duration-fast", "easing-standard"], "statesNote": "the cell under the caret takes field-border-active plus the focus ring; invalid swaps field-border for status-critical per states.md" },
+    { "part": "caret", "optional": true, "tokens": ["on-surface", "duration-slow"], "note": "the blinking bar shown on the active empty cell; purely decorative" },
+    { "part": "separator", "optional": true, "iconRole": "remove", "tokens": ["icon-size-inline", "content-secondary", "space-inline-md"], "note": "the dash between cell groups; aria-hidden" }
+  ],
+  "variantAxes": { "size": ["sm", "md", "lg"] },
+  "states": ["rest", "focus-visible", "disabled", "invalid", "readonly"],
+  "anatomyNotes": "shadcn InputOTP (input-otp library) is the only source with this component; Salt has no equivalent, so the intersection is taken against Salt Input for the cell chrome — a cell is a one-character input face and reuses field-border/field-surface/radius-control exactly, which is why Salt can theme it without new slots. shadcn draws cells as a segmented strip with only the outer corners rounded; that is a RECIPE on the group, not anatomy — themes that round every cell (Salt's per-field chrome) render the same parts.",
+  "motion": { "caret-blink": { "duration": "duration-slow", "easing": "easing-standard" }, "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

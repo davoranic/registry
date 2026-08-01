@@ -1,0 +1,19 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "sheet",
+  "behavior": "APG dialog (modal) pattern, edge-anchored (focus trapped in the panel; Tab cycles; Esc closes; focus returns to the opener on close; aria-modal=true; labelled by title, described by description). No pointer-drag dismissal — that is anatomy/drawer.json.",
+  "parts": [
+    { "part": "scrim", "tokens": ["overlay-scrim", "layer-modal"] },
+    { "part": "panel", "tokens": ["surface-overlay", "on-surface-overlay", "border", "elevation-modal", "layer-modal", "inset-container", "size-overlay-md"], "radius": { "role": "radius-overlay", "corners": "edge-opposite" }, "note": "per-corner rule (semantic.md §4): the radius value comes from radius-overlay and only the corners opposite the anchored edge are rounded (edge:end → start corners, edge:bottom → top corners). Logical edge names survive RTL." },
+    { "part": "header", "tokens": ["space-stack-sm"] },
+    { "part": "title", "contentSlot": true, "tokens": ["type-heading-3", "on-surface-overlay"] },
+    { "part": "description", "contentSlot": true, "optional": true, "tokens": ["type-body", "content-secondary"] },
+    { "part": "content", "contentSlot": true, "tokens": ["type-body", "space-stack-md"] },
+    { "part": "footer", "tokens": ["space-inline-md"], "note": "action slot — hosts buttons (anatomy/button.json)" },
+    { "part": "close", "optional": true, "iconRole": "close", "tokens": ["icon-size-control", "interaction-hover", "radius-control", "focus"] }
+  ],
+  "variantAxes": { "edge": ["start", "end", "top", "bottom"], "size": ["sm", "md", "lg"] },
+  "states": ["rest", "open"],
+  "anatomyNotes": "Sheet is anatomy/drawer.json minus the drag `handle` part and minus the `dragging` state — the edge-anchored modal dialog without the pointer-drag enhancement. drawer.json stays normative for the shared parts; this file exists because shadcn ships `sheet` and `drawer` as separate items (sheet = side panel, drawer = vaul bottom sheet) and consumers install them by name. Salt draws the same line: SidePanel (start/end, no drag, header + title + content + close subcomponents — the source for splitting title out of header, as dialog.json does) versus Drawer (all four edges). Size binds to size-overlay-* along the dimension normal to the anchored edge, never to control-height-*.",
+  "motion": { "panel-enter": { "duration": "duration-base", "easing": "easing-enter" }, "panel-exit": { "duration": "duration-fast", "easing": "easing-exit" }, "scrim-fade": { "duration": "duration-base", "easing": "easing-standard" } }
+}

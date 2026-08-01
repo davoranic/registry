@@ -1,0 +1,23 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "calendar",
+  "behavior": "APG grid pattern as used by the Date Picker Dialog: the month is a role=grid of week rows and day gridcells, with a roving tabindex so exactly one day is tabbable. Arrow keys move by day and by week, Home/End go to the start/end of the week, PageUp/PageDown change month (Shift+PageUp/PageDown change year), Enter/Space selects. Selected days carry aria-selected, unavailable days aria-disabled, and every day button's accessible name is its full date. The month/year caption names the grid and month changes are announced.",
+  "parts": [
+    { "part": "root", "tokens": ["surface", "on-surface", "inset-container", "radius-container", "type-label", "border"], "note": "one or more month panels side by side" },
+    { "part": "nav", "tokens": ["control-height-sm", "space-inline-sm"], "note": "the previous/next row aligned with the caption" },
+    { "part": "nav-previous", "iconRole": "back", "tokens": ["control-height-sm", "radius-control", "icon-size-control", "interaction-hover", "focus", "cursor-interactive", "duration-fast", "easing-standard"] },
+    { "part": "nav-next", "iconRole": "forward", "tokens": ["control-height-sm", "radius-control", "icon-size-control", "interaction-hover", "focus", "cursor-interactive", "duration-fast", "easing-standard"] },
+    { "part": "caption", "contentSlot": true, "tokens": ["type-label", "on-surface", "control-height-sm"], "note": "the month/year label; the dropdown caption layout swaps the text for two selects — a composition with the select anatomy" },
+    { "part": "grid", "tokens": ["space-stack-sm"], "note": "role=grid for one month" },
+    { "part": "weekday-row", "tokens": [] },
+    { "part": "weekday", "tokens": ["type-caption", "content-secondary", "control-height-sm"], "note": "abbreviated weekday header; its full name is exposed to assistive tech" },
+    { "part": "week-row", "tokens": [] },
+    { "part": "day", "tokens": ["control-height-sm", "radius-control"], "note": "the gridcell; carries range position so the range fill can bleed edge to edge between cells" },
+    { "part": "day-button", "tokens": ["control-height-sm", "radius-control", "type-label", "interaction-hover", "interaction-selected", "on-interaction-selected", "focus", "cursor-interactive", "duration-fast", "easing-standard"], "statesNote": "today is marked with selected-indicator, not with the selected recipe; outside-month and unavailable days use content-disabled" },
+    { "part": "week-number", "optional": true, "tokens": ["type-caption", "content-secondary", "control-height-sm"] }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "hover", "focus-visible", "selected", "disabled", "readonly"],
+  "anatomyNotes": "Intersection of shadcn Calendar (react-day-picker: root/months/month/nav/month_caption/month_grid/weekdays/week/day/day_button) and Salt date-components Calendar (CalendarNavigation/CalendarGrid/CalendarWeekHeader/CalendarDay). Both resolve to the parts above. Cell size is bound to control-height-sm and radius-control — there is deliberately no size axis, because a calendar grid must stay square and a theme's density axis already moves control-height-sm. Range selection (start/middle/end) and 'today' are POSITION/ANNOTATION attributes on the day part (data-range-*, data-today), not canonical states: they compose with selected rather than replacing it. Salt's per-day status colouring (highlighted/unselectable reasons) is a recipe on day-button. Multi-month display is layout on root, not extra anatomy.",
+  "motion": { "month-change": { "duration": "duration-fast", "easing": "easing-standard" }, "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

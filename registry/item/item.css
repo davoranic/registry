@@ -1,0 +1,141 @@
+/* Item recipe — contract slots only (contract/authoring.md step 3).
+   Structure, prominence/size axes and states: contract/anatomy/item.json.
+   Item is card's row-shaped sibling: the same content parts at control scale
+   spacing and radius instead of container scale. */
+
+[data-slot="item"] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-inline-lg);
+  width: 100%;
+  padding: var(--space-unit) var(--inset-control-x);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--on-surface);
+  font: var(--type-label);
+  text-align: start;
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="item"][data-interactive] {
+  cursor: var(--cursor-interactive);
+}
+
+/* size axis */
+[data-slot="item"][data-size="sm"] {
+  gap: var(--space-inline-md);
+  padding: calc(var(--space-unit) * 0.5) calc(var(--inset-control-x) * 0.75);
+}
+[data-slot="item"][data-size="lg"] {
+  gap: var(--space-inline-lg);
+  padding: calc(var(--space-unit) * 2) calc(var(--inset-control-x) * 1.25);
+}
+
+/* prominence axis — shadcn default|outline|muted decomposes onto
+   ghost|outline|solid (anatomyNotes) */
+[data-slot="item"][data-prominence="ghost"] {
+  background: transparent;
+  border-color: transparent;
+}
+[data-slot="item"][data-prominence="outline"] {
+  border-color: var(--border);
+}
+[data-slot="item"][data-prominence="solid"] {
+  background: var(--surface-sunken);
+  border-color: transparent;
+}
+
+/* media — top-aligns once a description is present */
+[data-slot="item"] > [data-slot="media"] {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  padding: var(--space-unit);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-field-control);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+[data-slot="item"]:has([data-slot="description"]) > [data-slot="media"] {
+  align-self: flex-start;
+}
+[data-slot="item"] > [data-slot="media"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+  stroke-width: var(--icon-stroke);
+}
+
+/* content — stacks title over description, takes the remaining inline space */
+[data-slot="item"] > [data-slot="content"] {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+  min-width: 0;
+}
+[data-slot="item"] [data-slot="title"] {
+  font: var(--type-label);
+  color: var(--on-surface);
+}
+[data-slot="item"] [data-slot="description"] {
+  font: var(--type-body);
+  color: var(--content-secondary);
+}
+
+/* actions */
+[data-slot="item"] > [data-slot="actions"] {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-inline-md);
+}
+
+/* group + separator */
+[data-slot="item"] [data-slot="group"] {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+[data-slot="item"] [data-slot="group"] > li {
+  display: block;
+}
+[data-slot="separator"] {
+  height: var(--border-width);
+  margin-block: var(--space-stack-sm);
+  background: var(--border-subtle);
+  list-style: none;
+}
+
+/* states (contract/states.md) — hover/selected apply only when interactive */
+[data-slot="item"][data-interactive]:hover {
+  background: var(--interaction-hover);
+}
+[data-slot="item"][data-state="selected"] {
+  background: var(--interaction-selected);
+  color: var(--on-interaction-selected);
+}
+[data-slot="item"][data-state="selected"] [data-slot="title"] {
+  color: var(--on-interaction-selected);
+}
+[data-slot="item"]:focus-visible {
+  outline: var(--focus-width) var(--focus-style)
+    color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="item"][data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="item"] { transition: none; }
+}

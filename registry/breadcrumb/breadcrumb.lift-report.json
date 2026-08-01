@@ -1,0 +1,18 @@
+{
+  "component": "breadcrumb",
+  "mapped": 27,
+  "unmapped": [
+    "flex-wrap",
+    "break-words",
+    "font-normal",
+    "[&>svg]:size-3.5",
+    "size-9",
+    "flex-wrap",
+    "break-words",
+    "font-normal"
+  ],
+  "skipped_variants": [
+    "sm:gap-2.5",
+    "sm:gap-2.5"
+  ]
+}

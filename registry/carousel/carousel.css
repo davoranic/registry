@@ -1,0 +1,175 @@
+/* Carousel recipe — contract slots only (contract/authoring.md step 3).
+   Structure and states: contract/anatomy/carousel.json. Character: the theme. */
+
+[data-slot="carousel"] {
+  position: relative;
+  display: grid;
+  gap: var(--space-inline-lg);
+  outline: none;
+}
+[data-slot="carousel"]:focus-visible {
+  outline: var(--focus-width) var(--focus-style) color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+
+/* viewport — the clipping window; the only scroll container */
+[data-slot="carousel"] [data-slot="viewport"] {
+  overflow: hidden;
+  border-radius: var(--radius-container);
+}
+
+/* slides — the moving rail */
+[data-slot="carousel"] [data-slot="slides"] {
+  display: flex;
+  gap: var(--space-inline-lg);
+  transition: transform var(--duration-base) var(--easing-emphasized);
+}
+[data-slot="carousel"][data-orientation="vertical"] [data-slot="slides"] {
+  flex-direction: column;
+}
+
+/* slide */
+[data-slot="carousel"] [data-slot="slide"] {
+  flex: 0 0 100%;
+  min-width: 0;
+  border-radius: var(--radius-container);
+  background: var(--surface-raised);
+  color: var(--on-surface-raised);
+}
+
+/* previous / next — placement is a recipe: overlaid on the viewport edges */
+[data-slot="carousel"] [data-slot="previous"],
+[data-slot="carousel"] [data-slot="next"] {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height-md);
+  height: var(--control-height-md);
+  padding: 0;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--on-surface);
+  box-shadow: var(--elevation-resting);
+  cursor: var(--cursor-interactive);
+  outline: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    opacity var(--duration-fast) var(--easing-standard);
+}
+[data-slot="carousel"] [data-slot="previous"] {
+  inset-inline-start: 0;
+}
+[data-slot="carousel"] [data-slot="next"] {
+  inset-inline-end: 0;
+}
+[data-slot="carousel"][data-orientation="vertical"] [data-slot="previous"] {
+  top: 0;
+  inset-inline: 50% auto;
+  transform: translateX(-50%);
+}
+[data-slot="carousel"][data-orientation="vertical"] [data-slot="next"] {
+  top: auto;
+  bottom: 0;
+  inset-inline: 50% auto;
+  transform: translateX(-50%);
+}
+[data-slot="carousel"] [data-slot="previous"]:hover,
+[data-slot="carousel"] [data-slot="next"]:hover {
+  background: var(--target-surface-hover);
+  border-color: var(--target-border-hover);
+}
+[data-slot="carousel"] [data-slot="previous"]:focus-visible,
+[data-slot="carousel"] [data-slot="next"]:focus-visible {
+  outline: var(--focus-width) var(--focus-style) color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="carousel"] [data-slot="previous"][data-disabled],
+[data-slot="carousel"] [data-slot="next"][data-disabled] {
+  opacity: 0.5;
+  cursor: var(--cursor-disabled);
+}
+[data-slot="carousel"] [data-slot="previous"] svg,
+[data-slot="carousel"] [data-slot="next"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+}
+[data-slot="carousel"][data-orientation="vertical"] [data-slot="previous"] svg {
+  transform: rotate(90deg);
+}
+[data-slot="carousel"][data-orientation="vertical"] [data-slot="next"] svg {
+  transform: rotate(90deg);
+}
+
+/* indicator-list */
+[data-slot="carousel"] [data-slot="indicator-list"] {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-inline-sm);
+}
+[data-slot="carousel"][data-orientation="vertical"] [data-slot="indicator-list"] {
+  flex-direction: column;
+  align-items: center;
+}
+
+/* indicator — the selected one changes size AND fill, never colour alone */
+[data-slot="carousel"] [data-slot="indicator"] {
+  width: var(--icon-size-inline);
+  height: var(--icon-size-inline);
+  padding: 0;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  cursor: var(--cursor-interactive);
+  outline: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    width var(--duration-fast) var(--easing-standard);
+}
+[data-slot="carousel"] [data-slot="indicator"][data-state="selected"] {
+  width: calc(var(--icon-size-inline) * 2.5);
+  background: var(--selected-indicator);
+  border-color: var(--selected-indicator);
+}
+[data-slot="carousel"][data-orientation="vertical"] [data-slot="indicator"][data-state="selected"] {
+  width: var(--icon-size-inline);
+  height: calc(var(--icon-size-inline) * 2.5);
+}
+[data-slot="carousel"] [data-slot="indicator"]:focus-visible {
+  outline: var(--focus-width) var(--focus-style) color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+
+/* progress-label — the visible "N of M" counter */
+[data-slot="carousel"] [data-slot="progress-label"] {
+  text-align: center;
+  font: var(--type-caption);
+  color: var(--content-secondary);
+}
+
+/* the polite announcement channel is never visible */
+[data-slot="carousel"] [data-slot="live-region"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="carousel"] [data-slot="slides"],
+  [data-slot="carousel"] [data-slot="previous"],
+  [data-slot="carousel"] [data-slot="next"],
+  [data-slot="carousel"] [data-slot="indicator"] {
+    transition: none;
+  }
+}

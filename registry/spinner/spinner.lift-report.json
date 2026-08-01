@@ -1,0 +1,8 @@
+{
+  "component": "spinner",
+  "mapped": 1,
+  "unmapped": [
+    "animate-spin"
+  ],
+  "skipped_variants": []
+}

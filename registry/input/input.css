@@ -18,7 +18,7 @@
   outline: none;
 }
 
-[data-slot="control"]::placeholder {
+[data-slot="input"] [data-slot="control"]::placeholder {
   color: var(--content-secondary);
 }
 
@@ -29,5 +29,5 @@
 }
 
 [data-slot="input"] { display: inline-flex; align-items: center; width: 100%; }
-[data-slot="control"] { all: unset; flex: 1; min-width: 0; font: inherit; color: var(--on-surface); }
-[data-slot="control"]:disabled { opacity: 0.5; cursor: var(--cursor-disabled); }
+[data-slot="input"] [data-slot="control"] {
+[data-slot="input"] [data-slot="control"]:disabled {

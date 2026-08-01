@@ -1,0 +1,17 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "form",
+  "behavior": "None — native <form> semantics. APG form/validation guidance: every control has an accessible name from its label (for/id), description and error are wired through aria-describedby, an invalid control carries aria-invalid, and the error text is announced (role=alert). Submission never relies on colour alone to signal failure; focus moves to the first invalid control.",
+  "parts": [
+    { "part": "root", "tokens": ["space-stack-lg"], "note": "the <form> element; stacks field items and the submit row" },
+    { "part": "item", "tokens": ["space-stack-sm"], "note": "one labelled control with its description/message — the same stack as the field anatomy, owned by the form so validation state can flow from the form model" },
+    { "part": "label", "contentSlot": true, "tokens": ["type-label", "on-surface"], "statesNote": "invalid renders in status-critical; disabled renders in content-disabled per states.md" },
+    { "part": "control", "contentSlot": true, "tokens": [], "note": "hosts any form control anatomy (input, textarea, select, checkbox, radio-group, switch, slider); receives id/aria-describedby/aria-invalid from the item — no tokens of its own" },
+    { "part": "description", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary"] },
+    { "part": "message", "optional": true, "contentSlot": true, "iconRole": "error", "tokens": ["type-caption", "status-critical", "icon-size-inline", "space-inline-sm"], "note": "validation message; replaces the description while the control is invalid" }
+  ],
+  "variantAxes": { "label-placement": ["top", "start"] },
+  "states": ["rest", "disabled", "invalid", "readonly"],
+  "anatomyNotes": "Intersection of shadcn Form (FormItem/FormLabel/FormControl/FormDescription/FormMessage over react-hook-form) and Salt FormField (FormField/FormFieldLabel/FormFieldHelperText). Salt merges description and validation message into ONE helper-text part whose tone changes with validationStatus; shadcn keeps them separate and swaps at render time. The registry keeps them as two parts and renders only one at a time — a superset that both themes can express. Salt's necessityLabel (optional/required suffix on the label) is a RECIPE addition inside the label part, not a part. The form-state binding library (react-hook-form) is an implementation choice, never anatomy: the parts are identical for uncontrolled forms.",
+  "motion": { "message-enter": { "duration": "duration-fast", "easing": "easing-enter" } }
+}

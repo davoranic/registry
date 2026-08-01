@@ -1,0 +1,26 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "sidebar",
+  "behavior": "A navigation landmark (<nav> with an accessible name) containing lists of links; the current destination carries aria-current='page'. The collapse control is a toggle button with aria-expanded and aria-controls, and collapsing hides the region from assistive tech only when it is truly hidden. Nested groups follow the APG disclosure pattern (button with aria-expanded controlling the sub-list); sub-lists are real nested lists so depth is announced. On narrow viewports the sidebar becomes an APG dialog (modal): focus is trapped, Esc dismisses, and focus returns to the trigger. Tab order follows visual order; the collapsed rail still exposes every item's name via its accessible name, never via tooltip alone.",
+  "parts": [
+    { "part": "root", "tokens": ["surface-raised", "on-surface-raised", "border", "layer-sticky", "duration-base", "easing-emphasized"], "note": "the nav landmark and its collapse animation" },
+    { "part": "trigger", "iconRole": "collapse", "tokens": ["control-height-md", "icon-size-control", "radius-control", "interaction-hover", "focus", "cursor-interactive", "duration-fast", "easing-standard"], "note": "the expand/collapse toggle button" },
+    { "part": "header", "optional": true, "contentSlot": true, "tokens": ["inset-container", "space-stack-sm", "border-subtle"] },
+    { "part": "content", "tokens": ["space-stack-md"], "note": "the scrolling body holding the groups" },
+    { "part": "group", "tokens": ["space-stack-sm"] },
+    { "part": "group-label", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary", "control-height-sm", "inset-control-x"] },
+    { "part": "menu", "tokens": ["space-inline-sm"], "note": "the list of items" },
+    { "part": "menu-item", "tokens": [], "note": "the list item; chrome lives on menu-button" },
+    { "part": "menu-button", "tokens": ["control-height-md", "inset-control-x", "radius-control", "type-label", "interaction-hover", "interaction-selected", "on-interaction-selected", "selected-indicator", "focus", "cursor-interactive", "space-inline-md", "duration-fast", "easing-standard"], "statesNote": "the current item takes interaction-selected plus selected-indicator (the active-item bar) — the indicator is what survives a collapsed rail, where the label is hidden" },
+    { "part": "menu-icon", "optional": true, "contentSlot": true, "tokens": ["icon-size-control", "content-secondary"], "note": "the only visible content in the collapsed rail; therefore aria-hidden with the name carried by the button" },
+    { "part": "menu-label", "contentSlot": true, "tokens": ["type-label"] },
+    { "part": "menu-badge", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary", "radius-pill"], "note": "count/status trailing the label; its meaning is repeated in the accessible name" },
+    { "part": "submenu", "optional": true, "tokens": ["space-inline-md", "border-subtle"], "note": "the nested list; one space-inline-md indent per depth — rhythm, never a raw value" },
+    { "part": "separator", "optional": true, "tokens": ["border-subtle"] },
+    { "part": "footer", "optional": true, "contentSlot": true, "tokens": ["inset-container", "space-stack-sm", "border-subtle"] }
+  ],
+  "variantAxes": { "edge": ["inline-start", "inline-end"] },
+  "states": ["rest", "hover", "focus-visible", "selected", "disabled", "open"],
+  "anatomyNotes": "Intersection of shadcn Sidebar (a 26-slot composition: sidebar/trigger/header/content/group/group-label/menu/menu-item/menu-button/menu-badge/menu-sub/separator/footer/rail/inset) and Salt VerticalNavigation + NavigationItem (VerticalNavigationItem/ItemTrigger/ItemLabel/ItemContent/SubMenu, with NavigationItem's active and expansion states). The parts above are the intersection; shadcn's structural helpers — wrapper, gap, container, inner, rail, inset, menu-skeleton — are LAYOUT scaffolding for its fixed-position collapse trick, not anatomy, and are omitted (a theme animating width instead of translating a fixed panel needs none of them). shadcn's sidebar-input is the input anatomy composed into the header. Salt marks the active item with an edge bar (selected-indicator) while shadcn uses a filled row (interaction-selected); both slots are declared on menu-button so the difference stays recipe. COLLAPSED versus expanded is not a canonical state — it is the disclosure state of the region, expressed as data-collapsed on root, orthogonal to the item states above. The mobile presentation reuses the drawer/dialog anatomy rather than duplicating it.",
+  "motion": { "collapse": { "duration": "duration-base", "easing": "easing-emphasized" }, "submenu-expand": { "duration": "duration-fast", "easing": "easing-standard" }, "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "spinner",
+  "behavior": "APG progressbar pattern in its indeterminate form (role=progressbar with an accessible name and no aria-valuenow, wrapped in or paired with a polite live region so the busy state is announced; never focusable, never a tab stop; when a spinner stands in for a region's content that region carries aria-busy=true; the rotation is decorative — under prefers-reduced-motion it degrades to a static or fading indicator and the announcement carries the meaning)",
+  "parts": [
+    { "part": "root", "tokens": ["icon-size-control", "content-secondary"], "note": "the busy element that carries role and accessible name; sized by the icon ramp, coloured by the surrounding content role" },
+    { "part": "indicator", "tokens": ["action", "border-subtle", "duration-slow", "easing-standard"], "note": "the sweeping arc drawn on a border-subtle track; the arc takes the action colour so a spinner reads as the same 'system is working' voice as a primary action" }
+  ],
+  "variantAxes": { "size": ["sm", "md", "lg"] },
+  "states": ["loading"],
+  "anatomyNotes": "Intersection of shadcn Spinner (a single Loader2 icon spun by a utility — track and arc fused into one glyph path) and Salt Spinner (an explicit SVG with a separate track ring and rotating arc, plus an aria-announcer that re-announces on an interval). Two parts is the honest intersection: shadcn's glyph collapses them visually but both are present, and splitting them is what lets a theme choose whether the track is visible. Size binds to the icon ramp (icon-size-inline / control / emphasis), NOT to control-height-* — a spinner is a glyph, not a control. The only state is loading: a spinner that is not loading does not exist, it unmounts. Salt's announcer interval is a behavior detail of the same APG contract, not extra anatomy.",
+  "motion": { "spin": { "duration": "duration-slow", "easing": "easing-standard" } }
+}

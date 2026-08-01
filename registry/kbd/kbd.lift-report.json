@@ -1,0 +1,15 @@
+{
+  "component": "kbd",
+  "mapped": 30,
+  "unmapped": [
+    "h-5",
+    "min-w-5",
+    "px-1",
+    "font-sans",
+    "h-5",
+    "min-w-5",
+    "px-1",
+    "font-sans"
+  ],
+  "skipped_variants": []
+}

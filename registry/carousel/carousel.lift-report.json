@@ -1,0 +1,13 @@
+{
+  "component": "carousel",
+  "mapped": 15,
+  "unmapped": [
+    "grow-0",
+    "basis-full",
+    "size-8",
+    "size-8",
+    "size-8",
+    "size-8"
+  ],
+  "skipped_variants": []
+}

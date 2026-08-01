@@ -60,6 +60,18 @@ def check_component(comp_dir, slots):
         # color-mix over slot vars is allowed; raw literals are not
         errors.append(f"{name}: CSS contains raw color literal ({raw})")
 
+    # CSS scoping: generic part selectors must be scoped under the component root,
+    # otherwise one component's recipe leaks onto another's identically-named part.
+    GENERIC_PARTS = {"panel", "scrim", "trigger", "content", "header", "footer", "title",
+                     "description", "label", "item", "option", "indicator", "close", "track",
+                     "thumb", "control", "list", "row", "cell", "group", "value", "glyph",
+                     "range", "grip", "mark", "text", "prefix", "suffix"}
+    for selector in re.findall(r'^\s*(\[data-slot="([a-z-]+)"\][^{]*)\{', css, re.M):
+        part = selector[1]
+        if part in GENERIC_PARTS and part != name:
+            errors.append(f"{name}: unscoped selector for generic part '{part}' — "
+                          f'scope it as [data-slot="{name}"] [data-slot="{part}"]')
+
     # canonical states
     for state in set(re.findall(r'data-state="([a-z-]+)"', tsx + css)):
         if state not in CANONICAL_STATES:

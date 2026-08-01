@@ -1,0 +1,20 @@
+{
+  "component": "toggle-group",
+  "mapped": 13,
+  "unmapped": [
+    "group/toggle-group",
+    "gap-[--spacing(var(--gap))]",
+    "data-[spacing=default]:data-[variant=outline]:shadow-xs",
+    "group/toggle-group",
+    "gap-[--spacing(var(--gap))]",
+    "data-[spacing=default]:data-[variant=outline]:shadow-xs",
+    "w-auto",
+    "data-[spacing=0]:rounded-none",
+    "data-[spacing=0]:shadow-none",
+    "data-[spacing=0]:first:rounded-l-md",
+    "data-[spacing=0]:last:rounded-r-md",
+    "data-[spacing=0]:data-[variant=outline]:border-l-0",
+    "data-[spacing=0]:data-[variant=outline]:first:border-l"
+  ],
+  "skipped_variants": []
+}

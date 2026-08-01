@@ -1,0 +1,14 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "toggle",
+  "behavior": "APG button pattern with aria-pressed (Enter and Space toggle the pressed state; the accessible name stays the same in both states — the state is carried by aria-pressed, never by relabelling; the control is a single tab stop. A toggle placed in a group takes radio/checkbox semantics instead and roving focus — that is toggle-group, a different anatomy.)",
+  "parts": [
+    { "part": "root", "tokens": ["type-action", "action-case", "action-tracking", "control-height-md", "inset-control-x", "radius-control", "interaction-hover", "interaction-selected", "on-interaction-selected", "border", "focus", "duration-fast", "easing-standard"], "statesNote": "state:selected (aria-pressed=true) takes the interaction-selected / on-interaction-selected pair" },
+    { "part": "icon", "optional": true, "iconRole": "success", "tokens": ["icon-size-control", "space-inline-md"], "note": "icon role is content-dependent (bold, mute, pin…); success is only the schema's placeholder — an icon-only toggle still needs an aria-label" },
+    { "part": "label", "contentSlot": true, "tokens": ["type-action"] }
+  ],
+  "variantAxes": { "prominence": ["solid", "outline", "ghost"], "size": ["sm", "md", "lg"] },
+  "states": ["rest", "hover", "active", "focus-visible", "disabled", "selected"],
+  "anatomyNotes": "Parts are anatomy/button.json's minus the loading indicator and the trailing icon — a toggle is a button that remembers. What it adds is the selected state as a first-class, persistent state rather than a transient one. Axis mapping: shadcn's variant default (transparent) → prominence:ghost and outline → prominence:outline; Salt's appearance solid → prominence:solid and bordered → prominence:outline, so all three cells are attested. Salt's `sentiment` (emphasis axis) and `readOnly` state are Salt-only and are therefore NOT in this anatomy — a theme wanting them declares a fallback (variants.md §Fallback ladder). Salt's size comes from density, so the size axis is frozen there, as for every other control.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

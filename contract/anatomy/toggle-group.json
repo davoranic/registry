@@ -1,0 +1,15 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "toggle-group",
+  "behavior": "APG toolbar pattern over toggle buttons, with the role pair chosen by selection mode: single-select is role=radiogroup with role=radio items (aria-checked), multi-select is role=group with aria-pressed toggle buttons. Either way the group is ONE tab stop with a roving tabindex — ArrowRight/ArrowDown move to the next item, ArrowLeft/ArrowUp to the previous (wrapping), Home/End jump to the ends, and Enter/Space activates. In single-select mode arrowing moves selection with focus; in multi-select mode focus moves without toggling. Disabled items keep their place and stay reachable so the group's shape does not change.",
+  "parts": [
+    { "part": "root", "tokens": ["radius-control", "border", "space-inline-sm", "elevation-resting"], "note": "the group; in the joined (spacing 0) recipe it owns the outer border and radius while items go square" },
+    { "part": "item", "tokens": ["control-height-md", "inset-control-x", "radius-control", "type-action", "action-case", "action-tracking", "border", "interaction-hover", "interaction-active", "interaction-selected", "on-interaction-selected", "selected-indicator", "focus", "cursor-interactive", "space-inline-md", "duration-fast", "easing-standard"], "statesNote": "selected uses interaction-selected / on-interaction-selected; themes that mark selection with an edge bar use selected-indicator instead — both slots are declared so neither theme has to invent one" },
+    { "part": "item-icon", "optional": true, "contentSlot": true, "tokens": ["icon-size-control"] },
+    { "part": "item-label", "contentSlot": true, "tokens": ["type-action"], "note": "icon-only items still carry a label, visually hidden" }
+  ],
+  "variantAxes": { "prominence": ["solid", "outline", "ghost"], "size": ["sm", "md", "lg"], "orientation": ["horizontal", "vertical"] },
+  "states": ["rest", "hover", "active", "focus-visible", "selected", "disabled", "readonly"],
+  "anatomyNotes": "Intersection of shadcn ToggleGroup/ToggleGroupItem (Radix, sharing the toggle recipe) and Salt ToggleButtonGroup/ToggleButton plus SegmentedButtonGroup. Both are root+item. shadcn's spacing prop (0 = segmented strip, >0 = separated buttons) is a RECIPE on root/item — the same parts, different border and radius collapsing — so it is not a variant axis; Salt expresses the same two looks as ToggleButtonGroup versus SegmentedButtonGroup, two components for one anatomy, and the adapter records that. Salt freezes the size axis onto its density axis (declared, not silent — contract/variants.md). Selection MODE (single/multiple) is behavior, not a variant: it changes the ARIA roles, which a theme may never alter.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

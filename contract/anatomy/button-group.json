@@ -1,0 +1,15 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "button-group",
+  "behavior": "Grouping container — role=group with an accessible name; each child keeps its own button semantics and its own tab stop. A roving-tabindex toolbar (APG toolbar) is a different pattern and a different component; grouping never changes the children's keyboard model.",
+  "parts": [
+    { "part": "root", "tokens": ["radius-control", "border-width", "focus"], "note": "joins its children: inner radii collapse to 0, adjacent borders merge to a single hairline, and a focused child is raised above its neighbours so the focus ring is never clipped" },
+    { "part": "item-slot", "contentSlot": true, "tokens": [], "note": "hosts buttons (anatomy/button.json), toggles, or a select trigger; adds no recipe of its own — the children keep their emphasis/prominence/size" },
+    { "part": "text", "optional": true, "contentSlot": true, "tokens": ["type-label", "surface-sunken", "on-surface", "border", "inset-control-x", "control-height-md"], "note": "static affix segment (unit, prefix); non-interactive, excluded from the tab order" },
+    { "part": "separator", "optional": true, "tokens": ["border"], "note": "rule between sub-groups (anatomy/separator.json); orientation is the group's cross axis" }
+  ],
+  "variantAxes": { "orientation": ["horizontal", "vertical"] },
+  "states": ["rest"],
+  "anatomyNotes": "Salt's nearest equivalent is SegmentedButtonGroup — the same join-the-children recipe over the same part list; Salt offers no vertical orientation, so a vertical group falls back per contract/variants.md §Fallback ladder. The size axis is deliberately absent: size belongs to the hosted buttons, and the group inherits it. Interaction states live on the children, never on the group.",
+  "motion": {}
+}

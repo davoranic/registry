@@ -1,0 +1,93 @@
+/* Scroll-area recipe — contract slots only (contract/authoring.md step 3).
+   Structure, orientation axis and states: contract/anatomy/scroll-area.json.
+   Overlay (fade-in) scrollbars are RECIPE, not anatomy — a theme that keeps
+   the native ones renders root + viewport alone and loses no behavior. */
+
+[data-slot="scroll-area"] {
+  position: relative;
+  border-radius: var(--radius-container);
+}
+
+/* viewport — the actual scroll container and the only focusable part */
+[data-slot="scroll-area"] > [data-slot="viewport"] {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  border-radius: var(--radius-container);
+  scrollbar-width: none;
+  outline: none;
+}
+[data-slot="scroll-area"] > [data-slot="viewport"]::-webkit-scrollbar {
+  display: none;
+}
+[data-slot="scroll-area"] > [data-slot="viewport"]:focus-visible {
+  outline: var(--focus-width) var(--focus-style)
+    color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+
+/* scrollbar — one per scrollable axis, overlaid on the viewport */
+[data-slot="scroll-area"] > [data-slot="scrollbar"] {
+  position: absolute;
+  display: flex;
+  background: var(--surface-sunken);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-standard);
+}
+[data-slot="scrollbar"][data-orientation="vertical"] {
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: calc(var(--space-unit) * 1.5);
+  border-inline-start: var(--border-width) solid var(--border-subtle);
+}
+[data-slot="scrollbar"][data-orientation="horizontal"] {
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: calc(var(--space-unit) * 1.5);
+  border-block-start: var(--border-width) solid var(--border-subtle);
+}
+[data-slot="scroll-area"]:hover > [data-slot="scrollbar"],
+[data-slot="scroll-area"]:focus-within > [data-slot="scrollbar"],
+[data-slot="scroll-area"] > [data-slot="scrollbar"]:has([data-state="dragging"]) {
+  opacity: 1;
+}
+
+/* thumb */
+[data-slot="scroll-area"] [data-slot="thumb"] {
+  position: absolute;
+  background: var(--border-strong);
+  border-radius: var(--radius-pill);
+  cursor: var(--cursor-grab);
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="scrollbar"][data-orientation="vertical"] [data-slot="thumb"] {
+  inset-inline: 0;
+  min-height: var(--target-min);
+}
+[data-slot="scrollbar"][data-orientation="horizontal"] [data-slot="thumb"] {
+  inset-block: 0;
+  min-width: var(--target-min);
+}
+
+/* corner — the square where two scrollbars meet */
+[data-slot="scroll-area"] > [data-slot="corner"] {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  width: calc(var(--space-unit) * 1.5);
+  height: calc(var(--space-unit) * 1.5);
+  background: var(--surface-sunken);
+}
+
+/* states (contract/states.md) */
+[data-slot="scroll-area"] [data-slot="thumb"]:hover {
+  background: var(--interaction-hover);
+}
+[data-slot="scroll-area"] [data-slot="thumb"][data-state="dragging"] {
+  background: var(--on-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="scroll-area"] > [data-slot="scrollbar"],
+  [data-slot="scroll-area"] [data-slot="thumb"] { transition: none; }
+}

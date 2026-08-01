@@ -1,0 +1,20 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "menubar",
+  "behavior": "APG menubar pattern (role=menubar with a single tab stop for the whole bar; Left/Right rove between top-level triggers and wrap; Down opens the focused trigger's menu on its first item, Up on its last; while a menu is open, Left/Right close it and open the adjacent one; typeahead in both bar and menu; Esc closes the menu and returns focus to its trigger; role=menu / role=menuitem inside)",
+  "parts": [
+    { "part": "root", "tokens": ["surface", "border", "radius-control", "space-inline-sm", "elevation-resting"], "note": "the bar itself — a horizontal strip of triggers" },
+    { "part": "trigger", "tokens": ["type-action", "control-height-sm", "inset-control-x", "radius-control", "interaction-hover", "interaction-selected", "on-interaction-selected", "focus"], "statesNote": "state:open holds the interaction-selected recipe so the bar shows which menu is down" },
+    { "part": "panel", "tokens": ["surface-overlay", "on-surface-overlay", "border", "radius-overlay", "elevation-overlay", "layer-dropdown"] },
+    { "part": "item", "tokens": ["type-label", "interaction-hover", "interaction-active", "space-inline-md", "radius-control"] },
+    { "part": "item-icon", "optional": true, "tokens": ["icon-size-inline", "space-inline-sm"] },
+    { "part": "item-label", "contentSlot": true, "tokens": ["type-label"] },
+    { "part": "item-shortcut", "optional": true, "tokens": ["type-data", "content-secondary"] },
+    { "part": "separator", "tokens": ["border-subtle"] },
+    { "part": "group-label", "optional": true, "tokens": ["type-caption", "content-secondary"] }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "hover", "active", "focus-visible", "disabled", "open"],
+  "anatomyNotes": "The panel/item/separator/group-label parts are anatomy/dropdown-menu.json's, unchanged — a menubar is a row of dropdown menus sharing one roving tab stop. What menubar adds is the root bar and the fact that the trigger lives inside it. Salt ships no menubar (its Toolbar is a control strip, not a menu bar), so the behavior is APG's; the recipe difference Salt would bring is a flat, borderless bar — root tokens surface/border are the shadcn recipe, not extra anatomy. The size axis is deliberately absent: a menubar is chrome, sized by the app shell, not per instance.",
+  "motion": { "panel-enter": { "duration": "duration-fast", "easing": "easing-enter" }, "panel-exit": { "duration": "duration-instant", "easing": "easing-exit" }, "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

@@ -4,13 +4,13 @@
    Unmapped words: see dialog.lift-report.json */
 
 /* scrim */
-[data-slot="scrim"] {
+[data-slot="dialog"] [data-slot="scrim"] {
   position: fixed;
   inset: 0;
   z-index: var(--layer-modal);
   background: var(--overlay-scrim);
 }
-[data-slot="scrim"][data-state="open"] {
+[data-slot="dialog"] [data-slot="scrim"][data-state="open"] {
   animation: dialog-scrim-fade var(--duration-base) var(--easing-standard);
 }
 @keyframes dialog-scrim-fade {
@@ -19,7 +19,7 @@
 }
 
 /* panel — size axis binds to the size-overlay-* width ramp (anatomyNotes) */
-[data-slot="panel"] {
+[data-slot="dialog"] [data-slot="panel"] {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -40,9 +40,9 @@
   box-shadow: var(--elevation-modal);
   outline: none;
 }
-[data-slot="panel"][data-size="sm"] { max-width: var(--size-overlay-sm); }
-[data-slot="panel"][data-size="lg"] { max-width: var(--size-overlay-lg); }
-[data-slot="panel"][data-state="open"] {
+[data-slot="dialog"] [data-slot="panel"][data-size="sm"] {
+[data-slot="dialog"] [data-slot="panel"][data-size="lg"] {
+[data-slot="dialog"] [data-slot="panel"][data-state="open"] {
   animation: dialog-panel-enter var(--duration-base) var(--easing-enter);
 }
 @keyframes dialog-panel-enter {
@@ -51,45 +51,45 @@
 }
 
 /* header */
-[data-slot="panel"] [data-slot="header"] {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="header"] {
   display: flex;
   flex-direction: column;
   gap: var(--space-stack-sm);
 }
 
 /* title */
-[data-slot="panel"] [data-slot="title"] {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="title"] {
   margin: 0;
   font: var(--type-heading-3);
   color: var(--on-surface-overlay);
 }
 
 /* description */
-[data-slot="panel"] [data-slot="description"] {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="description"] {
   margin: 0;
   font: var(--type-body);
   color: var(--content-secondary);
 }
 
 /* content */
-[data-slot="panel"] [data-slot="content"] {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="content"] {
   font: var(--type-body);
 }
 
 /* footer — action slot; end-aligned, stacks on narrow viewports */
-[data-slot="panel"] [data-slot="footer"] {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="footer"] {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-inline-md);
 }
 @media (max-width: 480px) {
-  [data-slot="panel"] [data-slot="footer"] {
+  [data-slot="dialog"] [data-slot="panel"] [data-slot="footer"] {
     flex-direction: column-reverse;
   }
 }
 
 /* close — close icon role */
-[data-slot="panel"] [data-slot="close"] {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="close"] {
   position: absolute;
   top: calc(var(--space-unit) * 4);
   inset-inline-end: calc(var(--space-unit) * 4);
@@ -107,21 +107,21 @@
     background-color var(--duration-fast) var(--easing-standard),
     color var(--duration-fast) var(--easing-standard);
 }
-[data-slot="panel"] [data-slot="close"]:hover {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="close"]:hover {
   background: var(--interaction-hover);
   color: var(--on-surface-overlay);
 }
-[data-slot="panel"] [data-slot="close"]:focus-visible {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="close"]:focus-visible {
   outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
   outline-offset: var(--focus-offset);
 }
-[data-slot="panel"] [data-slot="close"] svg {
+[data-slot="dialog"] [data-slot="panel"] [data-slot="close"] svg {
   width: var(--icon-size-control);
   height: var(--icon-size-control);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="scrim"][data-state="open"],
-  [data-slot="panel"][data-state="open"] { animation: none; }
-  [data-slot="panel"] [data-slot="close"] { transition: none; }
+  [data-slot="dialog"] [data-slot="scrim"][data-state="open"],
+  [data-slot="dialog"] [data-slot="panel"][data-state="open"] {
+  [data-slot="dialog"] [data-slot="panel"] [data-slot="close"] {
 }

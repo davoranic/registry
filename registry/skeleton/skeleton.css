@@ -1,0 +1,8 @@
+/* LIFTED from shadcn/skeleton.tsx via scripts/lift.py — the dictionary run in reverse.
+   Review against contract/anatomy/skeleton.json + the button exemplar before accepting.
+   Unmapped words: see skeleton.lift-report.json */
+
+[data-slot="skeleton"] {
+  border-radius: var(--radius-control);
+  background: var(--interaction-hover);
+}

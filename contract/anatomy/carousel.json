@@ -1,0 +1,20 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "carousel",
+  "behavior": "APG carousel pattern: the root is a region with aria-roledescription='carousel' and an accessible name; each slide is role=group with aria-roledescription='slide' and an 'N of M' label. Previous/next are real buttons, disabled (and aria-disabled) at the ends. With the region focused, ArrowLeft/ArrowRight move one slide (ArrowUp/ArrowDown when vertical). Slide changes are announced through a polite live region. Auto-rotation, when present, pauses on hover and on focus and always offers an explicit pause control.",
+  "parts": [
+    { "part": "root", "tokens": ["focus", "space-inline-lg"], "note": "the labelled region; owns the keyboard handling" },
+    { "part": "viewport", "tokens": ["radius-container"], "note": "the clipping window; the only scroll container" },
+    { "part": "slides", "tokens": ["space-inline-lg", "duration-base", "easing-emphasized"], "note": "the moving rail holding every slide" },
+    { "part": "slide", "contentSlot": true, "tokens": ["radius-container", "surface-raised", "on-surface-raised"] },
+    { "part": "previous", "iconRole": "back", "tokens": ["control-height-md", "radius-pill", "icon-size-control", "surface", "border", "elevation-resting", "focus", "cursor-interactive", "duration-fast", "easing-standard"] },
+    { "part": "next", "iconRole": "forward", "tokens": ["control-height-md", "radius-pill", "icon-size-control", "surface", "border", "elevation-resting", "focus", "cursor-interactive", "duration-fast", "easing-standard"] },
+    { "part": "indicator-list", "optional": true, "tokens": ["space-inline-sm"], "note": "the dot/tab strip; when its items switch slides it is a tablist and follows the tabs behavior" },
+    { "part": "indicator", "optional": true, "tokens": ["radius-pill", "border-strong", "selected-indicator", "focus", "cursor-interactive", "duration-fast", "easing-standard"], "statesNote": "the current slide's indicator uses selected-indicator; never colour alone — size or fill must change too" },
+    { "part": "progress-label", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary"], "note": "the visible 'N of M' counter (Salt CarouselProgressLabel)" }
+  ],
+  "variantAxes": { "orientation": ["horizontal", "vertical"] },
+  "states": ["rest", "hover", "focus-visible", "disabled", "selected"],
+  "anatomyNotes": "Intersection of shadcn Carousel (embla: Carousel/Content/Item/Previous/Next) and Salt embla-carousel (Carousel/CarouselSlides/CarouselCard/CarouselPreviousButton/CarouselNextButton/CarouselTabList/CarouselTab/CarouselProgressLabel/CarouselAutoplayIndicator). shadcn's Content maps to viewport+slides — the registry keeps them apart because clipping and translation are different jobs and themes place the buttons relative to the viewport, not the rail. Salt's tab strip and progress label are the optional indicator/progress parts. Salt's autoplay indicator is a composition with the progress anatomy, not a part here. Button PLACEMENT (outside the viewport in shadcn, overlaid in many themes) is a recipe on previous/next.",
+  "motion": { "slide-move": { "duration": "duration-base", "easing": "easing-emphasized" }, "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

@@ -1,0 +1,97 @@
+/* Form recipe — contract slots only (contract/authoring.md step 3).
+   Structure, label-placement axis and states: contract/anatomy/form.json.
+   Description and message are two parts, only one of which renders at a
+   time — the superset both shadcn and Salt can express. */
+
+[data-slot="form"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-lg);
+}
+
+/* item */
+[data-slot="form"] [data-slot="item"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+}
+[data-slot="form"][data-label-placement="start"] [data-slot="item"] {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  column-gap: var(--space-inline-lg);
+  row-gap: var(--space-stack-sm);
+}
+[data-slot="form"][data-label-placement="start"] [data-slot="item"] > [data-slot="control"],
+[data-slot="form"][data-label-placement="start"] [data-slot="item"] > [data-slot="description"],
+[data-slot="form"][data-label-placement="start"] [data-slot="item"] > [data-slot="message"] {
+  grid-column: 2;
+}
+
+/* label */
+[data-slot="form"] [data-slot="label"] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-inline-sm);
+  font: var(--type-label);
+  color: var(--on-surface);
+}
+[data-slot="form"] [data-slot="label"] [data-slot="necessity"] {
+  font: var(--type-caption);
+  color: var(--content-secondary);
+}
+
+/* control — hosts a control anatomy; no tokens of its own */
+[data-slot="form"] [data-slot="control"] {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* description */
+[data-slot="form"] [data-slot="description"] {
+  margin: 0;
+  font: var(--type-caption);
+  color: var(--content-secondary);
+}
+
+/* message — icon + text, so failure is never signalled by colour alone */
+[data-slot="form"] [data-slot="message"] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-inline-sm);
+  margin: 0;
+  font: var(--type-caption);
+  color: var(--status-critical);
+  animation: form-message-enter var(--duration-fast) var(--easing-enter);
+}
+[data-slot="form"] [data-slot="message"] svg {
+  flex-shrink: 0;
+  width: var(--icon-size-inline);
+  height: var(--icon-size-inline);
+  stroke-width: var(--icon-stroke);
+}
+@keyframes form-message-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* states (contract/states.md) */
+[data-slot="form"] [data-slot="label"][data-state="invalid"] {
+  color: var(--status-critical);
+}
+[data-slot="form"] [data-slot="item"][data-state="readonly"] [data-slot="label"] {
+  color: var(--content-secondary);
+}
+[data-slot="form"] [data-slot="item"][data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+[data-slot="form"] [data-slot="label"][data-disabled] {
+  color: var(--content-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="form"] [data-slot="message"] { animation: none; }
+}

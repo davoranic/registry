@@ -1,0 +1,19 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "navigation-menu",
+  "behavior": "APG disclosure-navigation pattern inside a nav landmark (links are links, never menuitems: role=navigation on the root, a plain list of items; a parent item's trigger is a button with aria-expanded + aria-controls on its panel; Left/Right when horizontal — Up/Down when vertical — move between top-level items, Home/End jump; Enter/Space toggle a panel, Down moves into the open panel, Esc closes it and returns focus to its trigger; Tab always leaves the menu; the current destination carries aria-current=page)",
+  "parts": [
+    { "part": "root", "tokens": ["surface", "space-inline-sm"], "note": "the nav landmark" },
+    { "part": "list", "tokens": ["space-inline-sm"] },
+    { "part": "item", "tokens": ["radius-control"] },
+    { "part": "trigger", "tokens": ["type-action", "control-height-md", "inset-control-x", "radius-control", "content-secondary", "interaction-hover", "on-interaction-selected", "focus"], "note": "present only on items that own a panel; items that are plain destinations render the link part instead" },
+    { "part": "trigger-icon", "optional": true, "iconRole": "expand", "tokens": ["icon-size-inline", "space-inline-sm"], "statesNote": "rotates 180deg on open at duration-fast" },
+    { "part": "link", "tokens": ["type-action", "control-height-md", "inset-control-x", "radius-control", "content-secondary", "interaction-hover", "on-interaction-selected", "focus"], "statesNote": "state:selected (aria-current=page) switches content-secondary to on-interaction-selected" },
+    { "part": "selected-indicator", "tokens": ["selected-indicator"], "note": "marks the current destination: bottom edge when horizontal, inline-start edge when vertical; filled themes may express it as an interaction-selected fill on the link instead — same slot" },
+    { "part": "panel", "contentSlot": true, "tokens": ["surface-overlay", "on-surface-overlay", "border", "radius-overlay", "elevation-overlay", "layer-dropdown", "inset-container"], "note": "free content region, not a menu: it hosts grouped links, descriptions, promos" }
+  ],
+  "variantAxes": { "orientation": ["horizontal", "vertical"] },
+  "states": ["rest", "hover", "focus-visible", "disabled", "open", "selected"],
+  "anatomyNotes": "Intersection of shadcn NavigationMenu (horizontal, viewport-hosted panels) and Salt NavigationItem + VerticalNavigation (which carries orientation, active, expanded, parent as first-class props). shadcn's shared `viewport` — one animated box the panels swap through — is a RECIPE/positioning device, not a part: it exists only to cross-fade sibling panels and disappears when viewport={false}, so the anatomy keeps the panel attached to its item. Salt's MegaMenu is this anatomy with a full-bleed panel recipe. This is NOT anatomy/menubar.json: no roving menuitem semantics, no typeahead, links stay links.",
+  "motion": { "panel-enter": { "duration": "duration-base", "easing": "easing-enter" }, "panel-exit": { "duration": "duration-fast", "easing": "easing-exit" }, "indicator-move": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

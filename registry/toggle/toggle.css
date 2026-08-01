@@ -1,0 +1,110 @@
+/* Toggle recipe — contract slots only (contract/authoring.md step 3).
+   LIFTED from shadcn/toggle.tsx via scripts/lift.py, then reviewed against
+   contract/anatomy/toggle.json + the button exemplar.
+   Unmapped words: see toggle.lift-report.json */
+
+/* root — button.json's recipe minus loading; selected is a first-class state */
+[data-slot="toggle"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-inline-md);
+  height: var(--control-height-md);
+  min-width: var(--control-height-md);
+  padding: 0 calc(var(--space-unit) * 2);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--on-surface);
+  font: var(--type-action);
+  text-transform: var(--action-case);
+  letter-spacing: var(--action-tracking);
+  white-space: nowrap;
+  cursor: var(--cursor-interactive);
+  outline: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+
+/* size axis */
+[data-slot="toggle"][data-size="sm"] {
+  height: var(--control-height-sm);
+  min-width: var(--control-height-sm);
+  padding: 0 calc(var(--space-unit) * 1.5);
+}
+[data-slot="toggle"][data-size="lg"] {
+  height: var(--control-height-lg);
+  min-width: var(--control-height-lg);
+  padding: 0 calc(var(--space-unit) * 2.5);
+}
+
+/* prominence axis — ghost (shadcn default), outline (both), solid (Salt) */
+[data-slot="toggle"][data-prominence="ghost"] {
+  background: transparent;
+}
+[data-slot="toggle"][data-prominence="outline"] {
+  border-color: var(--field-border);
+  box-shadow: var(--elevation-resting);
+}
+[data-slot="toggle"][data-prominence="solid"] {
+  background: var(--action-secondary);
+  color: var(--on-action-secondary);
+}
+
+/* icon part */
+[data-slot="toggle"] [data-slot="icon"] {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+[data-slot="toggle"] [data-slot="icon"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+  pointer-events: none;
+}
+
+/* label part */
+[data-slot="toggle"] [data-slot="label"]:empty {
+  display: none;
+}
+
+/* states (contract/states.md) */
+[data-slot="toggle"]:hover {
+  background: var(--interaction-hover);
+}
+[data-slot="toggle"]:active {
+  background: var(--interaction-active);
+}
+[data-slot="toggle"][data-state="selected"] {
+  background: var(--interaction-selected);
+  color: var(--on-interaction-selected);
+}
+[data-slot="toggle"][data-prominence="solid"][data-state="selected"] {
+  background: var(--action);
+  color: var(--on-action);
+}
+[data-slot="toggle"][data-prominence="outline"][data-state="selected"] {
+  border-color: var(--selected-indicator);
+}
+[data-slot="toggle"]:focus-visible {
+  border-color: var(--field-border-active);
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 50%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="toggle"][aria-invalid="true"] {
+  border-color: var(--status-critical);
+}
+[data-slot="toggle"][aria-invalid="true"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--status-critical) 20%, transparent);
+}
+[data-slot="toggle"][data-disabled],
+[data-slot="toggle"]:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="toggle"] { transition: none; }
+}

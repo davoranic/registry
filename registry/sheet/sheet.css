@@ -1,0 +1,188 @@
+/* Sheet recipe — contract slots only (contract/authoring.md step 3).
+   Structure, states and motion: contract/anatomy/sheet.json.
+   The edge-anchored modal dialog: drawer minus the drag handle and the
+   dragging state. Character: the theme. */
+
+/* scrim */
+[data-slot="sheet"] [data-slot="scrim"] {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-modal);
+  background: var(--overlay-scrim);
+}
+[data-slot="sheet"] [data-slot="scrim"][data-state="open"] {
+  animation: sheet-scrim-fade var(--duration-base) var(--easing-standard);
+}
+@keyframes sheet-scrim-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* panel — anchored to one logical edge; size binds to size-overlay-* along
+   the dimension NORMAL to that edge, never to control-height-* */
+[data-slot="sheet"] [data-slot="panel"] {
+  position: fixed;
+  z-index: var(--layer-modal);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-md);
+  overflow-y: auto;
+  padding: var(--inset-container);
+  background: var(--surface-overlay);
+  color: var(--on-surface-overlay);
+  border: var(--border-width) solid var(--border);
+  box-shadow: var(--elevation-modal);
+  outline: none;
+}
+
+/* edge axis — position, extent, and the per-corner radius rule
+   (semantic.md §4): only the corners OPPOSITE the anchored edge round */
+[data-slot="sheet"] [data-slot="panel"][data-edge="start"] {
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: var(--size-overlay-md);
+  max-width: 100%;
+  border-start-end-radius: var(--radius-overlay);
+  border-end-end-radius: var(--radius-overlay);
+}
+[data-slot="sheet"] [data-slot="panel"][data-edge="end"] {
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: var(--size-overlay-md);
+  max-width: 100%;
+  border-start-start-radius: var(--radius-overlay);
+  border-end-start-radius: var(--radius-overlay);
+}
+[data-slot="sheet"] [data-slot="panel"][data-edge="top"] {
+  inset-inline: 0;
+  inset-block-start: 0;
+  max-block-size: var(--size-overlay-md);
+  border-end-start-radius: var(--radius-overlay);
+  border-end-end-radius: var(--radius-overlay);
+}
+[data-slot="sheet"] [data-slot="panel"][data-edge="bottom"] {
+  inset-inline: 0;
+  inset-block-end: 0;
+  max-block-size: var(--size-overlay-md);
+  border-start-start-radius: var(--radius-overlay);
+  border-start-end-radius: var(--radius-overlay);
+}
+
+/* size axis — the ramp applies to the dimension normal to the edge */
+[data-slot="sheet"] [data-slot="panel"][data-size="sm"][data-edge="start"],
+[data-slot="sheet"] [data-slot="panel"][data-size="sm"][data-edge="end"] { width: var(--size-overlay-sm); }
+[data-slot="sheet"] [data-slot="panel"][data-size="lg"][data-edge="start"],
+[data-slot="sheet"] [data-slot="panel"][data-size="lg"][data-edge="end"] { width: var(--size-overlay-lg); }
+[data-slot="sheet"] [data-slot="panel"][data-size="sm"][data-edge="top"],
+[data-slot="sheet"] [data-slot="panel"][data-size="sm"][data-edge="bottom"] { max-block-size: var(--size-overlay-sm); }
+[data-slot="sheet"] [data-slot="panel"][data-size="lg"][data-edge="top"],
+[data-slot="sheet"] [data-slot="panel"][data-size="lg"][data-edge="bottom"] { max-block-size: var(--size-overlay-lg); }
+
+/* panel-enter — slides in from its own edge */
+[data-slot="sheet"] [data-slot="panel"][data-state="open"][data-edge="start"] {
+  animation: sheet-panel-enter-start var(--duration-base) var(--easing-enter);
+}
+[data-slot="sheet"] [data-slot="panel"][data-state="open"][data-edge="end"] {
+  animation: sheet-panel-enter-end var(--duration-base) var(--easing-enter);
+}
+[data-slot="sheet"] [data-slot="panel"][data-state="open"][data-edge="top"] {
+  animation: sheet-panel-enter-top var(--duration-base) var(--easing-enter);
+}
+[data-slot="sheet"] [data-slot="panel"][data-state="open"][data-edge="bottom"] {
+  animation: sheet-panel-enter-bottom var(--duration-base) var(--easing-enter);
+}
+@keyframes sheet-panel-enter-start {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes sheet-panel-enter-end {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes sheet-panel-enter-top {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+@keyframes sheet-panel-enter-bottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* header */
+[data-slot="sheet"] [data-slot="header"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+}
+
+/* title */
+[data-slot="sheet"] [data-slot="title"] {
+  margin: 0;
+  font: var(--type-heading-3);
+  color: var(--on-surface-overlay);
+}
+
+/* description */
+[data-slot="sheet"] [data-slot="description"] {
+  margin: 0;
+  font: var(--type-body);
+  color: var(--content-secondary);
+}
+
+/* content — the scrolling body */
+[data-slot="sheet"] [data-slot="content"] {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  font: var(--type-body);
+}
+
+/* footer — action slot */
+[data-slot="sheet"] [data-slot="footer"] {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-inline-md);
+}
+@media (max-width: 480px) {
+  [data-slot="sheet"] [data-slot="footer"] {
+    flex-direction: column-reverse;
+  }
+}
+
+/* close — close icon role */
+[data-slot="sheet"] [data-slot="close"] {
+  position: absolute;
+  top: calc(var(--space-unit) * 4);
+  inset-inline-end: calc(var(--space-unit) * 4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-unit);
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--content-secondary);
+  cursor: var(--cursor-interactive);
+  outline: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="sheet"] [data-slot="close"]:hover {
+  background: var(--interaction-hover);
+  color: var(--on-surface-overlay);
+}
+[data-slot="sheet"] [data-slot="close"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="sheet"] [data-slot="close"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="sheet"] [data-slot="scrim"][data-state="open"],
+  [data-slot="sheet"] [data-slot="panel"][data-state="open"] { animation: none; }
+  [data-slot="sheet"] [data-slot="close"] { transition: none; }
+}

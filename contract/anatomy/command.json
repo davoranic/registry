@@ -1,0 +1,24 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "command",
+  "behavior": "APG combobox pattern with a listbox popup, hosted in an APG dialog (modal) when used as a command palette. The input keeps DOM focus and is role=combobox with aria-expanded, aria-controls and aria-activedescendant; the results are role=listbox with role=option rows — options are never focused, only made active. ArrowDown/ArrowUp move the active option (wrapping at the ends), Home/End jump, Enter runs the active option, Esc dismisses the dialog and returns focus to the trigger. Filtering is live and the result count (including 'no results') is announced through a polite live region.",
+  "parts": [
+    { "part": "root", "tokens": ["surface-overlay", "on-surface-overlay", "radius-overlay", "elevation-overlay", "layer-modal", "border"], "note": "the palette panel; inside a dialog it inherits the dialog's scrim and focus trap from the dialog anatomy" },
+    { "part": "input-row", "tokens": ["border", "control-height-lg", "inset-control-x", "space-inline-md"], "note": "search icon + input, ruled off from the list" },
+    { "part": "search-icon", "iconRole": "search", "tokens": ["icon-size-control", "content-secondary"] },
+    { "part": "input", "contentSlot": true, "tokens": ["type-label", "on-surface-overlay", "content-secondary"], "note": "the combobox; placeholder renders in content-secondary" },
+    { "part": "list", "tokens": ["space-unit"], "note": "role=listbox; scrolls, and scrolls the active option into view" },
+    { "part": "group", "optional": true, "tokens": ["space-unit"], "note": "role=group of related options" },
+    { "part": "group-label", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary", "space-inline-md"] },
+    { "part": "item", "tokens": ["type-label", "radius-control", "interaction-hover", "interaction-selected", "on-interaction-selected", "space-inline-md", "cursor-interactive", "duration-fast", "easing-standard"], "statesNote": "the ACTIVE option (aria-activedescendant) takes interaction-hover; a chosen/checked option takes interaction-selected — the two are different and must remain distinguishable" },
+    { "part": "item-icon", "optional": true, "contentSlot": true, "tokens": ["icon-size-control", "content-secondary"] },
+    { "part": "item-label", "contentSlot": true, "tokens": ["type-label"] },
+    { "part": "item-shortcut", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary"], "note": "the keyboard hint; aria-hidden because the shortcut belongs in the option's accessible name only once" },
+    { "part": "separator", "optional": true, "tokens": ["border"] },
+    { "part": "empty", "optional": true, "contentSlot": true, "tokens": ["type-body", "content-secondary", "space-stack-lg"], "note": "the no-results message; lives in the live region" }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "hover", "focus-visible", "selected", "disabled", "open"],
+  "anatomyNotes": "Intersection of shadcn Command (cmdk: Command/Input/List/Group/Item/Separator/Empty plus CommandDialog) and Salt ComboBox + ListBox/Option (core combo-box, list-box, option). Salt has no palette component, but its combobox is the same combobox+listbox pair, which is why the intersection holds: the palette is that pair placed in a dialog. Salt's Option renders an optional leading icon and a checkmark on multiselect; the checkmark is the selected recipe on item, not a part. shadcn's CommandShortcut has no Salt counterpart and is therefore optional. Item ACTIVE (roving virtual focus) versus item SELECTED is anatomy-level, not recipe: both must be expressible in every theme.",
+  "motion": { "panel-enter": { "duration": "duration-fast", "easing": "easing-enter" }, "panel-exit": { "duration": "duration-instant", "easing": "easing-exit" } }
+}

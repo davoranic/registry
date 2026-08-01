@@ -1,0 +1,13 @@
+/* LIFTED from shadcn/label.tsx via scripts/lift.py — the dictionary run in reverse.
+   Review against contract/anatomy/label.json + the button exemplar before accepting.
+   Unmapped words: see label.lift-report.json */
+
+[data-slot="label"] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-inline-md);
+  font-size: var(--text-ui);
+  line-height: 1;
+  font-weight: var(--ui-weight);
+  user-select: none;
+}

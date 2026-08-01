@@ -52,12 +52,12 @@
 
 /* group — stacked avatars overlap; surface-colored ring separates
    members (a recipe, not a token — anatomy note) */
-[data-slot="group"] {
+[data-slot="avatar"] [data-slot="group"] {
   display: inline-flex;
 }
-[data-slot="group"] [data-slot="avatar"] {
+[data-slot="avatar"] [data-slot="group"] [data-slot="avatar"] {
   box-shadow: 0 0 0 var(--border-width-strong) var(--surface);
 }
-[data-slot="group"] [data-slot="avatar"]:not(:first-child) {
+[data-slot="avatar"] [data-slot="group"] [data-slot="avatar"]:not(:first-child) {
   margin-inline-start: calc(var(--space-inline-sm) * -2);
 }

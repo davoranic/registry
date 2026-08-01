@@ -1,0 +1,19 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "item",
+  "behavior": "None of its own — a content-row primitive. Inside a group the wrapper takes role=list and each item role=listitem; an interactive item adopts the semantics of the element it renders as (link or button) and is then a single tab stop with its own focus ring. It never invents roving focus — a selectable collection is listbox/tree, a different pattern.",
+  "parts": [
+    { "part": "root", "tokens": ["radius-control", "border", "border-width", "interaction-hover", "focus", "type-label", "space-inline-lg", "duration-fast", "easing-standard"], "statesNote": "hover/selected only apply when the item is interactive; selected uses interaction-selected + on-interaction-selected per states.md" },
+    { "part": "media", "optional": true, "tokens": ["surface-sunken", "radius-field-control", "icon-size-control", "border"], "note": "leading avatar, framed glyph or thumbnail; top-aligns when a description is present" },
+    { "part": "content", "tokens": ["space-stack-sm"], "note": "stacks title over description; takes the remaining inline space" },
+    { "part": "title", "contentSlot": true, "tokens": ["type-label", "on-surface"] },
+    { "part": "description", "optional": true, "contentSlot": true, "tokens": ["type-body", "content-secondary"] },
+    { "part": "actions", "optional": true, "tokens": ["space-inline-md"], "note": "trailing slot — hosts buttons or a menu trigger; its children keep their own tab stops" },
+    { "part": "group", "optional": true, "tokens": [], "note": "role=list wrapper; contributes stacking only" },
+    { "part": "separator", "optional": true, "tokens": ["border-subtle"], "note": "rule between items in a group (anatomy/separator.json)" }
+  ],
+  "variantAxes": { "prominence": ["solid", "outline", "ghost"], "size": ["sm", "md", "lg"] },
+  "states": ["rest", "hover", "focus-visible", "selected", "disabled"],
+  "anatomyNotes": "Salt has no Item component; the closest shapes are Option (list row) and InteractableCard (framed row), which between them cover the same parts — media, content/title/description, actions. shadcn's variant default|outline|muted decomposes onto prominence: default → ghost (transparent), outline → outline (border), muted → solid (surface fill). Item is card's row-shaped sibling: same content parts, control-scale spacing and radius instead of container-scale.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

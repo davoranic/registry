@@ -1,0 +1,9 @@
+{
+  "component": "skeleton",
+  "mapped": 4,
+  "unmapped": [
+    "animate-pulse",
+    "animate-pulse"
+  ],
+  "skipped_variants": []
+}

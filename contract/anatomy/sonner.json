@@ -1,0 +1,13 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "sonner",
+  "behavior": "APG alert/status host — the notification region, not the notification. An aria-live region (polite for tone info/success, assertive for warning/critical) that is never focusable and never moves focus; toasts are appended to it and announced in place; pointer hover or keyboard focus anywhere inside pauses every auto-dismiss timer in the region; each toast's own dismiss and action controls stay in the normal Tab order so a keyboard user can always reach them before the timer resumes.",
+  "parts": [
+    { "part": "root", "tokens": ["layer-notification", "space-stack-sm", "inset-container", "size-overlay-sm"], "note": "the live region: a stack anchored to one viewport edge, sized by size-overlay-sm, sitting on layer-notification" },
+    { "part": "toast", "tokens": ["surface-overlay", "on-surface-overlay", "border", "radius-overlay", "elevation-overlay"], "note": "one notification — its internal parts (icon, title, description, action-slot, close) and its tone axis are anatomy/toast.json, which is normative; repeated here only as the region's repeating child" }
+  ],
+  "variantAxes": { "edge": ["start", "end", "top", "bottom"] },
+  "states": ["rest", "hover"],
+  "anatomyNotes": "Sonner is the toaster REGION; anatomy/toast.json is the item. Keeping them separate is what lets the live-region behavior (announce, pause-on-hover, stacking order, edge anchoring) be contracted independently of a toast's own tone axis and parts. Salt ships no toaster region at all — its Toast is composed by hand into a StackLayout — so the region behavior is adopted from APG and the WAI-ARIA live-region spec, and the shadcn item's dependency on the `sonner` package is an implementation of this anatomy, not the anatomy itself. The edge axis names the viewport edge the stack anchors to; inline alignment within a top/bottom edge is a recipe detail, and new toasts always enter at the anchored edge so the stack grows away from it.",
+  "motion": { "toast-enter": { "duration": "duration-base", "easing": "easing-enter" }, "toast-exit": { "duration": "duration-fast", "easing": "easing-exit" }, "stack-reflow": { "duration": "duration-base", "easing": "easing-standard" } }
+}

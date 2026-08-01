@@ -1,0 +1,15 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "resizable",
+  "behavior": "APG window splitter pattern: the handle is role=separator with aria-orientation, aria-valuemin/aria-valuemax/aria-valuenow (the primary panel's size as a percentage), aria-valuetext and aria-controls naming that panel. The handle is in the tab order. ArrowLeft/ArrowRight (ArrowUp/ArrowDown when the split is horizontal) move it by one step, Shift+Arrow by a larger step, Home/End move it to its limits, and Enter toggles between collapsed and the last size. Pointer dragging and keyboard must reach exactly the same positions.",
+  "parts": [
+    { "part": "root", "tokens": ["surface"], "note": "the panel group; sets the split axis" },
+    { "part": "panel", "contentSlot": true, "tokens": ["surface", "on-surface"], "note": "one resizable region; a panel may itself contain a nested group" },
+    { "part": "handle", "tokens": ["border", "border-strong", "target-min", "interaction-hover", "focus", "cursor-grab", "duration-fast", "easing-standard"], "statesNote": "the painted rule is a hairline but the hit area is widened to target-min; dragging takes border-strong and layer-overlay per states.md" },
+    { "part": "grip", "optional": true, "iconRole": "drag", "tokens": ["icon-size-inline", "content-secondary", "surface-raised", "border", "radius-control"], "note": "the visible dot/bar affordance on the handle; aria-hidden" }
+  ],
+  "variantAxes": { "orientation": ["horizontal", "vertical"] },
+  "states": ["rest", "hover", "focus-visible", "disabled", "dragging"],
+  "anatomyNotes": "Intersection of shadcn Resizable (react-resizable-panels: Group/Panel/Separator) and Salt's react-resizable-panels-theme, which themes the very same library — so the parts coincide exactly and the difference is entirely recipe (handle thickness, grip presence, hover colour). Salt's own SplitLayout/ParentChildLayout are static layouts with no draggable separator and are therefore NOT this component. orientation names the SPLIT axis: orientation=horizontal means panels sit side by side and the handle is vertical — the handle's own aria-orientation is the perpendicular value, which the behavior contract fixes so themes cannot disagree.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

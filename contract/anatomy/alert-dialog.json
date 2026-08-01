@@ -1,0 +1,20 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "alert-dialog",
+  "behavior": "APG alertdialog pattern (modal; role=alertdialog + aria-modal=true; focus trapped in the panel and Tab cycles; initial focus on the least destructive action; Esc closes and returns focus to the trigger; labelled by title, described by description — the description is REQUIRED, unlike dialog)",
+  "parts": [
+    { "part": "scrim", "tokens": ["overlay-scrim", "layer-modal"] },
+    { "part": "panel", "tokens": ["surface-overlay", "on-surface-overlay", "border", "radius-overlay", "elevation-modal", "layer-modal", "inset-container", "size-overlay-sm"], "note": "narrower default than dialog — an alert dialog carries one decision, not a form" },
+    { "part": "media", "optional": true, "iconRole": "warning", "tokens": ["surface-sunken", "radius-control", "icon-size-emphasis", "status-warning"], "note": "optional emphasis glyph above the title; tone follows the consequence of the confirming action" },
+    { "part": "header", "tokens": ["space-stack-sm"] },
+    { "part": "title", "contentSlot": true, "tokens": ["type-heading-3", "on-surface-overlay"] },
+    { "part": "description", "contentSlot": true, "tokens": ["type-body", "content-secondary"], "note": "required — states the consequence; referenced by aria-describedby" },
+    { "part": "footer", "tokens": ["space-inline-md"], "note": "action slot — end-aligned, stacks vertically on narrow viewports" },
+    { "part": "cancel", "contentSlot": true, "tokens": ["type-action"], "note": "the dismissing button (anatomy/button.json, secondary × outline); receives initial focus" },
+    { "part": "action", "contentSlot": true, "tokens": ["type-action"], "note": "the confirming button (anatomy/button.json); danger emphasis when the consequence is destructive" }
+  ],
+  "variantAxes": { "size": ["sm", "md", "lg"] },
+  "states": ["rest", "open"],
+  "anatomyNotes": "Same parts as dialog plus the mandatory cancel/action pair and the mandatory description; the close affordance is deliberately absent — an alert dialog is dismissed through its own actions, never a corner X. Salt has no separate AlertDialog: it composes Dialog with role=alertdialog and DialogActions — a composition difference, same anatomy. Size binds to the size-overlay-* width ramp, not control-height-*.",
+  "motion": { "panel-enter": { "duration": "duration-base", "easing": "easing-enter" }, "panel-exit": { "duration": "duration-fast", "easing": "easing-exit" }, "scrim-fade": { "duration": "duration-base", "easing": "easing-standard" } }
+}

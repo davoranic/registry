@@ -1,0 +1,13 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "label",
+  "behavior": "None — native <label> semantics (htmlFor/id association, or wrapping the control). Clicking or tapping transfers activation to the labelled control; the label itself is never a tab stop. It must not be replaced by a placeholder or an aria-label where a visible label is possible.",
+  "parts": [
+    { "part": "root", "contentSlot": true, "tokens": ["type-label", "on-surface", "space-inline-md", "cursor-interactive"], "statesNote": "when the labelled control is disabled the label renders in content-disabled and stops forwarding pointer activation (states.md §disabled)" },
+    { "part": "necessity-indicator", "optional": true, "tokens": ["type-label", "content-secondary"], "note": "the required/optional marker — an asterisk or a parenthesised word appended to the text; decorative only, the requirement itself is carried by the control's required/aria-required" }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "disabled"],
+  "anatomyNotes": "Intersection of shadcn Label (Radix label root) and Salt FormFieldLabel. Salt owns the necessity marker and derives disabled from FormField context; shadcn derives disabled from a peer/group data attribute — both are WIRING differences, same two parts. Salt's intent label|sentence swaps the type role (type-label vs type-body) — a recipe difference, not an axis. Standalone label and the label part of anatomy/field.json are the same anatomy: field composes this component rather than redefining it.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

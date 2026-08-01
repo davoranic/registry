@@ -1,0 +1,17 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "alert",
+  "behavior": "APG alert pattern (in-flow, persistent message; role=alert for warning/critical, role=status for info/success; announced without moving focus; never auto-dismissed; any dismiss control is keyboard reachable)",
+  "parts": [
+    { "part": "root", "tokens": ["surface-raised", "on-surface-raised", "border", "radius-container", "inset-container", "border-width"], "note": "tone axis adds the status accent: status-<tone>-surface fill + status-<tone>-border. Salt Banner paints a full tonal background, shadcn keeps the card surface and tones only the icon/title — a RECIPE difference on root." },
+    { "part": "icon", "iconRole": "info", "tokens": ["icon-size-control", "status-info", "space-inline-md"], "note": "tone axis swaps the role and colour: info → info, success → success, warning → warning, critical → error (status-<tone>)" },
+    { "part": "title", "contentSlot": true, "tokens": ["type-body-strong", "on-surface-raised"] },
+    { "part": "description", "optional": true, "contentSlot": true, "tokens": ["type-body", "content-secondary"] },
+    { "part": "action-slot", "optional": true, "tokens": ["space-inline-md", "type-action"], "note": "hosts ghost/link prominence buttons (anatomy/button.json) — Salt BannerActions; adds no recipe of its own" },
+    { "part": "close", "optional": true, "iconRole": "close", "tokens": ["icon-size-inline", "interaction-hover", "radius-control", "focus"] }
+  ],
+  "variantAxes": { "tone": ["info", "success", "warning", "critical"] },
+  "states": ["rest", "hover"],
+  "anatomyNotes": "Alert is toast's in-flow sibling: identical parts, no layer-notification, no auto-dismiss, no enter/exit motion. Salt Banner's variant primary|secondary (background emphasis) is a RECIPE difference on root, not an axis — status components take tone, never emphasis. Salt renders the icon through StatusIndicator; shadcn expects a caller-supplied svg — same part either way.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

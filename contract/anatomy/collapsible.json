@@ -1,0 +1,14 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "collapsible",
+  "behavior": "APG disclosure pattern (trigger is a button carrying aria-expanded + aria-controls; Enter/Space toggle; the panel is hidden from the accessibility tree while collapsed; focus never moves on toggle)",
+  "parts": [
+    { "part": "root", "tokens": [], "note": "owns the open state and the trigger↔panel id wiring; contributes no visual recipe" },
+    { "part": "trigger", "contentSlot": true, "tokens": ["type-label", "on-surface", "focus", "radius-control", "cursor-interactive"], "note": "a real button; its content is caller-supplied — any expand indicator is composed in, not a part of this anatomy" },
+    { "part": "panel", "contentSlot": true, "tokens": ["type-body", "space-stack-sm"], "note": "block-size animates between 0 and content height; overflow hidden during the transition; hidden + aria-hidden when closed" }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "focus-visible", "disabled", "open"],
+  "anatomyNotes": "Collapsible is the single-disclosure primitive that accordion composes: accordion adds item, label and indicator parts plus a shared open policy, collapsible adds none of them. Salt's CollapsiblePanel wraps its children in an inner measuring element and shadcn/Radix animates a CSS variable — both are RECIPE mechanics for the same height transition, not an extra part.",
+  "motion": { "panel-expand": { "duration": "duration-base", "easing": "easing-standard" }, "panel-collapse": { "duration": "duration-fast", "easing": "easing-exit" } }
+}

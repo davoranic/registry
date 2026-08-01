@@ -1,0 +1,46 @@
+/* Progress recipe — contract slots only (contract/authoring.md step 3).
+   LIFTED from shadcn/progress.tsx via scripts/lift.py, then reviewed against
+   contract/anatomy/progress.json + the button exemplar.
+   Unmapped words: see progress.lift-report.json */
+
+/* root — the track; clips the indicator */
+[data-slot="progress"] {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: calc(var(--space-unit) * 2);
+  overflow: hidden;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-pill);
+}
+
+/* indicator — determinate: inline-size bound to the value fraction */
+[data-slot="progress"] [data-slot="indicator"] {
+  block-size: 100%;
+  inline-size: 0%;
+  background: var(--action);
+  border-radius: var(--radius-pill);
+  transition: inline-size var(--duration-base) var(--easing-standard);
+}
+
+/* states (contract/states.md) — indeterminate: a fixed-length segment
+   sweeping the track in a loop (anatomy statesNote) */
+[data-slot="progress"][data-state="indeterminate"] [data-slot="indicator"] {
+  inline-size: 33%;
+  transition: none;
+  animation: progress-sweep var(--duration-slow) var(--easing-standard) infinite;
+}
+
+@keyframes progress-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(300%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="progress"] [data-slot="indicator"] { transition: none; }
+  [data-slot="progress"][data-state="indeterminate"] [data-slot="indicator"] {
+    /* no sweep: hold a static half-track so the busy state stays legible */
+    animation: none;
+    inline-size: 50%;
+  }
+}

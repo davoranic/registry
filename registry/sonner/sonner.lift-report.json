@@ -1,0 +1,10 @@
+{
+  "component": "sonner",
+  "mapped": 5,
+  "unmapped": [
+    "toaster",
+    "group",
+    "animate-spin"
+  ],
+  "skipped_variants": []
+}

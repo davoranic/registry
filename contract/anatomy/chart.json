@@ -1,0 +1,26 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "chart",
+  "behavior": "None — the plot itself is a graphic. Accessibility comes from a text alternative, not from the drawing: the root is role=img with an accessible name and description, and the same data is exposed as a visually-hidden table so keyboard and screen-reader users get the values. Interactive tooltips follow the APG tooltip pattern (shown on hover AND on focus, dismissible with Esc, never trapping the pointer); legend entries that toggle series are toggle buttons with aria-pressed. Series are distinguished by more than hue — pattern, marker shape or direct labels — so the chart survives colour-vision differences and monochrome print.",
+  "parts": [
+    { "part": "root", "tokens": ["surface", "on-surface", "type-caption", "radius-container"], "note": "the sized container; every child scales inside it" },
+    { "part": "plot-area", "tokens": ["border-subtle"], "note": "the data rectangle inside the axes" },
+    { "part": "grid-line", "optional": true, "tokens": ["border-subtle"], "note": "reference rules behind the series; always weaker than the axis" },
+    { "part": "axis", "tokens": ["border", "content-secondary"], "note": "the axis rule" },
+    { "part": "axis-tick", "tokens": ["type-caption", "content-secondary"], "note": "tick label; numeric ticks use type-data when digits must align" },
+    { "part": "axis-label", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary"] },
+    { "part": "series", "tokens": ["data-1", "data-2", "data-3", "data-4", "data-5", "data-6", "data-7", "data-8", "data-9", "data-10", "data-11", "data-12", "duration-slow", "easing-enter"], "note": "one line/bar/area/slice set; the Nth series takes the Nth data slot in order — the ordinal set is the only place numbered tokens are legal (contract/naming.md)" },
+    { "part": "legend", "optional": true, "tokens": ["space-inline-lg", "type-caption"] },
+    { "part": "legend-item", "optional": true, "tokens": ["type-caption", "content-secondary", "space-inline-md", "cursor-interactive", "focus", "radius-control"], "statesNote": "a hidden series' legend item drops to content-disabled and sets aria-pressed=false" },
+    { "part": "legend-swatch", "optional": true, "tokens": ["icon-size-inline", "radius-field-control"], "note": "takes the same data slot as its series" },
+    { "part": "tooltip", "optional": true, "tokens": ["surface-overlay", "on-surface-overlay", "border", "radius-overlay", "elevation-overlay", "layer-tooltip", "inset-control-x", "duration-fast", "easing-enter"] },
+    { "part": "tooltip-label", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary"] },
+    { "part": "tooltip-item", "optional": true, "contentSlot": true, "tokens": ["type-data", "space-inline-md"], "note": "one series' value at the hovered position; type-data keeps digits aligned across rows" },
+    { "part": "tooltip-swatch", "optional": true, "tokens": ["icon-size-inline", "radius-field-control"] },
+    { "part": "data-table", "tokens": [], "note": "the visually-hidden table carrying the same values — required, not optional: it is what makes the graphic accessible" }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "hover", "focus-visible", "selected"],
+  "anatomyNotes": "Intersection of shadcn Chart (Recharts wrapper: ChartContainer/ChartTooltipContent/ChartLegendContent, series colours injected as --color-<key> from chart-1..5) and Salt's highcharts-theme (Highcharts option overrides supplying a categorical palette, axis/grid/tooltip styling). The two share no code and no component API — only the parts above — which is exactly why the anatomy is worth writing: it is the contract that lets a Recharts theme and a Highcharts theme render the same chart. The registry widens shadcn's 5-colour palette to the contract's data-1..12 ordinal set (themes rotate beyond 12). Chart TYPE (line/bar/area/pie/scatter) is not a variant axis: it changes which parts are present, not how they are themed; a pie chart simply has no axis parts. The plotting library is an implementation choice, never anatomy.",
+  "motion": { "series-enter": { "duration": "duration-slow", "easing": "easing-enter" }, "tooltip-enter": { "duration": "duration-fast", "easing": "easing-enter" } }
+}

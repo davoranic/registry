@@ -1,0 +1,108 @@
+/* Tooltip recipe — contract slots only (contract/authoring.md step 3).
+   Structure and states: contract/anatomy/tooltip.json. Character: the theme.
+
+   Surface choice follows the theme's elevation strategy: this recipe takes
+   the inverted route (inverse-surface / on-inverse-surface, shadcn default).
+   A theme that expresses depth by border instead re-points the same slots at
+   surface-overlay / on-surface-overlay — a recipe difference, anatomy
+   unchanged. */
+
+[data-slot="tooltip-anchor"] {
+  position: relative;
+  display: inline-flex;
+}
+
+/* root */
+[data-slot="tooltip"] {
+  position: absolute;
+  z-index: var(--layer-tooltip);
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  max-width: var(--size-overlay-sm);
+  padding-block: var(--space-unit);
+  padding-inline: var(--space-inline-sm);
+  border-radius: var(--radius-control);
+  background: var(--inverse-surface);
+  color: var(--on-inverse-surface);
+  box-shadow: var(--elevation-overlay);
+  pointer-events: none;
+}
+
+/* placement — logical sides survive RTL */
+[data-slot="tooltip"][data-side="top"] {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-block-end: var(--space-inline-sm);
+}
+[data-slot="tooltip"][data-side="bottom"] {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-block-start: var(--space-inline-sm);
+}
+[data-slot="tooltip"][data-side="start"] {
+  top: 50%;
+  inset-inline-end: 100%;
+  transform: translateY(-50%);
+  margin-inline-end: var(--space-inline-sm);
+}
+[data-slot="tooltip"][data-side="end"] {
+  top: 50%;
+  inset-inline-start: 100%;
+  transform: translateY(-50%);
+  margin-inline-start: var(--space-inline-sm);
+}
+
+/* label — the content slot; terse, never interactive */
+[data-slot="tooltip"] [data-slot="label"] {
+  font: var(--type-caption);
+  color: var(--on-inverse-surface);
+}
+
+/* arrow — fill always matches the root surface recipe */
+[data-slot="tooltip"] [data-slot="arrow"] {
+  position: absolute;
+  width: var(--icon-size-inline);
+  height: var(--icon-size-inline);
+  background: var(--inverse-surface);
+  transform: rotate(45deg);
+}
+[data-slot="tooltip"][data-side="top"] [data-slot="arrow"] {
+  top: 100%;
+  left: 50%;
+  margin-block-start: calc(var(--icon-size-inline) / -2);
+  margin-inline-start: calc(var(--icon-size-inline) / -2);
+}
+[data-slot="tooltip"][data-side="bottom"] [data-slot="arrow"] {
+  bottom: 100%;
+  left: 50%;
+  margin-block-end: calc(var(--icon-size-inline) / -2);
+  margin-inline-start: calc(var(--icon-size-inline) / -2);
+}
+[data-slot="tooltip"][data-side="start"] [data-slot="arrow"] {
+  top: 50%;
+  inset-inline-start: 100%;
+  margin-block-start: calc(var(--icon-size-inline) / -2);
+  margin-inline-start: calc(var(--icon-size-inline) / -2);
+}
+[data-slot="tooltip"][data-side="end"] [data-slot="arrow"] {
+  top: 50%;
+  inset-inline-end: 100%;
+  margin-block-start: calc(var(--icon-size-inline) / -2);
+  margin-inline-end: calc(var(--icon-size-inline) / -2);
+}
+
+/* motion — enter at duration-fast/easing-enter (anatomy motion block) */
+[data-slot="tooltip"][data-state="open"] {
+  animation: tooltip-enter var(--duration-fast) var(--easing-enter);
+}
+@keyframes tooltip-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="tooltip"][data-state="open"] { animation: none; }
+}

@@ -1,0 +1,174 @@
+/* Navigation menu recipe — contract slots only (contract/authoring.md step 3).
+   Structure, states and motion: contract/anatomy/navigation-menu.json.
+   Links stay links; the panel is a free content region, not a menu.
+   Character: the theme. */
+
+/* root — the nav landmark */
+[data-slot="navigation-menu"] {
+  display: flex;
+  background: var(--surface);
+  gap: var(--space-inline-sm);
+}
+[data-slot="navigation-menu"][data-orientation="vertical"] {
+  flex-direction: column;
+}
+
+/* list */
+[data-slot="navigation-menu"] [data-slot="list"] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-inline-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+[data-slot="navigation-menu"] [data-slot="list"][data-orientation="vertical"] {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* item */
+[data-slot="navigation-menu"] [data-slot="item"] {
+  position: relative;
+  border-radius: var(--radius-control);
+}
+
+/* trigger + link share the top-level chrome */
+[data-slot="navigation-menu"] [data-slot="trigger"],
+[data-slot="navigation-menu"] [data-slot="link"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-inline-sm);
+  height: var(--control-height-md);
+  padding: 0 var(--inset-control-x);
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--content-secondary);
+  font: var(--type-action);
+  text-transform: var(--action-case);
+  letter-spacing: var(--action-tracking);
+  text-decoration: none;
+  cursor: var(--cursor-interactive);
+  outline: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="navigation-menu"] [data-slot="trigger"]:hover,
+[data-slot="navigation-menu"] [data-slot="link"]:hover {
+  background: var(--interaction-hover);
+  color: var(--on-interaction-selected);
+}
+[data-slot="navigation-menu"] [data-slot="trigger"]:focus-visible,
+[data-slot="navigation-menu"] [data-slot="link"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="navigation-menu"] [data-slot="trigger"][data-disabled],
+[data-slot="navigation-menu"] [data-slot="link"][data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+[data-slot="navigation-menu"] [data-slot="trigger"][data-state="open"] {
+  background: var(--interaction-hover);
+  color: var(--on-interaction-selected);
+}
+
+/* state:selected (aria-current=page) switches content-secondary
+   to on-interaction-selected */
+[data-slot="navigation-menu"] [data-slot="link"][data-state="selected"] {
+  color: var(--on-interaction-selected);
+}
+
+/* trigger-icon — expand icon role, rotates 180deg on open */
+[data-slot="navigation-menu"] [data-slot="trigger-icon"] {
+  display: inline-flex;
+  transition: transform var(--duration-fast) var(--easing-standard);
+}
+[data-slot="navigation-menu"] [data-slot="trigger-icon"] svg {
+  width: var(--icon-size-inline);
+  height: var(--icon-size-inline);
+}
+[data-slot="navigation-menu"] [data-slot="trigger"][data-state="open"] [data-slot="trigger-icon"] {
+  transform: rotate(180deg);
+}
+
+/* selected-indicator — bottom edge when horizontal, inline-start edge when
+   vertical; only paints for the current destination */
+[data-slot="navigation-menu"] [data-slot="selected-indicator"] {
+  position: absolute;
+  background: var(--selected-indicator);
+  opacity: 0;
+  transition:
+    opacity var(--duration-fast) var(--easing-standard),
+    transform var(--duration-fast) var(--easing-standard);
+}
+[data-slot="navigation-menu"] [data-slot="selected-indicator"][data-orientation="horizontal"] {
+  inset-inline: var(--inset-control-x);
+  inset-block-end: 0;
+  block-size: var(--border-width-strong);
+}
+[data-slot="navigation-menu"] [data-slot="selected-indicator"][data-orientation="vertical"] {
+  inset-block: var(--space-inline-sm);
+  inset-inline-start: 0;
+  inline-size: var(--border-width-strong);
+}
+[data-slot="navigation-menu"] [data-state="selected"] [data-slot="selected-indicator"] {
+  opacity: 1;
+}
+
+/* panel — a free content region hosting grouped links, descriptions, promos */
+[data-slot="navigation-menu"] [data-slot="panel"] {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: calc(100% + var(--space-inline-sm));
+  z-index: var(--layer-dropdown);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+  min-width: var(--size-overlay-sm);
+  padding: var(--inset-container);
+  background: var(--surface-overlay);
+  color: var(--on-surface-overlay);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-overlay);
+  box-shadow: var(--elevation-overlay);
+}
+[data-slot="navigation-menu"] [data-slot="panel"][data-orientation="vertical"] {
+  position: static;
+  min-width: 0;
+  box-shadow: none;
+  border: none;
+  padding-inline-start: var(--space-inline-lg);
+}
+[data-slot="navigation-menu"] [data-slot="panel"][data-state="open"] {
+  animation: navigation-menu-panel-enter var(--duration-base) var(--easing-enter);
+}
+@keyframes navigation-menu-panel-enter {
+  from { opacity: 0; transform: translateY(calc(var(--space-unit) * -1)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* links inside a panel stack and may carry a description */
+[data-slot="navigation-menu"] [data-slot="panel"] [data-slot="link"] {
+  height: auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-unit);
+  padding-block: var(--space-inline-sm);
+}
+[data-slot="navigation-menu"] [data-slot="link-description"] {
+  font: var(--type-caption);
+  color: var(--content-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="navigation-menu"] [data-slot="panel"][data-state="open"] { animation: none; }
+  [data-slot="navigation-menu"] [data-slot="trigger"],
+  [data-slot="navigation-menu"] [data-slot="link"],
+  [data-slot="navigation-menu"] [data-slot="trigger-icon"],
+  [data-slot="navigation-menu"] [data-slot="selected-indicator"] { transition: none; }
+}

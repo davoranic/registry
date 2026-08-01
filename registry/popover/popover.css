@@ -1,0 +1,68 @@
+/* Popover recipe — contract slots only (contract/authoring.md step 3).
+   Structure and states: contract/anatomy/popover.json. Character: the theme. */
+
+[data-slot="popover"] {
+  position: relative;
+  display: inline-flex;
+}
+
+/* trigger — typically a button; the button anatomy owns its own chrome, so
+   the popover only contributes the focus recipe and the action type */
+[data-slot="popover"] > [data-slot="trigger"] {
+  font: var(--type-action);
+  cursor: var(--cursor-interactive);
+}
+[data-slot="popover"] > [data-slot="trigger"]:focus-visible {
+  outline: var(--focus-width) var(--focus-style) color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+
+/* panel — overlay chrome on the dropdown layer */
+[data-slot="popover"] [data-slot="panel"] {
+  position: absolute;
+  z-index: var(--layer-dropdown);
+  width: max-content;
+  max-width: var(--size-overlay-sm);
+  padding: var(--inset-container);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-overlay);
+  background: var(--surface-overlay);
+  color: var(--on-surface-overlay);
+  box-shadow: var(--elevation-overlay);
+  outline: none;
+}
+
+/* placement — logical sides survive RTL */
+[data-slot="popover"] [data-slot="panel"][data-side="bottom"] {
+  top: 100%;
+  inset-inline-start: 0;
+  margin-block-start: var(--space-stack-sm);
+}
+[data-slot="popover"] [data-slot="panel"][data-side="top"] {
+  bottom: 100%;
+  inset-inline-start: 0;
+  margin-block-end: var(--space-stack-sm);
+}
+[data-slot="popover"] [data-slot="panel"][data-side="start"] {
+  top: 0;
+  inset-inline-end: 100%;
+  margin-inline-end: var(--space-inline-sm);
+}
+[data-slot="popover"] [data-slot="panel"][data-side="end"] {
+  top: 0;
+  inset-inline-start: 100%;
+  margin-inline-start: var(--space-inline-sm);
+}
+
+/* motion — enter duration-fast/easing-enter (anatomy motion block) */
+[data-slot="popover"] [data-slot="panel"][data-state="open"] {
+  animation: popover-panel-enter var(--duration-fast) var(--easing-enter);
+}
+@keyframes popover-panel-enter {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="popover"] [data-slot="panel"][data-state="open"] { animation: none; }
+}

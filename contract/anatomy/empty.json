@@ -1,0 +1,16 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "empty",
+  "behavior": "None — presentational empty-state container; no APG pattern. The title is a real heading so the region is reachable by heading navigation, and any recovery affordance keeps its own button/link semantics. When the emptiness is the result of a completed load, the host region announces it (aria-live), not this container.",
+  "parts": [
+    { "part": "root", "tokens": ["radius-container", "border", "border-width", "border-style-emphasis", "inset-container", "space-stack-lg", "content-secondary"], "note": "dashed outline marks a placeholder region rather than real content — border-style-emphasis is the contract slot for that distinction" },
+    { "part": "header", "optional": true, "tokens": ["space-stack-sm"], "note": "centres media + title + description as one block; layout grouping only" },
+    { "part": "media", "optional": true, "tokens": ["surface-sunken", "radius-container", "icon-size-emphasis", "on-surface"], "note": "illustration or framed glyph; decorative, aria-hidden" },
+    { "part": "title", "contentSlot": true, "tokens": ["type-heading-3", "on-surface"], "note": "renders as a heading element" },
+    { "part": "description", "optional": true, "contentSlot": true, "tokens": ["type-body", "content-secondary"] },
+    { "part": "content", "optional": true, "contentSlot": true, "tokens": ["space-stack-md", "space-inline-md"], "note": "action slot — hosts the recovery button(s) or a link (anatomy/button.json)" }
+  ],
+  "variantAxes": {},
+  "states": ["rest"],
+  "anatomyNotes": "Salt has no empty-state component, so this anatomy is shadcn-only; the part list is kept deliberately parallel to card (root/header/title/description/content) so the two containers translate onto each other. shadcn's EmptyMedia variant default|icon is a RECIPE difference on media (bare glyph vs framed tile), not a variant axis."
+}

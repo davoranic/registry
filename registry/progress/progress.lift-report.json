@@ -1,0 +1,13 @@
+{
+  "component": "progress",
+  "mapped": 16,
+  "unmapped": [
+    "h-2",
+    "bg-primary/20",
+    "h-full",
+    "h-2",
+    "bg-primary/20",
+    "h-full"
+  ],
+  "skipped_variants": []
+}

@@ -1,0 +1,103 @@
+/* Native-select recipe — contract slots only (contract/authoring.md step 3).
+   Structure, size axis and states: contract/anatomy/native-select.json.
+   The root exists only because the native control cannot paint its own
+   chevron; the control recipe matches input's root exactly. */
+
+[data-slot="native-select"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: var(--control-height-md);
+  border-radius: var(--radius-control);
+}
+
+/* size axis */
+[data-slot="native-select"][data-size="sm"] { height: var(--control-height-sm); }
+[data-slot="native-select"][data-size="lg"] { height: var(--control-height-lg); }
+
+/* control */
+[data-slot="native-select"] > [data-slot="control"] {
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding-inline: var(--inset-control-x)
+    calc(var(--inset-control-x) + var(--icon-size-control));
+  border: var(--border-width) solid var(--field-border);
+  border-radius: var(--radius-control);
+  background: var(--field-surface);
+  color: var(--on-surface);
+  font: var(--type-label);
+  box-shadow: var(--elevation-resting);
+  cursor: var(--cursor-interactive);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+
+/* indicator — decorative chevron, pointer-inert; it does NOT rotate on open,
+   because the platform popup is not a state this component can observe */
+[data-slot="native-select"] > [data-slot="indicator"] {
+  position: absolute;
+  inset-inline-end: var(--inset-control-x);
+  display: inline-flex;
+  align-items: center;
+  color: var(--content-secondary);
+  pointer-events: none;
+}
+[data-slot="native-select"] > [data-slot="indicator"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+  stroke-width: var(--icon-stroke);
+}
+
+/* option / group-label — the platform paints the popup */
+[data-slot="native-select"] [data-slot="option"] {
+  font: var(--type-label);
+}
+[data-slot="native-select"] [data-slot="group-label"] {
+  font: var(--type-caption);
+  color: var(--content-secondary);
+}
+
+/* states (contract/states.md) */
+[data-slot="native-select"]:hover > [data-slot="control"] {
+  border-color: var(--field-border-hover);
+  background: var(--field-surface-hover);
+}
+[data-slot="native-select"] > [data-slot="control"]:focus-visible {
+  border-color: var(--field-border-active);
+  outline: var(--focus-width) var(--focus-style)
+    color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="native-select"][data-state="invalid"] > [data-slot="control"] {
+  border-color: var(--status-critical);
+}
+[data-slot="native-select"][data-state="invalid"] > [data-slot="control"]:focus-visible {
+  outline-color: color-mix(in oklab, var(--status-critical) 60%, transparent);
+}
+[data-slot="native-select"][data-state="readonly"] > [data-slot="control"] {
+  background: var(--surface-sunken);
+  color: var(--content-secondary);
+  cursor: var(--cursor-disabled);
+}
+[data-slot="native-select"][data-state="readonly"]:hover > [data-slot="control"] {
+  border-color: var(--field-border);
+  background: var(--surface-sunken);
+}
+[data-slot="native-select"][data-disabled] {
+  opacity: 0.5;
+  cursor: var(--cursor-disabled);
+}
+[data-slot="native-select"][data-disabled] > [data-slot="control"] {
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="native-select"] > [data-slot="control"] { transition: none; }
+}

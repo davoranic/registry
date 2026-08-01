@@ -1,0 +1,14 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "input-group",
+  "behavior": "None — role=group wrapping one native control plus adornments. The group is never focusable: focus lands on the hosted control and the group reflects it (:focus-within). Clicking an adornment that is not itself interactive forwards focus to the control. Interactive adornments (buttons) are real buttons inside the group and stay in the tab order after the control.",
+  "parts": [
+    { "part": "root", "tokens": ["field-border", "field-surface", "radius-control", "control-height-md", "focus", "elevation-resting", "field-border-hover", "field-surface-hover", "duration-fast", "easing-standard"], "statesNote": "the group paints the field chrome; hover uses field-border-hover/field-surface-hover, focus-visible mirrors the control's focus, invalid swaps field-border for status-critical per states.md" },
+    { "part": "addon", "optional": true, "contentSlot": true, "tokens": ["type-label", "content-secondary", "inset-control-x", "space-inline-md", "icon-size-control"], "note": "one adornment region; the edge axis places it inline-start/inline-end (inside the control row) or block-start/block-end (a full-width band above/below the control)" },
+    { "part": "control", "contentSlot": true, "tokens": ["type-label", "content-secondary", "on-surface"], "note": "the hosted input or textarea; renders borderless and unshadowed because the group owns the chrome" }
+  ],
+  "variantAxes": { "size": ["sm", "md", "lg"], "edge": ["inline-start", "inline-end", "block-start", "block-end"] },
+  "states": ["rest", "hover", "focus-visible", "disabled", "invalid", "readonly"],
+  "anatomyNotes": "Intersection of shadcn InputGroup (InputGroup/InputGroupAddon/InputGroupInput|Textarea) and Salt Input startAdornment/endAdornment (plus PillInput). Salt models adornments as PROPS on the input rather than a wrapping group and therefore offers no block-start/block-end band — the registry keeps the wrapping group (it is the superset) and the Salt adapter maps edge:inline-start/inline-end onto the adornment props, declaring block-start/block-end as a fallback (rendered inline-start) in its constraints. shadcn's InputGroupButton/InputGroupText are compositions INSIDE the addon (button and text anatomies), not parts of this one. The bare input with no adornments is the input anatomy, not this one.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}
