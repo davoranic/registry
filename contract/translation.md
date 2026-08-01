@@ -78,6 +78,22 @@ rendering — the gaps already identified in salt-map.json `onlyInSalt`);
 input-otp (shadcn → Salt candidate); status-pill (registry-native, renders
 in both characters already — the proof case).
 
+### Capability adoption is different from component adoption
+
+Components adopt WITHOUT changing character (the split above guarantees it).
+Capabilities are the opposite: **a capability IS character** — Salt's density
+exists because it's a trading-floor system; shadcn's single comfortable scale
+is a deliberate simplicity. Therefore:
+
+- Mechanically, any theme can gain an axis cheaply — density is only a
+  multiplier over contract rhythm slots (`space-unit`, `control-height-*`,
+  `text-ui`, `icon-size`), not private magic of its origin.
+- But granting it CHANGES the theme's character by definition, so it may
+  never happen silently inside an existing adapter. It requires a NEW,
+  explicitly named theme (e.g. `theme-shadcn-dense`) with its own
+  capabilities block — a declared descendant, not a mutated original.
+- Rule of thumb: **components naturalize; capabilities fork.**
+
 ## Governance
 
 - The contract (tokens/semantic.md + contract/*) is versioned **semver**:
