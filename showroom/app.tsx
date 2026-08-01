@@ -1,362 +1,260 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 
-import { DEMOS } from "./demos"
+import { STORIES, Boundary, type Args } from "./stories"
 import themeMeta from "./theme-meta.gen.json"
 import contractMeta from "./contract-meta.gen.json"
-import iconSets from "./icon-sets.gen.json"
+import controlsMeta from "./controls.gen.json"
 
 import "./showroom.css"
 
-type Mode = "light" | "dark"
+const THEMES = themeMeta as Record<string, any>
+const CONTROLS = controlsMeta as Record<string, {
+  axes: Record<string, string[]>; states: string[]; parts: string[]
+  behavior: string; tokens: string[]
+}>
+const CONTRACT = contractMeta as any
+const THEME_NAMES = Object.keys(THEMES)
 
-/* ------------------------------------------------------------------ state */
+/* ------------------------------------------------------------------ canvas */
 
-function useTheme() {
-  const names = Object.keys(themeMeta as Record<string, any>)
-  const [theme, setTheme] = React.useState(names[0])
-  const [mode, setMode] = React.useState<Mode>("light")
-  const [density, setDensity] = React.useState("medium")
-  const [iconSet, setIconSet] = React.useState("lucide")
-
-  const caps = (themeMeta as any)[theme].capabilities
-  const hasDensity = Boolean(caps.density)
-  const iconOptions: string[] = Array.isArray(caps.iconSets)
-    ? caps.iconSets
-    : caps.iconSets?.options ?? ["lucide"]
-
-  React.useEffect(() => {
-    const root = document.documentElement
-    for (const n of names) root.classList.remove(`theme-${n}`)
-    root.classList.add(`theme-${theme}`)
-    root.classList.toggle("dark", mode === "dark")
-    if (hasDensity) root.dataset.density = density
-    else delete root.dataset.density
-    root.style.setProperty("--icon-set", iconSet)
-    document.querySelectorAll<HTMLLinkElement>("[data-theme-css]").forEach((el) => {
-      el.media = el.dataset.themeCss === theme ? "all" : "not all"
-    })
-  }, [theme, mode, density, iconSet, hasDensity, names])
-
-  React.useEffect(() => {
-    if (!iconOptions.includes(iconSet)) setIconSet(iconOptions[0])
-  }, [theme]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  return { theme, setTheme, mode, setMode, density, setDensity, iconSet, setIconSet,
-           names, caps, hasDensity, iconOptions }
-}
-
-/* ------------------------------------------------------------------ chrome */
-
-function Seg({ label, value, options, onChange, locked, note }: {
-  label: string; value: string; options: string[]
-  onChange: (v: string) => void; locked?: boolean; note?: string
+/** The ONLY themed element on the page. Site chrome never re-themes. */
+function Canvas({ theme, mode, density, children }: {
+  theme: string; mode: string; density: string | null; children: React.ReactNode
 }) {
   return (
-    <div className="ctl" data-locked={locked ? "" : undefined} title={note}>
-      <span className="ctl-label">{label}</span>
-      <div className="seg" role="group" aria-label={label}>
-        {options.map((o) => (
-          <button key={o} type="button" aria-pressed={value === o}
-                  disabled={locked} onClick={() => onChange(o)}>
-            {o}
-          </button>
-        ))}
-      </div>
+    <div className="canvas" data-theme={theme} data-mode={mode}
+         data-density={density ?? undefined}>
+      <div className="canvas-inner">{children}</div>
     </div>
   )
 }
 
-/* -------------------------------------------------------------- foundations */
+/* ---------------------------------------------------------------- controls */
 
-function Swatches({ title, slots }: { title: string; slots: string[] }) {
+function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
-    <>
-      <h3>{title}</h3>
-      <div className="swatches">
-        {slots.map((s) => (
-          <div className="swatch" key={s}>
-            <div className="chip" style={{ background: `var(--${s})`,
-                 color: `var(--on-${s}, var(--on-surface))` }}>Aa</div>
-            <code>--{s}</code>
-          </div>
-        ))}
-      </div>
-    </>
+    <div className="ctrl-field">
+      <label>{label}{hint && <em title={hint}> ⓘ</em>}</label>
+      {children}
+    </div>
   )
 }
 
-function Foundations({ iconSet }: { iconSet: string }) {
-  const c = contractMeta as any
+function Segmented({ value, options, onChange, disabled }: {
+  value: string; options: string[]; onChange: (v: string) => void; disabled?: boolean
+}) {
   return (
-    <section className="page">
-      <h2>Foundations</h2>
-      <p className="lede">
-        Every value below comes from <code>tokens/base.css</code>, overwritten by the
-        active theme adapter. Components never see anything else.
-      </p>
-
-      <Swatches title="Surfaces" slots={["surface", "surface-raised", "surface-overlay", "surface-sunken"]} />
-      <Swatches title="Action & interaction" slots={["action", "action-secondary", "interaction-hover", "interaction-selected"]} />
-      <Swatches title="Status" slots={["status-info", "status-success", "status-warning", "status-critical"]} />
-      <Swatches title="Lines & focus" slots={["border", "border-subtle", "border-strong", "field-border", "focus"]} />
-
-      <h3>Data palette</h3>
-      <div className="data-row">
-        {Array.from({ length: 12 }, (_, i) => (
-          <div key={i} className="data-chip" style={{ background: `var(--data-${i + 1})` }}>
-            <span>{i + 1}</span>
-          </div>
-        ))}
-      </div>
-
-      <h3>Typography roles</h3>
-      <div className="type-list">
-        {[["display", "Net asset value"], ["heading-1", "Trading console"], ["heading-2", "Open orders"],
-          ["heading-3", "Position details"], ["body", "The default reading size for prose content."],
-          ["label", "Quantity"], ["action", "Submit order"], ["caption", "Settled · T+2"],
-          ["code", "npx shadcn add button"], ["data", "184.32"]].map(([role, sample]) => (
-          <div className="type-row" key={role}>
-            <code>--type-{role}</code>
-            <span style={{ font: `var(--type-${role})`,
-                           textTransform: role === "action" ? "var(--action-case)" as any : undefined,
-                           letterSpacing: role === "action" ? "var(--action-tracking)" : undefined }}>
-              {sample}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <h3>Spacing & control heights</h3>
-      <div className="bars">
-        {[["space-unit", 1], ["space-inline-sm", 1], ["space-inline-md", 2], ["space-inline-lg", 4],
-          ["space-stack-sm", 2], ["space-stack-md", 4], ["space-stack-lg", 6],
-          ["inset-control-x", 4], ["inset-container", 6]].map(([slot]) => (
-          <div className="bar-row" key={slot as string}>
-            <code>--{slot}</code>
-            <div className="bar" style={{ inlineSize: `calc(var(--${slot}) * 8)` }} />
-          </div>
-        ))}
-      </div>
-      <div className="heights">
-        {["sm", "md", "lg"].map((s) => (
-          <div key={s} className="height-demo">
-            <div className="height-box" style={{ blockSize: `var(--control-height-${s})` }} />
-            <code>--control-height-{s}</code>
-          </div>
-        ))}
-      </div>
-
-      <h3>Radius, elevation, motion, layers</h3>
-      <div className="grid-4">
-        <div>
-          {["radius-field-control", "radius-control", "radius-container", "radius-overlay", "radius-pill"].map((r) => (
-            <div className="mini-row" key={r}>
-              <span className="radius-box" style={{ borderRadius: `var(--${r})` }} />
-              <code>--{r}</code>
-            </div>
-          ))}
-        </div>
-        <div>
-          {["elevation-resting", "elevation-raised", "elevation-overlay", "elevation-modal"].map((e) => (
-            <div className="mini-row" key={e}>
-              <span className="elev-box" style={{ boxShadow: `var(--${e})` }} />
-              <code>--{e}</code>
-            </div>
-          ))}
-        </div>
-        <div>
-          {["duration-instant", "duration-fast", "duration-base", "duration-slow"].map((d) => (
-            <div className="mini-row" key={d}>
-              <span className="dur-box" style={{ transitionDuration: `var(--${d})` }} />
-              <code>--{d}</code>
-            </div>
-          ))}
-        </div>
-        <div>
-          {["layer-base", "layer-sticky", "layer-dropdown", "layer-overlay", "layer-modal",
-            "layer-notification", "layer-tooltip"].map((l) => (
-            <div className="mini-row" key={l}><code>--{l}</code></div>
-          ))}
-        </div>
-      </div>
-
-      <h3>Icons — {c.iconRoles.length} semantic roles × {Object.keys(iconSets as any).length} sets</h3>
-      <p className="lede">
-        Components reference a <em>role</em>, never a library glyph name. Switching the
-        set above swaps every icon in the registry.
-      </p>
-      <div className="icon-grid">
-        {c.iconRoles.map((role: string) => {
-          const glyph = (iconSets as any)[iconSet]?.[role]
-          return (
-            <div className="icon-cell" key={role}>
-              {glyph ? (
-                <svg viewBox={glyph.viewBox} fill={glyph.fill ?? "none"}
-                     stroke={glyph.stroke ? "currentColor" : undefined}
-                     strokeWidth={glyph.stroke ?? undefined}
-                     strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d={glyph.path} fillRule={glyph.fillRule as any} clipRule={glyph.fillRule as any} />
-                </svg>
-              ) : <span className="icon-missing">—</span>}
-              <code>{role}</code>
-            </div>
-          )
-        })}
-      </div>
-    </section>
-  )
-}
-
-/* --------------------------------------------------------------- components */
-
-function Components() {
-  const groups = Array.from(new Set(DEMOS.map((d) => d.group)))
-  return (
-    <section className="page">
-      <h2>Components</h2>
-      <p className="lede">
-        {DEMOS.length} live components. Each renders its real implementation —
-        structure from <code>contract/anatomy/*.json</code>, recipe on contract slots.
-        Interact with them; they work.
-      </p>
-      {groups.map((g) => (
-        <div key={g}>
-          <h3>{g}</h3>
-          <div className="cards">
-            {DEMOS.filter((d) => d.group === g).map((d) => (
-              <article className="card" key={d.name}>
-                <div className="stage">{d.node}</div>
-                <footer>
-                  <b>{d.name}</b>
-                  <code>add {d.name}</code>
-                </footer>
-              </article>
-            ))}
-          </div>
-        </div>
+    <div className="segmented" data-disabled={disabled ? "" : undefined}>
+      {options.map((o) => (
+        <button key={o} type="button" aria-pressed={value === o} disabled={disabled}
+                onClick={() => onChange(o)}>{o}</button>
       ))}
-    </section>
+    </div>
   )
 }
 
-/* ----------------------------------------------------------------- patterns */
-
-function Patterns() {
-  const c = contractMeta as any
-  return (
-    <section className="page">
-      <h2>Patterns</h2>
-      <p className="lede">
-        Patterns are data — regions composed of contract components. The same file
-        renders into any theme, which is what makes a design portable.
-      </p>
-      <div className="cards">
-        {c.patterns.map((p: any) => (
-          <article className="card" key={p.name}>
-            <div className="pattern-body">
-              <b>{p.name}</b>
-              <p>{p.intent}</p>
-              <div className="regions">
-                {p.regions.map((r: string) => <span className="tag" key={r}>{r}</span>)}
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-/* ----------------------------------------------------------------- contract */
-
-function Contract({ theme }: { theme: string }) {
-  const meta = (themeMeta as any)[theme]
-  const c = contractMeta as any
-  return (
-    <section className="page">
-      <h2>The contract</h2>
-      <p className="lede">
-        Source systems are never edited. Everything is translated through one semantic
-        contract — the pivot — and rendered out in the target theme's character.
-      </p>
-      <pre className="flow">{`   source design systems (clones, untouched)
-            │  lift        scripts/lift.py — the dictionary
-            ▼
-       THE CONTRACT       tokens/semantic.md + contract/*
-            │  render     each theme's adapter
-            ▼
-   ${Object.values(themeMeta as any).map((t: any) => t.title).join("  ·  ")}`}</pre>
-
-      <div className="stats">
-        <div><b>{c.slotCount}</b><span>contract slots</span></div>
-        <div><b>{c.anatomyCount}</b><span>anatomy specs</span></div>
-        <div><b>{DEMOS.length}</b><span>components</span></div>
-        <div><b>{c.patterns.length}</b><span>patterns</span></div>
-        <div><b>{Object.keys(themeMeta as any).length}</b><span>themes</span></div>
-        <div><b>{c.dictionaryWords}</b><span>dictionary words</span></div>
-      </div>
-
-      <h3>{meta.title} — declared capabilities</h3>
-      <table className="caps">
-        <tbody>
-          <tr><th>modes</th><td>{(meta.capabilities.modes ?? []).join(" · ")}</td></tr>
-          <tr><th>density</th><td>{meta.capabilities.density
-            ? meta.capabilities.density.options.join(" · ")
-            : <em>not a capability of this theme</em>}</td></tr>
-          <tr><th>corners</th><td>{meta.capabilities.corner}</td></tr>
-          <tr><th>icon sets</th><td>{Array.isArray(meta.capabilities.iconSets)
-            ? meta.capabilities.iconSets.join(" · ")
-            : `${meta.capabilities.iconSets.options.join(" · ")} (${meta.capabilities.iconSets.mechanism.split("—")[0].trim()})`}</td></tr>
-        </tbody>
-      </table>
-      <h3>Constraints</h3>
-      <ul className="constraints">
-        {meta.constraints.map((x: string) => <li key={x}>{x}</li>)}
-      </ul>
-    </section>
-  )
-}
-
-/* --------------------------------------------------------------------- app */
+/* ------------------------------------------------------------------ app */
 
 function App() {
-  const t = useTheme()
-  const [view, setView] = React.useState<"components" | "foundations" | "patterns" | "contract">("components")
-  const views = ["components", "foundations", "patterns", "contract"] as const
+  const [selected, setSelected] = React.useState("button")
+  const [theme, setTheme] = React.useState(THEME_NAMES[0])
+  const [mode, setMode] = React.useState("light")
+  const [density, setDensity] = React.useState("medium")
+  const [args, setArgs] = React.useState<Args>({})
+  const [tab, setTab] = React.useState<"canvas" | "anatomy" | "tokens" | "install">("canvas")
+  const [compare, setCompare] = React.useState(false)
+  const [query, setQuery] = React.useState("")
+
+  const story = STORIES.find((s) => s.name === selected)
+  const meta = CONTROLS[selected] ?? { axes: {}, states: [], parts: [], behavior: "", tokens: [] }
+  const caps = THEMES[theme].capabilities
+  const hasDensity = Boolean(caps.density)
+  const densityOptions: string[] = hasDensity ? caps.density.options : ["medium"]
+
+  // reset args when the selected component changes — each has its own axes
+  React.useEffect(() => setArgs({}), [selected])
+
+  const groups = Array.from(new Set(STORIES.map((s) => s.group)))
+  const visible = (g: string) =>
+    STORIES.filter((s) => s.group === g && s.name.includes(query.toLowerCase()))
+
+  const rendered = story ? <Boundary name={story.name}>{story.render(args)}</Boundary> : null
 
   return (
-    <>
-      <header>
-        <div className="brand">
+    <div className="shell">
+      {/* ---- tree ---- */}
+      <aside className="tree">
+        <div className="tree-head">
           <b>UI Registry</b>
           <small>registry.davoranic.com</small>
         </div>
-        <nav className="views">
-          {views.map((v) => (
-            <button key={v} type="button" aria-current={view === v ? "page" : undefined}
-                    onClick={() => setView(v)}>{v}</button>
-          ))}
+        <input className="filter" type="search" placeholder="Filter components…"
+               value={query} onChange={(e) => setQuery(e.target.value)}
+               aria-label="Filter components" />
+        <nav>
+          {groups.map((g) => {
+            const items = visible(g)
+            if (!items.length) return null
+            return (
+              <div className="tree-group" key={g}>
+                <span className="tree-group-label">{g}</span>
+                {items.map((s) => (
+                  <button key={s.name} type="button"
+                          aria-current={selected === s.name ? "true" : undefined}
+                          onClick={() => setSelected(s.name)}>
+                    {s.name}
+                  </button>
+                ))}
+              </div>
+            )
+          })}
         </nav>
-        <div className="spacer" />
-        <Seg label="theme" value={t.theme} options={t.names}
-             onChange={t.setTheme} />
-        <Seg label="mode" value={t.mode} options={["light", "dark"]}
-             onChange={(v) => t.setMode(v as Mode)} />
-        <Seg label="density" value={t.density} options={
-               t.hasDensity ? t.caps.density.options : ["medium"]}
-             onChange={t.setDensity} locked={!t.hasDensity}
-             note={t.hasDensity ? undefined : "density is not a capability of this theme"} />
-        <Seg label="icons" value={t.iconSet} options={t.iconOptions}
-             onChange={t.setIconSet} />
-      </header>
-      <main>
-        {view === "components" && <Components />}
-        {view === "foundations" && <Foundations iconSet={t.iconSet} />}
-        {view === "patterns" && <Patterns />}
-        {view === "contract" && <Contract theme={t.theme} />}
+        <div className="tree-foot">
+          {STORIES.length} components · {CONTRACT.slotCount} slots · {THEME_NAMES.length} themes
+        </div>
+      </aside>
+
+      {/* ---- canvas ---- */}
+      <main className="stage">
+        <div className="stage-bar">
+          <h1>{selected}</h1>
+          <span className="behavior">{meta.behavior.split("(")[0].trim()}</span>
+          <div className="spacer" />
+          <div className="tabs">
+            {(["canvas", "anatomy", "tokens", "install"] as const).map((t) => (
+              <button key={t} type="button" aria-current={tab === t ? "page" : undefined}
+                      onClick={() => setTab(t)}>{t}</button>
+            ))}
+          </div>
+        </div>
+
+        {tab === "canvas" && (
+          compare ? (
+            <div className="compare">
+              {THEME_NAMES.map((t) => (
+                <figure key={t}>
+                  <figcaption>{THEMES[t].title}</figcaption>
+                  <Canvas theme={t} mode={mode}
+                          density={THEMES[t].capabilities.density ? density : null}>
+                    {story ? <Boundary name={story.name}>{story.render(args)}</Boundary> : null}
+                  </Canvas>
+                </figure>
+              ))}
+            </div>
+          ) : (
+            <Canvas theme={theme} mode={mode} density={hasDensity ? density : null}>
+              {rendered}
+            </Canvas>
+          )
+        )}
+
+        {tab === "anatomy" && (
+          <div className="doc">
+            <h2>Parts</h2>
+            <p>Theme-invariant structure from <code>contract/anatomy/{selected}.json</code>.
+               Themes change the recipe per part — never the parts.</p>
+            <ul className="pill-list">{meta.parts.map((p) => <li key={p}>{p}</li>)}</ul>
+            <h2>States</h2>
+            <ul className="pill-list">{(CONTROLS[selected]?.states ?? []).map((s) => <li key={s}>{s}</li>)}</ul>
+            <h2>Variant axes</h2>
+            {Object.keys(meta.axes).length === 0 ? <p><em>None — this component has no variants.</em></p> : (
+              <ul className="pill-list">
+                {Object.entries(meta.axes).map(([axis, vals]) => (
+                  <li key={axis}>{axis}: {vals.join(" · ")}</li>
+                ))}
+              </ul>
+            )}
+            <h2>Behavior</h2>
+            <p>{meta.behavior || "—"}</p>
+          </div>
+        )}
+
+        {tab === "tokens" && (
+          <div className="doc">
+            <h2>Contract slots consumed</h2>
+            <p>This component reads only these. Swap the theme and every one of them
+               changes value — the component never knows.</p>
+            <div className="token-grid">
+              {meta.tokens.map((t) => (
+                <div className="token-row" key={t}>
+                  <span className="token-chip" data-theme={theme} data-mode={mode}
+                        style={{ background: `var(--${t}, var(--surface-sunken))` }} />
+                  <code>--{t}</code>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab === "install" && (
+          <div className="doc">
+            <h2>Install</h2>
+            <pre className="cmd">npx shadcn@latest add davoranic/registry/{selected}</pre>
+            <h2>Theme</h2>
+            <pre className="cmd">npx shadcn@latest add davoranic/registry/theme-{theme}</pre>
+            <h2>Apply</h2>
+            <pre className="cmd">{`<link rel="stylesheet" href="styles/registry-base.css">
+<link rel="stylesheet" href="styles/theme-${theme}.css">
+
+<html data-theme="${theme}"${mode === "dark" ? ' data-mode="dark"' : ""}${hasDensity ? ` data-density="${density}"` : ""}>
+<!-- or scope it to any container:
+     <div data-theme="salt" data-density="high"> … </div> -->`}</pre>
+            <h2>Files</h2>
+            <ul className="pill-list">
+              <li>registry/{selected}/{selected}.tsx</li>
+              <li>registry/{selected}/{selected}.css</li>
+              <li>contract/anatomy/{selected}.json</li>
+            </ul>
+          </div>
+        )}
       </main>
-    </>
+
+      {/* ---- controls ---- */}
+      <aside className="panel">
+        <h2>Preview</h2>
+        <Field label="Theme">
+          <Segmented value={theme} options={THEME_NAMES} onChange={setTheme} />
+        </Field>
+        <Field label="Mode">
+          <Segmented value={mode} options={["light", "dark"]} onChange={setMode} />
+        </Field>
+        <Field label="Density"
+               hint={hasDensity ? undefined : `${THEMES[theme].title} declares no density axis`}>
+          <Segmented value={density} options={densityOptions} onChange={setDensity}
+                     disabled={!hasDensity} />
+        </Field>
+        <label className="check">
+          <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} />
+          Compare all themes
+        </label>
+
+        <h2>Props</h2>
+        {Object.keys(meta.axes).length === 0 && meta.states.length === 0 && (
+          <p className="muted">This component declares no variant axes.</p>
+        )}
+        {Object.entries(meta.axes).map(([axis, values]) => (
+          <Field key={axis} label={axis}>
+            <select value={(args[axis] as string) ?? values[0]}
+                    onChange={(e) => setArgs((p) => ({ ...p, [axis]: e.target.value }))}>
+              {values.map((v) => <option key={v} value={v}>{v}</option>)}
+            </select>
+          </Field>
+        ))}
+        {meta.states.map((s) => (
+          <label className="check" key={s}>
+            <input type="checkbox" checked={Boolean(args[s])}
+                   onChange={(e) => setArgs((p) => ({ ...p, [s]: e.target.checked }))} />
+            {s}
+          </label>
+        ))}
+
+        <h2>Constraints</h2>
+        <ul className="constraints">
+          {THEMES[theme].constraints.map((c: string) => <li key={c}>{c}</li>)}
+        </ul>
+      </aside>
+    </div>
   )
 }
 

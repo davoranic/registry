@@ -30,4 +30,18 @@ for p in sorted((ROOT / "icons" / "sets").glob("*.json")):
     d = json.loads(p.read_text())
     sets[d["set"]] = d["roles"]
 (OUT / "icon-sets.gen.json").write_text(json.dumps(sets, indent=1))
+
+BOOL_STATES = {"disabled","loading","selected","invalid","readonly","indeterminate","open"}
+controls = {}
+for f in sorted((ROOT / "contract" / "anatomy").glob("*.json")):
+    a = json.loads(f.read_text())
+    controls[f.stem] = {
+        "axes": {k: v for k, v in (a.get("variantAxes") or {}).items() if v},
+        "states": [s for s in (a.get("states") or []) if s in BOOL_STATES],
+        "parts": [p["part"] for p in a.get("parts", [])],
+        "behavior": a.get("behavior", ""),
+        "tokens": sorted({t for p in a.get("parts", []) for t in (p.get("tokens") or [])}),
+    }
+(OUT / "controls.gen.json").write_text(json.dumps(controls, indent=1))
+
 print(f"meta: {len(themes)} themes, {len(slots)} slots, {len(roles)} icon roles, {len(sets)} icon sets")
