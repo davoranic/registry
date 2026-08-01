@@ -102,6 +102,20 @@ def check_theme(path):
     return errors
 
 
+def check_registry_items():
+    """Registry items may WIRE utilities to contract slots (pure var() refs)
+    but may never carry token VALUES — values belong to themes alone."""
+    errors = []
+    reg = json.loads((ROOT / "registry.json").read_text())
+    for item in reg.get("items", []):
+        for mode, block in item.get("cssVars", {}).items():
+            for key, value in block.items():
+                if not (isinstance(value, str) and value.strip().startswith("var(")):
+                    errors.append(f"registry.json/{item['name']}/{mode}: '{key}' carries a VALUE "
+                                  f"('{value}') — items may only wire var() references; values belong to themes")
+    return errors
+
+
 def main():
     all_errors = []
     themes = sorted((ROOT / "themes").glob("theme-*.json"))
@@ -113,6 +127,9 @@ def main():
         status = "OK" if not errs else f"{len(errs)} violation(s)"
         print(f"{path.name}: {status}")
         all_errors += errs
+    reg_errs = check_registry_items()
+    print(f"registry.json items: {'OK' if not reg_errs else str(len(reg_errs)) + ' violation(s)'}")
+    all_errors += reg_errs
     for e in all_errors:
         print(f"  ✗ {e}", file=sys.stderr)
     return 1 if all_errors else 0

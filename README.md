@@ -49,10 +49,11 @@ npx shadcn@latest add davoranic/registry/status-pill
 
 | Item | Type | Description |
 | --- | --- | --- |
-| `status-pill` | ui | Pill-shaped status indicator with sentiment variants and an optional dot. Ships `success`/`warning` theme tokens. |
-| `stat-card` | ui | KPI/metric card: title, tabular value, up/down trend badge, description. Composable parts. |
-| `timeline` | ui | Vertical timeline with status dots, connector lines, titles, times, and descriptions. |
-| `tag` | ui | Categorization label colored from the chart palette (`chart-1..5`), optional remove button. |
+| `theme-shadcn` | theme | The default character compiled from the semantic contract. |
+| `theme-salt` | theme | Salt DS character: sharp, Salt blue, uppercase actions, density axis. |
+| `stepper` | ui | Adopted from Salt via the contract — process steps with status states. |
+| `rating` | ui | Adopted from Salt via the contract — star/icon rating, APG radio behavior. |
+| `tree` | ui | Adopted from Salt via the contract — APG TreeView with full keyboard map. |
 
 ## Usage
 
