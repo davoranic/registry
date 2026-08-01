@@ -52,6 +52,10 @@ def check_component(comp_dir, slots):
                 continue
             errors.append(f"{name}: required part '{slot}' has no data-slot in TSX")
 
+    # CSS well-formedness: unbalanced braces mean a corrupted stylesheet
+    if css.count("{") != css.count("}"):
+        errors.append(f"{name}: CSS braces unbalanced ({css.count('{')} open, {css.count('}')} close)")
+
     # CSS: only contract slots
     for var in set(re.findall(r"var\(--([a-z][a-z0-9-]*)", css)):
         if var not in slots:

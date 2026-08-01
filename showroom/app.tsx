@@ -5,6 +5,8 @@ import { STORIES, Boundary, type Args } from "./stories"
 import themeMeta from "./theme-meta.gen.json"
 import contractMeta from "./contract-meta.gen.json"
 import controlsMeta from "./controls.gen.json"
+import systemMeta from "./system.gen.json"
+import iconSets from "./icon-sets.gen.json"
 
 import "./showroom.css"
 
@@ -54,10 +56,188 @@ function Segmented({ value, options, onChange, disabled }: {
   )
 }
 
+
+const SYSTEM = systemMeta as any
+const ICON_SETS = iconSets as Record<string, Record<string, any>>
+const SYSTEM_PAGES = ["foundations", "dictionary", "translator", "rules"] as const
+type SystemPage = (typeof SYSTEM_PAGES)[number]
+
+function Md({ text }: { text: string }) {
+  // minimal renderer: headings, bold, list items — honest, not fancy
+  return <>{text.split("\n").map((line, i) => {
+    if (line.startsWith("## ")) return <h2 key={i}>{line.slice(3)}</h2>
+    if (line.startsWith("**") && line.includes("**", 2)) {
+      const end = line.indexOf("**", 2)
+      return <p key={i}><b>{line.slice(2, end)}</b>{line.slice(end + 2)}</p>
+    }
+    if (line.startsWith("- ") || /^\d+\. /.test(line)) return <p key={i} className="li">{line.replace(/^([-\d.]+ )/, "")}</p>
+    if (!line.trim()) return null
+    return <p key={i}>{line}</p>
+  })}</>
+}
+
+function FoundationsPage({ theme, mode, density }: { theme: string; mode: string; density: string | null }) {
+  const groups: Array<[string, string[]]> = [
+    ["Surfaces", ["surface", "surface-raised", "surface-overlay", "surface-sunken"]],
+    ["Action & interaction", ["action", "action-secondary", "interaction-hover", "interaction-selected"]],
+    ["Status", ["status-info", "status-success", "status-warning", "status-critical"]],
+    ["Lines & focus", ["border", "border-subtle", "border-strong", "field-border", "focus"]],
+  ]
+  return (
+    <Canvas theme={theme} mode={mode} density={density}>
+      <div className="foundations">
+        {groups.map(([title, slots]) => (
+          <section key={title}>
+            <h3>{title}</h3>
+            <div className="swatches">
+              {slots.map((sl) => (
+                <div className="swatch" key={sl}>
+                  <span className="chip" style={{ background: `var(--${sl})` }} />
+                  <code>--{sl}</code>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+        <section>
+          <h3>Data palette</h3>
+          <div className="swatches">
+            {Array.from({ length: 12 }, (_, i) => (
+              <div className="swatch" key={i}>
+                <span className="chip" style={{ background: `var(--data-${i + 1})` }} />
+                <code>--data-{i + 1}</code>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h3>Type roles</h3>
+          {[["heading-1", "Trading console"], ["heading-2", "Open orders"], ["body", "Default prose size for reading."],
+            ["label", "Quantity"], ["action", "Submit order"], ["caption", "Settled · T+2"], ["data", "184.32"]].map(([r, t]) => (
+            <div className="type-row" key={r}>
+              <code>--type-{r}</code>
+              <span style={{ font: `var(--type-${r})`,
+                textTransform: r === "action" ? ("var(--action-case)" as any) : undefined,
+                letterSpacing: r === "action" ? "var(--action-tracking)" : undefined }}>{t}</span>
+            </div>
+          ))}
+        </section>
+        <section>
+          <h3>Rhythm & shape</h3>
+          <div className="rhythm-row">
+            {["sm", "md", "lg"].map((z) => (
+              <div key={z} className="height-demo">
+                <span className="height-box" style={{ blockSize: `var(--control-height-${z})` }} />
+                <code>control-height-{z}</code>
+              </div>
+            ))}
+            {["radius-field-control", "radius-control", "radius-container", "radius-pill"].map((r) => (
+              <div key={r} className="height-demo">
+                <span className="radius-demo" style={{ borderRadius: `var(--${r})` }} />
+                <code>{r}</code>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h3>Icon roles ({CONTRACT.iconRoles.length}) — set follows the theme capability</h3>
+          <div className="icon-grid">
+            {CONTRACT.iconRoles.map((role: string) => {
+              const setName = theme === "salt" ? "salt" : "lucide"
+              const g = ICON_SETS[setName]?.[role]
+              return (
+                <div className="icon-cell" key={role}>
+                  {g ? <svg viewBox={g.viewBox} fill={g.fill ?? "none"}
+                            stroke={g.stroke ? "currentColor" : undefined} strokeWidth={g.stroke ?? undefined}
+                            strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d={g.path} fillRule={g.fillRule as any} clipRule={g.fillRule as any} /></svg> : "—"}
+                  <code>{role}</code>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      </div>
+    </Canvas>
+  )
+}
+
+function DictionaryPage() {
+  const entries = Object.entries(SYSTEM.dictionary as Record<string, string>).filter(([, v]) => v)
+  return (
+    <div className="doc wide">
+      <h2>The dictionary — {entries.length} words</h2>
+      <p>The executable core of the translator (<code>scripts/lift.py</code>): each source-system
+         word maps to a declaration on contract slots. Unknown words are never guessed —
+         they land in a lift report as growth candidates, exactly like the icon roles
+         and token slots grew from Salt.</p>
+      <div className="dict">
+        <div className="dict-head"><span>source word</span><span>contract translation</span></div>
+        {entries.map(([w, css]) => (
+          <div className="dict-row" key={w}><code>{w}</code><code className="dim">{css}</code></div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function TranslatorPage() {
+  return (
+    <div className="doc wide">
+      <h2>The translator</h2>
+      <p>Originals are never edited. Everything passes through the contract — the pivot —
+         and comes out wearing the target theme's character.</p>
+      <pre className="cmd">{`source design systems (clones, untouched)
+        │  lift      scripts/lift.py — the dictionary
+        ▼
+   THE CONTRACT     tokens/semantic.md + contract/*
+        │  render    each theme's adapter (scoped: data-theme on any container)
+        ▼
+   any character — page-wide or per component`}</pre>
+      <h2>Proof — one pattern file, every character</h2>
+      <p>These are real renders of <code>contract/patterns/*.json</code> through each adapter,
+         each with a machine-written translation report. Lossiness is allowed; silence
+         about it is not.</p>
+      <div className="renders">
+        {SYSTEM.patternRenders.map((r: any) => (
+          <a className="render-link" key={r.href} href={r.href} target="_blank" rel="noreferrer">
+            <b>{r.pattern}</b>
+            <span>{r.theme}</span>
+            <em data-ok={r.lossless ? "" : undefined}>{r.lossless ? "lossless" : "with substitutions"}</em>
+          </a>
+        ))}
+      </div>
+      <h2>Both directions</h2>
+      <p><b>Render</b> (contract → theme): what this site does live on every canvas.<br/>
+         <b>Lift</b> (theme → contract): <code>python3 scripts/lift.py &lt;component&gt;</code> reads the
+         shadcn clone, translates via the dictionary, and emits a draft plus its report.
+         The weekly CI canary re-lifts against live upstream so new editions announce
+         themselves as failing checks.</p>
+    </div>
+  )
+}
+
+function RulesPage() {
+  return (
+    <div className="doc wide">
+      <Md text={SYSTEM.rules} />
+      <Md text={SYSTEM.growth} />
+      <Md text={SYSTEM.sync} />
+      <h2>The full law</h2>
+      <p className="li">contract/naming.md — the naming grammar</p>
+      <p className="li">contract/states.md · variants.md — canonical states and axes</p>
+      <p className="li">contract/authoring.md — the 6-step component order</p>
+      <p className="li">contract/translation.md — render/lift, adoption, capability-fork, character rules</p>
+      <p className="li">docs/LINKING.md — how a design system joins</p>
+      <p className="li">docs/token-research.md · translation-report.md — why each rule exists</p>
+    </div>
+  )
+}
+
 /* ------------------------------------------------------------------ app */
 
 function App() {
-  const [selected, setSelected] = React.useState("button")
+  const [selected, setSelected] = React.useState<string>("button")
   const [theme, setTheme] = React.useState(THEME_NAMES[0])
   const [mode, setMode] = React.useState("light")
   const [density, setDensity] = React.useState("medium")
@@ -66,6 +246,7 @@ function App() {
   const [compare, setCompare] = React.useState(false)
   const [query, setQuery] = React.useState("")
 
+  const isSystem = (SYSTEM_PAGES as readonly string[]).includes(selected)
   const story = STORIES.find((s) => s.name === selected)
   const meta = CONTROLS[selected] ?? { axes: {}, states: [], parts: [], behavior: "", tokens: [] }
   const caps = THEMES[theme].capabilities
@@ -93,6 +274,13 @@ function App() {
                value={query} onChange={(e) => setQuery(e.target.value)}
                aria-label="Filter components" />
         <nav>
+          <div className="tree-group">
+            <span className="tree-group-label">System</span>
+            {SYSTEM_PAGES.map((pg) => (
+              <button key={pg} type="button" aria-current={selected === pg ? "true" : undefined}
+                      onClick={() => setSelected(pg)}>{pg}</button>
+            ))}
+          </div>
           {groups.map((g) => {
             const items = visible(g)
             if (!items.length) return null
@@ -121,7 +309,7 @@ function App() {
           <h1>{selected}</h1>
           <span className="behavior">{meta.behavior.split("(")[0].trim()}</span>
           <div className="spacer" />
-          <div className="tabs">
+          <div className="tabs" style={{ display: isSystem ? "none" : undefined }}>
             {(["canvas", "anatomy", "tokens", "install"] as const).map((t) => (
               <button key={t} type="button" aria-current={tab === t ? "page" : undefined}
                       onClick={() => setTab(t)}>{t}</button>
@@ -129,7 +317,12 @@ function App() {
           </div>
         </div>
 
-        {tab === "canvas" && (
+        {isSystem ? (
+          selected === "foundations" ? <FoundationsPage theme={theme} mode={mode} density={hasDensity ? density : null} />
+          : selected === "dictionary" ? <DictionaryPage />
+          : selected === "translator" ? <TranslatorPage />
+          : <RulesPage />
+        ) : tab === "canvas" && (
           compare ? (
             <div className="compare">
               {THEME_NAMES.map((t) => (
@@ -149,7 +342,7 @@ function App() {
           )
         )}
 
-        {tab === "anatomy" && (
+        {!isSystem && tab === "anatomy" && (
           <div className="doc">
             <h2>Parts</h2>
             <p>Theme-invariant structure from <code>contract/anatomy/{selected}.json</code>.
@@ -170,7 +363,7 @@ function App() {
           </div>
         )}
 
-        {tab === "tokens" && (
+        {!isSystem && tab === "tokens" && (
           <div className="doc">
             <h2>Contract slots consumed</h2>
             <p>This component reads only these. Swap the theme and every one of them
@@ -187,7 +380,7 @@ function App() {
           </div>
         )}
 
-        {tab === "install" && (
+        {!isSystem && tab === "install" && (
           <div className="doc">
             <h2>Install</h2>
             <pre className="cmd">npx shadcn@latest add davoranic/registry/{selected}</pre>

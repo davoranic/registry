@@ -44,4 +44,31 @@ for f in sorted((ROOT / "contract" / "anatomy").glob("*.json")):
     }
 (OUT / "controls.gen.json").write_text(json.dumps(controls, indent=1))
 
+
+# ---- system pages: dictionary, rules, translator proofs ----
+import ast
+lift_src = (ROOT / "scripts" / "lift.py").read_text()
+dict_start = lift_src.index("DICT = {")
+dict_end = lift_src.index("\n}", dict_start) + 2
+DICT = ast.literal_eval(lift_src[dict_start + 7:dict_end])
+linking = (ROOT / "docs" / "LINKING.md").read_text()
+def section(md, head):
+    i = md.find(head)
+    if i < 0: return ""
+    j = md.find("\n## ", i + len(head))
+    return md[i:j if j > 0 else len(md)].strip()
+renders = []
+for rp in sorted((ROOT / "dist" / "patterns").glob("*.report.json")):
+    r = json.loads(rp.read_text())
+    renders.append({"pattern": r["pattern"], "theme": r["theme"],
+                    "lossless": r.get("lossless", False),
+                    "href": f"patterns/{r['pattern']}.{r['theme']}.html"})
+(OUT / "system.gen.json").write_text(json.dumps({
+    "dictionary": DICT,
+    "rules": section(linking, "## The rules"),
+    "growth": section(linking, "## Growth"),
+    "sync": section(linking, "## Upstream sync"),
+    "patternRenders": renders,
+}, indent=1))
+
 print(f"meta: {len(themes)} themes, {len(slots)} slots, {len(roles)} icon roles, {len(sets)} icon sets")

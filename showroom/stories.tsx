@@ -6,7 +6,7 @@ import { AlertDialog } from "../registry/alert-dialog/alert-dialog"
 import { AspectRatio } from "../registry/aspect-ratio/aspect-ratio"
 import { Avatar } from "../registry/avatar/avatar"
 import { Badge } from "../registry/badge/badge"
-import { Breadcrumb } from "../registry/breadcrumb/breadcrumb"
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbCurrent, BreadcrumbSeparator } from "../registry/breadcrumb/breadcrumb"
 import { Button } from "../registry/button/button"
 import { ButtonGroup } from "../registry/button-group/button-group"
 import { Calendar } from "../registry/calendar/calendar"
@@ -16,7 +16,7 @@ import { Chart } from "../registry/chart/chart"
 import { Checkbox } from "../registry/checkbox/checkbox"
 import { Collapsible } from "../registry/collapsible/collapsible"
 import { Command } from "../registry/command/command"
-import { ContextMenu } from "../registry/context-menu/context-menu"
+import { ContextMenu, ContextMenuItem, ContextMenuSeparator } from "../registry/context-menu/context-menu"
 import { Dialog } from "../registry/dialog/dialog"
 import { Drawer } from "../registry/drawer/drawer"
 import { DropdownMenu } from "../registry/dropdown-menu/dropdown-menu"
@@ -33,7 +33,7 @@ import { Label } from "../registry/label/label"
 import { Menubar } from "../registry/menubar/menubar"
 import { NativeSelect } from "../registry/native-select/native-select"
 import { NavigationMenu } from "../registry/navigation-menu/navigation-menu"
-import { Pagination } from "../registry/pagination/pagination"
+import { Pagination, PaginationList, PaginationItem, PaginationPage, PaginationPrevious, PaginationNext, PaginationEllipsis } from "../registry/pagination/pagination"
 import { Popover } from "../registry/popover/popover"
 import { Progress } from "../registry/progress/progress"
 import { RadioGroup, RadioGroupItem } from "../registry/radio-group/radio-group"
@@ -51,7 +51,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from ".
 import { Tabs, TabsList, TabsTrigger, TabsPanel } from "../registry/tabs/tabs"
 import { Textarea } from "../registry/textarea/textarea"
 import { Toggle } from "../registry/toggle/toggle"
-import { ToggleGroup } from "../registry/toggle-group/toggle-group"
+import { ToggleGroup, ToggleGroupItem } from "../registry/toggle-group/toggle-group"
 import { Tooltip } from "../registry/tooltip/tooltip"
 
 export type Args = Record<string, string | boolean>
@@ -165,6 +165,53 @@ function DialogStory(a: Args) {
   )
 }
 
+function AlertDialogStory(a: Args) {
+  const [open, setOpen] = React.useState(Boolean(a.open))
+  React.useEffect(() => setOpen(Boolean(a.open)), [a.open])
+  return (
+    <>
+      <Button emphasis="danger" onClick={() => setOpen(true)}>Delete record</Button>
+      <AlertDialog open={open} onOpenChange={setOpen} size={a.size as any}
+                   destructive showMedia
+                   title="Delete this record?"
+                   description="This cannot be undone. The record is removed for every member of the workspace."
+                   cancelLabel="Cancel" actionLabel="Delete" />
+    </>
+  )
+}
+
+function DrawerStory(a: Args) {
+  const [open, setOpen] = React.useState(Boolean(a.open))
+  React.useEffect(() => setOpen(Boolean(a.open)), [a.open])
+  return (
+    <>
+      <Button emphasis="secondary" prominence="outline" onClick={() => setOpen(true)}>Open drawer</Button>
+      <Drawer open={open} onOpenChange={setOpen} edge={a.edge as any} size={a.size as any}
+              title="Order details"
+              description="Fill breakdown for order #8214."
+              footer={<Button onClick={() => setOpen(false)}>Done</Button>}>
+        12,000 AAPL at 184.32 — filled across 4 venues.
+      </Drawer>
+    </>
+  )
+}
+
+function SheetStory(a: Args) {
+  const [open, setOpen] = React.useState(Boolean(a.open))
+  React.useEffect(() => setOpen(Boolean(a.open)), [a.open])
+  return (
+    <>
+      <Button emphasis="secondary" prominence="outline" onClick={() => setOpen(true)}>Open sheet</Button>
+      <Sheet open={open} onOpenChange={setOpen} edge={a.edge as any} size={a.size as any}
+             title="Edit profile"
+             description="Make changes to your profile here."
+             footer={<Button onClick={() => setOpen(false)}>Save changes</Button>}>
+        <Field label="Name"><Input defaultValue="Davor Anic" /></Field>
+      </Sheet>
+    </>
+  )
+}
+
 function SelectStory(a: Args) {
   const [v, setV] = React.useState("")
   return <Select value={v} onValueChange={setV} disabled={a.disabled as boolean}
@@ -223,8 +270,13 @@ export const STORIES: Story[] = [
   )),
   S("toggle", "Actions", ToggleStory),
   S("toggle-group", "Actions", (a) => (
-    <ToggleGroup orientation={a.orientation as any} defaultValue="center"
-                 items={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+    <ToggleGroup orientation={a.orientation as any} prominence={a.prominence as any}
+                 size={a.size as any} disabled={a.disabled as boolean}
+                 defaultValue="center" label="Text alignment">
+      <ToggleGroupItem value="left">Left</ToggleGroupItem>
+      <ToggleGroupItem value="center">Center</ToggleGroupItem>
+      <ToggleGroupItem value="right">Right</ToggleGroupItem>
+    </ToggleGroup>
   )),
   S("icon", "Actions", (a) => (
     <div style={{ display: "flex", gap: "var(--space-inline-lg)" }}>
@@ -296,10 +348,25 @@ export const STORIES: Story[] = [
       <Skeleton style={{ blockSize: 12 }} /><Skeleton style={{ blockSize: 12, inlineSize: "70%" }} />
     </div>
   )),
-  S("chart", "Display", () => <Chart data={[
-    { label: "Jan", value: 186 }, { label: "Feb", value: 305 }, { label: "Mar", value: 237 },
-    { label: "Apr", value: 273 }, { label: "May", value: 209 }, { label: "Jun", value: 264 }]} />),
-  S("carousel", "Display", () => <Carousel items={[<span key="1">Slide 1</span>, <span key="2">Slide 2</span>, <span key="3">Slide 3</span>]} />),
+  S("chart", "Display", (a) => (
+    <Chart label="Desktop and mobile visitors"
+           description="Visitors per month for the first half of the year."
+           type={(a.type as any) ?? "line"}
+           categories={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
+           categoryLabel="Month"
+           series={[
+             { key: "desktop", label: "Desktop", values: [186, 305, 237, 273, 209, 264] },
+             { key: "mobile", label: "Mobile", values: [80, 200, 120, 190, 130, 140] },
+           ]} />
+  )),
+  S("carousel", "Display", (a) => (
+    <Carousel label="Featured slides" orientation={a.orientation as any}
+              style={{ inlineSize: 260 }}>
+      <span>Slide 1</span>
+      <span>Slide 2</span>
+      <span>Slide 3</span>
+    </Carousel>
+  )),
 
   S("alert", "Feedback", (a) => <Alert tone={(a.tone as any) ?? "info"} title="Market data delayed"
                                        description="Pricing for LSE instruments is delayed by 15 minutes." />),
@@ -309,28 +376,68 @@ export const STORIES: Story[] = [
   S("tooltip", "Feedback", () => <Tooltip content="Round lots only"><Button emphasis="secondary" prominence="outline">Hover me</Button></Tooltip>),
 
   S("dialog", "Overlays", DialogStory),
-  S("alert-dialog", "Overlays", () => <AlertDialog trigger={<Button emphasis="danger">Delete</Button>}
-                                                   title="Delete this record?" description="This cannot be undone." />),
-  S("drawer", "Overlays", (a) => <Drawer edge={a.edge as any} trigger={<Button emphasis="secondary" prominence="outline">Open drawer</Button>} title="Order details" />),
-  S("sheet", "Overlays", (a) => <Sheet edge={a.edge as any} trigger={<Button emphasis="secondary" prominence="outline">Open sheet</Button>} title="Edit profile" />),
+  S("alert-dialog", "Overlays", AlertDialogStory),
+  S("drawer", "Overlays", DrawerStory),
+  S("sheet", "Overlays", SheetStory),
   S("popover", "Overlays", () => <Popover trigger={<Button emphasis="secondary" prominence="outline">Open popover</Button>}>Set the dimensions for the layer.</Popover>),
   S("hover-card", "Overlays", () => <HoverCard trigger={<a href="#s">@nextjs</a>}>The React framework — created and maintained by Vercel.</HoverCard>),
-  S("dropdown-menu", "Overlays", () => <DropdownMenu trigger={<Button emphasis="secondary" prominence="outline">Options</Button>}
-      items={[{ label: "Profile" }, { label: "Settings" }, { label: "Log out", emphasis: "danger" }]} />),
-  S("context-menu", "Overlays", () => <ContextMenu items={[{ label: "Back" }, { label: "Reload" }, { label: "Delete", emphasis: "danger" }]}>
-      Right-click inside this area</ContextMenu>),
+  S("dropdown-menu", "Overlays", (a) => <DropdownMenu trigger="Options" disabled={a.disabled as boolean}
+      entries={[
+        { label: "Profile", shortcut: "⇧⌘P" },
+        { label: "Settings" },
+        { type: "separator" },
+        { label: "Log out", destructive: true },
+      ]} />),
+  S("context-menu", "Overlays", () => (
+    <ContextMenu menu={<>
+        <ContextMenuItem shortcut="⌘[">Back</ContextMenuItem>
+        <ContextMenuItem shortcut="⌘R">Reload</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem emphasis="danger">Delete</ContextMenuItem>
+      </>}>
+      Right-click inside this area
+    </ContextMenu>
+  )),
 
   S("tabs", "Navigation", TabsStory),
-  S("breadcrumb", "Navigation", () => <Breadcrumb items={[{ label: "Home", href: "#s" }, { label: "Components", href: "#s" }, { label: "Breadcrumb" }]} />),
-  S("pagination", "Navigation", () => <Pagination page={2} pageCount={6} />),
+  S("breadcrumb", "Navigation", () => (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem><BreadcrumbLink href="#s">Home</BreadcrumbLink></BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem><BreadcrumbLink href="#s">Components</BreadcrumbLink></BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem><BreadcrumbCurrent>Breadcrumb</BreadcrumbCurrent></BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  )),
+  S("pagination", "Navigation", (a) => (
+    <Pagination size={a.size as any}>
+      <PaginationList>
+        <PaginationItem><PaginationPrevious href="#s" /></PaginationItem>
+        <PaginationItem><PaginationPage href="#s" page={1} /></PaginationItem>
+        <PaginationItem><PaginationPage href="#s" page={2} current /></PaginationItem>
+        <PaginationItem><PaginationPage href="#s" page={3} /></PaginationItem>
+        <PaginationItem><PaginationEllipsis /></PaginationItem>
+        <PaginationItem><PaginationPage href="#s" page={6} /></PaginationItem>
+        <PaginationItem><PaginationNext href="#s" /></PaginationItem>
+      </PaginationList>
+    </Pagination>
+  )),
   S("menubar", "Navigation", () => <Menubar menus={[
-      { label: "File", items: [{ label: "New tab" }, { label: "New window" }] },
-      { label: "Edit", items: [{ label: "Undo" }, { label: "Redo" }] }]} />),
+      { label: "File", entries: [{ label: "New tab", shortcut: "⌘T" }, { label: "New window" }] },
+      { label: "Edit", entries: [{ label: "Undo", shortcut: "⌘Z" }, { label: "Redo" }] }]} />),
   S("navigation-menu", "Navigation", (a) => <NavigationMenu orientation={a.orientation as any}
       items={[{ label: "Overview", href: "#s", current: true }, { label: "Docs", href: "#s" }, { label: "Support", href: "#s" }]} />),
-  S("command", "Navigation", () => <Command items={[{ label: "Calendar" }, { label: "Search settings" }, { label: "Open profile" }]} />),
-  S("sidebar", "Navigation", (a) => <Sidebar edge={a.edge as any}
-      items={[{ label: "Dashboard", current: true }, { label: "Invoices" }, { label: "Customers" }]} />),
+  S("command", "Navigation", () => <Command options={[
+      { label: "Calendar", group: "Suggestions" },
+      { label: "Search settings", group: "Settings", shortcut: "⌘S" },
+      { label: "Open profile", group: "Settings", shortcut: "⌘P" }]} />),
+  S("sidebar", "Navigation", (a) => <Sidebar edge={a.edge as any} label="Main"
+      groups={[{ items: [
+        { label: "Dashboard", href: "#s", current: true },
+        { label: "Invoices", href: "#s" },
+        { label: "Customers", href: "#s" }] }]} />),
 
   S("scroll-area", "Layout", () => (
     <ScrollArea style={{ blockSize: 140, inlineSize: 220 }}>

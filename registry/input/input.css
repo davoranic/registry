@@ -29,5 +29,5 @@
 }
 
 [data-slot="input"] { display: inline-flex; align-items: center; width: 100%; }
-[data-slot="input"] [data-slot="control"] {
-[data-slot="input"] [data-slot="control"]:disabled {
+[data-slot="input"] [data-slot="control"] { all: unset; flex: 1; min-width: 0; font: inherit; color: var(--on-surface); }
+[data-slot="input"] [data-slot="control"]:disabled { opacity: 0.5; cursor: var(--cursor-disabled); }
