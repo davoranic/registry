@@ -17,6 +17,27 @@ A design-system registry built from scratch. This public GitHub repository
    Anatomy specific to one system is allowed and flagged in that theme's
    `anatomySpecific` list.
 
+## Consuming projects — two tiers
+
+Theme-switching works by themes overwriting CONTRACT slots. How much of a
+project switches depends on which language it speaks:
+
+- **Tier 1 · Native (full switching).** The project authors against contract
+  slots (`--surface`, `--action`, `type-action` role, `--control-h`…).
+  EVERYTHING switches: colors, radius, type — and the character axes too
+  (Salt's density compresses it, action text uppercases, cursors follow).
+  All components installed from THIS registry are native (Phase 1.3).
+- **Tier 2 · Compat (basic switching).** An existing shadcn-convention
+  project (or ecosystem components like Magic UI) plugs in unchanged via the
+  alias layer: `--background` → `--surface` etc. Colors, radius, and type
+  switch across themes on day one — but the ~30 aliases only cover shadcn's
+  vocabulary, so NEW semantics (density, field-* states, action case,
+  cursor policy, selected-indicator) don't reach it until it migrates.
+
+Rule: new work is authored native (translation.md A1); compat is a
+**migration on-ramp**, not a destination. Migration is incremental — rename
+slot by slot; both names resolve identically while you do.
+
 Items are described in [`registry.json`](./registry.json) and installed with
 the shadcn CLI:
 
