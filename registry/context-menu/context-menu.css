@@ -124,6 +124,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="context-menu"] [data-slot="panel"][role="menu"][data-state="open"] {
-  [data-slot="context-menu"] [data-slot="panel"][role="menu"] [data-slot="item"] {
+  [data-slot="context-menu"] [data-slot="panel"][role="menu"][data-state="open"] { animation: none; }
+  [data-slot="context-menu"] [data-slot="panel"][role="menu"] [data-slot="item"] { transition: none; }
 }

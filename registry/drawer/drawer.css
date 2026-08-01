@@ -73,12 +73,20 @@
 /* size axis — binds along the anchored-edge-normal dimension */
 [data-slot="drawer"] [data-slot="panel"][data-edge="bottom"][data-size="sm"],
 [data-slot="drawer"] [data-slot="panel"][data-edge="top"][data-size="sm"] {
+  height: var(--size-overlay-sm);
+}
 [data-slot="drawer"] [data-slot="panel"][data-edge="bottom"][data-size="lg"],
 [data-slot="drawer"] [data-slot="panel"][data-edge="top"][data-size="lg"] {
+  height: var(--size-overlay-lg);
+}
 [data-slot="drawer"] [data-slot="panel"][data-edge="start"][data-size="sm"],
 [data-slot="drawer"] [data-slot="panel"][data-edge="end"][data-size="sm"] {
+  width: var(--size-overlay-sm);
+}
 [data-slot="drawer"] [data-slot="panel"][data-edge="start"][data-size="lg"],
 [data-slot="drawer"] [data-slot="panel"][data-edge="end"][data-size="lg"] {
+  width: var(--size-overlay-lg);
+}
 
 /* handle — the drag affordance */
 [data-slot="drawer"] [data-slot="panel"][data-edge] [data-slot="handle"] {
@@ -165,5 +173,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   [data-slot="drawer"] [data-slot="scrim"][data-state="open"],
-  [data-slot="drawer"] [data-slot="panel"][data-edge][data-state="open"] {
+  [data-slot="drawer"] [data-slot="panel"][data-edge][data-state="open"] { animation: none; }
 }

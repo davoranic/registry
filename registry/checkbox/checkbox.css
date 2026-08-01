@@ -22,7 +22,7 @@
     background-color var(--duration-fast) var(--easing-standard),
     border-color var(--duration-fast) var(--easing-standard);
 }
-[data-slot="checkbox"] [data-slot="control"]:hover {
+[data-slot="checkbox"] [data-slot="control"]:hover { border-color: var(--field-border-hover); background: var(--field-surface-hover); }
 [data-slot="checkbox"] [data-slot="control"][data-state="selected"],
 [data-slot="checkbox"] [data-slot="control"][data-state="indeterminate"] {
   background: var(--action);
@@ -32,12 +32,12 @@
   outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 50%, transparent);
   outline-offset: var(--focus-offset);
 }
-[data-slot="checkbox"] [data-slot="control"][aria-invalid="true"] {
-[data-slot="checkbox"] [data-slot="control"][aria-readonly="true"] {
+[data-slot="checkbox"] [data-slot="control"][aria-invalid="true"] { border-color: var(--status-critical); }
+[data-slot="checkbox"] [data-slot="control"][aria-readonly="true"] { background: var(--surface-sunken); cursor: default; }
 [data-slot="checkbox"][data-disabled] { opacity: 0.5; pointer-events: none; cursor: var(--cursor-disabled); }
-[data-slot="checkbox"] [data-slot="indicator"] {
-[data-slot="checkbox"] [data-slot="indicator"] svg {
+[data-slot="checkbox"] [data-slot="indicator"] { display: inline-flex; }
+[data-slot="checkbox"] [data-slot="indicator"] svg { width: var(--icon-size-inline); height: var(--icon-size-inline); }
 [data-slot="checkbox"] [data-slot="text"] { display: inline-flex; flex-direction: column; gap: calc(var(--space-unit) * 0.5); }
 [data-slot="checkbox"] [data-slot="label"] { font: var(--type-label); cursor: var(--cursor-interactive); }
 [data-slot="checkbox"] [data-slot="description"] { font: var(--type-caption); color: var(--content-secondary); }
-@media (prefers-reduced-motion: reduce) { [data-slot="control"] { transition: none; } }
+@media (prefers-reduced-motion: reduce) { [data-slot="checkbox"] [data-slot="control"] { transition: none; } }

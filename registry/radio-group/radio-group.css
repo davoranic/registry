@@ -3,7 +3,7 @@
 [data-slot="radio-group"] { display: flex; gap: var(--space-stack-sm); }
 [data-slot="radio-group"][data-orientation="vertical"] { flex-direction: column; }
 [data-slot="radio-group"][data-orientation="horizontal"] { flex-direction: row; gap: var(--space-inline-lg); }
-[data-slot="radio-group"] [data-slot="item"] {
+[data-slot="radio-group"] [data-slot="item"] { display: inline-flex; align-items: center; gap: var(--space-inline-md); }
 [data-slot="radio-group"] [data-slot="control"] {
   display: inline-grid;
   place-items: center;
@@ -31,11 +31,11 @@
   background: transparent;
   transition: background-color var(--duration-fast) var(--easing-standard);
 }
-[data-slot="radio-group"] [data-slot="control"][data-state="selected"] [data-slot="indicator"] {
-[data-slot="radio-group"] [data-slot="item"][data-disabled], [data-slot="radio-group"] [data-slot="radio-group"][data-disabled] {
+[data-slot="radio-group"] [data-slot="control"][data-state="selected"] [data-slot="indicator"] { background: var(--action); }
+[data-slot="radio-group"] [data-slot="item"][data-disabled], [data-slot="radio-group"][data-disabled] {
   opacity: 0.5; pointer-events: none; cursor: var(--cursor-disabled);
 }
-[data-slot="radio-group"] [data-slot="item"] [data-slot="label"] {
+[data-slot="radio-group"] [data-slot="item"] [data-slot="label"] { font: var(--type-label); cursor: var(--cursor-interactive); }
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="radio-group"] [data-slot="control"], [data-slot="indicator"] { transition: none; }
+  [data-slot="radio-group"] [data-slot="control"], [data-slot="radio-group"] [data-slot="indicator"] { transition: none; }
 }

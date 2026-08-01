@@ -17,8 +17,8 @@
   width: calc(var(--control-height-sm) * 0.9);
   height: calc(var(--control-height-sm) * 0.5);
 }
-[data-slot="switch"] [data-slot="track"]:hover {
-[data-slot="switch"] [data-slot="track"][data-state="selected"] {
+[data-slot="switch"] [data-slot="track"]:hover { background: var(--field-border-hover); }
+[data-slot="switch"] [data-slot="track"][data-state="selected"] { background: var(--action); }
 [data-slot="switch"] [data-slot="track"]:focus-visible {
   outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 50%, transparent);
   outline-offset: var(--focus-offset);
@@ -47,5 +47,5 @@
 [data-slot="switch"][data-disabled] { opacity: 0.5; pointer-events: none; cursor: var(--cursor-disabled); }
 [data-slot="switch"] [data-slot="label"] { font: var(--type-label); cursor: var(--cursor-interactive); }
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="switch"] [data-slot="track"], [data-slot="switch"] [data-slot="thumb"] {
+  [data-slot="switch"] [data-slot="track"], [data-slot="switch"] [data-slot="thumb"] { transition: none; }
 }

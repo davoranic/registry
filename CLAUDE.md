@@ -68,24 +68,19 @@ the tree: foundations, dictionary, translator, rules.
 - Cloud config: clones of ui/, salt-ds/, magicui/, animate-ui/, primitives/
   live BESIDE this repo in "/Users/davoranic/UI registry/".
 
-## HANDOFF — in-flight state (2026-08-01 evening)
+## HANDOFF — state at session end (2026-08-01 night)
 
-A repair agent may still be running or have died mid-work. Verify before
-trusting: six stylesheets were CORRUPTED by a scoping script that dropped
-one-line rule bodies — checkbox, context-menu, dialog, drawer, radio-group,
-switch (input already repaired). Repair recipe: restore from
-`git show 37682b8:registry/<name>/<name>.css` where it exists
-(checkbox/radio-group/switch/dialog), then re-scope selectors WITHOUT
-touching bodies; reconstruct context-menu/drawer bodies from TSX + anatomy.
-`python3 scripts/check-component.py` must be fully green (it now includes a
-brace-balance guard that catches exactly this).
+Everything is repaired, validated, bundled, and pushed:
+- All 6 corrupted stylesheets fixed (restored from git / reconstructed from
+  anatomy); check-component.py fully green incl. brace-balance guard.
+- All 55 stories fixed against real component APIs; smoke test shows only
+  the known dual-React useState harness noise (browser is fine).
+- System pages live in the tree: foundations, dictionary, translator, rules.
+- Bundle builds with 0 CSS warnings. dist/ committed; Vercel serves it at
+  registry.davoranic.com (framework null — never let Vercel auto-build).
 
-Then ship: `python3 scripts/gen-showroom-meta.py && node
-scripts/bundle-showroom.mjs`, LOOK at dist/index.html in a browser (all 55
-stories + the 4 System pages: foundations/dictionary/translator/rules),
-then push — Vercel serves dist/ statically at registry.davoranic.com.
-
-Known-good latest: stories all fixed against real component APIs (smoke
-test: only dual-React useState harness noise remains); System pages built;
-scoped themes work (data-theme on any container). Remaining roadmap after
-shipping: Phase 5 (onboard Material 3 as the repeatability proof).
+FIRST THING NEXT SESSION: open dist/index.html (or the live site) in a
+browser and click through — visual verification was not completed. Then:
+ROADMAP Phase 5 (onboard Material 3 as the repeatability proof), and the
+Salt-only adoptions (stepper/rating/tree have anatomy but no components
+since the clean-slate reset).
