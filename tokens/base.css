@@ -84,6 +84,7 @@
   --radius-container: calc(var(--radius-knob) * 1.4);
   --radius-overlay: var(--radius-knob);
   --radius-pill: 999px;
+  --radius-field-control: calc(var(--radius-knob) * 0.6);  /* checkbox box, chips (growth 1.2.1) */
   --border-width: 1px; --border-width-strong: 2px;
   /* growth 1.2.0 — attribute audit */
   --border-style-emphasis: dashed;

@@ -1,0 +1,1549 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>UI Registry — Showroom (generated)</title>
+<style>/* ============================================================
+   SEMANTIC TOKEN CONTRACT — implementation
+   Spec: tokens/semantic.md · Linking rules: docs/LINKING.md
+   Neutral slot names; defaults = theme-shadcn light. Themes
+   overwrite these values (see themes/theme-*.json). The alias
+   block at the end keeps shadcn-convention components working.
+   ============================================================ */
+
+:root {
+  /* ---- 1 · color ---- */
+  --surface: oklch(1 0 0);                 --on-surface: oklch(0.145 0 0);
+  --surface-raised: oklch(1 0 0);          --on-surface-raised: oklch(0.145 0 0);
+  --surface-overlay: oklch(1 0 0);         --on-surface-overlay: oklch(0.145 0 0);
+  --surface-sunken: oklch(0.97 0 0);
+  --content-secondary: oklch(0.556 0 0);
+  --action: oklch(0.205 0 0);              --on-action: oklch(0.985 0 0);
+  --action-hover: oklch(0.205 0 0 / 90%);  --action-active: oklch(0.145 0 0);
+  --action-secondary: oklch(0.97 0 0);     --on-action-secondary: oklch(0.205 0 0);
+  --interaction-hover: oklch(0.97 0 0);    --interaction-active: oklch(0.922 0 0);
+  --interaction-selected: oklch(0.97 0 0); --on-interaction-selected: oklch(0.205 0 0);
+  --field-border: oklch(0.922 0 0);
+  --border: oklch(0.922 0 0);              --border-strong: oklch(0.708 0 0);
+  --link: oklch(0.205 0 0);
+  --focus: oklch(0.708 0 0);
+  --overlay-scrim: oklch(0 0 0 / 50%);
+  --status-info: oklch(0.488 0.1 240);     --status-info-surface: oklch(0.97 0.02 240);    --status-info-border: oklch(0.85 0.05 240);
+  --status-success: oklch(0.627 0.17 149); --status-success-surface: oklch(0.97 0.03 149); --status-success-border: oklch(0.85 0.08 149);
+  --status-warning: oklch(0.666 0.179 58); --status-warning-surface: oklch(0.97 0.04 85);  --status-warning-border: oklch(0.85 0.09 75);
+  --status-critical: oklch(0.577 0.245 27);--status-critical-surface: oklch(0.97 0.02 27); --status-critical-border: oklch(0.85 0.08 27);
+  --on-status-info: oklch(0.985 0 0); --on-status-success: oklch(0.985 0 0);
+  --on-status-warning: oklch(0.985 0 0); --on-status-critical: oklch(0.985 0 0);
+  --data-1: oklch(0.646 0.222 41.116); --data-2: oklch(0.6 0.118 184.704);
+  --data-3: oklch(0.398 0.07 227.392); --data-4: oklch(0.828 0.189 84.429);
+  --data-5: oklch(0.769 0.188 70.08);  --data-6: oklch(0.627 0.265 303.9);
+  --data-7: oklch(0.55 0.15 20);  --data-8: oklch(0.6 0.13 130);
+  --data-9: oklch(0.5 0.12 280);  --data-10: oklch(0.65 0.1 200);
+  --data-11: oklch(0.7 0.14 100); --data-12: oklch(0.45 0.09 330);
+  --inverse-surface: oklch(0.205 0 0);     --on-inverse-surface: oklch(0.985 0 0);
+  /* growth pass 1.1.0 (learned via Salt — LINKING.md §Growth) */
+  --border-subtle: oklch(0.955 0 0);
+  --field-surface: oklch(1 0 0);           --field-surface-hover: oklch(0.985 0 0);
+  --field-border-hover: oklch(0.85 0 0);   --field-border-active: var(--focus);
+  --content-disabled: oklch(0.145 0 0 / 50%);
+  --selected-indicator: var(--action);
+  --target-surface-hover: oklch(0.97 0.01 240); --target-border-hover: var(--focus);
+
+  /* ---- 2 · typography roles: family / size / line / weight / tracking / case ---- */
+  --family-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --family-body: var(--family-display);
+  --family-code: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --type-display:   600 2.25rem/2.5rem   var(--family-display);
+  --type-heading-1: 600 1.875rem/2.25rem var(--family-display);
+  --type-heading-2: 600 1.5rem/2rem      var(--family-display);
+  --type-heading-3: 600 1.125rem/1.75rem var(--family-display);
+  --type-body:      400 1rem/1.5rem      var(--family-body);
+  --type-body-strong: 600 1rem/1.5rem    var(--family-body);
+  --type-label:     500 0.875rem/1.25rem var(--family-body);
+  --type-action:    500 0.875rem/1.25rem var(--family-body);
+  --action-case: none;  --action-tracking: 0em;
+  --type-caption:   400 0.75rem/1rem     var(--family-body);
+  --type-code:      400 0.8125rem/1.25rem var(--family-code);
+  --type-data:      400 0.875rem/1.25rem var(--family-code);
+
+  /* ---- 3 · space & size ---- */
+  --space-unit: 0.25rem;
+  --space-inline-sm: calc(var(--space-unit) * 1); --space-inline-md: calc(var(--space-unit) * 2); --space-inline-lg: calc(var(--space-unit) * 4);
+  --space-stack-sm: calc(var(--space-unit) * 2);  --space-stack-md: calc(var(--space-unit) * 4);  --space-stack-lg: calc(var(--space-unit) * 6);
+  --inset-control-x: calc(var(--space-unit) * 4);
+  --inset-container: calc(var(--space-unit) * 6);
+  --control-height-sm: 2rem; --control-height-md: 2.25rem; --control-height-lg: 2.5rem;
+  /* density-scalable aliases (themes with a density axis override these;
+     control-h == control-height-md by definition — naming unification
+     scheduled as growth 1.3) */
+  --text-ui: 0.875rem;
+  --ui-weight: 500;                 /* action/label weight — Salt: 600 */
+  --control-h: var(--control-height-md);
+  --control-px: var(--inset-control-x);
+  --icon-size: var(--icon-size-control);
+  --target-min: 2.75rem;
+
+  /* ---- 4 · shape ---- */
+  --radius-knob: 0.625rem;                       /* themes may fix instead of knob */
+  --radius-control: calc(var(--radius-knob) * 0.8);
+  --radius-container: calc(var(--radius-knob) * 1.4);
+  --radius-overlay: var(--radius-knob);
+  --radius-pill: 999px;
+  --radius-field-control: calc(var(--radius-knob) * 0.6);  /* checkbox box, chips (growth 1.2.1) */
+  --border-width: 1px; --border-width-strong: 2px;
+  /* growth 1.2.0 — attribute audit */
+  --border-style-emphasis: dashed;
+  --cursor-interactive: default;   /* shadcn character; Salt: pointer */
+  --cursor-disabled: default;      /* Salt: not-allowed */
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --link-decoration: underline; --link-decoration-offset: 3px;
+  --size-overlay-sm: 24rem; --size-overlay-md: 32rem; --size-overlay-lg: 40rem;
+
+  /* ---- 5 · elevation (strategy: mixed — borders + soft shadows) ---- */
+  --elevation-resting: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --elevation-raised:  0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --elevation-overlay: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --elevation-modal:   0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* ---- 6 · motion ---- */
+  --duration-instant: 0ms; --duration-fast: 150ms; --duration-base: 200ms; --duration-slow: 300ms;
+  --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-enter: cubic-bezier(0, 0, 0.2, 1);
+  --easing-exit: cubic-bezier(0.4, 0, 1, 1);
+  --easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---- 7 · layers ---- */
+  --layer-base: 0; --layer-sticky: 100; --layer-dropdown: 1000;
+  --layer-overlay: 1200; --layer-modal: 1300; --layer-notification: 1400; --layer-tooltip: 1500;
+
+  /* ---- 8 · iconography ---- */
+  --icon-size-inline: 0.75rem; --icon-size-control: 1rem; --icon-size-emphasis: 1.5rem;
+  --icon-style: outline; --icon-stroke: 2;
+  /* set + swap mechanism + role map: declared per theme (themes/*.json §icons) */
+
+  /* ---- 9 · focus ---- */
+  --focus-width: 3px; --focus-style: ring; --focus-offset: 0px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration-instant: 0ms; --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; }
+}
+
+/* ============================================================
+   shadcn-convention COMPATIBILITY ALIASES
+   Existing registry components keep working; they resolve to the
+   contract. New components should target contract slots directly.
+   ============================================================ */
+:root {
+  --background: var(--surface);            --foreground: var(--on-surface);
+  --card: var(--surface-raised);           --card-foreground: var(--on-surface-raised);
+  --popover: var(--surface-overlay);       --popover-foreground: var(--on-surface-overlay);
+  --primary: var(--action);                --primary-foreground: var(--on-action);
+  --secondary: var(--action-secondary);    --secondary-foreground: var(--on-action-secondary);
+  --muted: var(--surface-sunken);          --muted-foreground: var(--content-secondary);
+  --accent: var(--interaction-hover);      --accent-foreground: var(--on-interaction-selected);
+  --destructive: var(--status-critical);
+  --success: var(--status-success);        --warning: var(--status-warning);
+  --border: var(--border);                 --input: var(--field-border);
+  --ring: var(--focus);
+  --radius: var(--radius-knob);
+  --chart-1: var(--data-1); --chart-2: var(--data-2); --chart-3: var(--data-3);
+  --chart-4: var(--data-4); --chart-5: var(--data-5);
+}
+</style>
+<style data-theme-css="salt" media="not all">/* GENERATED by scripts/build-themes.py from theme-salt.json — DO NOT EDIT.
+   Import after tokens/base.css. Theme: Salt DS. */
+
+:root {
+  --surface: #FFFFFF;
+  --on-surface: #161616;
+  --surface-raised: #FFFFFF;
+  --on-surface-raised: #161616;
+  --surface-overlay: #FFFFFF;
+  --on-surface-overlay: #161616;
+  --action: #155C93;
+  --on-action: #FFFFFF;
+  --action-secondary: #EAEDEF;
+  --on-action-secondary: #161616;
+  --surface-sunken: #EAEDEF;
+  --content-secondary: #61656E;
+  --interaction-hover: #CBE7F9;
+  --on-interaction-selected: #161616;
+  --status-critical: #C42010;
+  --status-success: #18723D;
+  --status-warning: #CC440D;
+  --border: #CED2D9;
+  --field-border: #61656E;
+  --focus: #155C93;
+  --status-info: #155C93;
+  --status-info-surface: #EAF4FB;
+  --status-info-border: #2670A9;
+  --on-status-info: #FFFFFF;
+  --status-success: #18723D;
+  --status-success-surface: #E9F5EC;
+  --status-success-border: #24874B;
+  --on-status-success: #FFFFFF;
+  --status-warning: #CC440D;
+  --status-warning-surface: #FFE8BF;
+  --status-warning-border: #D65513;
+  --on-status-warning: #FFFFFF;
+  --status-critical: #C42010;
+  --status-critical-surface: #FFE3E0;
+  --status-critical-border: #E32B16;
+  --on-status-critical: #FFFFFF;
+  --cursor-interactive: pointer;
+  --cursor-disabled: not-allowed;
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --border-style-emphasis: dashed;
+  --link-decoration: underline;
+  --border-subtle: #E6E6E6;
+  --field-surface: #FFFFFF;
+  --field-surface-hover: #F2F4F6;
+  --field-border-hover: #155C93;
+  --field-border-active: #155C93;
+  --selected-indicator: #155C93;
+  --target-surface-hover: #EAF4FB;
+  --target-border-hover: #2670A9;
+  --radius-knob: 0rem;
+  --radius: 0rem;
+  --font-sans: 'Open Sans', -apple-system, system-ui, sans-serif;
+  --ui-weight: 600;
+  --action-case: uppercase;
+  --action-tracking: 0.6px;
+  --focus-width: 2px;
+  --focus-style: outline;
+  --focus-offset: 2px;
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 1000ms;
+  --easing-standard: ease-in-out;
+  --easing-enter: ease-out;
+  --easing-exit: ease-in;
+  --easing-emphasized: ease-in-out;
+  --layer-base: 1;
+  --layer-sticky: 1100;
+  --layer-dropdown: 1000;
+  --layer-overlay: 1200;
+  --layer-modal: 1300;
+  --layer-notification: 1400;
+  --layer-tooltip: 1500;
+  --elevation-resting: none;
+  --elevation-raised: 0 1px 3px 0 rgba(0,0,0,0.10);
+  --elevation-overlay: 0 4px 8px 0 rgba(0,0,0,0.15);
+  --elevation-modal: 0 12px 40px 0 rgba(0,0,0,0.30);
+  --action-case: uppercase;
+  --action-tracking: 0.6px;
+  --ui-weight: 600;
+  --cursor-interactive: pointer;
+  --cursor-disabled: not-allowed;
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --border-style-emphasis: dashed;
+  --link-decoration: underline;
+}
+
+.dark {
+  --surface: #242526;
+  --on-surface: #FFFFFF;
+  --surface-raised: #2A2C2F;
+  --on-surface-raised: #FFFFFF;
+  --surface-overlay: #2A2C2F;
+  --on-surface-overlay: #FFFFFF;
+  --action: #2670A9;
+  --on-action: #FFFFFF;
+  --action-secondary: #2F3136;
+  --on-action-secondary: #FFFFFF;
+  --surface-sunken: #2F3136;
+  --content-secondary: #B4B7BE;
+  --interaction-hover: #1A2A38;
+  --on-interaction-selected: #FFFFFF;
+  --status-critical: #FF5942;
+  --status-success: #24874B;
+  --status-warning: #EA7319;
+  --border: #4C505B;
+  --field-border: #B4B7BE;
+  --focus: #4B9FD8;
+  --status-info: #155C93;
+  --status-info-surface: #EAF4FB;
+  --status-info-border: #2670A9;
+  --on-status-info: #FFFFFF;
+  --status-success: #18723D;
+  --status-success-surface: #E9F5EC;
+  --status-success-border: #24874B;
+  --on-status-success: #FFFFFF;
+  --status-warning: #CC440D;
+  --status-warning-surface: #FFE8BF;
+  --status-warning-border: #D65513;
+  --on-status-warning: #FFFFFF;
+  --status-critical: #C42010;
+  --status-critical-surface: #FFE3E0;
+  --status-critical-border: #E32B16;
+  --on-status-critical: #FFFFFF;
+  --border-subtle: #38383A;
+  --field-surface: #2A2C2F;
+  --field-surface-hover: #2F3136;
+  --field-border-hover: #4B9FD8;
+  --field-border-active: #4B9FD8;
+  --selected-indicator: #4B9FD8;
+  --target-surface-hover: #1A2A38;
+  --target-border-hover: #4B9FD8;
+}
+
+/* density (default: medium) */
+
+:root {
+  --spacing: 0.25rem;
+  --control-h: 1.75rem;
+  --control-px: 0.75rem;
+  --text-ui: 0.75rem;
+  --icon-size: 0.75rem;
+}
+
+[data-density="high"] {
+  --spacing: 0.125rem;
+  --control-h: 1.25rem;
+  --control-px: 0.5rem;
+  --text-ui: 0.6875rem;
+  --icon-size: 0.625rem;
+}
+
+[data-density="medium"] {
+  --spacing: 0.25rem;
+  --control-h: 1.75rem;
+  --control-px: 0.75rem;
+  --text-ui: 0.75rem;
+  --icon-size: 0.75rem;
+}
+
+[data-density="low"] {
+  --spacing: 0.375rem;
+  --control-h: 2.25rem;
+  --control-px: 1rem;
+  --text-ui: 0.875rem;
+  --icon-size: 0.875rem;
+}
+
+[data-density="touch"] {
+  --spacing: 0.5rem;
+  --control-h: 2.75rem;
+  --control-px: 1.25rem;
+  --text-ui: 0.875rem;
+  --icon-size: 1rem;
+}
+</style>
+<style data-theme-css="shadcn" media="not all">/* GENERATED by scripts/build-themes.py from theme-shadcn.json — DO NOT EDIT.
+   Import after tokens/base.css. Theme: shadcn neutral. */
+
+:root {
+  --surface: oklch(1 0 0);
+  --on-surface: oklch(0.145 0 0);
+  --surface-raised: oklch(1 0 0);
+  --on-surface-raised: oklch(0.145 0 0);
+  --surface-overlay: oklch(1 0 0);
+  --on-surface-overlay: oklch(0.145 0 0);
+  --action: oklch(0.205 0 0);
+  --on-action: oklch(0.985 0 0);
+  --action-secondary: oklch(0.97 0 0);
+  --on-action-secondary: oklch(0.205 0 0);
+  --surface-sunken: oklch(0.97 0 0);
+  --content-secondary: oklch(0.556 0 0);
+  --interaction-hover: oklch(0.97 0 0);
+  --on-interaction-selected: oklch(0.205 0 0);
+  --status-critical: oklch(0.577 0.245 27.325);
+  --status-success: oklch(0.627 0.17 149.2);
+  --status-warning: oklch(0.666 0.179 58.3);
+  --border: oklch(0.922 0 0);
+  --field-border: oklch(0.922 0 0);
+  --focus: oklch(0.708 0 0);
+  --status-info: oklch(0.488 0.1 240);
+  --status-info-surface: oklch(0.97 0.02 240);
+  --status-info-border: oklch(0.85 0.05 240);
+  --on-status-info: oklch(0.985 0 0);
+  --status-success: oklch(0.627 0.17 149.2);
+  --status-success-surface: oklch(0.97 0.03 149);
+  --status-success-border: oklch(0.85 0.08 149);
+  --on-status-success: oklch(0.985 0 0);
+  --status-warning: oklch(0.666 0.179 58.3);
+  --status-warning-surface: oklch(0.97 0.04 85);
+  --status-warning-border: oklch(0.85 0.09 75);
+  --on-status-warning: oklch(0.985 0 0);
+  --status-critical: oklch(0.577 0.245 27.325);
+  --status-critical-surface: oklch(0.97 0.02 27);
+  --status-critical-border: oklch(0.85 0.08 27);
+  --on-status-critical: oklch(0.985 0 0);
+  --cursor-interactive: default;
+  --cursor-disabled: default;
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --border-style-emphasis: dashed;
+  --link-decoration: underline;
+  --link-decoration-offset: 3px;
+  --radius-knob: 0.625rem;
+  --radius: 0.625rem;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --text-ui: 0.875rem;
+  --ui-weight: 500;
+  --action-case: none;
+  --action-tracking: 0em;
+  --focus-width: 3px;
+  --focus-style: ring;
+  --focus-offset: 0px;
+  --icon-size: 1rem;
+  --spacing: 0.25rem;
+  --control-h: 2.25rem;
+  --control-px: 1rem;
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --easing-standard: cubic-bezier(0.4,0,0.2,1);
+  --easing-enter: cubic-bezier(0,0,0.2,1);
+  --easing-exit: cubic-bezier(0.4,0,1,1);
+  --easing-emphasized: cubic-bezier(0.2,0,0,1);
+  --layer-base: 0;
+  --layer-sticky: 100;
+  --layer-dropdown: 1000;
+  --layer-overlay: 1200;
+  --layer-modal: 1300;
+  --layer-notification: 1400;
+  --layer-tooltip: 1500;
+  --elevation-resting: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --elevation-raised: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --elevation-overlay: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --elevation-modal: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --action-case: none;
+  --action-tracking: 0em;
+  --ui-weight: 500;
+  --cursor-interactive: default;
+  --cursor-disabled: default;
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --border-style-emphasis: dashed;
+  --link-decoration: underline;
+  --link-decoration-offset: 3px;
+  --size-overlay-sm: 24rem;
+  --size-overlay-md: 32rem;
+  --size-overlay-lg: 40rem;
+}
+
+.dark {
+  --surface: oklch(0.145 0 0);
+  --on-surface: oklch(0.985 0 0);
+  --surface-raised: oklch(0.205 0 0);
+  --on-surface-raised: oklch(0.985 0 0);
+  --surface-overlay: oklch(0.205 0 0);
+  --on-surface-overlay: oklch(0.985 0 0);
+  --action: oklch(0.922 0 0);
+  --on-action: oklch(0.205 0 0);
+  --action-secondary: oklch(0.269 0 0);
+  --on-action-secondary: oklch(0.985 0 0);
+  --surface-sunken: oklch(0.269 0 0);
+  --content-secondary: oklch(0.708 0 0);
+  --interaction-hover: oklch(0.371 0 0);
+  --on-interaction-selected: oklch(0.985 0 0);
+  --status-critical: oklch(0.704 0.191 22.216);
+  --status-success: oklch(0.723 0.192 149.6);
+  --status-warning: oklch(0.769 0.188 70.1);
+  --border: oklch(1 0 0 / 10%);
+  --field-border: oklch(1 0 0 / 15%);
+  --focus: oklch(0.556 0 0);
+  --status-info: oklch(0.488 0.1 240);
+  --status-info-surface: oklch(0.97 0.02 240);
+  --status-info-border: oklch(0.85 0.05 240);
+  --on-status-info: oklch(0.985 0 0);
+  --status-success: oklch(0.627 0.17 149.2);
+  --status-success-surface: oklch(0.97 0.03 149);
+  --status-success-border: oklch(0.85 0.08 149);
+  --on-status-success: oklch(0.985 0 0);
+  --status-warning: oklch(0.666 0.179 58.3);
+  --status-warning-surface: oklch(0.97 0.04 85);
+  --status-warning-border: oklch(0.85 0.09 75);
+  --on-status-warning: oklch(0.985 0 0);
+  --status-critical: oklch(0.577 0.245 27.325);
+  --status-critical-surface: oklch(0.97 0.02 27);
+  --status-critical-border: oklch(0.85 0.08 27);
+  --on-status-critical: oklch(0.985 0 0);
+}
+</style>
+<style>/* Avatar recipe — contract slots only (contract/authoring.md step 3).
+   LIFTED from shadcn/avatar.tsx via scripts/lift.py, then reviewed against
+   contract/anatomy/avatar.json + the button exemplar. Shape (radius-pill)
+   is a theme decision (anatomyNotes).
+   Unmapped words: see avatar.lift-report.json */
+
+/* root — square; size axis binds both dimensions to control-height-* */
+[data-slot="avatar"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--control-height-md);
+  height: var(--control-height-md);
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  user-select: none;
+}
+[data-slot="avatar"][data-size="sm"] { width: var(--control-height-sm); height: var(--control-height-sm); }
+[data-slot="avatar"][data-size="lg"] { width: var(--control-height-lg); height: var(--control-height-lg); }
+
+/* image — aspect-ratio 1; shown only after successful load (TSX gates it) */
+[data-slot="avatar"] [data-slot="image"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--radius-pill);
+}
+
+/* fallback — initials text, or the user icon role */
+[data-slot="avatar"] [data-slot="fallback"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--surface-sunken);
+  color: var(--content-secondary);
+  font: var(--type-label);
+}
+[data-slot="avatar"] [data-slot="fallback"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+}
+[data-slot="avatar"][data-size="sm"] [data-slot="fallback"] { font: var(--type-caption); }
+[data-slot="avatar"][data-size="sm"] [data-slot="fallback"] svg { width: var(--icon-size-inline); height: var(--icon-size-inline); }
+[data-slot="avatar"][data-size="lg"] [data-slot="fallback"] svg { width: var(--icon-size-emphasis); height: var(--icon-size-emphasis); }
+
+/* group — stacked avatars overlap; surface-colored ring separates
+   members (a recipe, not a token — anatomy note) */
+[data-slot="group"] {
+  display: inline-flex;
+}
+[data-slot="group"] [data-slot="avatar"] {
+  box-shadow: 0 0 0 var(--border-width-strong) var(--surface);
+}
+[data-slot="group"] [data-slot="avatar"]:not(:first-child) {
+  margin-inline-start: calc(var(--space-inline-sm) * -2);
+}
+
+/* Badge recipe — contract slots only (contract/authoring.md step 3).
+   Structure and axes: contract/anatomy/badge.json. Character: the theme.
+   Never for actions — presentational status label, no interactive states.
+   Tone selects the status family (status-<tone>-*); prominence picks fill
+   (solid: on-status-<tone> on status-<tone>) vs surface (outline:
+   status-<tone> content on status-<tone>-surface with status-<tone>-border).
+   Lifted from shadcn/badge.tsx via scripts/lift.py, then reviewed against
+   the anatomy + button exemplar. Unmapped words: badge.lift-report.json */
+
+[data-slot="badge"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  flex-shrink: 0;
+  gap: var(--space-inline-sm);
+  padding-inline: var(--space-inline-md);
+  padding-block: calc(var(--space-unit) * 0.5);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-pill);
+  font: var(--type-caption);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+[data-slot="badge"] svg {
+  width: var(--icon-size-inline);
+  height: var(--icon-size-inline);
+  pointer-events: none;
+}
+
+/* tone × prominence: solid — on-status content on status fill */
+[data-slot="badge"][data-prominence="solid"][data-tone="info"] { background: var(--status-info); color: var(--on-status-info); }
+[data-slot="badge"][data-prominence="solid"][data-tone="success"] { background: var(--status-success); color: var(--on-status-success); }
+[data-slot="badge"][data-prominence="solid"][data-tone="warning"] { background: var(--status-warning); color: var(--on-status-warning); }
+[data-slot="badge"][data-prominence="solid"][data-tone="critical"] { background: var(--status-critical); color: var(--on-status-critical); }
+
+/* outline — status-<tone> text on status-<tone>-surface bg + status border */
+[data-slot="badge"][data-prominence="outline"][data-tone="info"] { background: var(--status-info-surface); color: var(--status-info); border-color: var(--status-info-border); }
+[data-slot="badge"][data-prominence="outline"][data-tone="success"] { background: var(--status-success-surface); color: var(--status-success); border-color: var(--status-success-border); }
+[data-slot="badge"][data-prominence="outline"][data-tone="warning"] { background: var(--status-warning-surface); color: var(--status-warning); border-color: var(--status-warning-border); }
+[data-slot="badge"][data-prominence="outline"][data-tone="critical"] { background: var(--status-critical-surface); color: var(--status-critical); border-color: var(--status-critical-border); }
+
+/* Button recipe — contract slots only (contract/authoring.md step 3).
+   Structure and states: contract/anatomy/button.json. Character: the theme. */
+
+[data-slot="button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-inline-md);
+  height: var(--control-height-md);
+  padding: 0 var(--inset-control-x);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-control);
+  font: var(--type-action);
+  text-transform: var(--action-case);
+  letter-spacing: var(--action-tracking);
+  cursor: var(--cursor-interactive);
+  box-shadow: var(--elevation-resting);
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+
+/* size axis */
+[data-slot="button"][data-size="sm"] { height: var(--control-height-sm); padding: 0 calc(var(--inset-control-x) * 0.75); }
+[data-slot="button"][data-size="lg"] { height: var(--control-height-lg); padding: 0 calc(var(--inset-control-x) * 1.25); }
+
+/* emphasis × prominence: solid */
+[data-prominence="solid"][data-emphasis="primary"] { background: var(--action); color: var(--on-action); }
+[data-prominence="solid"][data-emphasis="primary"]:hover { background: var(--action-hover); }
+[data-prominence="solid"][data-emphasis="primary"]:active { background: var(--action-active); }
+[data-prominence="solid"][data-emphasis="secondary"] { background: var(--action-secondary); color: var(--on-action-secondary); }
+[data-prominence="solid"][data-emphasis="secondary"]:hover { background: color-mix(in oklab, var(--action-secondary) 92%, var(--on-action-secondary)); }
+[data-prominence="solid"][data-emphasis="danger"] { background: var(--status-critical); color: var(--on-status-critical); }
+[data-prominence="solid"][data-emphasis="danger"]:hover { background: color-mix(in oklab, var(--status-critical) 90%, var(--on-status-critical)); }
+
+/* outline */
+[data-prominence="outline"] { background: transparent; box-shadow: none; }
+[data-prominence="outline"][data-emphasis="secondary"] { border-color: var(--border); color: var(--on-surface); }
+[data-prominence="outline"][data-emphasis="primary"] { border-color: var(--action); color: var(--action); }
+[data-prominence="outline"][data-emphasis="danger"] { border-color: var(--status-critical); color: var(--status-critical); }
+[data-prominence="outline"]:hover { background: var(--interaction-hover); }
+
+/* ghost */
+[data-prominence="ghost"] { background: transparent; box-shadow: none; }
+[data-prominence="ghost"][data-emphasis="secondary"] { color: var(--on-surface); }
+[data-prominence="ghost"][data-emphasis="primary"] { color: var(--action); }
+[data-prominence="ghost"][data-emphasis="danger"] { color: var(--status-critical); }
+[data-prominence="ghost"]:hover { background: var(--interaction-hover); }
+
+/* link */
+[data-prominence="link"] {
+  background: transparent; box-shadow: none; height: auto; padding: 0;
+  color: var(--link);
+  text-decoration: var(--link-decoration);
+  text-underline-offset: var(--link-decoration-offset);
+}
+
+/* states (contract/states.md) */
+[data-slot="button"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="button"][data-disabled],
+[data-slot="button"]:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+[data-slot="button"][data-state="loading"] { cursor: var(--cursor-busy); }
+
+/* icon parts */
+[data-slot="icon-leading"] svg,
+[data-slot="icon-trailing"] svg,
+[data-slot="loading-indicator"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+}
+[data-slot="loading-indicator"] svg {
+  animation: button-spin var(--duration-slow) linear infinite;
+}
+@keyframes button-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="button"] { transition: none; }
+  [data-slot="loading-indicator"] svg { animation: none; }
+}
+
+/* Card recipe — contract slots only (contract/authoring.md step 3).
+   Structure and parts: contract/anatomy/card.json. Character: the theme.
+   Padding lives on root as inset-container (anatomy note); elevation
+   expression (shadow vs border) follows the theme's elevation-strategy.
+   Lifted from shadcn/card.tsx via scripts/lift.py, then reviewed against
+   the anatomy + button exemplar. Unmapped words: card.lift-report.json */
+
+[data-slot="card"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-md);
+  background: var(--surface-raised);
+  color: var(--on-surface-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-container);
+  padding: var(--inset-container);
+  box-shadow: var(--elevation-raised);
+}
+
+/* header: title/description stack with trailing action-slot column */
+[data-slot="card"] > [data-slot="header"] {
+  display: grid;
+  grid-auto-rows: min-content;
+  align-items: start;
+  row-gap: var(--space-stack-sm);
+  column-gap: var(--space-inline-md);
+}
+[data-slot="card"] > [data-slot="header"]:has([data-slot="action-slot"]) {
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+}
+
+[data-slot="card"] [data-slot="title"] {
+  font: var(--type-heading-3);
+  color: var(--on-surface-raised);
+}
+
+[data-slot="card"] [data-slot="description"] {
+  font: var(--type-body);
+  color: var(--content-secondary);
+}
+
+[data-slot="card"] [data-slot="action-slot"] {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  align-self: start;
+}
+
+[data-slot="card"] > [data-slot="content"] {
+  font: var(--type-body);
+}
+
+[data-slot="card"] > [data-slot="footer"] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-inline-md);
+}
+/* optional divider above footer (anatomy note: border-subtle top rule) */
+[data-slot="card"] > [data-slot="footer"][data-divider] {
+  border-top: var(--border-width) solid var(--border-subtle);
+  padding-top: var(--space-stack-md);
+}
+
+/* Checkbox recipe — contract slots only. Anatomy: contract/anatomy/checkbox.json */
+
+[data-slot="checkbox"] {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-inline-md);
+}
+[data-slot="checkbox"] [data-slot="control"] {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+  margin-block-start: calc(var(--space-unit) * 0.5);
+  padding: 0;
+  background: var(--field-surface);
+  color: var(--on-action);
+  border: var(--border-width) solid var(--field-border);
+  border-radius: var(--radius-field-control);
+  cursor: var(--cursor-interactive);
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="control"]:hover { border-color: var(--field-border-hover); background: var(--field-surface-hover); }
+[data-slot="control"][data-state="selected"],
+[data-slot="control"][data-state="indeterminate"] {
+  background: var(--action);
+  border-color: var(--action);
+}
+[data-slot="control"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 50%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="control"][aria-invalid="true"] { border-color: var(--status-critical); }
+[data-slot="control"][aria-readonly="true"] { background: var(--surface-sunken); cursor: default; }
+[data-slot="checkbox"][data-disabled] { opacity: 0.5; pointer-events: none; cursor: var(--cursor-disabled); }
+[data-slot="indicator"] { display: inline-flex; }
+[data-slot="indicator"] svg { width: var(--icon-size-inline); height: var(--icon-size-inline); }
+[data-slot="checkbox"] [data-slot="text"] { display: inline-flex; flex-direction: column; gap: calc(var(--space-unit) * 0.5); }
+[data-slot="checkbox"] [data-slot="label"] { font: var(--type-label); cursor: var(--cursor-interactive); }
+[data-slot="checkbox"] [data-slot="description"] { font: var(--type-caption); color: var(--content-secondary); }
+@media (prefers-reduced-motion: reduce) { [data-slot="control"] { transition: none; } }
+
+/* Dialog recipe — contract slots only (contract/authoring.md step 3).
+   LIFTED from shadcn/dialog.tsx via scripts/lift.py, then reviewed against
+   contract/anatomy/dialog.json + the button exemplar.
+   Unmapped words: see dialog.lift-report.json */
+
+/* scrim */
+[data-slot="scrim"] {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-modal);
+  background: var(--overlay-scrim);
+}
+[data-slot="scrim"][data-state="open"] {
+  animation: dialog-scrim-fade var(--duration-base) var(--easing-standard);
+}
+@keyframes dialog-scrim-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* panel — size axis binds to the size-overlay-* width ramp (anatomyNotes) */
+[data-slot="panel"] {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: var(--layer-modal);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-md);
+  width: calc(100% - var(--inset-container) * 2);
+  max-width: var(--size-overlay-md);
+  max-height: calc(100% - var(--inset-container) * 2);
+  overflow-y: auto;
+  padding: var(--inset-container);
+  background: var(--surface-overlay);
+  color: var(--on-surface-overlay);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-overlay);
+  box-shadow: var(--elevation-modal);
+  outline: none;
+}
+[data-slot="panel"][data-size="sm"] { max-width: var(--size-overlay-sm); }
+[data-slot="panel"][data-size="lg"] { max-width: var(--size-overlay-lg); }
+[data-slot="panel"][data-state="open"] {
+  animation: dialog-panel-enter var(--duration-base) var(--easing-enter);
+}
+@keyframes dialog-panel-enter {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* header */
+[data-slot="panel"] [data-slot="header"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+}
+
+/* title */
+[data-slot="panel"] [data-slot="title"] {
+  margin: 0;
+  font: var(--type-heading-3);
+  color: var(--on-surface-overlay);
+}
+
+/* description */
+[data-slot="panel"] [data-slot="description"] {
+  margin: 0;
+  font: var(--type-body);
+  color: var(--content-secondary);
+}
+
+/* content */
+[data-slot="panel"] [data-slot="content"] {
+  font: var(--type-body);
+}
+
+/* footer — action slot; end-aligned, stacks on narrow viewports */
+[data-slot="panel"] [data-slot="footer"] {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-inline-md);
+}
+@media (max-width: 480px) {
+  [data-slot="panel"] [data-slot="footer"] {
+    flex-direction: column-reverse;
+  }
+}
+
+/* close — close icon role */
+[data-slot="panel"] [data-slot="close"] {
+  position: absolute;
+  top: calc(var(--space-unit) * 4);
+  inset-inline-end: calc(var(--space-unit) * 4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-unit);
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--content-secondary);
+  cursor: var(--cursor-interactive);
+  outline: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="panel"] [data-slot="close"]:hover {
+  background: var(--interaction-hover);
+  color: var(--on-surface-overlay);
+}
+[data-slot="panel"] [data-slot="close"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="panel"] [data-slot="close"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="scrim"][data-state="open"],
+  [data-slot="panel"][data-state="open"] { animation: none; }
+  [data-slot="panel"] [data-slot="close"] { transition: none; }
+}
+
+/* Field recipe — contract slots only. Anatomy: contract/anatomy/field.json */
+
+[data-slot="field"] {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 1.5);
+}
+[data-slot="field"][data-orientation="horizontal"] {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-inline-lg);
+}
+[data-slot="field"] > [data-slot="label"] {
+  font: var(--type-label);
+  color: var(--on-surface);
+}
+[data-slot="control-slot"] { display: flex; flex-direction: column; }
+[data-slot="field"][data-orientation="horizontal"] [data-slot="control-slot"] { flex-shrink: 0; }
+[data-slot="field"] > [data-slot="description"] {
+  font: var(--type-caption);
+  color: var(--content-secondary);
+}
+[data-slot="field"] > [data-slot="error"] {
+  font: var(--type-caption);
+  color: var(--status-critical);
+}
+[data-slot="field"][data-state="readonly"] > [data-slot="label"] { color: var(--content-secondary); }
+[data-slot="field"][data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+
+/* LIFTED from shadcn/input.tsx via scripts/lift.py — the dictionary run in reverse.
+   Review against contract/anatomy/input.json + the button exemplar before accepting.
+   Unmapped words: see input.lift-report.json */
+
+[data-slot="input"] {
+  height: var(--control-height-md);
+  width: 100%;
+  min-width: 0;
+  border-radius: var(--radius-control);
+  border: var(--border-width) solid var(--border);
+  border-color: var(--field-border);
+  background: transparent;
+  padding-inline: calc(var(--space-unit) * 3);
+  padding-block: var(--space-unit);
+  font-size: var(--text-ui);
+  box-shadow: var(--elevation-resting);
+  transition: color var(--duration-fast) var(--easing-standard), box-shadow var(--duration-fast) var(--easing-standard);
+  outline: none;
+}
+
+[data-slot="control"]::placeholder {
+  color: var(--content-secondary);
+}
+
+[data-slot="input"]:disabled {
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+  opacity: 0.5;
+}
+
+[data-slot="input"] { display: inline-flex; align-items: center; width: 100%; }
+[data-slot="control"] { all: unset; flex: 1; min-width: 0; font: inherit; color: var(--on-surface); }
+[data-slot="control"]:disabled { opacity: 0.5; cursor: var(--cursor-disabled); }
+
+/* Radio group recipe — contract slots only. Anatomy: contract/anatomy/radio-group.json */
+
+[data-slot="radio-group"] { display: flex; gap: var(--space-stack-sm); }
+[data-slot="radio-group"][data-orientation="vertical"] { flex-direction: column; }
+[data-slot="radio-group"][data-orientation="horizontal"] { flex-direction: row; gap: var(--space-inline-lg); }
+[data-slot="item"] { display: inline-flex; align-items: center; gap: var(--space-inline-md); }
+[data-slot="radio-group"] [data-slot="control"] {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+  padding: 0;
+  background: var(--field-surface);
+  border: var(--border-width) solid var(--field-border);
+  border-radius: var(--radius-pill);
+  cursor: var(--cursor-interactive);
+  transition: border-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="radio-group"] [data-slot="control"]:hover { border-color: var(--field-border-hover); }
+[data-slot="radio-group"] [data-slot="control"][data-state="selected"] { border-color: var(--action); }
+[data-slot="radio-group"] [data-slot="control"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 50%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="radio-group"][aria-invalid="true"] [data-slot="control"] { border-color: var(--status-critical); }
+[data-slot="indicator"] {
+  width: calc(var(--icon-size-inline) * 0.7);
+  height: calc(var(--icon-size-inline) * 0.7);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="control"][data-state="selected"] [data-slot="indicator"] { background: var(--action); }
+[data-slot="item"][data-disabled], [data-slot="radio-group"][data-disabled] {
+  opacity: 0.5; pointer-events: none; cursor: var(--cursor-disabled);
+}
+[data-slot="item"] [data-slot="label"] { font: var(--type-label); cursor: var(--cursor-interactive); }
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="radio-group"] [data-slot="control"], [data-slot="indicator"] { transition: none; }
+}
+
+/* Select recipe — contract slots only (contract/authoring.md step 3).
+   LIFTED from shadcn/select.tsx via scripts/lift.py, then reviewed against
+   contract/anatomy/select.json + the button exemplar.
+   Unmapped words: see select.lift-report.json */
+
+[data-slot="select"] {
+  position: relative;
+  display: inline-flex;
+  width: fit-content;
+}
+
+/* trigger (anatomy root recipe: field-border, surface, on-surface,
+   radius-control, control-height-md, inset-control-x, type-label, focus) */
+[data-slot="select"] [data-slot="trigger"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-inline-md);
+  height: var(--control-height-md);
+  width: fit-content;
+  padding-inline: calc(var(--space-unit) * 3);
+  border: var(--border-width) solid var(--field-border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--on-surface);
+  font: var(--type-label);
+  white-space: nowrap;
+  cursor: var(--cursor-interactive);
+  box-shadow: var(--elevation-resting);
+  outline: none;
+  transition:
+    color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    box-shadow var(--duration-fast) var(--easing-standard);
+}
+
+/* size axis */
+[data-slot="select"][data-size="sm"] [data-slot="trigger"] { height: var(--control-height-sm); }
+[data-slot="select"][data-size="lg"] [data-slot="trigger"] { height: var(--control-height-lg); }
+
+/* value (content slot; placeholder shows content-secondary) */
+[data-slot="select"] [data-slot="value"] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+[data-slot="select"] [data-slot="value"][data-placeholder] {
+  color: var(--content-secondary);
+}
+
+/* indicator — expand icon role; rotates 180deg on open at duration-fast */
+[data-slot="select"] [data-slot="indicator"] {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--content-secondary);
+  transition: transform var(--duration-fast) var(--easing-standard);
+}
+[data-slot="select"] [data-slot="indicator"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+}
+[data-slot="select"][data-state="open"] [data-slot="indicator"] {
+  transform: rotate(180deg);
+}
+
+/* listbox */
+[data-slot="select"] [data-slot="listbox"] {
+  position: absolute;
+  top: calc(100% + var(--space-unit));
+  left: 0;
+  z-index: var(--layer-dropdown);
+  min-width: 100%;
+  max-height: calc(var(--space-unit) * 64);
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-unit);
+  list-style: none;
+  background: var(--surface-overlay);
+  color: var(--on-surface-overlay);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-overlay);
+  box-shadow: var(--elevation-overlay);
+  animation: select-listbox-enter var(--duration-fast) var(--easing-enter);
+}
+@keyframes select-listbox-enter {
+  from { opacity: 0; transform: translateY(calc(var(--space-unit) * -1)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* option */
+[data-slot="select"] [data-slot="option"] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-inline-md);
+  padding-inline: calc(var(--space-unit) * 2);
+  padding-block: calc(var(--space-unit) * 1.5);
+  border-radius: var(--radius-control);
+  font: var(--type-label);
+  white-space: nowrap;
+  cursor: var(--cursor-interactive);
+  user-select: none;
+}
+[data-slot="select"] [data-slot="option"][data-active] {
+  background: var(--interaction-hover);
+}
+[data-slot="select"] [data-slot="option"][data-state="selected"] {
+  background: var(--interaction-selected);
+  color: var(--on-interaction-selected);
+}
+[data-slot="select"] [data-slot="option"][data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+
+/* option-indicator — success icon role (checkmark on selected option) */
+[data-slot="select"] [data-slot="option-indicator"] {
+  display: inline-flex;
+  margin-inline-start: auto;
+}
+[data-slot="select"] [data-slot="option-indicator"] svg {
+  width: var(--icon-size-inline);
+  height: var(--icon-size-inline);
+}
+
+/* states (contract/states.md) */
+[data-slot="select"] [data-slot="trigger"]:hover {
+  border-color: var(--field-border-hover);
+  background: var(--field-surface-hover);
+}
+[data-slot="select"] [data-slot="trigger"]:focus-visible {
+  border-color: var(--field-border-active);
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 50%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="select"] [data-slot="trigger"][aria-invalid="true"] {
+  border-color: var(--status-critical);
+}
+[data-slot="select"] [data-slot="trigger"][aria-invalid="true"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--status-critical) 20%, transparent);
+}
+[data-slot="select"] [data-slot="trigger"][data-disabled],
+[data-slot="select"] [data-slot="trigger"]:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="select"] [data-slot="trigger"],
+  [data-slot="select"] [data-slot="indicator"] { transition: none; }
+  [data-slot="select"] [data-slot="listbox"] { animation: none; }
+}
+
+/* Separator recipe — contract slots only (contract/authoring.md step 3).
+   Structure and axes: contract/anatomy/separator.json. Character: the theme.
+   Prominence rebinds the color only (anatomy note): subtle → border-subtle,
+   default → border, strong → border-strong (3-tier scale, semantic.md §1).
+   Lifted from shadcn/separator.tsx via scripts/lift.py, then reviewed against
+   the anatomy + button exemplar. Unmapped words: separator.lift-report.json */
+
+[data-slot="separator"] {
+  flex-shrink: 0;
+  background: var(--border);
+}
+
+/* orientation axis */
+[data-slot="separator"][data-orientation="horizontal"] {
+  height: var(--border-width);
+  width: 100%;
+}
+[data-slot="separator"][data-orientation="vertical"] {
+  width: var(--border-width);
+  height: 100%;
+}
+
+/* prominence axis (default carries the base --border binding above) */
+[data-slot="separator"][data-prominence="subtle"] {
+  background: var(--border-subtle);
+}
+[data-slot="separator"][data-prominence="strong"] {
+  background: var(--border-strong);
+}
+
+/* Switch recipe — contract slots only. Anatomy: contract/anatomy/switch.json */
+
+[data-slot="switch"] { display: inline-flex; align-items: center; gap: var(--space-inline-md); }
+[data-slot="track"] {
+  position: relative;
+  flex-shrink: 0;
+  width: calc(var(--control-height-md) * 0.9);
+  height: calc(var(--control-height-md) * 0.5);
+  padding: 0;
+  background: var(--field-border);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: var(--cursor-interactive);
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="switch"][data-size="sm"] [data-slot="track"] {
+  width: calc(var(--control-height-sm) * 0.9);
+  height: calc(var(--control-height-sm) * 0.5);
+}
+[data-slot="track"]:hover { background: var(--field-border-hover); }
+[data-slot="track"][data-state="selected"] { background: var(--action); }
+[data-slot="track"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 50%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="thumb"] {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--space-unit) * 0.5);
+  width: calc(var(--control-height-md) * 0.5 - var(--space-unit));
+  height: calc(var(--control-height-md) * 0.5 - var(--space-unit));
+  background: var(--surface-raised);
+  border-radius: var(--radius-pill);
+  transform: translateY(-50%);
+  transition: inset-inline-start var(--duration-fast) var(--easing-standard);
+}
+[data-slot="switch"][data-size="sm"] [data-slot="thumb"] {
+  width: calc(var(--control-height-sm) * 0.5 - var(--space-unit));
+  height: calc(var(--control-height-sm) * 0.5 - var(--space-unit));
+}
+[data-slot="track"][data-state="selected"] [data-slot="thumb"] {
+  inset-inline-start: calc(var(--control-height-md) * 0.4);
+}
+[data-slot="switch"][data-size="sm"] [data-slot="track"][data-state="selected"] [data-slot="thumb"] {
+  inset-inline-start: calc(var(--control-height-sm) * 0.4);
+}
+[data-slot="switch"][data-disabled] { opacity: 0.5; pointer-events: none; cursor: var(--cursor-disabled); }
+[data-slot="switch"] [data-slot="label"] { font: var(--type-label); cursor: var(--cursor-interactive); }
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="track"], [data-slot="thumb"] { transition: none; }
+}
+
+/* Table recipe — contract slots only (contract/authoring.md step 3).
+   Structure and parts: contract/anatomy/table.json. Character: the theme.
+   table-container is the horizontal-scroll wrapper — a recipe, not an
+   anatomy part (anatomy note on root). Zebra striping / sticky headers are
+   recipe options intentionally not shipped in the base recipe.
+   Lifted from shadcn/table.tsx via scripts/lift.py, then reviewed against
+   the anatomy + button exemplar. Unmapped words: table.lift-report.json */
+
+[data-slot="table-container"] {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+[data-slot="table"] {
+  width: 100%;
+  caption-side: bottom;
+  border-collapse: collapse;
+  background: var(--surface);
+  color: var(--on-surface);
+  font: var(--type-body);
+}
+
+[data-slot="table"] > [data-slot="caption"] {
+  margin-top: var(--space-stack-md);
+  font: var(--type-caption);
+  color: var(--content-secondary);
+}
+
+/* header-row: bottom rule separates header from body (anatomy note) */
+[data-slot="table"] [data-slot="header-row"] {
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+[data-slot="table"] [data-slot="header-cell"] {
+  height: var(--control-height-md);
+  padding-inline: var(--inset-control-x);
+  font: var(--type-label);
+  color: var(--content-secondary);
+  text-align: start;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+[data-slot="table"] [data-slot="row"] {
+  border-bottom: var(--border-width) solid var(--border-subtle);
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="table"] [data-slot="row"]:last-child {
+  border-bottom: none;
+}
+
+/* states (contract/states.md) — hover reads as affordance only when rows
+   are interactive (anatomy statesNote) */
+[data-slot="table"] [data-slot="row"]:hover {
+  background: var(--interaction-hover);
+}
+[data-slot="table"] [data-slot="row"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="table"] [data-slot="row"][data-state="selected"] {
+  background: var(--interaction-selected);
+  color: var(--on-interaction-selected);
+}
+
+[data-slot="table"] [data-slot="cell"] {
+  height: var(--control-height-md);
+  padding-inline: var(--inset-control-x);
+  padding-block: calc(var(--space-unit) * 2);
+  vertical-align: middle;
+}
+
+/* numeric columns: type-data (tabular numerals), end-aligned */
+[data-slot="table"] [data-slot="cell"][data-type="data"] {
+  font: var(--type-data);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* size axis binds row height to control-height-* (anatomy note) */
+[data-slot="table"][data-size="sm"] [data-slot="header-cell"],
+[data-slot="table"][data-size="sm"] [data-slot="cell"] {
+  height: var(--control-height-sm);
+}
+[data-slot="table"][data-size="lg"] [data-slot="header-cell"],
+[data-slot="table"][data-size="lg"] [data-slot="cell"] {
+  height: var(--control-height-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="table"] [data-slot="row"] { transition: none; }
+}
+
+/* Tabs recipe — contract slots only (contract/authoring.md step 3).
+   LIFTED from shadcn/tabs.tsx via scripts/lift.py, then reviewed against
+   contract/anatomy/tabs.json + the button exemplar. Underline base recipe;
+   filled-pill themes restyle list/trigger/selected-indicator (anatomyNotes).
+   Unmapped words: see tabs.lift-report.json */
+
+[data-slot="tabs"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+}
+[data-slot="tabs"][data-orientation="vertical"] {
+  flex-direction: row;
+  gap: var(--space-inline-lg);
+}
+
+/* list — border-subtle baseline rule (underline recipe) */
+[data-slot="tabs"] [data-slot="list"] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-inline-sm);
+  border-bottom: var(--border-width) solid var(--border-subtle);
+}
+[data-slot="tabs"][data-orientation="vertical"] [data-slot="list"] {
+  flex-direction: column;
+  align-items: stretch;
+  border-bottom: none;
+  border-inline-end: var(--border-width) solid var(--border-subtle);
+}
+
+/* trigger */
+[data-slot="tabs"] [data-slot="trigger"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-inline-md);
+  height: var(--control-height-md);
+  padding-inline: var(--inset-control-x);
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--content-secondary);
+  font: var(--type-action);
+  text-transform: var(--action-case);
+  letter-spacing: var(--action-tracking);
+  white-space: nowrap;
+  cursor: var(--cursor-interactive);
+  outline: none;
+  transition:
+    color var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="tabs"][data-orientation="vertical"] [data-slot="trigger"] {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* size axis */
+[data-slot="tabs"][data-size="sm"] [data-slot="trigger"] { height: var(--control-height-sm); padding-inline: calc(var(--inset-control-x) * 0.75); }
+[data-slot="tabs"][data-size="lg"] [data-slot="trigger"] { height: var(--control-height-lg); padding-inline: calc(var(--inset-control-x) * 1.25); }
+
+/* label (content slot) */
+[data-slot="tabs"] [data-slot="label"] {
+  font: var(--type-action);
+}
+
+/* selected-indicator — active-tab bar: bottom edge when horizontal,
+   side edge when vertical (anatomy note) */
+[data-slot="tabs"] [data-slot="selected-indicator"] {
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(var(--border-width) * -1);
+  height: var(--border-width-strong);
+  background: transparent;
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="tabs"][data-orientation="vertical"] [data-slot="selected-indicator"] {
+  inset-block: 0;
+  inset-inline: auto calc(var(--border-width) * -1);
+  width: var(--border-width-strong);
+  height: auto;
+}
+[data-slot="tabs"] [data-slot="trigger"][data-state="selected"] [data-slot="selected-indicator"] {
+  background: var(--selected-indicator);
+}
+
+/* states (contract/states.md) */
+[data-slot="tabs"] [data-slot="trigger"]:hover {
+  background: var(--interaction-hover);
+  color: var(--on-surface);
+}
+[data-slot="tabs"] [data-slot="trigger"][data-state="selected"] {
+  color: var(--on-interaction-selected);
+}
+[data-slot="tabs"] [data-slot="trigger"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="tabs"] [data-slot="trigger"][data-disabled],
+[data-slot="tabs"] [data-slot="trigger"]:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+
+/* panel */
+[data-slot="tabs"] [data-slot="panel"] {
+  font: var(--type-body);
+  margin-block-start: var(--space-stack-md);
+  outline: none;
+}
+[data-slot="tabs"][data-orientation="vertical"] [data-slot="panel"] {
+  margin-block-start: 0;
+}
+[data-slot="tabs"] [data-slot="panel"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="tabs"] [data-slot="trigger"],
+  [data-slot="tabs"] [data-slot="selected-indicator"] { transition: none; }
+}
+</style>
+<style>
+    body { margin:0; background:var(--surface); color:var(--on-surface);
+      font-family:var(--family-body); font-size:var(--text-ui); }
+    header { position:sticky; top:0; z-index:var(--layer-sticky);
+      display:flex; gap:24px; align-items:center; flex-wrap:wrap;
+      padding:14px 24px; background:var(--surface);
+      border-block-end:var(--border-width) solid var(--border); }
+    header b { font:var(--type-heading-3); }
+    .ctl { display:inline-flex; gap:6px; align-items:center; }
+    .ctl > span { font:var(--type-caption); color:var(--content-secondary);
+      text-transform:uppercase; letter-spacing:0.06em; }
+    .seg { display:inline-flex; background:var(--surface-sunken);
+      border:var(--border-width) solid var(--border); border-radius:var(--radius-pill); padding:2px; }
+    .seg button { border:0; background:transparent; color:var(--content-secondary);
+      border-radius:var(--radius-pill); padding:3px 10px; font:var(--type-caption);
+      font-weight:var(--ui-weight); cursor:var(--cursor-interactive); }
+    .seg button[aria-pressed="true"] { background:var(--surface); color:var(--on-surface);
+      box-shadow:var(--elevation-resting); }
+    .ctl[data-locked] { opacity:0.45; } .ctl[data-locked] button { pointer-events:none; }
+    main { padding:24px; display:grid; gap:16px;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); }
+    .card { border:var(--border-width) solid var(--border);
+      border-radius:var(--radius-container); background:var(--surface-raised);
+      overflow:hidden; display:flex; flex-direction:column; }
+    .stage { min-height:120px; display:grid; place-items:center; padding:24px;
+      border-block-end:var(--border-width) solid var(--border-subtle); }
+    .meta { padding:10px 14px; display:flex; flex-direction:column; gap:4px; }
+    .meta b { font:var(--type-label); }
+    .meta small { font:var(--type-caption); color:var(--content-secondary); }
+    .tagrow { display:flex; gap:4px; flex-wrap:wrap; margin-top:2px; }
+    .tag { font:var(--type-caption); background:var(--surface-sunken);
+      border-radius:var(--radius-sm,4px); padding:1px 6px; color:var(--content-secondary); }
+    section.docs { grid-column:1/-1; padding:16px 0 0; }
+    section.docs h2 { font:var(--type-heading-2); margin:0 0 8px; }
+    section.docs p { color:var(--content-secondary); margin:0 0 12px; max-width:70ch; }
+    </style></head>
+<body>
+<header>
+  <b>UI Registry</b>
+  <span class="ctl" data-ctl="theme"><span>Theme</span><span class="seg"><button data-v="salt">Salt DS</button><button data-v="shadcn">shadcn neutral</button></span></span>
+  <span class="ctl" data-ctl="mode"><span>Mode</span><span class="seg">
+    <button data-v="light">Light</button><button data-v="dark">Dark</button></span></span>
+  <span class="ctl" data-ctl="density" id="ctl-density"><span>Density</span><span class="seg">
+    <button data-v="high">Hi</button><button data-v="medium">Md</button>
+    <button data-v="low">Lo</button><button data-v="touch">To</button></span></span>
+  <small id="constraints" style="color:var(--content-secondary);font:var(--type-caption)"></small>
+</header>
+<main>
+  <section class="docs">
+    <h2>14 components · 4 patterns · 2 themes</h2>
+    <p>Generated from the repository: specimens are built from
+    contract/anatomy/*.json and styled by each component's own CSS —
+    the same files an app installs. Switch theme, mode, or density and every
+    specimen re-renders through the contract. Controls lock when the active
+    theme does not declare that capability.</p>
+  </section>
+  <div class="card"><div class="stage"><div data-slot="avatar"><span data-slot="fallback">DA</span></div></div><div class="meta"><b>avatar</b><small>Presentational identity image; no APG pattern (img semantics with alt </small><span class="tagrow"><span class="tag">root</span><span class="tag">image</span><span class="tag">fallback</span><span class="tag">group</span></span></div></div><div class="card"><div class="stage"><div data-slot="badge" data-prominence="solid" data-tone="success"></div></div><div class="meta"><b>badge</b><small>Non-interactive status label; no APG pattern (presentational text — co</small><span class="tagrow"><span class="tag">root</span></span></div></div><div class="card"><div class="stage"><button data-slot="button" data-emphasis="primary" data-prominence="solid"><span data-slot="label">Submit order</span></button></div><div class="meta"><b>button</b><small>APG button pattern (Enter/Space activate; button role implicit)</small><span class="tagrow"><span class="tag">root</span><span class="tag">icon-leading</span><span class="tag">label</span><span class="tag">icon-trailing</span><span class="tag">loading-indicator</span></span></div></div><div class="card"><div class="stage"><div data-slot="card"><span data-slot="content">Content</span></div></div><div class="meta"><b>card</b><small>Static grouping container; no APG pattern (generic group semantics — i</small><span class="tagrow"><span class="tag">root</span><span class="tag">header</span><span class="tag">title</span><span class="tag">description</span><span class="tag">action-slot</span><span class="tag">content</span></span></div></div><div class="card"><div class="stage"><div data-slot="checkbox"><span data-slot="control">control</span><span data-slot="indicator"></span><span data-slot="label">Submit order</span></div></div><div class="meta"><b>checkbox</b><small>APG checkbox pattern (Space toggles; mixed state via aria-checked=mixe</small><span class="tagrow"><span class="tag">root</span><span class="tag">control</span><span class="tag">indicator</span><span class="tag">label</span><span class="tag">description</span></span></div></div><div class="card"><div class="stage"><div data-slot="dialog"><span data-slot="scrim"></span><span data-slot="panel">panel</span><span data-slot="header">header</span><span data-slot="title">Card title</span><span data-slot="content">Content</span><span data-slot="footer">footer</span></div></div><div class="meta"><b>dialog</b><small>APG dialog (modal) pattern (focus trapped in panel; Tab cycles; Esc cl</small><span class="tagrow"><span class="tag">scrim</span><span class="tag">panel</span><span class="tag">header</span><span class="tag">title</span><span class="tag">description</span><span class="tag">content</span></span></div></div><div class="card"><div class="stage"><div data-slot="field"><span data-slot="label">Submit order</span><span data-slot="control-slot">control slot</span></div></div><div class="meta"><b>field</b><small>None — composition wrapper; native labeling semantics (label for/id, d</small><span class="tagrow"><span class="tag">root</span><span class="tag">label</span><span class="tag">control-slot</span><span class="tag">description</span><span class="tag">error</span></span></div></div><div class="card"><div class="stage"><div data-slot="input"><span data-slot="control">control</span></div></div><div class="meta"><b>input</b><small>None — native <input> semantics (no APG pattern; labeling/description </small><span class="tagrow"><span class="tag">root</span><span class="tag">prefix-slot</span><span class="tag">control</span><span class="tag">suffix-slot</span></span></div></div><div class="card"><div class="stage"><div data-slot="radio-group" data-orientation="horizontal"><span data-slot="item">item</span><span data-slot="control">control</span><span data-slot="indicator"></span><span data-slot="label">Submit order</span></div></div><div class="meta"><b>radio-group</b><small>APG radio group pattern (roving tabindex; Arrow keys move selection; S</small><span class="tagrow"><span class="tag">root</span><span class="tag">item</span><span class="tag">control</span><span class="tag">indicator</span><span class="tag">label</span></span></div></div><div class="card"><div class="stage"><div data-slot="select"><span data-slot="value">184.32</span><span data-slot="indicator"></span><span data-slot="listbox">listbox</span><span data-slot="option">option</span><span data-slot="option-indicator">option indicator</span></div></div><div class="meta"><b>select</b><small>APG combobox/listbox pattern (Alt+Down opens; typeahead; Esc dismisses</small><span class="tagrow"><span class="tag">root</span><span class="tag">value</span><span class="tag">indicator</span><span class="tag">listbox</span><span class="tag">option</span><span class="tag">option-indicator</span></span></div></div><div class="card"><div class="stage"><div data-slot="separator" data-prominence="solid" data-orientation="horizontal"></div></div><div class="meta"><b>separator</b><small>APG separator pattern (decorative by default: hidden from assistive te</small><span class="tagrow"><span class="tag">root</span></span></div></div><div class="card"><div class="stage"><div data-slot="switch"><span data-slot="track"></span><span data-slot="thumb"></span><span data-slot="label">Submit order</span></div></div><div class="meta"><b>switch</b><small>APG switch pattern (role=switch; Space/Enter toggle; aria-checked true</small><span class="tagrow"><span class="tag">root</span><span class="tag">track</span><span class="tag">thumb</span><span class="tag">label</span></span></div></div><div class="card"><div class="stage"><div data-slot="table"><span data-slot="header-row">header row</span><span data-slot="header-cell">header cell</span><span data-slot="row">row</span><span data-slot="cell">cell</span></div></div><div class="meta"><b>table</b><small>Native table semantics (table / rowgroup / row / columnheader / cell; </small><span class="tagrow"><span class="tag">root</span><span class="tag">caption</span><span class="tag">header-row</span><span class="tag">header-cell</span><span class="tag">row</span><span class="tag">cell</span></span></div></div><div class="card"><div class="stage"><div data-slot="tabs" data-orientation="horizontal"><span data-slot="list">list</span><span data-slot="trigger">trigger</span><span data-slot="label">Submit order</span><span data-slot="selected-indicator">selected indicator</span><span data-slot="panel">panel</span></div></div><div class="meta"><b>tabs</b><small>APG tabs pattern (tablist/tab/tabpanel; roving focus — arrow keys move</small><span class="tagrow"><span class="tag">list</span><span class="tag">trigger</span><span class="tag">label</span><span class="tag">selected-indicator</span><span class="tag">panel</span></span></div></div>
+</main>
+<script>
+    const THEMES = {"salt": {"title": "Salt DS", "capabilities": {"modes": ["light", "dark"], "density": {"options": ["high", "medium", "low", "touch"], "default": "medium"}, "corner": "fixed-sharp", "iconSets": {"default": "salt", "options": ["salt", "lucide", "tabler", "radix"], "mechanism": "SemanticIconProvider \u2014 33 semantic slots (CloseIcon, ChevronDownIcon, CalendarIcon, \u2026), each accepts any React icon component; components resolve icons by ROLE, not by import"}, "fonts": ["open-sans"]}, "constraints": ["Radius is NOT a knob \u2014 Salt is sharp (0) everywhere except pills (999px).", "Density rescales control heights, spacing, text and icon size together.", "Actions are uppercase 600 with 0.6px tracking \u2014 not configurable.", "Default icon set is Salt's own 12px first-party set (~548 icons; 62 SVGs mirrored in themes/salt/assets). Swapping is per semantic role via SemanticIconProvider, not per-import like shadcn's migrate."]}, "shadcn": {"title": "shadcn neutral", "capabilities": {"modes": ["light", "dark"], "density": false, "corner": "knob", "iconSets": ["lucide", "tabler", "radix"], "fonts": ["system", "geist"]}, "constraints": ["No density switching \u2014 the scale is fixed to the 4px grid.", "Radius is a free knob (--radius); all derived radii follow."]}}, COMPONENTS = [{"name": "avatar", "behavior": "Presentational identity image; no APG pattern (img semantics with alt text, or aria-hidden when adjacent text already names the person)", "parts": ["root", "image", "fallback", "group"], "states": ["rest"], "axes": {"size": ["sm", "md", "lg"]}}, {"name": "badge", "behavior": "Non-interactive status label; no APG pattern (presentational text \u2014 count-only badges require an accessible text alternative on the host)", "parts": ["root"], "states": ["rest"], "axes": {"tone": ["info", "success", "warning", "critical"], "prominence": ["solid", "outline"]}}, {"name": "button", "behavior": "APG button pattern (Enter/Space activate; button role implicit)", "parts": ["root", "icon-leading", "label", "icon-trailing", "loading-indicator"], "states": ["rest", "hover", "active", "focus-visible", "disabled", "loading"], "axes": {"emphasis": ["primary", "secondary", "danger"], "prominence": ["solid", "outline", "ghost", "link"], "size": ["sm", "md", "lg"]}}, {"name": "card", "behavior": "Static grouping container; no APG pattern (generic group semantics \u2014 interactive/selectable cards are a separate component, cf. Salt InteractableCard)", "parts": ["root", "header", "title", "description", "action-slot", "content", "footer"], "states": ["rest"], "axes": {}}, {"name": "checkbox", "behavior": "APG checkbox pattern (Space toggles; mixed state via aria-checked=mixed)", "parts": ["root", "control", "indicator", "label", "description"], "states": ["rest", "hover", "focus-visible", "disabled", "selected", "indeterminate", "invalid", "readonly"], "axes": {}}, {"name": "dialog", "behavior": "APG dialog (modal) pattern (focus trapped in panel; Tab cycles; Esc closes; focus returns to trigger on close; aria-modal=true; labelled by title, described by description)", "parts": ["scrim", "panel", "header", "title", "description", "content", "footer", "close"], "states": ["rest", "open"], "axes": {"size": ["sm", "md", "lg"]}}, {"name": "field", "behavior": "None \u2014 composition wrapper; native labeling semantics (label for/id, description and error wired via aria-describedby; error announced via aria-live or role=alert)", "parts": ["root", "label", "control-slot", "description", "error"], "states": ["rest", "disabled", "invalid", "readonly"], "axes": {}}, {"name": "input", "behavior": "None \u2014 native <input> semantics (no APG pattern; labeling/description via field composition)", "parts": ["root", "prefix-slot", "control", "suffix-slot"], "states": ["rest", "hover", "focus-visible", "disabled", "invalid", "readonly"], "axes": {"size": ["sm", "md", "lg"]}}, {"name": "radio-group", "behavior": "APG radio group pattern (roving tabindex; Arrow keys move selection; Space selects; one tab stop for the group)", "parts": ["root", "item", "control", "indicator", "label"], "states": ["rest", "hover", "focus-visible", "disabled", "selected", "invalid", "readonly"], "axes": {"orientation": ["horizontal", "vertical"]}}, {"name": "select", "behavior": "APG combobox/listbox pattern (Alt+Down opens; typeahead; Esc dismisses; roving focus in listbox)", "parts": ["root", "value", "indicator", "listbox", "option", "option-indicator", "group-label"], "states": ["rest", "hover", "focus-visible", "disabled", "invalid", "open"], "axes": {"size": ["sm", "md", "lg"]}}, {"name": "separator", "behavior": "APG separator pattern (decorative by default: hidden from assistive tech; semantic when it divides content regions: role=separator with aria-orientation; never focusable)", "parts": ["root"], "states": ["rest"], "axes": {"prominence": ["subtle", "default", "strong"], "orientation": ["horizontal", "vertical"]}}, {"name": "switch", "behavior": "APG switch pattern (role=switch; Space/Enter toggle; aria-checked true/false)", "parts": ["root", "track", "thumb", "label"], "states": ["rest", "hover", "focus-visible", "disabled", "selected"], "axes": {"size": ["sm", "md"]}}, {"name": "table", "behavior": "Native table semantics (table / rowgroup / row / columnheader / cell; caption names the table). APG grid pattern applies only when cell navigation or row selection makes it interactive.", "parts": ["root", "caption", "header-row", "header-cell", "row", "cell", "selection-column"], "states": ["rest", "hover", "focus-visible", "selected"], "axes": {"size": ["sm", "md", "lg"]}}, {"name": "tabs", "behavior": "APG tabs pattern (tablist/tab/tabpanel; roving focus \u2014 arrow keys move between tabs, Home/End to first/last; activation is automatic on focus by default, manual via Enter/Space when panels are expensive \u2014 a declared behavior option, never a theme difference)", "parts": ["list", "trigger", "label", "selected-indicator", "panel"], "states": ["rest", "hover", "focus-visible", "disabled", "selected"], "axes": {"orientation": ["horizontal", "vertical"], "size": ["sm", "md", "lg"]}}], PATTERNS = [{"name": "app-shell", "intent": "The persistent frame: navigation rail, header bar, content region.", "regions": ["nav", "header", "content"]}, {"name": "data-table-page", "intent": "Review and act on a filterable collection of records.", "regions": ["header", "toolbar", "table", "footer"]}, {"name": "login", "intent": "Authenticate a returning user with email and password.", "regions": ["brand", "form", "actions", "meta"]}, {"name": "settings-form", "intent": "Edit a group of account preferences with explicit save.", "regions": ["header", "form", "actions"]}];
+    const state = { theme: Object.keys(THEMES)[0], mode: "light", density: null };
+    function applyTheme() {
+      document.querySelectorAll("[data-theme-css]").forEach(s =>
+        s.media = s.dataset.themeCss === state.theme ? "all" : "not all");
+      document.documentElement.className = state.mode === "dark" ? "dark" : "";
+      const caps = THEMES[state.theme].capabilities;
+      const dCtl = document.getElementById("ctl-density");
+      const hasDensity = !!caps.density;
+      dCtl.toggleAttribute("data-locked", !hasDensity);
+      dCtl.title = hasDensity ? "" : `density is not a capability of ${THEMES[state.theme].title}`;
+      if (hasDensity) {
+        state.density = state.density || caps.density.default;
+        document.documentElement.dataset.density = state.density;
+      } else { state.density = null; delete document.documentElement.dataset.density; }
+      document.querySelectorAll(".seg button").forEach(b => {
+        const ctl = b.closest(".ctl").dataset.ctl;
+        b.setAttribute("aria-pressed", String(state[ctl] === b.dataset.v));
+      });
+      document.getElementById("constraints").textContent =
+        THEMES[state.theme].constraints.join(" · ");
+    }
+    document.addEventListener("click", e => {
+      const b = e.target.closest(".seg button"); if (!b) return;
+      state[b.closest(".ctl").dataset.ctl] = b.dataset.v; applyTheme();
+    });
+    applyTheme();
+    </script>
+</body></html>

@@ -16,7 +16,7 @@
   background: var(--field-surface);
   color: var(--on-action);
   border: var(--border-width) solid var(--field-border);
-  border-radius: calc(var(--radius-knob) * 0.6);
+  border-radius: var(--radius-field-control);
   cursor: var(--cursor-interactive);
   transition:
     background-color var(--duration-fast) var(--easing-standard),

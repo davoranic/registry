@@ -73,6 +73,11 @@ function RadioGroupItem({ value, label, disabled, id, ...props }: RadioGroupItem
 
   // APG radio group: roving tabindex — only the selected item is tabbable.
   function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+    // APG radio group: Space selects; Enter must not activate.
+    if (event.key === "Enter") {
+      event.preventDefault()
+      return
+    }
     const keys = ["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft"]
     if (!keys.includes(event.key)) return
     event.preventDefault()
