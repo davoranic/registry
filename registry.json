@@ -35,6 +35,81 @@
           "warning-foreground": "oklch(0.279 0.077 45.6)"
         }
       }
+    },
+    {
+      "name": "stat-card",
+      "type": "registry:ui",
+      "title": "Stat Card",
+      "description": "A KPI/metric card: title, large tabular value, up/down trend badge, and description. Composable parts. Adds success theme tokens.",
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/stat-card/stat-card.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/stat-card.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "color-success": "var(--success)",
+          "color-success-foreground": "var(--success-foreground)"
+        },
+        "light": {
+          "success": "oklch(0.627 0.17 149.2)",
+          "success-foreground": "oklch(0.982 0.018 155.8)"
+        },
+        "dark": {
+          "success": "oklch(0.723 0.192 149.6)",
+          "success-foreground": "oklch(0.266 0.065 152.9)"
+        }
+      }
+    },
+    {
+      "name": "timeline",
+      "type": "registry:ui",
+      "title": "Timeline",
+      "description": "A vertical timeline with status dots (default, active, success, warning, destructive), connector lines, titles, times, and descriptions. Adds success/warning theme tokens.",
+      "files": [
+        {
+          "path": "registry/timeline/timeline.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/timeline.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "color-success": "var(--success)",
+          "color-success-foreground": "var(--success-foreground)",
+          "color-warning": "var(--warning)",
+          "color-warning-foreground": "var(--warning-foreground)"
+        },
+        "light": {
+          "success": "oklch(0.627 0.17 149.2)",
+          "success-foreground": "oklch(0.982 0.018 155.8)",
+          "warning": "oklch(0.666 0.179 58.3)",
+          "warning-foreground": "oklch(0.987 0.022 95.3)"
+        },
+        "dark": {
+          "success": "oklch(0.723 0.192 149.6)",
+          "success-foreground": "oklch(0.266 0.065 152.9)",
+          "warning": "oklch(0.769 0.188 70.1)",
+          "warning-foreground": "oklch(0.279 0.077 45.6)"
+        }
+      }
+    },
+    {
+      "name": "tag",
+      "type": "registry:ui",
+      "title": "Tag",
+      "description": "A categorization label colored from the chart token palette (chart-1..5), with optional remove button. Categorization only — never for actions.",
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/tag/tag.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/tag.tsx"
+        }
+      ]
     }
   ]
 }
