@@ -1,0 +1,16 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "checkbox",
+  "behavior": "APG checkbox pattern (Space toggles; mixed state via aria-checked=mixed)",
+  "parts": [
+    { "part": "root", "tokens": ["space-inline-sm", "cursor-interactive"], "note": "control + text cluster; alignment wrapper" },
+    { "part": "control", "tokens": ["field-border", "field-surface", "radius-control", "icon-size-control", "focus", "duration-fast", "easing-standard"], "statesNote": "selected fills with action and mark renders in on-action; invalid swaps field-border for status-critical per states.md" },
+    { "part": "indicator", "iconRole": "success", "tokens": ["icon-size-inline"], "statesNote": "checkmark; indeterminate swaps to the remove icon role per states.md" },
+    { "part": "label", "contentSlot": true, "tokens": ["type-label"] },
+    { "part": "description", "optional": true, "contentSlot": true, "tokens": ["type-caption", "content-secondary"] }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "hover", "focus-visible", "disabled", "selected", "indeterminate", "invalid", "readonly"],
+  "anatomyNotes": "Parts are invariant across themes. Salt draws the control as a composed icon (CheckboxIcon) while shadcn draws a bordered box with an inner icon — a RECIPE difference on control/indicator, not different anatomy. Control box size tracks icon-size-control (both systems keep the box icon-sized, not control-height-sized).",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "accordion",
+  "behavior": "APG accordion pattern (trigger is a button inside a heading, aria-expanded + aria-controls; Enter/Space toggle; Tab moves through triggers — arrow-key trigger navigation is optional per APG)",
+  "parts": [
+    { "part": "item", "tokens": ["border-subtle"], "note": "bottom rule between items; last item drops it" },
+    { "part": "trigger", "tokens": ["type-label", "on-surface", "interaction-hover", "space-stack-md", "focus"] },
+    { "part": "label", "contentSlot": true, "tokens": ["type-label"] },
+    { "part": "indicator", "iconRole": "expand", "tokens": ["icon-size-control", "content-secondary"], "statesNote": "rotates 180deg on open at duration-fast" },
+    { "part": "panel", "contentSlot": true, "tokens": ["type-body", "space-stack-sm"], "note": "height animates between 0 and content height; overflow hidden during transition" }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "hover", "focus-visible", "disabled", "open"],
+  "anatomyNotes": "Single-open vs multi-open is a behavior option declared on the root, not a variant axis. shadcn places the indicator trailing, Salt leading — indicator position is a recipe difference, same part.",
+  "motion": { "panel-expand": { "duration": "duration-base", "easing": "easing-standard" }, "indicator-rotate": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

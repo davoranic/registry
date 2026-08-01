@@ -1,0 +1,13 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "progress",
+  "behavior": "APG meter/progressbar pattern (role=progressbar with aria-valuemin/aria-valuemax/aria-valuenow; omit aria-valuenow when indeterminate; label via aria-label/aria-labelledby)",
+  "parts": [
+    { "part": "root", "tokens": ["surface-sunken", "radius-pill"], "note": "the track; clips the indicator" },
+    { "part": "indicator", "tokens": ["action", "radius-pill"], "statesNote": "determinate: inline-size bound to value fraction; indeterminate: fixed-length segment sweeping the track in a loop" }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "indeterminate"],
+  "anatomyNotes": "Determinate is the rest state with the indicator sized by value. Linear form is canonical here; circular progress is the same two parts (track/indicator) rendered as strokes — a recipe difference. shadcn's action-at-20%-opacity track vs Salt's neutral track are both theme recipes on surface-sunken.",
+  "motion": { "value-change": { "duration": "duration-base", "easing": "easing-standard" }, "indeterminate-loop": { "duration": "duration-slow", "easing": "easing-standard" } }
+}

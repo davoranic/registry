@@ -1,0 +1,11 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "badge",
+  "behavior": "Non-interactive status label; no APG pattern (presentational text — count-only badges require an accessible text alternative on the host)",
+  "parts": [
+    { "part": "root", "contentSlot": true, "tokens": ["status-info-surface", "on-status-info", "status-info-border", "type-caption", "radius-pill", "space-inline-sm"], "note": "tone axis selects the status family: status-<tone>-surface / on-status-<tone> / status-<tone>-border (info shown as representative)" }
+  ],
+  "variantAxes": { "tone": ["info", "success", "warning", "critical"], "prominence": ["solid", "outline"] },
+  "states": ["rest"],
+  "anatomyNotes": "count-badge (numeric, often anchored to an avatar/icon) and label-badge (text pill) are the SAME anatomy — count uses type-data numerals and may collapse to a dot at small sizes; both are recipe differences on root. Status components take the tone axis, never emphasis; solid uses on-status-* on status-* fill, outline uses status-<tone> content on status-<tone>-surface with status-<tone>-border."
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "drawer",
+  "behavior": "APG dialog (modal) pattern, edge-anchored (focus trapped in panel; Esc closes; focus returns to trigger; aria-modal=true; bottom-edge drawers may add drag-to-dismiss — pointer enhancement only, keyboard dismissal stays Esc)",
+  "parts": [
+    { "part": "scrim", "tokens": ["overlay-scrim", "layer-modal"] },
+    { "part": "panel", "tokens": ["surface-overlay", "on-surface-overlay", "border", "elevation-modal", "layer-modal", "inset-container", "size-overlay-md"], "radius": { "role": "radius-overlay", "corners": "edge-opposite" }, "note": "per-corner rule (semantic.md §4): radius value comes from radius-overlay; only the corners opposite the anchored edge are rounded (edge:bottom → top corners, edge:start → end corners). Logical edge names survive RTL." },
+    { "part": "handle", "optional": true, "tokens": ["border-strong", "radius-pill"], "note": "drag affordance; conventionally present only when edge:bottom" },
+    { "part": "header", "tokens": ["type-heading-3", "on-surface-overlay", "space-stack-sm"], "note": "carries title (type-heading-3) and optional description (type-body, content-secondary)" },
+    { "part": "content", "contentSlot": true, "tokens": ["type-body", "space-stack-md"] },
+    { "part": "footer", "tokens": ["space-inline-md"], "note": "action slot — hosts buttons (anatomy/button.json)" }
+  ],
+  "variantAxes": { "edge": ["start", "end", "top", "bottom"], "size": ["sm", "md", "lg"] },
+  "states": ["rest", "open", "dragging"],
+  "anatomyNotes": "shadcn splits sheet (side panel) from drawer (bottom, vaul); Salt Drawer covers all four positions — one anatomy here, the edge axis is the whole difference. Size binds to size-overlay-* along the panel's anchored-edge-normal dimension.",
+  "motion": { "panel-enter": { "duration": "duration-base", "easing": "easing-enter" }, "panel-exit": { "duration": "duration-fast", "easing": "easing-exit" }, "scrim-fade": { "duration": "duration-base", "easing": "easing-standard" } }
+}

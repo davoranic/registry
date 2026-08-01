@@ -1,0 +1,15 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "switch",
+  "behavior": "APG switch pattern (role=switch; Space/Enter toggle; aria-checked true/false)",
+  "parts": [
+    { "part": "root", "tokens": ["space-inline-sm", "cursor-interactive"], "note": "track + label cluster; alignment wrapper" },
+    { "part": "track", "tokens": ["field-surface", "field-border", "radius-pill", "focus", "duration-fast", "easing-standard"], "statesNote": "selected fills with action; focus-visible ring renders on the track" },
+    { "part": "thumb", "tokens": ["surface", "radius-pill", "duration-fast", "easing-standard"], "statesNote": "translates to the far inline edge when selected; on-action fill in filled recipes" },
+    { "part": "label", "contentSlot": true, "tokens": ["type-label"] }
+  ],
+  "variantAxes": { "size": ["sm", "md"] },
+  "states": ["rest", "hover", "focus-visible", "disabled", "selected"],
+  "anatomyNotes": "Parts are invariant across themes. Track shape is radius-pill in both systems even where other radii are square (Salt keeps the switch rounded). Thumb inset/overhang and unchecked track tint are RECIPE differences on track/thumb, not different anatomy.",
+  "motion": { "thumb-slide": { "duration": "duration-fast", "easing": "easing-standard" }, "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

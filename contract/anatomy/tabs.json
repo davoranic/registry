@@ -1,0 +1,16 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "tabs",
+  "behavior": "APG tabs pattern (tablist/tab/tabpanel; roving focus — arrow keys move between tabs, Home/End to first/last; activation is automatic on focus by default, manual via Enter/Space when panels are expensive — a declared behavior option, never a theme difference)",
+  "parts": [
+    { "part": "list", "tokens": ["space-inline-sm", "border-subtle"], "note": "border-subtle baseline rule under the list in underline-style themes" },
+    { "part": "trigger", "tokens": ["type-action", "content-secondary", "interaction-hover", "on-interaction-selected", "control-height-md", "inset-control-x", "radius-control", "focus"], "statesNote": "selected trigger switches content-secondary to on-interaction-selected" },
+    { "part": "label", "contentSlot": true, "tokens": ["type-action"] },
+    { "part": "selected-indicator", "tokens": ["selected-indicator"], "note": "slot for the active-tab bar: bottom edge when horizontal, side edge when vertical; filled-pill themes may express it as interaction-selected fill on the trigger instead — same slot" },
+    { "part": "panel", "contentSlot": true, "tokens": ["type-body", "space-stack-md", "focus"], "note": "focusable when it contains no focusable children" }
+  ],
+  "variantAxes": { "orientation": ["horizontal", "vertical"], "size": ["sm", "md", "lg"] },
+  "states": ["rest", "hover", "focus-visible", "disabled", "selected"],
+  "anatomyNotes": "shadcn's default (pill on muted) vs line (underline) variants are RECIPE differences on list/trigger/selected-indicator, not different anatomy; Salt tabs are the underline recipe.",
+  "motion": { "indicator-move": { "duration": "duration-fast", "easing": "easing-standard" }, "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}

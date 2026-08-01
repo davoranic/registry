@@ -1,0 +1,16 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "toast",
+  "behavior": "APG alert pattern (role=alert for warning/critical, role=status for info/success; injected without moving focus; announced by assistive tech; hover pauses auto-dismiss; dismiss control keyboard reachable)",
+  "parts": [
+    { "part": "root", "tokens": ["surface-overlay", "on-surface-overlay", "border", "radius-overlay", "elevation-overlay", "layer-notification", "inset-container"], "note": "themes may value the root recipe on inverse-surface/on-inverse-surface instead (inverted style, per elevation-strategy) — declared in the theme adapter, anatomy unchanged. Tone axis adds a status accent: status-<tone>-border on the leading edge (Salt) or full border." },
+    { "part": "icon", "iconRole": "info", "tokens": ["icon-size-control"], "note": "tone axis swaps the role and color: info → info, success → success, warning → warning, critical → error; colored status-<tone>" },
+    { "part": "title", "contentSlot": true, "tokens": ["type-body-strong", "on-surface-overlay"] },
+    { "part": "description", "contentSlot": true, "optional": true, "tokens": ["type-body", "content-secondary"] },
+    { "part": "action-slot", "optional": true, "tokens": ["type-action", "space-inline-md"], "note": "hosts a ghost or link prominence button (anatomy/button.json)" },
+    { "part": "close", "optional": true, "iconRole": "close", "tokens": ["icon-size-inline", "interaction-hover", "radius-control", "focus"] }
+  ],
+  "variantAxes": { "tone": ["info", "success", "warning", "critical"] },
+  "states": ["rest", "hover", "open"],
+  "motion": { "enter": { "duration": "duration-base", "easing": "easing-enter" }, "exit": { "duration": "duration-fast", "easing": "easing-exit" } }
+}

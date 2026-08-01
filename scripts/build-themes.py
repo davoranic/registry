@@ -36,6 +36,7 @@ def color_pairs(tokens, mode):
         pairs.append((f"status-{tone}", clean(parts.get("base"))))
         pairs.append((f"status-{tone}-surface", clean(parts.get("surface"))))
         pairs.append((f"status-{tone}-border", clean(parts.get("border"))))
+        pairs.append((f"on-status-{tone}", clean(parts.get("on"))))
     for section, body in tokens.items():
         if not section.startswith("growth-"):
             continue

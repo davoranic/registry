@@ -1,0 +1,14 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "avatar",
+  "behavior": "Presentational identity image; no APG pattern (img semantics with alt text, or aria-hidden when adjacent text already names the person)",
+  "parts": [
+    { "part": "root", "tokens": ["radius-pill", "control-height-md"], "note": "square; size axis binds both dimensions to control-height-*" },
+    { "part": "image", "optional": true, "tokens": ["radius-pill"], "note": "aspect-ratio 1; shown only after successful load" },
+    { "part": "fallback", "contentSlot": true, "iconRole": "user", "tokens": ["surface-sunken", "content-secondary", "type-label"], "note": "initials text, or the user icon role when no initials; rendered while image is absent or failed" },
+    { "part": "group", "optional": true, "tokens": ["space-inline-sm", "surface"], "note": "wrapper for stacked avatars: members overlap by a fraction of avatar size (negative inline spacing — a recipe, not a token) and each gets a surface-colored ring to separate from neighbors" }
+  ],
+  "variantAxes": { "size": ["sm", "md", "lg"] },
+  "states": ["rest"],
+  "anatomyNotes": "shadcn rounds full via radius-pill; Salt's square avatar is the same anatomy with the theme binding radius-pill differently — shape is a theme decision, not anatomy."
+}

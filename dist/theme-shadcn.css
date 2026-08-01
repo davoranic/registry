@@ -25,15 +25,19 @@
   --status-info: oklch(0.488 0.1 240);
   --status-info-surface: oklch(0.97 0.02 240);
   --status-info-border: oklch(0.85 0.05 240);
+  --on-status-info: oklch(0.985 0 0);
   --status-success: oklch(0.627 0.17 149.2);
   --status-success-surface: oklch(0.97 0.03 149);
   --status-success-border: oklch(0.85 0.08 149);
+  --on-status-success: oklch(0.985 0 0);
   --status-warning: oklch(0.666 0.179 58.3);
   --status-warning-surface: oklch(0.97 0.04 85);
   --status-warning-border: oklch(0.85 0.09 75);
+  --on-status-warning: oklch(0.985 0 0);
   --status-critical: oklch(0.577 0.245 27.325);
   --status-critical-surface: oklch(0.97 0.02 27);
   --status-critical-border: oklch(0.85 0.08 27);
+  --on-status-critical: oklch(0.985 0 0);
   --cursor-interactive: default;
   --cursor-disabled: default;
   --cursor-busy: progress;
@@ -113,13 +117,17 @@
   --status-info: oklch(0.488 0.1 240);
   --status-info-surface: oklch(0.97 0.02 240);
   --status-info-border: oklch(0.85 0.05 240);
+  --on-status-info: oklch(0.985 0 0);
   --status-success: oklch(0.627 0.17 149.2);
   --status-success-surface: oklch(0.97 0.03 149);
   --status-success-border: oklch(0.85 0.08 149);
+  --on-status-success: oklch(0.985 0 0);
   --status-warning: oklch(0.666 0.179 58.3);
   --status-warning-surface: oklch(0.97 0.04 85);
   --status-warning-border: oklch(0.85 0.09 75);
+  --on-status-warning: oklch(0.985 0 0);
   --status-critical: oklch(0.577 0.245 27.325);
   --status-critical-surface: oklch(0.97 0.02 27);
   --status-critical-border: oklch(0.85 0.08 27);
+  --on-status-critical: oklch(0.985 0 0);
 }

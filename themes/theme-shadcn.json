@@ -144,22 +144,26 @@
       "info": {
         "base": "oklch(0.488 0.1 240)",
         "surface": "oklch(0.97 0.02 240)",
-        "border": "oklch(0.85 0.05 240)"
+        "border": "oklch(0.85 0.05 240)",
+        "on": "oklch(0.985 0 0)"
       },
       "success": {
         "base": "oklch(0.627 0.17 149.2)",
         "surface": "oklch(0.97 0.03 149)",
-        "border": "oklch(0.85 0.08 149)"
+        "border": "oklch(0.85 0.08 149)",
+        "on": "oklch(0.985 0 0)"
       },
       "warning": {
         "base": "oklch(0.666 0.179 58.3)",
         "surface": "oklch(0.97 0.04 85)",
-        "border": "oklch(0.85 0.09 75)"
+        "border": "oklch(0.85 0.09 75)",
+        "on": "oklch(0.985 0 0)"
       },
       "critical": {
         "base": "oklch(0.577 0.245 27.325)",
         "surface": "oklch(0.97 0.02 27)",
-        "border": "oklch(0.85 0.08 27)"
+        "border": "oklch(0.85 0.08 27)",
+        "on": "oklch(0.985 0 0)"
       }
     },
     "elevation": {

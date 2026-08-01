@@ -15,6 +15,8 @@ jobs:
           python-version: "3.12"
       - name: Adapter conformance (R2 + naming grammar)
         run: python3 scripts/check-conformance.py
+      - name: Anatomy conformance (slots, states, axes, icon roles)
+        run: python3 scripts/check-anatomy.py
       - name: Theme compile
         run: python3 scripts/build-themes.py
       - name: dist is fresh (no hand edits, no drift)

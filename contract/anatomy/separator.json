@@ -1,0 +1,11 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "separator",
+  "behavior": "APG separator pattern (decorative by default: hidden from assistive tech; semantic when it divides content regions: role=separator with aria-orientation; never focusable)",
+  "parts": [
+    { "part": "root", "tokens": ["border", "border-width"], "note": "prominence axis rebinds the color: subtle → border-subtle, default → border, strong → border-strong (the 3-tier separator scale, semantic.md §1)" }
+  ],
+  "variantAxes": { "prominence": ["subtle", "default", "strong"], "orientation": ["horizontal", "vertical"] },
+  "states": ["rest"],
+  "anatomyNotes": "Decorative vs semantic is a usage flag, not a variant: shadcn defaults decorative (aria-hidden), Salt Divider always renders role=separator — components must expose the choice. Prominence here uses the ordered subtle/default/strong scale (naming.md), mapping to Salt's tertiary/secondary/primary divider variants."
+}

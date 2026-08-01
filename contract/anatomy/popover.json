@@ -1,0 +1,13 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "popover",
+  "behavior": "APG disclosure / non-modal dialog pattern (trigger has aria-haspopup=dialog + aria-expanded; focus moves into panel but is NOT trapped; Esc and outside click dismiss and return focus to trigger)",
+  "parts": [
+    { "part": "trigger", "tokens": ["type-action", "focus"], "note": "typically a button — anatomy delegated to anatomy/button.json" },
+    { "part": "panel", "contentSlot": true, "tokens": ["surface-overlay", "on-surface-overlay", "border", "radius-overlay", "elevation-overlay", "layer-dropdown", "inset-container", "size-overlay-sm"] }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "open"],
+  "anatomyNotes": "Salt's Overlay (header + close button + content) is this anatomy with the dialog header/close parts composed inside the panel content slot — composition, not different anatomy.",
+  "motion": { "panel-enter": { "duration": "duration-fast", "easing": "easing-enter" }, "panel-exit": { "duration": "duration-instant", "easing": "easing-exit" } }
+}

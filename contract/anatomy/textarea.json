@@ -1,0 +1,13 @@
+{
+  "$schema": "../anatomy.schema.json",
+  "name": "textarea",
+  "behavior": "None — native <textarea> semantics (no APG pattern; labeling/description via field composition)",
+  "parts": [
+    { "part": "root", "tokens": ["field-border", "field-surface", "on-surface", "radius-control", "inset-control-x", "type-label", "focus", "field-border-hover", "field-surface-hover", "duration-fast", "easing-standard"], "statesNote": "hover uses field-border-hover/field-surface-hover; invalid swaps field-border for status-critical per states.md" },
+    { "part": "control", "contentSlot": true, "tokens": ["type-label", "content-secondary"], "note": "the native textarea element; placeholder renders in content-secondary" }
+  ],
+  "variantAxes": {},
+  "states": ["rest", "hover", "focus-visible", "disabled", "invalid", "readonly"],
+  "anatomyNotes": "Block size comes from rows/min-height, not control-height-* — no size axis. Autosize (grow with content) is an optional RECIPE/behavior capability (shadcn field-sizing-content; Salt MultilineInput rows/rowsMax), not extra anatomy. Salt's flush bottom-border-only recipe applies as on input.",
+  "motion": { "state-transitions": { "duration": "duration-fast", "easing": "easing-standard" } }
+}
