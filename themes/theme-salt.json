@@ -7,14 +7,14 @@
     "modes": ["light", "dark"],
     "density": { "options": ["high", "medium", "low", "touch"], "default": "medium" },
     "corner": "fixed-sharp",
-    "iconSets": ["salt"],
+    "iconSets": { "default": "salt", "options": ["salt", "lucide", "tabler", "radix"], "mechanism": "SemanticIconProvider — 33 semantic slots (CloseIcon, ChevronDownIcon, CalendarIcon, …), each accepts any React icon component; components resolve icons by ROLE, not by import" },
     "fonts": ["open-sans"]
   },
   "constraints": [
     "Radius is NOT a knob — Salt is sharp (0) everywhere except pills (999px).",
     "Density rescales control heights, spacing, text and icon size together.",
     "Actions are uppercase 600 with 0.6px tracking — not configurable.",
-    "Icon set is Salt's own 12px first-party set (62 SVGs in themes/salt/assets)."
+    "Default icon set is Salt's own 12px first-party set (~548 icons; 62 SVGs mirrored in themes/salt/assets). Swapping is per semantic role via SemanticIconProvider, not per-import like shadcn's migrate."
   ],
   "tokens": {
     "light": {
