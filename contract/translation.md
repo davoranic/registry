@@ -94,6 +94,24 @@ is a deliberate simplicity. Therefore:
   capabilities block — a declared descendant, not a mutated original.
 - Rule of thumb: **components naturalize; capabilities fork.**
 
+### The character rule — traits are adaptable, identities are unique
+
+Character decomposes into TRAITS (token values, capability declarations,
+recipes) — and traits are pure data, freely borrowable into new themes:
+Salt's sharpness + shadcn's neutral palette + uppercase actions is a
+perfectly legal NEW theme. But a system's character as an IDENTITY is
+unique and protected:
+
+- **Origin adapters are immutable portraits.** `theme-salt.json` says only
+  what Salt's source says (R3, one-way). We never blend into it, never
+  "improve" it. Its fidelity to the source is its entire job.
+- **New characters are born by composition, never by mutation** — a new
+  named theme declaring its lineage: `"parents": ["shadcn", "salt"]`,
+  plus its own capabilities and constraints. It competes on its own name.
+- Superiority of a trait (Salt's color depth) therefore never entitles it
+  to overwrite anyone; it makes the trait AVAILABLE — through the contract
+  slots it taught (growth) and to new compositions (this rule).
+
 ## Governance
 
 - The contract (tokens/semantic.md + contract/*) is versioned **semver**:
