@@ -1,0 +1,21 @@
+{
+  "name": "@davoranic/registry",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Design-system translator: one semantic contract, many characters.",
+  "scripts": {
+    "build:themes": "python3 scripts/build-themes.py",
+    "build:showroom": "python3 scripts/build-showroom.py && node scripts/bundle-showroom.mjs",
+    "check": "python3 scripts/check-conformance.py && python3 scripts/check-anatomy.py && python3 scripts/check-component.py && python3 scripts/check-icons.py && python3 scripts/check-fonts.py",
+    "build": "npm run build:themes && npm run build:showroom"
+  },
+  "dependencies": {
+    "lucide-react": "^0.469.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.0"
+  }
+}

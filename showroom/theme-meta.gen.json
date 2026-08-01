@@ -1,0 +1,68 @@
+{
+ "salt": {
+  "title": "Salt DS",
+  "capabilities": {
+   "modes": [
+    "light",
+    "dark"
+   ],
+   "density": {
+    "options": [
+     "high",
+     "medium",
+     "low",
+     "touch"
+    ],
+    "default": "medium"
+   },
+   "corner": "fixed-sharp",
+   "iconSets": {
+    "default": "salt",
+    "options": [
+     "salt",
+     "lucide",
+     "tabler",
+     "radix"
+    ],
+    "mechanism": "SemanticIconProvider \u2014 33 semantic slots (CloseIcon, ChevronDownIcon, CalendarIcon, \u2026), each accepts any React icon component; components resolve icons by ROLE, not by import"
+   },
+   "fonts": [
+    "open-sans"
+   ]
+  },
+  "constraints": [
+   "Radius is NOT a knob \u2014 Salt is sharp (0) everywhere except pills (999px).",
+   "Density rescales control heights, spacing, text, type roles and icon size together \u2014 there is no per-instance size prop.",
+   "Actions are uppercase 600 with 0.6px tracking \u2014 not configurable.",
+   "Salt ships ONE icon size per density (size-icon) with an integer multiplier; inline and control icons are therefore the same size, emphasis = multiplier 2.",
+   "Salt has no separate caption ramp \u2014 caption resolves to the label ramp at regular weight.",
+   "Default icon set is Salt's own 12px first-party set (~548 icons; 62 SVGs mirrored in themes/salt/assets). Swapping is per semantic role via SemanticIconProvider, not per-import like shadcn's migrate."
+  ]
+ },
+ "shadcn": {
+  "title": "shadcn neutral",
+  "capabilities": {
+   "modes": [
+    "light",
+    "dark"
+   ],
+   "density": false,
+   "corner": "knob",
+   "iconSets": [
+    "lucide",
+    "tabler",
+    "radix"
+   ],
+   "fonts": [
+    "system",
+    "geist"
+   ]
+  },
+  "constraints": [
+   "No density switching \u2014 the scale is fixed to the 4px grid.",
+   "Radius is a free knob (--radius); all derived radii follow.",
+   "No dedicated inverse surface \u2014 inverse-* is the opposite mode's surface pair.",
+   "Fields are transparent-filled: field-surface tracks surface and does not change on hover."
+  ]
+ }
+}

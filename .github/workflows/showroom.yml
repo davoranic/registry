@@ -8,8 +8,9 @@ on:
       - "themes/**"
       - "contract/**"
       - "registry/**"
-      - "scripts/build-showroom.py"
-      - "scripts/build-themes.py"
+      - "icons/**"
+      - "showroom/**"
+      - "scripts/**"
   workflow_dispatch:
 
 permissions:
@@ -21,16 +22,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Compile themes + generate showroom from repo data
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: npm ci || npm install
+      - name: Compile themes + metadata, bundle live showroom
         run: |
           python3 scripts/build-themes.py
-          python3 scripts/build-showroom.py
-      - name: Commit regenerated dist (triggers Vercel deploy)
+          python3 scripts/gen-showroom-meta.py
+          node scripts/bundle-showroom.mjs
+      - name: Commit dist (triggers Vercel deploy)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add dist/
-          git diff --staged --quiet || git commit -m "chore: rebuild showroom from repo data [skip ci]"
+          git add dist/ showroom/*.gen.json
+          git diff --staged --quiet || git commit -m "chore: rebuild live showroom [skip ci]"
           git push
