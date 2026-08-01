@@ -15,10 +15,13 @@ const result = await esbuild.build({
   alias: { "@/lib/utils": join(ROOT, "lib/utils.ts") },
 })
 
+// Every theme sheet is scoped by [data-theme="..."], so all of them stay
+// enabled together — media-gating one theme at a time silently disabled
+// every theme after the first (dark mode, compare view).
 const themes = readdirSync(join(ROOT, "dist")).filter(f => f.startsWith("theme-") && f.endsWith(".css"))
 const themeLinks = themes.map(f => {
   const name = f.replace("theme-", "").replace(".css", "")
-  return `<style data-theme-css="${name}" media="${name === themes[0].replace("theme-","").replace(".css","") ? "all" : "not all"}">${readFileSync(join(ROOT, "dist", f), "utf8")}</style>`
+  return `<style data-theme-css="${name}">${readFileSync(join(ROOT, "dist", f), "utf8")}</style>`
 }).join("\n")
 
 const base = readFileSync(join(ROOT, "tokens/base.css"), "utf8")
