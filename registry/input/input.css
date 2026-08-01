@@ -1,0 +1,33 @@
+/* LIFTED from shadcn/input.tsx via scripts/lift.py — the dictionary run in reverse.
+   Review against contract/anatomy/input.json + the button exemplar before accepting.
+   Unmapped words: see input.lift-report.json */
+
+[data-slot="input"] {
+  height: var(--control-height-md);
+  width: 100%;
+  min-width: 0;
+  border-radius: var(--radius-control);
+  border: var(--border-width) solid var(--border);
+  border-color: var(--field-border);
+  background: transparent;
+  padding-inline: calc(var(--space-unit) * 3);
+  padding-block: var(--space-unit);
+  font-size: var(--text-ui);
+  box-shadow: var(--elevation-resting);
+  transition: color var(--duration-fast) var(--easing-standard), box-shadow var(--duration-fast) var(--easing-standard);
+  outline: none;
+}
+
+[data-slot="control"]::placeholder {
+  color: var(--content-secondary);
+}
+
+[data-slot="input"]:disabled {
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+  opacity: 0.5;
+}
+
+[data-slot="input"] { display: inline-flex; align-items: center; width: 100%; }
+[data-slot="control"] { all: unset; flex: 1; min-width: 0; font: inherit; color: var(--on-surface); }
+[data-slot="control"]:disabled { opacity: 0.5; cursor: var(--cursor-disabled); }
