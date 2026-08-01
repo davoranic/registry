@@ -1,0 +1,8 @@
+{
+  "pattern": "login",
+  "theme": "shadcn",
+  "substitutions": [],
+  "omissions": [],
+  "warnings": [],
+  "lossless": true
+}

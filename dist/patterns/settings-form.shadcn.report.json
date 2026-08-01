@@ -1,0 +1,8 @@
+{
+  "pattern": "settings-form",
+  "theme": "shadcn",
+  "substitutions": [],
+  "omissions": [],
+  "warnings": [],
+  "lossless": true
+}

@@ -1,0 +1,23 @@
+{
+  "name": "settings-form",
+  "intent": "Edit a group of account preferences with explicit save.",
+  "regions": [
+    { "region": "header", "order": 1, "contentSlots": { "headline": "Notifications", "supporting": "Choose how you want to be notified." } },
+    { "region": "form", "order": 2, "components": [
+      { "component": "field", "contentSlots": { "label": "Email address", "description": "Used for account notices only." },
+        "children": [ { "component": "input", "props": { "type": "email", "value": "m@example.com" } } ] },
+      { "component": "separator" },
+      { "component": "field", "contentSlots": { "label": "Product updates" }, "orientation": "horizontal",
+        "children": [ { "component": "switch", "props": { "checked": true } } ] },
+      { "component": "field", "contentSlots": { "label": "Security alerts", "description": "Cannot be disabled." }, "orientation": "horizontal",
+        "children": [ { "component": "switch", "props": { "checked": true, "disabled": true } } ] }
+    ] },
+    { "region": "actions", "order": 3, "components": [
+      { "component": "button", "variants": { "emphasis": "primary", "prominence": "solid" }, "contentSlots": { "label": "Save changes" } },
+      { "component": "button", "variants": { "emphasis": "secondary", "prominence": "ghost" }, "contentSlots": { "label": "Cancel" } }
+    ] }
+  ],
+  "layout": { "flow": "stack", "gap": "space-stack-md", "max": "36rem",
+    "container": { "surface": "surface-raised", "elevation": "elevation-raised", "radius": "radius-container", "inset": "inset-container" } },
+  "a11y": [ "fieldset/legend per group", "switch state announced" ]
+}

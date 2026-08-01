@@ -237,12 +237,13 @@
       "emphasis:primary+prominence:solid": "variant=default",
       "emphasis:secondary+prominence:solid": "variant=secondary",
       "emphasis:danger+prominence:solid": "variant=destructive",
-      "emphasis:primary+prominence:outline": "variant=outline",
       "emphasis:secondary+prominence:ghost": "variant=ghost",
       "emphasis:primary+prominence:link": "variant=link",
       "fallbacks": {
-        "emphasis:danger+prominence:ghost": "compose: ghost + status-critical text"
-      }
+        "emphasis:danger+prominence:ghost": "compose: ghost + status-critical text",
+        "emphasis:primary+prominence:outline": "compose: outline + action-colored border/text"
+      },
+      "emphasis:secondary+prominence:outline": "variant=outline"
     },
     "badge": {
       "tone:info": "status-info-surface + status-info",

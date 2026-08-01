@@ -1,0 +1,8 @@
+{
+  "pattern": "data-table-page",
+  "theme": "shadcn",
+  "substitutions": [],
+  "omissions": [],
+  "warnings": [],
+  "lossless": true
+}

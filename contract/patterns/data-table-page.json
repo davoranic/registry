@@ -1,0 +1,26 @@
+{
+  "name": "data-table-page",
+  "intent": "Review and act on a filterable collection of records.",
+  "regions": [
+    { "region": "header", "order": 1, "contentSlots": { "headline": "Invoices", "supporting": "8 open · 2 overdue" },
+      "components": [ { "component": "button", "variants": { "emphasis": "primary", "prominence": "solid" }, "contentSlots": { "label": "New invoice" }, "align": "end" } ] },
+    { "region": "toolbar", "order": 2, "components": [
+      { "component": "input", "props": { "type": "search", "placeholder": "Filter invoices…" }, "width": "20rem" },
+      { "component": "button", "variants": { "emphasis": "secondary", "prominence": "outline" }, "contentSlots": { "label": "Columns" }, "align": "end" }
+    ] },
+    { "region": "table", "order": 3, "components": [
+      { "component": "table", "props": {
+        "columns": [ { "label": "Invoice", "type": "text" }, { "label": "Status", "type": "badge" }, { "label": "Customer", "type": "text" }, { "label": "Amount", "type": "data", "align": "end" } ],
+        "rows": [
+          [ "INV-001", { "badge": { "tone": "success", "label": "Paid" } }, "Acme Corp", "$2,500.00" ],
+          [ "INV-002", { "badge": { "tone": "warning", "label": "Pending" } }, "Monsters Inc", "$1,150.00" ],
+          [ "INV-003", { "badge": { "tone": "critical", "label": "Overdue" } }, "Stark Industries", "$8,900.00" ],
+          [ "INV-004", { "badge": { "tone": "success", "label": "Paid" } }, "Wayne Enterprises", "$450.00" ]
+        ] } }
+    ] },
+    { "region": "footer", "order": 4, "contentSlots": { "summary": "4 of 24 rows" } }
+  ],
+  "layout": { "flow": "stack", "gap": "space-stack-md", "max": "64rem",
+    "container": { "surface": "surface", "inset": "inset-container" } },
+  "a11y": [ "table caption from headline", "status badges carry text, not color alone" ]
+}
