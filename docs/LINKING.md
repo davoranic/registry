@@ -103,6 +103,25 @@ border-active — from Salt `editable`), `selected-indicator` (from
 `content-disabled`, and `data-7..12` (Salt's 20-color categorical proves 6 is
 too few; 12 with derivation).
 
+## Upstream sync — when source systems update
+
+Adapters are portraits of a moving subject. The sync loop (run per release or
+quarterly): pull the source clone → regenerate inventory → diff against the
+adapter. Every delta falls into exactly three bins:
+
+1. **Value change** (a color shifts, a duration tightens) → adapter patch;
+   contract untouched; consumers get it via the compiled theme.
+2. **New tokens/capabilities** → growth candidates through §Growth, as if
+   onboarding fresh.
+3. **Renames/removals** → adapter-internal only — nothing outside the
+   adapter references source names (R3), so upstream refactors cannot break
+   the registry.
+
+Adapters record their source pin (`"sourceRef": "<repo>@<version/commit>"`)
+so every portrait states which sitting it was painted from. Installed
+component code follows open-code rules: updates are reviewed diffs
+(`shadcn diff`), adopted deliberately, never auto-applied.
+
 ## Current adapters
 
 | System | Adapter | Map | Status |
