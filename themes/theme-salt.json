@@ -1,0 +1,61 @@
+{
+  "$schema": "./theme.schema.json",
+  "name": "salt",
+  "title": "Salt DS",
+  "description": "JPMorgan Salt character: sharp corners, Salt blue actions, Open Sans, uppercase action text, density-scaled rhythm. Derived from @salt-ds/theme (clone: salt-ds/packages/theme).",
+  "capabilities": {
+    "modes": ["light", "dark"],
+    "density": { "options": ["high", "medium", "low", "touch"], "default": "medium" },
+    "corner": "fixed-sharp",
+    "iconSets": ["salt"],
+    "fonts": ["open-sans"]
+  },
+  "constraints": [
+    "Radius is NOT a knob — Salt is sharp (0) everywhere except pills (999px).",
+    "Density rescales control heights, spacing, text and icon size together.",
+    "Actions are uppercase 600 with 0.6px tracking — not configurable.",
+    "Icon set is Salt's own 12px first-party set (62 SVGs in themes/salt/assets)."
+  ],
+  "tokens": {
+    "light": {
+      "background": "#FFFFFF", "foreground": "#161616",
+      "card": "#FFFFFF", "card-foreground": "#161616",
+      "primary": "#155C93", "primary-foreground": "#FFFFFF",
+      "secondary": "#EAEDEF", "secondary-foreground": "#161616",
+      "muted": "#EAEDEF", "muted-foreground": "#61656E",
+      "accent": "#CBE7F9", "accent-foreground": "#161616",
+      "destructive": "#C42010",
+      "success": "#18723D", "warning": "#CC440D",
+      "border": "#CED2D9", "input": "#61656E", "ring": "#155C93"
+    },
+    "dark": {
+      "background": "#242526", "foreground": "#FFFFFF",
+      "card": "#2A2C2F", "card-foreground": "#FFFFFF",
+      "primary": "#2670A9", "primary-foreground": "#FFFFFF",
+      "secondary": "#2F3136", "secondary-foreground": "#FFFFFF",
+      "muted": "#2F3136", "muted-foreground": "#B4B7BE",
+      "accent": "#1A2A38", "accent-foreground": "#FFFFFF",
+      "destructive": "#FF5942",
+      "success": "#24874B", "warning": "#EA7319",
+      "border": "#4C505B", "input": "#B4B7BE", "ring": "#4B9FD8"
+    },
+    "shape": { "radius": "0rem" },
+    "rhythm": {
+      "byDensity": {
+        "high":   { "spacing": "0.125rem", "control-h": "1.25rem",  "control-px": "0.5rem",  "text-ui": "0.6875rem", "icon-size": "0.625rem" },
+        "medium": { "spacing": "0.25rem",  "control-h": "1.75rem",  "control-px": "0.75rem", "text-ui": "0.75rem",   "icon-size": "0.75rem" },
+        "low":    { "spacing": "0.375rem", "control-h": "2.25rem",  "control-px": "1rem",    "text-ui": "0.875rem",  "icon-size": "0.875rem" },
+        "touch":  { "spacing": "0.5rem",   "control-h": "2.75rem",  "control-px": "1.25rem", "text-ui": "0.875rem",  "icon-size": "1rem" }
+      }
+    },
+    "type": {
+      "font-sans": "'Open Sans', -apple-system, system-ui, sans-serif",
+      "ui-weight": "600", "ui-case": "uppercase", "ui-tracking": "0.6px"
+    },
+    "focus": { "focus-width": "2px", "focus-style": "outline" }
+  },
+  "anatomySpecific": [
+    "stepper", "rating", "tree", "toggletip", "scrim", "segmented-button-group",
+    "flush-input (bottom-border input treatment)", "density provider"
+  ]
+}

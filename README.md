@@ -1,9 +1,24 @@
 # davoranic/registry
 
-A personal [shadcn registry](https://ui.shadcn.com/docs/registry). This public
-GitHub repository **is** the registry — no server, no build step. Items are
-described in [`registry.json`](./registry.json) and installed with the shadcn
-CLI:
+A design-system registry built from scratch. This public GitHub repository
+**is** the registry — no server, no build step.
+
+## Architecture
+
+1. **Base token contract** — [`tokens/base.css`](./tokens/base.css): the axes
+   every theme must value (color roles, radius knob, rhythm, type, icons,
+   focus). Components render from these names ONLY.
+2. **Themes** — [`themes/`](./themes): a design system's *character* expressed
+   as values for the contract plus a `capabilities` declaration. Capabilities
+   differ by theme and constraints are explicit: `theme-salt` unlocks density
+   (high/medium/low/touch) and fixes corners sharp; `theme-shadcn` has a free
+   radius knob and no density.
+3. **Components** — [`registry/`](./registry): defined once, themed by tokens.
+   Anatomy specific to one system is allowed and flagged in that theme's
+   `anatomySpecific` list.
+
+Items are described in [`registry.json`](./registry.json) and installed with
+the shadcn CLI:
 
 ```bash
 npx shadcn@latest add davoranic/registry/status-pill

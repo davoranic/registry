@@ -1,0 +1,63 @@
+/* ============================================================
+   BASE TOKEN CONTRACT
+   The axes every theme must provide values for. Components in
+   this registry render from THESE names only — never from a
+   design system directly. A theme is a set of values for this
+   contract plus a capabilities declaration (themes/*.json).
+   Values below are the neutral defaults (theme-shadcn, light).
+   ============================================================ */
+
+:root {
+  /* ---- color roles (each surface pairs with a -foreground) ---- */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --success: oklch(0.627 0.17 149.2);
+  --warning: oklch(0.666 0.179 58.3);
+  --info: oklch(0.488 0.1 240);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+  /* ---- shape ---- */
+  --radius: 0.625rem;               /* the ONE knob; themes may fix it (Salt: 0) */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+
+  /* ---- rhythm ---- */
+  --spacing: 0.25rem;               /* base grid unit; themes may rescale (Salt density) */
+  --control-h: 2.25rem;             /* default control height (36px) */
+  --control-px: 1rem;               /* control horizontal padding */
+
+  /* ---- type ---- */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --text-ui: 0.875rem;              /* chrome size */
+  --text-body: 1rem;
+  --text-caption: 0.75rem;
+  --ui-weight: 500;                 /* labels, buttons, triggers */
+  --ui-case: none;                  /* Salt sets uppercase for actions */
+  --ui-tracking: 0em;
+
+  /* ---- icons ---- */
+  --icon-size: 1rem;                /* themes may rescale (Salt: 12px @ medium) */
+  --icon-stroke: 2;
+
+  /* ---- focus ---- */
+  --focus-width: 3px;               /* shadcn: soft 3px ring; Salt: 2px solid outline */
+  --focus-style: ring;              /* ring | outline (informational; CSS uses width+color) */
+}

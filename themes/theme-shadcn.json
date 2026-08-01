@@ -1,0 +1,49 @@
+{
+  "$schema": "./theme.schema.json",
+  "name": "shadcn",
+  "title": "shadcn neutral",
+  "description": "The default character: neutral oklch, soft radius, system sans, quiet shadows.",
+  "capabilities": {
+    "modes": ["light", "dark"],
+    "density": false,
+    "corner": "knob",
+    "iconSets": ["lucide", "tabler", "radix"],
+    "fonts": ["system", "geist"]
+  },
+  "constraints": [
+    "No density switching — the scale is fixed to the 4px grid.",
+    "Radius is a free knob (--radius); all derived radii follow."
+  ],
+  "tokens": {
+    "light": {
+      "background": "oklch(1 0 0)", "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)", "card-foreground": "oklch(0.145 0 0)",
+      "primary": "oklch(0.205 0 0)", "primary-foreground": "oklch(0.985 0 0)",
+      "secondary": "oklch(0.97 0 0)", "secondary-foreground": "oklch(0.205 0 0)",
+      "muted": "oklch(0.97 0 0)", "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)", "accent-foreground": "oklch(0.205 0 0)",
+      "destructive": "oklch(0.577 0.245 27.325)",
+      "success": "oklch(0.627 0.17 149.2)", "warning": "oklch(0.666 0.179 58.3)",
+      "border": "oklch(0.922 0 0)", "input": "oklch(0.922 0 0)", "ring": "oklch(0.708 0 0)"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)", "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)", "card-foreground": "oklch(0.985 0 0)",
+      "primary": "oklch(0.922 0 0)", "primary-foreground": "oklch(0.205 0 0)",
+      "secondary": "oklch(0.269 0 0)", "secondary-foreground": "oklch(0.985 0 0)",
+      "muted": "oklch(0.269 0 0)", "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.371 0 0)", "accent-foreground": "oklch(0.985 0 0)",
+      "destructive": "oklch(0.704 0.191 22.216)",
+      "success": "oklch(0.723 0.192 149.6)", "warning": "oklch(0.769 0.188 70.1)",
+      "border": "oklch(1 0 0 / 10%)", "input": "oklch(1 0 0 / 15%)", "ring": "oklch(0.556 0 0)"
+    },
+    "shape": { "radius": "0.625rem" },
+    "rhythm": { "spacing": "0.25rem", "control-h": "2.25rem", "control-px": "1rem" },
+    "type": {
+      "font-sans": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+      "text-ui": "0.875rem", "ui-weight": "500", "ui-case": "none", "ui-tracking": "0em"
+    },
+    "icons": { "icon-size": "1rem", "default-set": "lucide" },
+    "focus": { "focus-width": "3px", "focus-style": "ring" }
+  }
+}
