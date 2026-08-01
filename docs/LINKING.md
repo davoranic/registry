@@ -71,7 +71,13 @@ second component set.
 ## Growth — learning the contract from design systems
 
 No single system is globally "superior"; the rule is **the most demanding
-system teaches each category**. Salt's ~560 color characteristics teach color
+system teaches each category** — and it teaches THE CONTRACT, never another
+system directly. All teaching routes through the semantic token list: the
+superior contributes CAPACITY (a slot — the ability to express an intent),
+never its VALUES (its character). Every other system then meets the new slot
+its own way — natively or by derivation (R2) — producing the same intent in
+its own accent. The contract is the registry's IPA: a notation rich enough to
+transcribe every system, owned by none of them. Salt's ~560 color characteristics teach color
 granularity; shadcn teaches the radius knob; Material teaches state layers
 and icon axes. Onboarding a system therefore includes a growth pass:
 
