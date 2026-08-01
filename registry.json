@@ -4,13 +4,49 @@
   "homepage": "https://github.com/davoranic/registry",
   "items": [
     {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "description": "Contract-native avatar \u2014 structure from contract/anatomy/avatar.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/avatar/avatar.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/avatar.tsx"
+        },
+        {
+          "path": "registry/avatar/avatar.css",
+          "type": "registry:ui",
+          "target": "components/ui/avatar.css"
+        }
+      ],
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "Contract-native badge \u2014 structure from contract/anatomy/badge.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/badge/badge.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/badge.tsx"
+        },
+        {
+          "path": "registry/badge/badge.css",
+          "type": "registry:ui",
+          "target": "components/ui/badge.css"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
-      "description": "The exemplar component (contract/authoring.md): structure from contract/anatomy/button.json, recipe on contract slots only. Wears the active theme's character entirely.",
-      "dependencies": [
-        "lucide-react"
-      ],
+      "description": "Contract-native button \u2014 structure from contract/anatomy/button.json, recipe on contract slots only. Wears the active theme's character.",
       "files": [
         {
           "path": "registry/button/button.tsx",
@@ -21,6 +57,219 @@
           "path": "registry/button/button.css",
           "type": "registry:ui",
           "target": "components/ui/button.css"
+        }
+      ],
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "Contract-native card \u2014 structure from contract/anatomy/card.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/card/card.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/card.tsx"
+        },
+        {
+          "path": "registry/card/card.css",
+          "type": "registry:ui",
+          "target": "components/ui/card.css"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "Contract-native checkbox \u2014 structure from contract/anatomy/checkbox.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/checkbox/checkbox.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/checkbox.tsx"
+        },
+        {
+          "path": "registry/checkbox/checkbox.css",
+          "type": "registry:ui",
+          "target": "components/ui/checkbox.css"
+        }
+      ],
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "Contract-native dialog \u2014 structure from contract/anatomy/dialog.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/dialog/dialog.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/dialog.tsx"
+        },
+        {
+          "path": "registry/dialog/dialog.css",
+          "type": "registry:ui",
+          "target": "components/ui/dialog.css"
+        }
+      ],
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "Contract-native field \u2014 structure from contract/anatomy/field.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/field/field.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/field.tsx"
+        },
+        {
+          "path": "registry/field/field.css",
+          "type": "registry:ui",
+          "target": "components/ui/field.css"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "Contract-native input \u2014 structure from contract/anatomy/input.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/input/input.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/input.tsx"
+        },
+        {
+          "path": "registry/input/input.css",
+          "type": "registry:ui",
+          "target": "components/ui/input.css"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "Contract-native radio group \u2014 structure from contract/anatomy/radio-group.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/radio-group/radio-group.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/radio-group.tsx"
+        },
+        {
+          "path": "registry/radio-group/radio-group.css",
+          "type": "registry:ui",
+          "target": "components/ui/radio-group.css"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Contract-native select \u2014 structure from contract/anatomy/select.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/select/select.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/select.tsx"
+        },
+        {
+          "path": "registry/select/select.css",
+          "type": "registry:ui",
+          "target": "components/ui/select.css"
+        }
+      ],
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "Contract-native separator \u2014 structure from contract/anatomy/separator.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/separator/separator.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/separator.tsx"
+        },
+        {
+          "path": "registry/separator/separator.css",
+          "type": "registry:ui",
+          "target": "components/ui/separator.css"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Contract-native switch \u2014 structure from contract/anatomy/switch.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/switch/switch.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/switch.tsx"
+        },
+        {
+          "path": "registry/switch/switch.css",
+          "type": "registry:ui",
+          "target": "components/ui/switch.css"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "Contract-native table \u2014 structure from contract/anatomy/table.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/table/table.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/table.tsx"
+        },
+        {
+          "path": "registry/table/table.css",
+          "type": "registry:ui",
+          "target": "components/ui/table.css"
+        }
+      ],
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Contract-native tabs \u2014 structure from contract/anatomy/tabs.json, recipe on contract slots only. Wears the active theme's character.",
+      "files": [
+        {
+          "path": "registry/tabs/tabs.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/tabs.tsx"
+        },
+        {
+          "path": "registry/tabs/tabs.css",
+          "type": "registry:ui",
+          "target": "components/ui/tabs.css"
         }
       ]
     },

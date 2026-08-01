@@ -1,0 +1,29 @@
+/* Separator recipe — contract slots only (contract/authoring.md step 3).
+   Structure and axes: contract/anatomy/separator.json. Character: the theme.
+   Prominence rebinds the color only (anatomy note): subtle → border-subtle,
+   default → border, strong → border-strong (3-tier scale, semantic.md §1).
+   Lifted from shadcn/separator.tsx via scripts/lift.py, then reviewed against
+   the anatomy + button exemplar. Unmapped words: separator.lift-report.json */
+
+[data-slot="separator"] {
+  flex-shrink: 0;
+  background: var(--border);
+}
+
+/* orientation axis */
+[data-slot="separator"][data-orientation="horizontal"] {
+  height: var(--border-width);
+  width: 100%;
+}
+[data-slot="separator"][data-orientation="vertical"] {
+  width: var(--border-width);
+  height: 100%;
+}
+
+/* prominence axis (default carries the base --border binding above) */
+[data-slot="separator"][data-prominence="subtle"] {
+  background: var(--border-subtle);
+}
+[data-slot="separator"][data-prominence="strong"] {
+  background: var(--border-strong);
+}

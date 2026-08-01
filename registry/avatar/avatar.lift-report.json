@@ -1,0 +1,32 @@
+{
+  "component": "avatar",
+  "mapped": 31,
+  "unmapped": [
+    "group/avatar",
+    "size-8",
+    "data-[size=lg]:size-10",
+    "data-[size=sm]:size-6",
+    "aspect-square",
+    "size-full",
+    "size-full",
+    "group-data-[size=sm]/avatar:text-xs",
+    "right-0",
+    "bottom-0",
+    "z-10",
+    "ring-2",
+    "ring-background",
+    "group/avatar-group",
+    "-space-x-2",
+    "*:data-[slot=avatar]:ring-2",
+    "*:data-[slot=avatar]:ring-background",
+    "size-8",
+    "ring-2",
+    "ring-background",
+    "group-has-data-[size=lg]/avatar-group:size-10",
+    "group-has-data-[size=sm]/avatar-group:size-6",
+    "[&>svg]:size-4",
+    "group-has-data-[size=lg]/avatar-group:[&>svg]:size-5",
+    "group-has-data-[size=sm]/avatar-group:[&>svg]:size-3"
+  ],
+  "skipped_variants": []
+}

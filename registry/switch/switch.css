@@ -1,0 +1,51 @@
+/* Switch recipe — contract slots only. Anatomy: contract/anatomy/switch.json */
+
+[data-slot="switch"] { display: inline-flex; align-items: center; gap: var(--space-inline-md); }
+[data-slot="track"] {
+  position: relative;
+  flex-shrink: 0;
+  width: calc(var(--control-height-md) * 0.9);
+  height: calc(var(--control-height-md) * 0.5);
+  padding: 0;
+  background: var(--field-border);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: var(--cursor-interactive);
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+[data-slot="switch"][data-size="sm"] [data-slot="track"] {
+  width: calc(var(--control-height-sm) * 0.9);
+  height: calc(var(--control-height-sm) * 0.5);
+}
+[data-slot="track"]:hover { background: var(--field-border-hover); }
+[data-slot="track"][data-state="selected"] { background: var(--action); }
+[data-slot="track"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 50%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="thumb"] {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--space-unit) * 0.5);
+  width: calc(var(--control-height-md) * 0.5 - var(--space-unit));
+  height: calc(var(--control-height-md) * 0.5 - var(--space-unit));
+  background: var(--surface-raised);
+  border-radius: var(--radius-pill);
+  transform: translateY(-50%);
+  transition: inset-inline-start var(--duration-fast) var(--easing-standard);
+}
+[data-slot="switch"][data-size="sm"] [data-slot="thumb"] {
+  width: calc(var(--control-height-sm) * 0.5 - var(--space-unit));
+  height: calc(var(--control-height-sm) * 0.5 - var(--space-unit));
+}
+[data-slot="track"][data-state="selected"] [data-slot="thumb"] {
+  inset-inline-start: calc(var(--control-height-md) * 0.4);
+}
+[data-slot="switch"][data-size="sm"] [data-slot="track"][data-state="selected"] [data-slot="thumb"] {
+  inset-inline-start: calc(var(--control-height-sm) * 0.4);
+}
+[data-slot="switch"][data-disabled] { opacity: 0.5; pointer-events: none; cursor: var(--cursor-disabled); }
+[data-slot="switch"] [data-slot="label"] { font: var(--type-label); cursor: var(--cursor-interactive); }
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="track"], [data-slot="thumb"] { transition: none; }
+}

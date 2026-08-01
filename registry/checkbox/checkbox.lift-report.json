@@ -1,0 +1,22 @@
+{
+  "component": "checkbox",
+  "mapped": 13,
+  "unmapped": [
+    "peer",
+    "size-4",
+    "rounded-[4px]",
+    "transition-shadow",
+    "data-[state=checked]:border-primary",
+    "data-[state=checked]:bg-primary",
+    "data-[state=checked]:text-primary-foreground",
+    "place-content-center",
+    "text-current",
+    "transition-none",
+    "size-3.5"
+  ],
+  "skipped_variants": [
+    "dark:bg-input/30",
+    "dark:aria-invalid:ring-destructive/40",
+    "dark:data-[state=checked]:bg-primary"
+  ]
+}

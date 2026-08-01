@@ -1,0 +1,27 @@
+{
+  "component": "table",
+  "mapped": 14,
+  "unmapped": [
+    "overflow-x-auto",
+    "caption-bottom",
+    "[&_tr]:border-b",
+    "[&_tr:last-child]:border-0",
+    "border-t",
+    "bg-muted/50",
+    "[&>tr]:last:border-b-0",
+    "border-b",
+    "hover:bg-muted/50",
+    "has-aria-expanded:bg-muted/50",
+    "data-[state=selected]:bg-muted",
+    "text-left",
+    "align-middle",
+    "[&:has([role=checkbox])]:pr-0",
+    "[&>[role=checkbox]]:translate-y-[2px]",
+    "p-2",
+    "align-middle",
+    "[&:has([role=checkbox])]:pr-0",
+    "[&>[role=checkbox]]:translate-y-[2px]",
+    "mt-4"
+  ],
+  "skipped_variants": []
+}

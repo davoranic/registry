@@ -1,0 +1,63 @@
+/* Card recipe — contract slots only (contract/authoring.md step 3).
+   Structure and parts: contract/anatomy/card.json. Character: the theme.
+   Padding lives on root as inset-container (anatomy note); elevation
+   expression (shadow vs border) follows the theme's elevation-strategy.
+   Lifted from shadcn/card.tsx via scripts/lift.py, then reviewed against
+   the anatomy + button exemplar. Unmapped words: card.lift-report.json */
+
+[data-slot="card"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-md);
+  background: var(--surface-raised);
+  color: var(--on-surface-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-container);
+  padding: var(--inset-container);
+  box-shadow: var(--elevation-raised);
+}
+
+/* header: title/description stack with trailing action-slot column */
+[data-slot="card"] > [data-slot="header"] {
+  display: grid;
+  grid-auto-rows: min-content;
+  align-items: start;
+  row-gap: var(--space-stack-sm);
+  column-gap: var(--space-inline-md);
+}
+[data-slot="card"] > [data-slot="header"]:has([data-slot="action-slot"]) {
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+}
+
+[data-slot="card"] [data-slot="title"] {
+  font: var(--type-heading-3);
+  color: var(--on-surface-raised);
+}
+
+[data-slot="card"] [data-slot="description"] {
+  font: var(--type-body);
+  color: var(--content-secondary);
+}
+
+[data-slot="card"] [data-slot="action-slot"] {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  align-self: start;
+}
+
+[data-slot="card"] > [data-slot="content"] {
+  font: var(--type-body);
+}
+
+[data-slot="card"] > [data-slot="footer"] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-inline-md);
+}
+/* optional divider above footer (anatomy note: border-subtle top rule) */
+[data-slot="card"] > [data-slot="footer"][data-divider] {
+  border-top: var(--border-width) solid var(--border-subtle);
+  padding-top: var(--space-stack-md);
+}
