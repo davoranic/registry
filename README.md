@@ -42,7 +42,8 @@ Items are described in [`registry.json`](./registry.json) and installed with
 the shadcn CLI:
 
 ```bash
-npx shadcn@latest add davoranic/registry/status-pill
+npx shadcn@latest add davoranic/registry/theme-salt   # a theme
+npx shadcn@latest add davoranic/registry/stepper      # an adopted component
 ```
 
 ## Items
@@ -58,13 +59,12 @@ npx shadcn@latest add davoranic/registry/status-pill
 ## Usage
 
 ```tsx
-import { StatusPill } from "@/components/ui/status-pill"
-
-<StatusPill variant="success">Filled</StatusPill>
-<StatusPill variant="warning">Threshold</StatusPill>
-<StatusPill variant="destructive">Rejected</StatusPill>
-<StatusPill variant="info" showDot={false}>Queued</StatusPill>
+import { Stepper, StepperItem } from "@/components/ui/stepper"
+import { Tree, TreeItem } from "@/components/ui/tree"
 ```
+
+Components are authored against the semantic contract (`contract/anatomy/`)
+and carry no token values — install a theme and they wear its character.
 
 ## Conventions
 
