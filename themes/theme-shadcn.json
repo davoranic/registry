@@ -4,71 +4,163 @@
   "title": "shadcn neutral",
   "description": "The default character: neutral oklch, soft radius, system sans, quiet shadows.",
   "capabilities": {
-    "modes": ["light", "dark"],
+    "modes": [
+      "light",
+      "dark"
+    ],
     "density": false,
     "corner": "knob",
-    "iconSets": ["lucide", "tabler", "radix"],
-    "fonts": ["system", "geist"]
+    "iconSets": [
+      "lucide",
+      "tabler",
+      "radix"
+    ],
+    "fonts": [
+      "system",
+      "geist"
+    ]
   },
   "constraints": [
-    "No density switching — the scale is fixed to the 4px grid.",
+    "No density switching \u2014 the scale is fixed to the 4px grid.",
     "Radius is a free knob (--radius); all derived radii follow."
   ],
   "tokens": {
     "light": {
-      "background": "oklch(1 0 0)", "foreground": "oklch(0.145 0 0)",
-      "card": "oklch(1 0 0)", "card-foreground": "oklch(0.145 0 0)",
-      "primary": "oklch(0.205 0 0)", "primary-foreground": "oklch(0.985 0 0)",
-      "secondary": "oklch(0.97 0 0)", "secondary-foreground": "oklch(0.205 0 0)",
-      "muted": "oklch(0.97 0 0)", "muted-foreground": "oklch(0.556 0 0)",
-      "accent": "oklch(0.97 0 0)", "accent-foreground": "oklch(0.205 0 0)",
-      "destructive": "oklch(0.577 0.245 27.325)",
-      "success": "oklch(0.627 0.17 149.2)", "warning": "oklch(0.666 0.179 58.3)",
-      "border": "oklch(0.922 0 0)", "input": "oklch(0.922 0 0)", "ring": "oklch(0.708 0 0)"
+      "surface": "oklch(1 0 0)",
+      "on-surface": "oklch(0.145 0 0)",
+      "surface-raised": "oklch(1 0 0)",
+      "on-surface-raised": "oklch(0.145 0 0)",
+      "surface-overlay": "oklch(1 0 0)",
+      "on-surface-overlay": "oklch(0.145 0 0)",
+      "action": "oklch(0.205 0 0)",
+      "on-action": "oklch(0.985 0 0)",
+      "action-secondary": "oklch(0.97 0 0)",
+      "on-action-secondary": "oklch(0.205 0 0)",
+      "surface-sunken": "oklch(0.97 0 0)",
+      "content-secondary": "oklch(0.556 0 0)",
+      "interaction-hover": "oklch(0.97 0 0)",
+      "on-interaction-selected": "oklch(0.205 0 0)",
+      "status-critical": "oklch(0.577 0.245 27.325)",
+      "status-success": "oklch(0.627 0.17 149.2)",
+      "status-warning": "oklch(0.666 0.179 58.3)",
+      "border": "oklch(0.922 0 0)",
+      "field-border": "oklch(0.922 0 0)",
+      "focus": "oklch(0.708 0 0)"
     },
     "dark": {
-      "background": "oklch(0.145 0 0)", "foreground": "oklch(0.985 0 0)",
-      "card": "oklch(0.205 0 0)", "card-foreground": "oklch(0.985 0 0)",
-      "primary": "oklch(0.922 0 0)", "primary-foreground": "oklch(0.205 0 0)",
-      "secondary": "oklch(0.269 0 0)", "secondary-foreground": "oklch(0.985 0 0)",
-      "muted": "oklch(0.269 0 0)", "muted-foreground": "oklch(0.708 0 0)",
-      "accent": "oklch(0.371 0 0)", "accent-foreground": "oklch(0.985 0 0)",
-      "destructive": "oklch(0.704 0.191 22.216)",
-      "success": "oklch(0.723 0.192 149.6)", "warning": "oklch(0.769 0.188 70.1)",
-      "border": "oklch(1 0 0 / 10%)", "input": "oklch(1 0 0 / 15%)", "ring": "oklch(0.556 0 0)"
+      "surface": "oklch(0.145 0 0)",
+      "on-surface": "oklch(0.985 0 0)",
+      "surface-raised": "oklch(0.205 0 0)",
+      "on-surface-raised": "oklch(0.985 0 0)",
+      "surface-overlay": "oklch(0.205 0 0)",
+      "on-surface-overlay": "oklch(0.985 0 0)",
+      "action": "oklch(0.922 0 0)",
+      "on-action": "oklch(0.205 0 0)",
+      "action-secondary": "oklch(0.269 0 0)",
+      "on-action-secondary": "oklch(0.985 0 0)",
+      "surface-sunken": "oklch(0.269 0 0)",
+      "content-secondary": "oklch(0.708 0 0)",
+      "interaction-hover": "oklch(0.371 0 0)",
+      "on-interaction-selected": "oklch(0.985 0 0)",
+      "status-critical": "oklch(0.704 0.191 22.216)",
+      "status-success": "oklch(0.723 0.192 149.6)",
+      "status-warning": "oklch(0.769 0.188 70.1)",
+      "border": "oklch(1 0 0 / 10%)",
+      "field-border": "oklch(1 0 0 / 15%)",
+      "focus": "oklch(0.556 0 0)"
     },
-    "shape": { "radius": "0.625rem" },
-    "rhythm": { "spacing": "0.25rem", "control-h": "2.25rem", "control-px": "1rem" },
+    "shape": {
+      "radius": "0.625rem"
+    },
+    "rhythm": {
+      "spacing": "0.25rem",
+      "control-h": "2.25rem",
+      "control-px": "1rem"
+    },
     "type": {
       "font-sans": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
-      "text-ui": "0.875rem", "ui-weight": "500", "ui-case": "none", "ui-tracking": "0em"
+      "text-ui": "0.875rem",
+      "ui-weight": "500",
+      "ui-case": "none",
+      "ui-tracking": "0em"
     },
-    "icons": { "icon-size": "1rem", "default-set": "lucide" },
-    "focus": { "focus-width": "3px", "focus-style": "ring", "focus-offset": "0px" },
+    "icons": {
+      "icon-size": "1rem",
+      "default-set": "lucide"
+    },
+    "focus": {
+      "focus-width": "3px",
+      "focus-style": "ring",
+      "focus-offset": "0px"
+    },
     "growth-1.2.0": {
-      "cursor-interactive": "default", "cursor-disabled": "default", "cursor-busy": "progress", "cursor-grab": "grab",
+      "cursor-interactive": "default",
+      "cursor-disabled": "default",
+      "cursor-busy": "progress",
+      "cursor-grab": "grab",
       "cursorNote": "shadcn v4 character: no pointer on buttons; the CLI --pointer flag flips cursor-interactive to pointer as a user choice",
       "border-style-emphasis": "dashed",
-      "link-decoration": "underline", "link-decoration-offset": "3px (underline-offset-4 idiom)",
-      "size-overlay": { "sm": "24rem (max-w-sm dialogs)", "md": "32rem (max-w-lg)", "lg": "40rem" }
+      "link-decoration": "underline",
+      "link-decoration-offset": "3px (underline-offset-4 idiom)",
+      "size-overlay": {
+        "sm": "24rem (max-w-sm dialogs)",
+        "md": "32rem (max-w-lg)",
+        "lg": "40rem"
+      }
     },
     "growth-1.1.0": {
-      "border-subtle": { "rule": "border at 50% alpha" },
-      "field-surface": { "rule": "= surface (transparent fill convention)" },
-      "field-surface-hover": { "rule": "= surface (no hover fill in shadcn idiom)" },
-      "field-border-hover": { "rule": "= field-border (shadcn fields don't shift on hover)" },
-      "field-border-active": { "rule": "= focus (ring color)" },
-      "content-disabled": { "rule": "content at 50% opacity (opacity-50 idiom)" },
-      "selected-indicator": { "rule": "= action (primary underline/edge)" },
-      "target-surface-hover": { "rule": "= interaction-hover" },
-      "target-border-hover": { "rule": "= focus" },
-      "data-7..12": { "rule": "hue-rotated extension of chart-1..5 (no upstream values)" }
+      "border-subtle": {
+        "rule": "border at 50% alpha"
+      },
+      "field-surface": {
+        "rule": "= surface (transparent fill convention)"
+      },
+      "field-surface-hover": {
+        "rule": "= surface (no hover fill in shadcn idiom)"
+      },
+      "field-border-hover": {
+        "rule": "= field-border (shadcn fields don't shift on hover)"
+      },
+      "field-border-active": {
+        "rule": "= focus (ring color)"
+      },
+      "content-disabled": {
+        "rule": "content at 50% opacity (opacity-50 idiom)"
+      },
+      "selected-indicator": {
+        "rule": "= action (primary underline/edge)"
+      },
+      "target-surface-hover": {
+        "rule": "= interaction-hover"
+      },
+      "target-border-hover": {
+        "rule": "= focus"
+      },
+      "data-7..12": {
+        "rule": "hue-rotated extension of chart-1..5 (no upstream values)"
+      }
     },
     "status": {
-      "info": { "base": "oklch(0.488 0.1 240)", "surface": "oklch(0.97 0.02 240)", "border": "oklch(0.85 0.05 240)" },
-      "success": { "base": "oklch(0.627 0.17 149.2)", "surface": "oklch(0.97 0.03 149)", "border": "oklch(0.85 0.08 149)" },
-      "warning": { "base": "oklch(0.666 0.179 58.3)", "surface": "oklch(0.97 0.04 85)", "border": "oklch(0.85 0.09 75)" },
-      "critical": { "base": "oklch(0.577 0.245 27.325)", "surface": "oklch(0.97 0.02 27)", "border": "oklch(0.85 0.08 27)" }
+      "info": {
+        "base": "oklch(0.488 0.1 240)",
+        "surface": "oklch(0.97 0.02 240)",
+        "border": "oklch(0.85 0.05 240)"
+      },
+      "success": {
+        "base": "oklch(0.627 0.17 149.2)",
+        "surface": "oklch(0.97 0.03 149)",
+        "border": "oklch(0.85 0.08 149)"
+      },
+      "warning": {
+        "base": "oklch(0.666 0.179 58.3)",
+        "surface": "oklch(0.97 0.04 85)",
+        "border": "oklch(0.85 0.09 75)"
+      },
+      "critical": {
+        "base": "oklch(0.577 0.245 27.325)",
+        "surface": "oklch(0.97 0.02 27)",
+        "border": "oklch(0.85 0.08 27)"
+      }
     },
     "elevation": {
       "strategy": "mixed",
@@ -79,22 +171,61 @@
       "darkModeNote": "borders carry depth in dark (white/10%)"
     },
     "motion": {
-      "duration": { "instant": "0ms", "fast": "150ms", "base": "200ms", "slow": "300ms" },
-      "easing": { "standard": "cubic-bezier(0.4,0,0.2,1)", "enter": "cubic-bezier(0,0,0.2,1)", "exit": "cubic-bezier(0.4,0,1,1)", "emphasized": "cubic-bezier(0.2,0,0,1)" },
+      "duration": {
+        "instant": "0ms",
+        "fast": "150ms",
+        "base": "200ms",
+        "slow": "300ms"
+      },
+      "easing": {
+        "standard": "cubic-bezier(0.4,0,0.2,1)",
+        "enter": "cubic-bezier(0,0,0.2,1)",
+        "exit": "cubic-bezier(0.4,0,1,1)",
+        "emphasized": "cubic-bezier(0.2,0,0,1)"
+      },
       "source": "tailwind/tw-animate-css defaults"
     },
-    "layers": { "base": 0, "sticky": 100, "dropdown": 1000, "overlay": 1200, "modal": 1300, "notification": 1400, "tooltip": 1500 },
+    "layers": {
+      "base": 0,
+      "sticky": 100,
+      "dropdown": 1000,
+      "overlay": 1200,
+      "modal": 1300,
+      "notification": 1400,
+      "tooltip": 1500
+    },
     "typeRoles": {
-      "action": { "weight": "500", "case": "none", "tracking": "0em" },
-      "heading": "600 tracking-tight", "label": "500 text-sm", "data": "tabular-nums mono"
+      "action": {
+        "weight": "500",
+        "case": "none",
+        "tracking": "0em"
+      },
+      "heading": "600 tracking-tight",
+      "label": "500 text-sm",
+      "data": "tabular-nums mono"
     },
     "iconRoles": {
       "mechanism": "import",
-      "close": "XIcon", "dismiss": "XIcon", "expand": "ChevronDownIcon", "collapse": "ChevronUpIcon",
-      "back": "ChevronLeftIcon", "forward": "ChevronRightIcon", "search": "SearchIcon", "add": "PlusIcon",
-      "remove": "MinusIcon", "overflow": "MoreHorizontalIcon", "error": "OctagonXIcon", "warning": "TriangleAlertIcon",
-      "success": "CircleCheckIcon", "info": "InfoIcon", "calendar": "CalendarIcon", "user": "UserIcon",
-      "upload": "UploadIcon", "external": "ExternalLinkIcon", "drag": "GripVerticalIcon", "loading": "Loader2Icon"
+      "close": "XIcon",
+      "dismiss": "XIcon",
+      "expand": "ChevronDownIcon",
+      "collapse": "ChevronUpIcon",
+      "back": "ChevronLeftIcon",
+      "forward": "ChevronRightIcon",
+      "search": "SearchIcon",
+      "add": "PlusIcon",
+      "remove": "MinusIcon",
+      "overflow": "MoreHorizontalIcon",
+      "error": "OctagonXIcon",
+      "warning": "TriangleAlertIcon",
+      "success": "CircleCheckIcon",
+      "info": "InfoIcon",
+      "calendar": "CalendarIcon",
+      "user": "UserIcon",
+      "upload": "UploadIcon",
+      "external": "ExternalLinkIcon",
+      "drag": "GripVerticalIcon",
+      "loading": "Loader2Icon"
     }
   }
 }

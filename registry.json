@@ -41,7 +41,9 @@
       "type": "registry:ui",
       "title": "Stat Card",
       "description": "A KPI/metric card: title, large tabular value, up/down trend badge, and description. Composable parts. Adds success theme tokens.",
-      "dependencies": ["lucide-react"],
+      "dependencies": [
+        "lucide-react"
+      ],
       "files": [
         {
           "path": "registry/stat-card/stat-card.tsx",
@@ -101,13 +103,51 @@
       "name": "tag",
       "type": "registry:ui",
       "title": "Tag",
-      "description": "A categorization label colored from the chart token palette (chart-1..5), with optional remove button. Categorization only — never for actions.",
-      "dependencies": ["lucide-react"],
+      "description": "A categorization label colored from the chart token palette (chart-1..5), with optional remove button. Categorization only \u2014 never for actions.",
+      "dependencies": [
+        "lucide-react"
+      ],
       "files": [
         {
           "path": "registry/tag/tag.tsx",
           "type": "registry:ui",
           "target": "components/ui/tag.tsx"
+        }
+      ]
+    },
+    {
+      "name": "theme-shadcn",
+      "type": "registry:theme",
+      "title": "Theme: shadcn neutral",
+      "description": "The registry's default character compiled from the semantic contract. Import tokens/base.css then this file. Capabilities: light+dark, radius knob. Source: themes/theme-shadcn.json.",
+      "files": [
+        {
+          "path": "tokens/base.css",
+          "type": "registry:file",
+          "target": "styles/registry-base.css"
+        },
+        {
+          "path": "dist/theme-shadcn.css",
+          "type": "registry:file",
+          "target": "styles/theme-shadcn.css"
+        }
+      ]
+    },
+    {
+      "name": "theme-salt",
+      "type": "registry:theme",
+      "title": "Theme: Salt DS",
+      "description": "JPMorgan Salt character compiled from the semantic contract: sharp, Salt blue, Open Sans, uppercase actions, density axis (data-density: high|medium|low|touch). Import tokens/base.css then this file. Source: themes/theme-salt.json.",
+      "files": [
+        {
+          "path": "tokens/base.css",
+          "type": "registry:file",
+          "target": "styles/registry-base.css"
+        },
+        {
+          "path": "dist/theme-salt.css",
+          "type": "registry:file",
+          "target": "styles/theme-salt.css"
         }
       ]
     }
