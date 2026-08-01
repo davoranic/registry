@@ -1,0 +1,366 @@
+<!doctype html><html><head><meta charset='utf-8'><title>button · shadcn</title><style>/* ============================================================
+   SEMANTIC TOKEN CONTRACT — implementation
+   Spec: tokens/semantic.md · Linking rules: docs/LINKING.md
+   Neutral slot names; defaults = theme-shadcn light. Themes
+   overwrite these values (see themes/theme-*.json). The alias
+   block at the end keeps shadcn-convention components working.
+   ============================================================ */
+
+:root {
+  /* ---- 1 · color ---- */
+  --surface: oklch(1 0 0);                 --on-surface: oklch(0.145 0 0);
+  --surface-raised: oklch(1 0 0);          --on-surface-raised: oklch(0.145 0 0);
+  --surface-overlay: oklch(1 0 0);         --on-surface-overlay: oklch(0.145 0 0);
+  --surface-sunken: oklch(0.97 0 0);
+  --content-secondary: oklch(0.556 0 0);
+  --action: oklch(0.205 0 0);              --on-action: oklch(0.985 0 0);
+  --action-hover: oklch(0.205 0 0 / 90%);  --action-active: oklch(0.145 0 0);
+  --action-secondary: oklch(0.97 0 0);     --on-action-secondary: oklch(0.205 0 0);
+  --interaction-hover: oklch(0.97 0 0);    --interaction-active: oklch(0.922 0 0);
+  --interaction-selected: oklch(0.97 0 0); --on-interaction-selected: oklch(0.205 0 0);
+  --field-border: oklch(0.922 0 0);
+  --border: oklch(0.922 0 0);              --border-strong: oklch(0.708 0 0);
+  --link: oklch(0.205 0 0);
+  --focus: oklch(0.708 0 0);
+  --overlay-scrim: oklch(0 0 0 / 50%);
+  --status-info: oklch(0.488 0.1 240);     --status-info-surface: oklch(0.97 0.02 240);    --status-info-border: oklch(0.85 0.05 240);
+  --status-success: oklch(0.627 0.17 149); --status-success-surface: oklch(0.97 0.03 149); --status-success-border: oklch(0.85 0.08 149);
+  --status-warning: oklch(0.666 0.179 58); --status-warning-surface: oklch(0.97 0.04 85);  --status-warning-border: oklch(0.85 0.09 75);
+  --status-critical: oklch(0.577 0.245 27);--status-critical-surface: oklch(0.97 0.02 27); --status-critical-border: oklch(0.85 0.08 27);
+  --on-status-info: oklch(0.985 0 0); --on-status-success: oklch(0.985 0 0);
+  --on-status-warning: oklch(0.985 0 0); --on-status-critical: oklch(0.985 0 0);
+  --data-1: oklch(0.646 0.222 41.116); --data-2: oklch(0.6 0.118 184.704);
+  --data-3: oklch(0.398 0.07 227.392); --data-4: oklch(0.828 0.189 84.429);
+  --data-5: oklch(0.769 0.188 70.08);  --data-6: oklch(0.627 0.265 303.9);
+  --data-7: oklch(0.55 0.15 20);  --data-8: oklch(0.6 0.13 130);
+  --data-9: oklch(0.5 0.12 280);  --data-10: oklch(0.65 0.1 200);
+  --data-11: oklch(0.7 0.14 100); --data-12: oklch(0.45 0.09 330);
+  --inverse-surface: oklch(0.205 0 0);     --on-inverse-surface: oklch(0.985 0 0);
+  /* growth pass 1.1.0 (learned via Salt — LINKING.md §Growth) */
+  --border-subtle: oklch(0.955 0 0);
+  --field-surface: oklch(1 0 0);           --field-surface-hover: oklch(0.985 0 0);
+  --field-border-hover: oklch(0.85 0 0);   --field-border-active: var(--focus);
+  --content-disabled: oklch(0.145 0 0 / 50%);
+  --selected-indicator: var(--action);
+  --target-surface-hover: oklch(0.97 0.01 240); --target-border-hover: var(--focus);
+
+  /* ---- 2 · typography roles: family / size / line / weight / tracking / case ---- */
+  --family-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --family-body: var(--family-display);
+  --family-code: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --type-display:   600 2.25rem/2.5rem   var(--family-display);
+  --type-heading-1: 600 1.875rem/2.25rem var(--family-display);
+  --type-heading-2: 600 1.5rem/2rem      var(--family-display);
+  --type-heading-3: 600 1.125rem/1.75rem var(--family-display);
+  --type-body:      400 1rem/1.5rem      var(--family-body);
+  --type-body-strong: 600 1rem/1.5rem    var(--family-body);
+  --type-label:     500 0.875rem/1.25rem var(--family-body);
+  --type-action:    500 0.875rem/1.25rem var(--family-body);
+  --action-case: none;  --action-tracking: 0em;
+  --type-caption:   400 0.75rem/1rem     var(--family-body);
+  --type-code:      400 0.8125rem/1.25rem var(--family-code);
+  --type-data:      400 0.875rem/1.25rem var(--family-code);
+
+  /* ---- 3 · space & size ---- */
+  --space-unit: 0.25rem;
+  --space-inline-sm: calc(var(--space-unit) * 1); --space-inline-md: calc(var(--space-unit) * 2); --space-inline-lg: calc(var(--space-unit) * 4);
+  --space-stack-sm: calc(var(--space-unit) * 2);  --space-stack-md: calc(var(--space-unit) * 4);  --space-stack-lg: calc(var(--space-unit) * 6);
+  --inset-control-x: calc(var(--space-unit) * 4);
+  --inset-container: calc(var(--space-unit) * 6);
+  --control-height-sm: 2rem; --control-height-md: 2.25rem; --control-height-lg: 2.5rem;
+  /* density-scalable aliases (themes with a density axis override these;
+     control-h == control-height-md by definition — naming unification
+     scheduled as growth 1.3) */
+  --text-ui: 0.875rem;
+  --control-h: var(--control-height-md);
+  --control-px: var(--inset-control-x);
+  --icon-size: var(--icon-size-control);
+  --target-min: 2.75rem;
+
+  /* ---- 4 · shape ---- */
+  --radius-knob: 0.625rem;                       /* themes may fix instead of knob */
+  --radius-control: calc(var(--radius-knob) * 0.8);
+  --radius-container: calc(var(--radius-knob) * 1.4);
+  --radius-overlay: var(--radius-knob);
+  --radius-pill: 999px;
+  --border-width: 1px; --border-width-strong: 2px;
+  /* growth 1.2.0 — attribute audit */
+  --border-style-emphasis: dashed;
+  --cursor-interactive: default;   /* shadcn character; Salt: pointer */
+  --cursor-disabled: default;      /* Salt: not-allowed */
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --link-decoration: underline; --link-decoration-offset: 3px;
+  --size-overlay-sm: 24rem; --size-overlay-md: 32rem; --size-overlay-lg: 40rem;
+
+  /* ---- 5 · elevation (strategy: mixed — borders + soft shadows) ---- */
+  --elevation-resting: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --elevation-raised:  0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --elevation-overlay: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --elevation-modal:   0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* ---- 6 · motion ---- */
+  --duration-instant: 0ms; --duration-fast: 150ms; --duration-base: 200ms; --duration-slow: 300ms;
+  --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-enter: cubic-bezier(0, 0, 0.2, 1);
+  --easing-exit: cubic-bezier(0.4, 0, 1, 1);
+  --easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---- 7 · layers ---- */
+  --layer-base: 0; --layer-sticky: 100; --layer-dropdown: 1000;
+  --layer-overlay: 1200; --layer-modal: 1300; --layer-notification: 1400; --layer-tooltip: 1500;
+
+  /* ---- 8 · iconography ---- */
+  --icon-size-inline: 0.75rem; --icon-size-control: 1rem; --icon-size-emphasis: 1.5rem;
+  --icon-style: outline; --icon-stroke: 2;
+  /* set + swap mechanism + role map: declared per theme (themes/*.json §icons) */
+
+  /* ---- 9 · focus ---- */
+  --focus-width: 3px; --focus-style: ring; --focus-offset: 0px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration-instant: 0ms; --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; }
+}
+
+/* ============================================================
+   shadcn-convention COMPATIBILITY ALIASES
+   Existing registry components keep working; they resolve to the
+   contract. New components should target contract slots directly.
+   ============================================================ */
+:root {
+  --background: var(--surface);            --foreground: var(--on-surface);
+  --card: var(--surface-raised);           --card-foreground: var(--on-surface-raised);
+  --popover: var(--surface-overlay);       --popover-foreground: var(--on-surface-overlay);
+  --primary: var(--action);                --primary-foreground: var(--on-action);
+  --secondary: var(--action-secondary);    --secondary-foreground: var(--on-action-secondary);
+  --muted: var(--surface-sunken);          --muted-foreground: var(--content-secondary);
+  --accent: var(--interaction-hover);      --accent-foreground: var(--on-interaction-selected);
+  --destructive: var(--status-critical);
+  --success: var(--status-success);        --warning: var(--status-warning);
+  --border: var(--border);                 --input: var(--field-border);
+  --ring: var(--focus);
+  --radius: var(--radius-knob);
+  --chart-1: var(--data-1); --chart-2: var(--data-2); --chart-3: var(--data-3);
+  --chart-4: var(--data-4); --chart-5: var(--data-5);
+}
+</style><style>/* GENERATED by scripts/build-themes.py from theme-shadcn.json — DO NOT EDIT.
+   Import after tokens/base.css. Theme: shadcn neutral. */
+
+:root {
+  --surface: oklch(1 0 0);
+  --on-surface: oklch(0.145 0 0);
+  --surface-raised: oklch(1 0 0);
+  --on-surface-raised: oklch(0.145 0 0);
+  --surface-overlay: oklch(1 0 0);
+  --on-surface-overlay: oklch(0.145 0 0);
+  --action: oklch(0.205 0 0);
+  --on-action: oklch(0.985 0 0);
+  --action-secondary: oklch(0.97 0 0);
+  --on-action-secondary: oklch(0.205 0 0);
+  --surface-sunken: oklch(0.97 0 0);
+  --content-secondary: oklch(0.556 0 0);
+  --interaction-hover: oklch(0.97 0 0);
+  --on-interaction-selected: oklch(0.205 0 0);
+  --status-critical: oklch(0.577 0.245 27.325);
+  --status-success: oklch(0.627 0.17 149.2);
+  --status-warning: oklch(0.666 0.179 58.3);
+  --border: oklch(0.922 0 0);
+  --field-border: oklch(0.922 0 0);
+  --focus: oklch(0.708 0 0);
+  --status-info: oklch(0.488 0.1 240);
+  --status-info-surface: oklch(0.97 0.02 240);
+  --status-info-border: oklch(0.85 0.05 240);
+  --on-status-info: oklch(0.985 0 0);
+  --status-success: oklch(0.627 0.17 149.2);
+  --status-success-surface: oklch(0.97 0.03 149);
+  --status-success-border: oklch(0.85 0.08 149);
+  --on-status-success: oklch(0.985 0 0);
+  --status-warning: oklch(0.666 0.179 58.3);
+  --status-warning-surface: oklch(0.97 0.04 85);
+  --status-warning-border: oklch(0.85 0.09 75);
+  --on-status-warning: oklch(0.985 0 0);
+  --status-critical: oklch(0.577 0.245 27.325);
+  --status-critical-surface: oklch(0.97 0.02 27);
+  --status-critical-border: oklch(0.85 0.08 27);
+  --on-status-critical: oklch(0.985 0 0);
+  --cursor-interactive: default;
+  --cursor-disabled: default;
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --border-style-emphasis: dashed;
+  --link-decoration: underline;
+  --link-decoration-offset: 3px;
+  --radius-knob: 0.625rem;
+  --radius: 0.625rem;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --text-ui: 0.875rem;
+  --ui-weight: 500;
+  --action-case: none;
+  --action-tracking: 0em;
+  --focus-width: 3px;
+  --focus-style: ring;
+  --focus-offset: 0px;
+  --icon-size: 1rem;
+  --spacing: 0.25rem;
+  --control-h: 2.25rem;
+  --control-px: 1rem;
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --easing-standard: cubic-bezier(0.4,0,0.2,1);
+  --easing-enter: cubic-bezier(0,0,0.2,1);
+  --easing-exit: cubic-bezier(0.4,0,1,1);
+  --easing-emphasized: cubic-bezier(0.2,0,0,1);
+  --layer-base: 0;
+  --layer-sticky: 100;
+  --layer-dropdown: 1000;
+  --layer-overlay: 1200;
+  --layer-modal: 1300;
+  --layer-notification: 1400;
+  --layer-tooltip: 1500;
+  --elevation-resting: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --elevation-raised: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --elevation-overlay: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --elevation-modal: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --action-case: none;
+  --action-tracking: 0em;
+  --ui-weight: 500;
+  --cursor-interactive: default;
+  --cursor-disabled: default;
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --border-style-emphasis: dashed;
+  --link-decoration: underline;
+  --link-decoration-offset: 3px;
+  --size-overlay-sm: 24rem;
+  --size-overlay-md: 32rem;
+  --size-overlay-lg: 40rem;
+}
+
+.dark {
+  --surface: oklch(0.145 0 0);
+  --on-surface: oklch(0.985 0 0);
+  --surface-raised: oklch(0.205 0 0);
+  --on-surface-raised: oklch(0.985 0 0);
+  --surface-overlay: oklch(0.205 0 0);
+  --on-surface-overlay: oklch(0.985 0 0);
+  --action: oklch(0.922 0 0);
+  --on-action: oklch(0.205 0 0);
+  --action-secondary: oklch(0.269 0 0);
+  --on-action-secondary: oklch(0.985 0 0);
+  --surface-sunken: oklch(0.269 0 0);
+  --content-secondary: oklch(0.708 0 0);
+  --interaction-hover: oklch(0.371 0 0);
+  --on-interaction-selected: oklch(0.985 0 0);
+  --status-critical: oklch(0.704 0.191 22.216);
+  --status-success: oklch(0.723 0.192 149.6);
+  --status-warning: oklch(0.769 0.188 70.1);
+  --border: oklch(1 0 0 / 10%);
+  --field-border: oklch(1 0 0 / 15%);
+  --focus: oklch(0.556 0 0);
+  --status-info: oklch(0.488 0.1 240);
+  --status-info-surface: oklch(0.97 0.02 240);
+  --status-info-border: oklch(0.85 0.05 240);
+  --on-status-info: oklch(0.985 0 0);
+  --status-success: oklch(0.627 0.17 149.2);
+  --status-success-surface: oklch(0.97 0.03 149);
+  --status-success-border: oklch(0.85 0.08 149);
+  --on-status-success: oklch(0.985 0 0);
+  --status-warning: oklch(0.666 0.179 58.3);
+  --status-warning-surface: oklch(0.97 0.04 85);
+  --status-warning-border: oklch(0.85 0.09 75);
+  --on-status-warning: oklch(0.985 0 0);
+  --status-critical: oklch(0.577 0.245 27.325);
+  --status-critical-surface: oklch(0.97 0.02 27);
+  --status-critical-border: oklch(0.85 0.08 27);
+  --on-status-critical: oklch(0.985 0 0);
+}
+</style><style>/* Button recipe — contract slots only (contract/authoring.md step 3).
+   Structure and states: contract/anatomy/button.json. Character: the theme. */
+
+[data-slot="button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-inline-md);
+  height: var(--control-height-md);
+  padding: 0 var(--inset-control-x);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-control);
+  font: var(--type-action);
+  text-transform: var(--action-case);
+  letter-spacing: var(--action-tracking);
+  cursor: var(--cursor-interactive);
+  box-shadow: var(--elevation-resting);
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+
+/* size axis */
+[data-slot="button"][data-size="sm"] { height: var(--control-height-sm); padding: 0 calc(var(--inset-control-x) * 0.75); }
+[data-slot="button"][data-size="lg"] { height: var(--control-height-lg); padding: 0 calc(var(--inset-control-x) * 1.25); }
+
+/* emphasis × prominence: solid */
+[data-prominence="solid"][data-emphasis="primary"] { background: var(--action); color: var(--on-action); }
+[data-prominence="solid"][data-emphasis="primary"]:hover { background: var(--action-hover); }
+[data-prominence="solid"][data-emphasis="primary"]:active { background: var(--action-active); }
+[data-prominence="solid"][data-emphasis="secondary"] { background: var(--action-secondary); color: var(--on-action-secondary); }
+[data-prominence="solid"][data-emphasis="secondary"]:hover { background: color-mix(in oklab, var(--action-secondary) 92%, var(--on-action-secondary)); }
+[data-prominence="solid"][data-emphasis="danger"] { background: var(--status-critical); color: var(--on-status-critical); }
+[data-prominence="solid"][data-emphasis="danger"]:hover { background: color-mix(in oklab, var(--status-critical) 90%, var(--on-status-critical)); }
+
+/* outline */
+[data-prominence="outline"] { background: transparent; box-shadow: none; }
+[data-prominence="outline"][data-emphasis="secondary"] { border-color: var(--border); color: var(--on-surface); }
+[data-prominence="outline"][data-emphasis="primary"] { border-color: var(--action); color: var(--action); }
+[data-prominence="outline"][data-emphasis="danger"] { border-color: var(--status-critical); color: var(--status-critical); }
+[data-prominence="outline"]:hover { background: var(--interaction-hover); }
+
+/* ghost */
+[data-prominence="ghost"] { background: transparent; box-shadow: none; }
+[data-prominence="ghost"][data-emphasis="secondary"] { color: var(--on-surface); }
+[data-prominence="ghost"][data-emphasis="primary"] { color: var(--action); }
+[data-prominence="ghost"][data-emphasis="danger"] { color: var(--status-critical); }
+[data-prominence="ghost"]:hover { background: var(--interaction-hover); }
+
+/* link */
+[data-prominence="link"] {
+  background: transparent; box-shadow: none; height: auto; padding: 0;
+  color: var(--link);
+  text-decoration: var(--link-decoration);
+  text-underline-offset: var(--link-decoration-offset);
+}
+
+/* states (contract/states.md) */
+[data-slot="button"]:focus-visible {
+  outline: var(--focus-width) solid color-mix(in oklab, var(--focus) 60%, transparent);
+  outline-offset: var(--focus-offset);
+}
+[data-slot="button"][data-disabled],
+[data-slot="button"]:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: var(--cursor-disabled);
+}
+[data-slot="button"][data-state="loading"] { cursor: var(--cursor-busy); }
+
+/* icon parts */
+[data-slot="icon-leading"] svg,
+[data-slot="icon-trailing"] svg,
+[data-slot="loading-indicator"] svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+}
+[data-slot="loading-indicator"] svg {
+  animation: button-spin var(--duration-slow) linear infinite;
+}
+@keyframes button-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="button"] { transition: none; }
+  [data-slot="loading-indicator"] svg { animation: none; }
+}
+</style><style>body{margin:0;padding:48px;background:var(--surface);color:var(--on-surface);font-family:var(--font-sans);display:grid;place-items:center;min-height:60vh}</style></head><body><button data-slot="button" data-emphasis="primary" data-prominence="solid"><span data-slot="label">Submit order</span></button></body></html>
