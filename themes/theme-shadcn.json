@@ -44,6 +44,38 @@
       "text-ui": "0.875rem", "ui-weight": "500", "ui-case": "none", "ui-tracking": "0em"
     },
     "icons": { "icon-size": "1rem", "default-set": "lucide" },
-    "focus": { "focus-width": "3px", "focus-style": "ring" }
+    "focus": { "focus-width": "3px", "focus-style": "ring", "focus-offset": "0px" },
+    "status": {
+      "info": { "base": "oklch(0.488 0.1 240)", "surface": "oklch(0.97 0.02 240)", "border": "oklch(0.85 0.05 240)" },
+      "success": { "base": "oklch(0.627 0.17 149.2)", "surface": "oklch(0.97 0.03 149)", "border": "oklch(0.85 0.08 149)" },
+      "warning": { "base": "oklch(0.666 0.179 58.3)", "surface": "oklch(0.97 0.04 85)", "border": "oklch(0.85 0.09 75)" },
+      "critical": { "base": "oklch(0.577 0.245 27.325)", "surface": "oklch(0.97 0.02 27)", "border": "oklch(0.85 0.08 27)" }
+    },
+    "elevation": {
+      "strategy": "mixed",
+      "resting": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+      "raised": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      "overlay": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      "modal": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      "darkModeNote": "borders carry depth in dark (white/10%)"
+    },
+    "motion": {
+      "duration": { "instant": "0ms", "fast": "150ms", "base": "200ms", "slow": "300ms" },
+      "easing": { "standard": "cubic-bezier(0.4,0,0.2,1)", "enter": "cubic-bezier(0,0,0.2,1)", "exit": "cubic-bezier(0.4,0,1,1)", "emphasized": "cubic-bezier(0.2,0,0,1)" },
+      "source": "tailwind/tw-animate-css defaults"
+    },
+    "layers": { "base": 0, "sticky": 100, "dropdown": 1000, "overlay": 1200, "modal": 1300, "notification": 1400, "tooltip": 1500 },
+    "typeRoles": {
+      "action": { "weight": "500", "case": "none", "tracking": "0em" },
+      "heading": "600 tracking-tight", "label": "500 text-sm", "data": "tabular-nums mono"
+    },
+    "iconRoles": {
+      "mechanism": "import",
+      "close": "XIcon", "dismiss": "XIcon", "expand": "ChevronDownIcon", "collapse": "ChevronUpIcon",
+      "back": "ChevronLeftIcon", "forward": "ChevronRightIcon", "search": "SearchIcon", "add": "PlusIcon",
+      "remove": "MinusIcon", "overflow": "MoreHorizontalIcon", "error": "OctagonXIcon", "warning": "TriangleAlertIcon",
+      "success": "CircleCheckIcon", "info": "InfoIcon", "calendar": "CalendarIcon", "user": "UserIcon",
+      "upload": "UploadIcon", "external": "ExternalLinkIcon", "drag": "GripVerticalIcon", "loading": "Loader2Icon"
+    }
   }
 }

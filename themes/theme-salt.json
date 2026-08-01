@@ -52,7 +52,40 @@
       "font-sans": "'Open Sans', -apple-system, system-ui, sans-serif",
       "ui-weight": "600", "ui-case": "uppercase", "ui-tracking": "0.6px"
     },
-    "focus": { "focus-width": "2px", "focus-style": "outline" }
+    "focus": { "focus-width": "2px", "focus-style": "outline", "focus-offset": "2px" },
+    "status": {
+      "info": { "base": "#155C93", "surface": "#EAF4FB", "border": "#2670A9" },
+      "success": { "base": "#18723D", "surface": "#E9F5EC", "border": "#24874B" },
+      "warning": { "base": "#CC440D", "surface": "#FFE8BF", "border": "#D65513" },
+      "critical": { "base": "#C42010", "surface": "#FFE3E0", "border": "#E32B16" }
+    },
+    "elevation": {
+      "strategy": "border",
+      "resting": "none — 1px #CED2D9 border",
+      "raised": "0 1px 3px 0 rgba(0,0,0,0.10)",
+      "overlay": "0 4px 8px 0 rgba(0,0,0,0.15)",
+      "modal": "0 12px 40px 0 rgba(0,0,0,0.30)",
+      "source": "salt-ds/packages/theme css/foundations + palette/shadow"
+    },
+    "motion": {
+      "duration": { "instant": "0ms", "fast": "150ms", "base": "300ms", "slow": "1000ms" },
+      "easing": { "standard": "ease-in-out", "enter": "ease-out", "exit": "ease-in", "emphasized": "ease-in-out" },
+      "source": "salt duration foundation: instant 0 / perceptible 300 / notable 1000 / cutoff 10000"
+    },
+    "layers": { "base": 1, "sticky": 1100, "dropdown": 1000, "overlay": 1200, "modal": 1300, "notification": 1400, "tooltip": 1500, "source": "salt zindex foundation (appHeader=1100, drawer=1200, flyover=1500)" },
+    "typeRoles": {
+      "action": { "weight": "600", "case": "uppercase", "tracking": "0.6px" },
+      "heading": "600 Open Sans (display tiers: Amplitude, licensed)",
+      "label": "600 11px", "data": "PT Mono tabular"
+    },
+    "iconRoles": {
+      "mechanism": "provider (SemanticIconProvider, 33 slots)",
+      "close": "CloseIcon", "dismiss": "CloseIcon", "expand": "ChevronDownIcon", "collapse": "ChevronUpIcon",
+      "back": "ChevronLeftIcon", "forward": "ChevronRightIcon", "search": "SearchIcon", "add": "AddIcon",
+      "remove": "RemoveIcon", "overflow": "OverflowMenuIcon", "error": "ErrorSolidIcon", "warning": "WarningSolidIcon",
+      "success": "SuccessCircleSolidIcon", "info": "InfoSolidIcon", "calendar": "CalendarIcon", "user": "UserIcon",
+      "upload": "UploadIcon", "external": "TearOutIcon", "drag": "DragRowIcon", "loading": "ProgressInprogressIcon"
+    }
   },
   "anatomySpecific": [
     "stepper", "rating", "tree", "toggletip", "scrim", "segmented-button-group",
