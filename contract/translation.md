@@ -45,6 +45,39 @@ authored translates to it immediately.
 ```
 Lossiness is allowed; silence about it is not.
 
+## Adoption — systems learning components from each other
+
+When system A has a component that system B lacks (Salt's stepper, shadcn's
+input-otp), B may ADOPT it through the contract. Adoption is a lift + render,
+with one extra split:
+
+1. **Lift with the intent/character split.** A component's anatomy divides:
+   - *intent-anatomy* — the parts, states, behavior, variant axes that make
+     it that component (steps + connectors + current/complete/error states).
+     This is what ports.
+   - *character-anatomy* — the recipe details that are the origin system's
+     accent (Salt's dotted connectors, flush borders, density response).
+     This STAYS in the origin adapter as its recipe for the component.
+2. **The contract component** references only semantic slots, canonical
+   axes, icon roles — after the split it contains zero origin flavor by
+   construction.
+3. **Render through B's adapter.** B's tokens re-express it entirely in B's
+   character. Character preservation is not a matter of care — the lifted
+   definition has no channel through which foreign character could leak.
+
+**Naturalization test** (an adopted component must be indistinguishable from
+a native one):
+- [ ] consumes only B's declared capabilities (no phantom density, no missing axes)
+- [ ] passes B's constraints (Salt: sharp, uppercase actions; shadcn: radius knob)
+- [ ] introduces no new tokens outside the growth loop
+- [ ] every variant cell valued or fallback-declared
+- [ ] behavior identical to origin (APG — behavior never varies)
+
+Adoption precedents on file: stepper/rating/tree (Salt → contract → shadcn
+rendering — the gaps already identified in salt-map.json `onlyInSalt`);
+input-otp (shadcn → Salt candidate); status-pill (registry-native, renders
+in both characters already — the proof case).
+
 ## Governance
 
 - The contract (tokens/semantic.md + contract/*) is versioned **semver**:
