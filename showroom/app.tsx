@@ -236,6 +236,14 @@ function RulesPage() {
 
 /* ------------------------------------------------------------------ app */
 
+// Stories keep local state with hooks, so each must render as its OWN
+// component instance — calling story.render(args) inline books its hooks
+// against the caller, and switching stories then crashes the whole tree
+// (React #310). The key remounts the host per story so hook lists never mix.
+function StoryHost({ story, args }: { story: (typeof STORIES)[number]; args: Args }) {
+  return <>{story.render(args)}</>
+}
+
 function App() {
   const [selected, setSelected] = React.useState<string>("button")
   const [theme, setTheme] = React.useState(THEME_NAMES[0])
@@ -260,7 +268,7 @@ function App() {
   const visible = (g: string) =>
     STORIES.filter((s) => s.group === g && s.name.includes(query.toLowerCase()))
 
-  const rendered = story ? <Boundary name={story.name}>{story.render(args)}</Boundary> : null
+  const rendered = story ? <Boundary name={story.name}><StoryHost key={story.name} story={story} args={args} /></Boundary> : null
 
   return (
     <div className="shell">
@@ -330,7 +338,7 @@ function App() {
                   <figcaption>{THEMES[t].title}</figcaption>
                   <Canvas theme={t} mode={mode}
                           density={THEMES[t].capabilities.density ? density : null}>
-                    {story ? <Boundary name={story.name}>{story.render(args)}</Boundary> : null}
+                    {story ? <Boundary name={story.name}><StoryHost key={`${t}:${story.name}`} story={story} args={args} /></Boundary> : null}
                   </Canvas>
                 </figure>
               ))}
