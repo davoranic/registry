@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "davoranic",
-  "homepage": "https://github.com/davoranic/registry",
+  "homepage": "https://registry.davoranic.com",
   "items": [
     {
       "name": "avatar",

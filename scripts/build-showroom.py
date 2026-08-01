@@ -175,6 +175,7 @@ def build():
 <body>
 <header>
   <b>UI Registry</b>
+  <small style="font:var(--type-caption);color:var(--content-secondary)">registry.davoranic.com</small>
   <span class="ctl" data-ctl="theme"><span>Theme</span><span class="seg">{theme_buttons}</span></span>
   <span class="ctl" data-ctl="mode"><span>Mode</span><span class="seg">
     <button data-v="light">Light</button><button data-v="dark">Dark</button></span></span>

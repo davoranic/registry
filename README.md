@@ -1,5 +1,7 @@
 # davoranic/registry
 
+Showroom: **https://registry.davoranic.com**
+
 A design-system registry built from scratch. This public GitHub repository
 **is** the registry — no server, no build step.
 
