@@ -45,6 +45,13 @@
     },
     "icons": { "icon-size": "1rem", "default-set": "lucide" },
     "focus": { "focus-width": "3px", "focus-style": "ring", "focus-offset": "0px" },
+    "growth-1.2.0": {
+      "cursor-interactive": "default", "cursor-disabled": "default", "cursor-busy": "progress", "cursor-grab": "grab",
+      "cursorNote": "shadcn v4 character: no pointer on buttons; the CLI --pointer flag flips cursor-interactive to pointer as a user choice",
+      "border-style-emphasis": "dashed",
+      "link-decoration": "underline", "link-decoration-offset": "3px (underline-offset-4 idiom)",
+      "size-overlay": { "sm": "24rem (max-w-sm dialogs)", "md": "32rem (max-w-lg)", "lg": "40rem" }
+    },
     "growth-1.1.0": {
       "border-subtle": { "rule": "border at 50% alpha" },
       "field-surface": { "rule": "= surface (transparent fill convention)" },

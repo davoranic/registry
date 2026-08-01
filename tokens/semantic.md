@@ -81,6 +81,22 @@ Each role = { family, size, line-height, weight, tracking, case }.
 |---|---|---|
 | `radius-control` · `radius-container` · `radius-overlay` · `radius-pill` | R | themes may bind all to one knob (shadcn) or fix them (Salt: 0,0,0,999) |
 | `border-width` · `border-width-strong` | R | 1px / 2px typical |
+| `border-style-emphasis` | D | dashed/dotted for drop zones, placeholders (Salt borderStyle foundation); default `dashed` |
+| `cursor-interactive` · `cursor-disabled` · `cursor-busy` · `cursor-grab` | R/D | pointer policy is system CHARACTER: shadcn default = `default` (CLI `--pointer` flag), Salt = `pointer`; disabled: `not-allowed` (Salt) vs `default` |
+| `link-decoration` · `link-decoration-offset` | D | underline policy for links |
+| `size-overlay-sm/md/lg` | D | width ramp for dialogs/popovers/sheets (e.g. 24/32/40rem) |
+
+**Per-corner rule:** radius VALUES always come from the roles; *which corners*
+a role applies to is anatomy (drawer rounds leading corners only, split-button
+ends differ). Anatomy files may scope: `"radius": {"role": "radius-overlay",
+"corners": "top"}`.
+
+**Direction rule:** all spacing/inset slots are logical (inline/block), so
+themes and patterns survive RTL unchanged (shadcn's rtl migration relies on
+this).
+
+*Shape additions are growth pass 1.2.0 (attribute audit — cursor/borderStyle
+from Salt foundations; size ramp + link policy from component inventory).*
 
 ## 5 · Elevation
 

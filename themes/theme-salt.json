@@ -53,6 +53,13 @@
       "ui-weight": "600", "ui-case": "uppercase", "ui-tracking": "0.6px"
     },
     "focus": { "focus-width": "2px", "focus-style": "outline", "focus-offset": "2px" },
+    "growth-1.2.0": {
+      "cursor-interactive": "pointer", "cursor-disabled": "not-allowed", "cursor-busy": "progress", "cursor-grab": "grab",
+      "border-style-emphasis": "dashed",
+      "link-decoration": "underline",
+      "size-overlay": { "rule": "density-scaled; medium ≈ 24/32/40rem" },
+      "source": "salt foundations cursor.css (10 cursors) + borderStyle.css"
+    },
     "growth-1.1.0": {
       "border-subtle": { "light": "#E6E6E6", "dark": "#38383A", "source": "separable-tertiary" },
       "field-surface": { "light": "#FFFFFF", "dark": "#2A2C2F", "source": "editable-primary-background" },

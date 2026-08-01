@@ -75,6 +75,14 @@
   --radius-overlay: var(--radius-knob);
   --radius-pill: 999px;
   --border-width: 1px; --border-width-strong: 2px;
+  /* growth 1.2.0 — attribute audit */
+  --border-style-emphasis: dashed;
+  --cursor-interactive: default;   /* shadcn character; Salt: pointer */
+  --cursor-disabled: default;      /* Salt: not-allowed */
+  --cursor-busy: progress;
+  --cursor-grab: grab;
+  --link-decoration: underline; --link-decoration-offset: 3px;
+  --size-overlay-sm: 24rem; --size-overlay-md: 32rem; --size-overlay-lg: 40rem;
 
   /* ---- 5 · elevation (strategy: mixed — borders + soft shadows) ---- */
   --elevation-resting: 0 1px 2px 0 rgb(0 0 0 / 0.05);

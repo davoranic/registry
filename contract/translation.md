@@ -55,6 +55,16 @@ Lossiness is allowed; silence about it is not.
   adapters, and version bump in the same commit.
 - Growth from onboarded systems follows LINKING.md §Growth (the
   most-demanding-teacher rule + acceptance criteria + naming grammar).
-- Current version: **1.1.0** (first growth pass: Salt color characteristics
-  → border-subtle, field-* family, selected-indicator, target-*,
-  content-disabled, data-7..12).
+- Current version: **1.2.0**.
+  - 1.1.0 — first growth pass (Salt color characteristics → border-subtle,
+    field-* family, selected-indicator, target-*, content-disabled,
+    data-7..12).
+  - 1.2.0 — attribute audit (Salt cursor/borderStyle foundations + component
+    inventory → cursor policy slots, border-style-emphasis, link-decoration,
+    size-overlay ramp; per-corner rule and RTL/logical rule added to §4).
+- **Attribute ownership rule** (closes the "any other attribute" question):
+  every CSS-expressible attribute is owned by exactly one layer —
+  (a) a CONTRACT slot if it carries system character (cursor, radius, case);
+  (b) an ANATOMY detail if it's per-component structure (which corners, min
+  widths per part, truncation); (c) THEME-INTERNAL otherwise. An attribute
+  with no owner is a contract bug — file it through the growth loop.
