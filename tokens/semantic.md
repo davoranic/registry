@@ -34,7 +34,16 @@ give a rule instead of a value) · **A** axis (optional capability).
 | `overlay-scrim` | R | dimming layer under modals |
 | `status-info` · `-success` · `-warning` · `-critical`, each with `-surface` (subtle bg), `-border`, `on-status-*` | R | full sentiment family — text-only is not enough (Salt/Carbon) |
 | `data-1 … data-6` | R | categorical/chart palette — never for actions |
+| `data-7 … data-12` | D | extended categorical (Salt ships 20, Carbon 14 — 6 is not enough; derivable by rotation) |
 | `inverse-surface` / `on-inverse-surface` | D | tooltips/toasts in inverted style |
+| `border-subtle` | R | tier below `border` — Salt separable proves 3 separator tiers (subtle/default/strong) |
+| `field-surface` · `field-surface-hover` | R | form control fill + hover fill (Salt editable) |
+| `field-border-hover` · `field-border-active` | D | field border interaction states (derivable from action ramp) |
+| `content-disabled` | D | disabled text/icon color (default derivation: content at 50% opacity; Salt values it explicitly) |
+| `selected-indicator` | R | the active-item bar/edge (tabs underline, nav rail indicator — Salt navigable) |
+| `target-surface-hover` · `target-border-hover` | D | drop-target hover treatment (Salt target; used by file-drop patterns) |
+
+*Slots marked from the first growth pass (contract 1.1.0) — see LINKING.md §Growth.*
 
 Modes: every color slot is valued for `light` and `dark` (or the theme
 declares single-mode as a constraint).

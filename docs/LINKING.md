@@ -68,6 +68,35 @@ second component set.
 - [ ] Reduced-motion collapses all durations
 - [ ] Anatomy list reviewed — nothing token-themable mislabeled as anatomy
 
+## Growth — learning the contract from design systems
+
+No single system is globally "superior"; the rule is **the most demanding
+system teaches each category**. Salt's ~560 color characteristics teach color
+granularity; shadcn teaches the radius knob; Material teaches state layers
+and icon axes. Onboarding a system therefore includes a growth pass:
+
+1. **Diff** the system's full token inventory against `tokens/semantic.md`.
+2. Tokens we lack become **growth candidates**.
+3. A candidate becomes a contract slot only if ALL hold:
+   - it expresses a UI **intent** not currently expressible (not a finer
+     shade of an existing intent);
+   - it is needed by a component/pattern we ship, OR appears in ≥2 major
+     systems;
+   - simpler systems can satisfy it by **derivation** (R2) — no system is
+     excluded by the contract growing;
+   - it fits the naming grammar (`contract/naming.md`).
+4. Accepted candidates → contract **minor version** bump; every adapter gains
+   a value or derivation in the same commit.
+5. Rejected candidates are recorded in the adapter as theme-internal — the
+   diff is never thrown away.
+
+First growth pass (Salt → contract 1.1.0) added: `border-subtle` (3-tier
+separators), the `field-*` family (surface, surface-hover, border-hover,
+border-active — from Salt `editable`), `selected-indicator` (from
+`navigable`), `target-surface-hover`/`target-border-hover` (drop targets),
+`content-disabled`, and `data-7..12` (Salt's 20-color categorical proves 6 is
+too few; 12 with derivation).
+
 ## Current adapters
 
 | System | Adapter | Map | Status |

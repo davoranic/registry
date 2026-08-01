@@ -45,6 +45,18 @@
     },
     "icons": { "icon-size": "1rem", "default-set": "lucide" },
     "focus": { "focus-width": "3px", "focus-style": "ring", "focus-offset": "0px" },
+    "growth-1.1.0": {
+      "border-subtle": { "rule": "border at 50% alpha" },
+      "field-surface": { "rule": "= surface (transparent fill convention)" },
+      "field-surface-hover": { "rule": "= surface (no hover fill in shadcn idiom)" },
+      "field-border-hover": { "rule": "= field-border (shadcn fields don't shift on hover)" },
+      "field-border-active": { "rule": "= focus (ring color)" },
+      "content-disabled": { "rule": "content at 50% opacity (opacity-50 idiom)" },
+      "selected-indicator": { "rule": "= action (primary underline/edge)" },
+      "target-surface-hover": { "rule": "= interaction-hover" },
+      "target-border-hover": { "rule": "= focus" },
+      "data-7..12": { "rule": "hue-rotated extension of chart-1..5 (no upstream values)" }
+    },
     "status": {
       "info": { "base": "oklch(0.488 0.1 240)", "surface": "oklch(0.97 0.02 240)", "border": "oklch(0.85 0.05 240)" },
       "success": { "base": "oklch(0.627 0.17 149.2)", "surface": "oklch(0.97 0.03 149)", "border": "oklch(0.85 0.08 149)" },

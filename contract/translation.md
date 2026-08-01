@@ -53,4 +53,8 @@ Lossiness is allowed; silence about it is not.
   checklist + slot-coverage check against semantic.md.
 - Contract changes require: research note (docs/), migration note for
   adapters, and version bump in the same commit.
-- Current version: **1.0.0**.
+- Growth from onboarded systems follows LINKING.md §Growth (the
+  most-demanding-teacher rule + acceptance criteria + naming grammar).
+- Current version: **1.1.0** (first growth pass: Salt color characteristics
+  → border-subtle, field-* family, selected-indicator, target-*,
+  content-disabled, data-7..12).

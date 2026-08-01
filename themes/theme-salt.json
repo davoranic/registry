@@ -53,6 +53,18 @@
       "ui-weight": "600", "ui-case": "uppercase", "ui-tracking": "0.6px"
     },
     "focus": { "focus-width": "2px", "focus-style": "outline", "focus-offset": "2px" },
+    "growth-1.1.0": {
+      "border-subtle": { "light": "#E6E6E6", "dark": "#38383A", "source": "separable-tertiary" },
+      "field-surface": { "light": "#FFFFFF", "dark": "#2A2C2F", "source": "editable-primary-background" },
+      "field-surface-hover": { "light": "#F2F4F6", "dark": "#2F3136", "source": "editable hover" },
+      "field-border-hover": { "light": "#155C93", "dark": "#4B9FD8", "source": "editable-borderColor-hover" },
+      "field-border-active": { "light": "#155C93", "dark": "#4B9FD8", "source": "editable-borderColor-active" },
+      "content-disabled": { "rule": "explicit 40% (Salt disabled alpha)", "source": "content characteristic" },
+      "selected-indicator": { "light": "#155C93", "dark": "#4B9FD8", "source": "navigable-accent-indicator-active" },
+      "target-surface-hover": { "light": "#EAF4FB", "dark": "#1A2A38", "source": "target-background-hover" },
+      "target-border-hover": { "light": "#2670A9", "dark": "#4B9FD8", "source": "target-borderColor-hover" },
+      "data-7..12": { "rule": "Salt categorical ramp cobalt/cider/plum/aqua/slate/rose (600 step)", "source": "category characteristic (100 tokens; 20 series supported)" }
+    },
     "status": {
       "info": { "base": "#155C93", "surface": "#EAF4FB", "border": "#2670A9" },
       "success": { "base": "#18723D", "surface": "#E9F5EC", "border": "#24874B" },
