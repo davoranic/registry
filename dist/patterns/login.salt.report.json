@@ -1,8 +1,0 @@
-{
-  "pattern": "login",
-  "theme": "salt",
-  "substitutions": [],
-  "omissions": [],
-  "warnings": [],
-  "lossless": true
-}

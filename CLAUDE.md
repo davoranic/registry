@@ -1,86 +1,48 @@
 # UI Registry — session context
 
-A design-system **translator**, not a component library. One semantic
-contract (the pivot); design systems join as theme adapters; components are
-translated through the dictionary, never copied. Everything a session needs
-is in this repo — no conversation memory required.
+**State: clean slate, by the owner's explicit order (2026-08-01).** Every
+built artifact — components, recipes, tokens implementation, showroom,
+scripts, adapters, pilot — was deleted after the fifth retrofit failure.
+What remains is discovery only. Git history contains the old build:
+**it is evidence, not a base. Never restore or copy from it.**
 
-## Read in this order
+## What this repo contains now
 
-1. `docs/ROADMAP.md` — phases and current state
-2. `tokens/semantic.md` — THE contract (9 slot categories)
-3. `docs/LINKING.md` — the rules (R1–R7), growth loop, teaching-flow, upstream sync
-4. `contract/translation.md` — render/lift, adoption, capability-fork, character rules
-5. `contract/authoring.md` — the 6-step component order
+- `docs/ARCHITECTURE-V2.md` — the researched architecture (ten research
+  passes: industry, Salt/M3/Apple/Fluent internals, academia, agentic AI).
+- `docs/CALENDAR-MATRIX.md` — the component-template matrix method, proven
+  and *falsified in part* on one pilot: read its warnings.
+- Design-system source clones live BESIDE this repo in
+  "/Users/davoranic/UI registry/": ui (shadcn), salt-ds, primitives
+  (Radix), magicui, animate-ui, material-web (tokens only).
 
-## Non-negotiables (learned the hard way — do not relearn)
+## The law — violations of these burned five rebuilds. Do not relearn.
 
-- **Never retrofit.** Link through tokens; components render from contract
-  slots only; themes carry ALL values. A hardcoded color/size in a component
-  or registry item is a defect (CI enforces this).
-- **Superiors teach the contract, never each other.** New slots go through
-  the growth loop with source evidence. The contract is the IPA.
-- **Components naturalize; capabilities fork; identities are immutable.**
-- **Constraints are visible, not hidden** (shadcn has no density → the
-  control locks, it doesn't disappear).
-- **Lossiness is allowed; silence about it is not** (translation reports).
-- **Systematic means complete.** Icons, fonts, spacing, colors, every
-  component — partial coverage without saying so is unacceptable to the user.
-- **Verify before claiming.** Run the validators; smoke-test stories
-  (`node scripts/smoke-stories.mjs` — ignore useState/dual-React harness
-  noise); screenshot the built page before saying it works.
-
-## Build & check
-
-```
-npm install                        # once
-python3 scripts/check-conformance.py && python3 scripts/check-anatomy.py \
-  && python3 scripts/check-component.py && python3 scripts/check-icons.py \
-  && python3 scripts/check-fonts.py
-python3 scripts/build-themes.py    # adapters -> dist/theme-*.css (SCOPED:
-                                   #  data-theme on any container)
-python3 scripts/gen-showroom-meta.py && node scripts/bundle-showroom.mjs
-                                   # -> dist/index.html (live React showroom)
-python3 scripts/lift.py <name>     # translate a shadcn component to the pivot
-python3 scripts/render-pattern.py <pattern>  # pattern -> both themes + reports
-```
-
-CI: conformance + anatomy + component + compile-freshness on push; weekly
-canary re-lifts against live upstream. Deploy: Vercel serves `dist/`
-statically (framework null — do NOT let it auto-build); the showroom
-workflow rebuilds dist on push. Site: registry.davoranic.com.
-
-## Layout decisions (user-chosen; don't redesign without asking)
-
-Showroom = Storybook-style: tree | canvas | controls. The canvas is the ONLY
-themed element (site chrome stays neutral). Controls panel: theme/mode/
-density + compare-all-themes + props GENERATED from anatomy. System pages in
-the tree: foundations, dictionary, translator, rules.
+1. **Never retrofit.** No component may be built from one design system's
+   material with other systems draped over it. This includes the subtle
+   form that killed the pilot: **a component inherited from one DS is
+   never a "neutral chassis."** Skeletons are born from the template
+   union (every part, every content-format parameter any system needs)
+   or they are retrofit.
+2. **No building without the owner's explicit go.** Design, research, and
+   documents are fine; code is not. When the owner says stop, stop
+   entirely — including "obvious" fixes and pushes.
+3. **Silence is the enemy.** A row a column turns on that the
+   implementation cannot express is a FAILING build, never a silent
+   fallback. Character lives in structure and content formatting as much
+   as in CSS — a coverage report that only counts style cells lies.
+4. **Values come from source clones with provenance, or they don't come.**
+   Research notes are [R] until re-verified from the clone [S]; three of
+   21 [R] cells in the calendar were wrong.
+5. **The owner is the fidelity oracle.** A native-speaker eye (they are a
+   designer, Salt-trained) judges every render. Their verdict outranks
+   any passing check.
 
 ## Working with this user
 
-- Designer, not deeply technical. Explain with real-world (old/physical)
-  analogies — dictionary/translator/IPA language landed extremely well.
-- Never scope down silently. If coverage is partial, say so and fix it.
-- They will pressure-test concepts ("challenge me") — engage honestly.
-- Ask (AskUserQuestion) before big UX/layout choices; they'd rather choose
-  than review a guess.
-- Cloud config: clones of ui/, salt-ds/, magicui/, animate-ui/, primitives/
-  live BESIDE this repo in "/Users/davoranic/UI registry/".
-
-## HANDOFF — state at session end (2026-08-01 night)
-
-Everything is repaired, validated, bundled, and pushed:
-- All 6 corrupted stylesheets fixed (restored from git / reconstructed from
-  anatomy); check-component.py fully green incl. brace-balance guard.
-- All 55 stories fixed against real component APIs; smoke test shows only
-  the known dual-React useState harness noise (browser is fine).
-- System pages live in the tree: foundations, dictionary, translator, rules.
-- Bundle builds with 0 CSS warnings. dist/ committed; Vercel serves it at
-  registry.davoranic.com (framework null — never let Vercel auto-build).
-
-FIRST THING NEXT SESSION: open dist/index.html (or the live site) in a
-browser and click through — visual verification was not completed. Then:
-ROADMAP Phase 5 (onboard Material 3 as the repeatability proof), and the
-Salt-only adoptions (stepper/rating/tree have anatomy but no components
-since the clean-slate reset).
+- Designer, not deeply technical. Explain with real-world/physical
+  analogies (dictionary/translator/matrix landed well).
+- They will pressure-test ("challenge me") — engage honestly, cite
+  sources.
+- Ask (AskUserQuestion) before big choices; never build on an ambiguous
+  yes. Token burn on unwanted work is a serious, repeated grievance.
