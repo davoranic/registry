@@ -1,0 +1,70 @@
+/* Neutral page chrome — deliberately unthemed; only the stages are themed. */
+* { margin: 0; }
+body { font: 14px/1.5 system-ui, sans-serif; background: #f4f4f5; color: #18181b; }
+.shell { min-height: 100vh; display: flex; flex-direction: column; }
+header { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #fff; border-bottom: 1px solid #e4e4e7; }
+header .dim { color: #71717a; }
+header .spacer { flex: 1; }
+header button { font: inherit; padding: 4px 10px; border: 1px solid #d4d4d8; background: #fff; border-radius: 6px; cursor: pointer; }
+header button:disabled { background: #e4e4e7; cursor: default; }
+.body { display: flex; flex: 1; align-items: flex-start; }
+main { flex: 1; display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; align-items: flex-start; }
+/* Stages carry NO chrome styling of their own — no radius, no shadow, no
+   background. The component's own surface, corner, and border must be the
+   only character visible. */
+.stage { margin: 0; }
+.stage figcaption { font: 11px/1.4 system-ui; color: #71717a; margin-block-end: 12px; }
+body.dark { background: #1c1c1e; color: #fafafa; }
+body.dark header { background: #26262a; border-color: #3f3f46; }
+body.dark header button { background: #26262a; border-color: #52525b; color: #fafafa; }
+body.dark header button:disabled { background: #3f3f46; }
+body.dark .stage figcaption { color: #a1a1aa; }
+body.dark .side { background: #26262a; border-color: #3f3f46; }
+body.dark .tabs { border-color: #3f3f46; }
+body.dark .tabs button { color: #a1a1aa; }
+body.dark .tabs button[data-active] { color: #fafafa; border-bottom-color: #fafafa; }
+body.dark .panel h2 { color: #a1a1aa; }
+body.dark .panel .row { border-color: #3f3f46; }
+body.dark .panel .cell { color: #fafafa; }
+body.dark .panel .pattern { color: #a1a1aa; }
+body.dark .panel .policy { background: #3f3f46; color: #a1a1aa; }
+body.dark .panel .policy[data-policy="locked"] { background: #312e81; color: #c7d2fe; }
+body.dark .panel .policy[data-policy="switchable"] { background: #365314; color: #d9f99d; }
+.side { inline-size: 340px; background: #fff; border-left: 1px solid #e4e4e7; align-self: stretch; }
+.tabs { display: flex; border-bottom: 1px solid #e4e4e7; }
+.tabs button { flex: 1; font: inherit; padding: 8px; border: none; background: none; cursor: pointer; color: #71717a; border-bottom: 2px solid transparent; }
+.tabs button[data-active] { color: #18181b; border-bottom-color: #18181b; }
+.panel { padding: 12px 16px; overflow-y: auto; max-block-size: calc(100vh - 90px); }
+.panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; margin: 16px 0 8px; }
+.panel .pattern { font-size: 12px; color: #52525b; margin-bottom: 8px; }
+.panel .row { padding: 6px 0; border-bottom: 1px solid #f4f4f5; }
+.panel .row-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.panel code { font-size: 12px; }
+.panel .policy { font-size: 10px; padding: 1px 6px; border-radius: 999px; background: #f4f4f5; color: #71717a; }
+.panel .policy[data-policy="locked"] { background: #e0e7ff; color: #3730a3; }
+.panel .policy[data-policy="switchable"] { background: #ecfccb; color: #3f6212; }
+.panel .cell { font-size: 12px; font-family: ui-monospace, monospace; color: #18181b; margin-top: 2px; word-break: break-word; }
+.panel .row[data-kind="off"] .cell { color: #a1a1aa; }
+.panel .src { font-size: 11px; color: #a1a1aa; margin-top: 2px; word-break: break-word; }
+.stage-controls { margin-inline-start: 10px; }
+.stage-controls button { font: 10px/1.4 system-ui; padding: 1px 7px; margin-inline-end: 3px; border: 1px solid #d4d4d8; background: #fff; border-radius: 999px; cursor: pointer; color: #52525b; }
+.stage-controls button:disabled { background: #e4e4e7; cursor: default; }
+body.dark .stage-controls button { background: #26262a; border-color: #52525b; color: #a1a1aa; }
+body.dark .stage-controls button:disabled { background: #3f3f46; }
+.cap-control { display: inline-flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.cap-control button { font: 11px/1.4 system-ui; padding: 2px 9px; border: 1px solid #d4d4d8; background: #fff; border-radius: 999px; cursor: pointer; color: #52525b; }
+.cap-control button:disabled { background: #18181b; border-color: #18181b; color: #fff; cursor: default; }
+body.dark .cap-control button { background: #26262a; border-color: #52525b; color: #a1a1aa; }
+body.dark .cap-control button:disabled { background: #fafafa; border-color: #fafafa; color: #18181b; }
+.toggle { display: flex; align-items: center; gap: 6px; margin-top: 4px; cursor: pointer; }
+.toggle input { margin: 0; }
+.toggle span { font: 11px/1.4 ui-monospace, monospace; color: #52525b; }
+.toggle[data-disabled] { cursor: default; }
+.toggle[data-disabled] span { color: #d4d4d8; }
+body.dark .toggle span { color: #a1a1aa; }
+body.dark .toggle[data-disabled] span { color: #52525b; }
+.policy[data-policy="not-applicable"] { background: #f4f4f5; color: #a1a1aa; border: 1px dashed #d4d4d8; padding: 0 5px; }
+body.dark .policy[data-policy="not-applicable"] { background: #26262a; color: #71717a; border-color: #3f3f46; }
+.button-spin { animation: button-spin 0.9s linear infinite; }
+@keyframes button-spin { to { transform: rotate(360deg); } }
+main[style] .stage { padding: 16px 20px; }

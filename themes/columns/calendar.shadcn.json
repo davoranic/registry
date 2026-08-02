@@ -1,0 +1,285 @@
+{
+  "system": "shadcn",
+  "component": "calendar",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "surface": "oklch(1 0 0)",
+      "on-surface": "oklch(0 0 0)",
+      "content-secondary": "oklch(0.556 0 0)",
+      "action": "oklch(0 0 0)",
+      "on-action": "oklch(0.985 0 0)",
+      "interaction-hover": "oklch(0.97 0 0)",
+      "focus": "oklch(0.708 0 0)",
+      "radius-control": "calc(0.625rem - 2px)",
+      "radius-container": "0.625rem",
+      "type-body": "400 14px/20px ui-sans-serif, system-ui, sans-serif",
+      "type-label": "500 14px/20px ui-sans-serif, system-ui, sans-serif",
+      "type-caption": "400 12.8px/16px ui-sans-serif, system-ui, sans-serif",
+      "control-size": "2rem",
+      "inset": "12px",
+      "cursor-interactive": "default",
+      "cursor-disabled": "default",
+      "focus-width": "3px"
+    },
+    "dark": {
+      "surface": "oklch(0.145 0 0)",
+      "on-surface": "oklch(0.985 0 0)",
+      "content-secondary": "oklch(0.708 0 0)",
+      "action": "oklch(0.922 0 0)",
+      "on-action": "oklch(0.205 0 0)",
+      "interaction-hover": "oklch(0.371 0 0)",
+      "focus": "oklch(0.556 0 0)"
+    }
+  },
+  "provenance": {
+    "surface": "ui/apps/v4/app/globals.css :root --background / .dark --background",
+    "on-surface": "--foreground light oklch(0% 0 0) / dark oklch(0.985 0 0)",
+    "content-secondary": "--muted-foreground",
+    "action": "--primary (this checkout: pure black light / oklch 0.922 dark)",
+    "interaction-hover": "--accent",
+    "focus": "--ring",
+    "radius-control": "--radius 0.625rem; rounded-md = radius - 2px (globals.css @theme)",
+    "type-body": "text-sm 14px; family: source uses Geist via next/font \u2014 NOT downloaded; system-ui stack substituted (declared substitution)",
+    "control-size": "calendar.tsx --cell-size: --spacing(8) = 2rem",
+    "cursor-interactive": "shadcn v4 buttons use default cursor (no pointer) \u2014 character detail, kept"
+  },
+  "cells": {
+    "structure.nav.variant": {
+      "kind": "value",
+      "value": "caption",
+      "source": "calendar.tsx captionLayout default 'label'"
+    },
+    "structure.header": {
+      "kind": "off"
+    },
+    "structure.input-toggle": {
+      "kind": "off"
+    },
+    "structure.actions": {
+      "kind": "off"
+    },
+    "structure.today-marker": {
+      "kind": "off"
+    },
+    "behavior.selection-commit": {
+      "kind": "value",
+      "value": "immediate"
+    },
+    "behavior.range-selection": {
+      "kind": "value",
+      "value": true,
+      "source": "calendar.tsx mode range"
+    },
+    "prop.density": {
+      "kind": "off",
+      "note": "no density axis \u2014 control renders locked"
+    },
+    "slot.weekday-format": {
+      "kind": "value",
+      "value": "short",
+      "source": "react-day-picker default formatWeekdayName: Sun Mon Tue"
+    },
+    "slot.day-format": {
+      "kind": "value",
+      "value": "numeric",
+      "source": "calendar.tsx renders date.getDate()"
+    },
+    "slot.outside-days": {
+      "kind": "value",
+      "value": "muted",
+      "source": "calendar.tsx showOutsideDays=true default; outside: text-muted-foreground opacity-50"
+    },
+    "style.root.background": {
+      "kind": "alias",
+      "slot": "surface"
+    },
+    "style.root.color": {
+      "kind": "alias",
+      "slot": "on-surface"
+    },
+    "style.root.padding": {
+      "kind": "alias",
+      "slot": "inset",
+      "source": "calendar.tsx p-3"
+    },
+    "style.root.shape": {
+      "kind": "alias",
+      "slot": "radius-container"
+    },
+    "style.root.width": {
+      "kind": "value",
+      "value": "fit-content",
+      "source": "calendar.tsx w-fit"
+    },
+    "style.day.size": {
+      "kind": "alias",
+      "slot": "control-size",
+      "note": "source is fluid aspect-square min --cell-size; fixed at 2rem, declared simplification"
+    },
+    "style.day.cell-padding": {
+      "kind": "off"
+    },
+    "style.day.shape": {
+      "kind": "alias",
+      "slot": "radius-control",
+      "source": "calendar.tsx rounded-md"
+    },
+    "style.day.font": {
+      "kind": "alias",
+      "slot": "type-body"
+    },
+    "style.day.background@hover": {
+      "kind": "alias",
+      "slot": "interaction-hover",
+      "source": "Button ghost hover:bg-accent"
+    },
+    "style.day.selected": {
+      "kind": "value",
+      "value": {
+        "background": "var(--action)",
+        "color": "var(--on-action)",
+        "border-radius": "var(--radius-control)"
+      },
+      "source": "data-[selected-single=true]:bg-primary text-primary-foreground"
+    },
+    "style.day.range-middle": {
+      "kind": "value",
+      "value": {
+        "background": "var(--interaction-hover)",
+        "color": "var(--on-surface)",
+        "border-radius": "0"
+      },
+      "source": "data-[range-middle=true]:bg-accent rounded-none"
+    },
+    "style.day.today": {
+      "kind": "value",
+      "value": {
+        "background": "var(--interaction-hover)",
+        "color": "var(--on-surface)",
+        "border-radius": "var(--radius-control)"
+      },
+      "source": "today: bg-accent text-accent-foreground rounded-md"
+    },
+    "style.day.today-marker": {
+      "kind": "off"
+    },
+    "style.day.outside": {
+      "kind": "value",
+      "value": {
+        "color": "var(--content-secondary)",
+        "opacity": "0.5"
+      },
+      "source": "text-muted-foreground opacity-50"
+    },
+    "style.day.disabled": {
+      "kind": "value",
+      "value": {
+        "color": "var(--content-secondary)",
+        "opacity": "0.5",
+        "cursor": "var(--cursor-disabled)"
+      },
+      "source": "disabled: text-muted-foreground opacity-50"
+    },
+    "style.day.focus": {
+      "kind": "value",
+      "value": {
+        "outline": "none",
+        "box-shadow": "0 0 0 3px color-mix(in oklab, var(--focus) 50%, transparent)"
+      },
+      "source": "ring-[3px] ring-ring/50"
+    },
+    "style.nav.button.size": {
+      "kind": "alias",
+      "slot": "control-size",
+      "source": "nav buttons size-(--cell-size)"
+    },
+    "style.nav.button.shape": {
+      "kind": "alias",
+      "slot": "radius-control"
+    },
+    "style.nav.button.background@hover": {
+      "kind": "alias",
+      "slot": "interaction-hover"
+    },
+    "style.caption.font": {
+      "kind": "alias",
+      "slot": "type-label",
+      "source": "text-sm font-medium"
+    },
+    "style.dropdowns": {
+      "kind": "off"
+    },
+    "style.weekday.font": {
+      "kind": "alias",
+      "slot": "type-caption",
+      "source": "text-[0.8rem] font-normal"
+    },
+    "style.weekday.color": {
+      "kind": "alias",
+      "slot": "content-secondary"
+    },
+    "style.header.label": {
+      "kind": "off"
+    },
+    "style.header.headline": {
+      "kind": "off"
+    },
+    "style.header.divider": {
+      "kind": "off"
+    },
+    "style.actions.button": {
+      "kind": "off"
+    },
+    "slot.grid-weeks": {
+      "kind": "value",
+      "value": "variable",
+      "source": "react-day-picker default (fixedWeeks opt-in)"
+    },
+    "style.day.range-start": {
+      "kind": "value",
+      "value": {
+        "border-radius": "var(--radius-control) 0 0 var(--radius-control)"
+      },
+      "source": "calendar.tsx data-[range-start]:rounded-l-md"
+    },
+    "style.day.range-end": {
+      "kind": "value",
+      "value": {
+        "border-radius": "0 var(--radius-control) var(--radius-control) 0"
+      },
+      "source": "calendar.tsx data-[range-end]:rounded-r-md"
+    },
+    "style.day.today-marker@outside": {
+      "kind": "off"
+    },
+    "prop.accent": {
+      "kind": "off",
+      "note": "no accent axis"
+    },
+    "style.day.range-middle-cell": {
+      "kind": "off",
+      "note": "cells abut (no gap); button-level band is already continuous"
+    },
+    "style.nav.layout": {
+      "kind": "off",
+      "note": "base flex layout suffices"
+    },
+    "style.caption.layout": {
+      "kind": "off"
+    },
+    "style.nav.spacing": {
+      "kind": "value",
+      "value": {
+        "margin-block-end": "16px"
+      },
+      "source": "calendar.tsx month: flex-col gap-4 (1rem between nav and grid)"
+    },
+    "style.header.spacing": {
+      "kind": "off"
+    },
+    "style.actions.spacing": {
+      "kind": "off"
+    }
+  }
+}

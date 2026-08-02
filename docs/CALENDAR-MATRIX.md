@@ -36,6 +36,16 @@ extraction re-check before build.
 ⚪ switchable (on where the system has it) · ⬜ on-with-default (must have a
 value; silence inherits, labeled).
 
+**Naming rule — what to call a row.** One row is one **attribute**: an
+addressable characteristic of a part, in a state, belonging to one of the
+six pieces (structure/behavior/prop/slot/state/style). "The weekday's font"
+is the `weekday.font` attribute; "the day's corner radius" is the
+`day.shape` attribute. Grammar: `<piece>.<part>[.<subpart>].<property>[@state]`
+— enforced by `contract/template.schema.json`'s `row.id` pattern. Don't say
+"token" for a row (a token is a *resolved value*, i.e. a cell); don't say
+"attribute" for a DOM hook (`data-slot`, `data-range`) — always say **"data
+attribute"** for those, to keep the two apart.
+
 Sources: salt-ds clone `packages/date-components/src/calendar/*` [S];
 `ui/apps/v4/registry/new-york-v4/ui/calendar.tsx` [S]; material-web /
 androidx `date-picker` token files [R].

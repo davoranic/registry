@@ -1,0 +1,333 @@
+{
+  "component": "button",
+  "openUiAnatomy": "no published Open UI button anatomy \u2014 single-part component, union of salt-ds Button, shadcn button, M3 filled/outlined/text/elevated/filled-tonal button family",
+  "behavior": {
+    "pattern": "APG button pattern: Enter/Space activates; aria-pressed for toggle buttons (out of scope here \u2014 see toggle component); aria-expanded+aria-haspopup when triggering a menu/dialog",
+    "chassis": "skeleton/button.tsx \u2014 written from the APG spec; inherits from no design system"
+  },
+  "skeletonParams": {
+    "tone": [
+      "neutral",
+      "accent",
+      "negative",
+      "positive",
+      "caution",
+      "default",
+      "destructive",
+      "primary",
+      "secondary",
+      "tertiary",
+      "error"
+    ],
+    "emphasis": [
+      "solid",
+      "bordered",
+      "transparent",
+      "loading",
+      "default",
+      "outline",
+      "secondary",
+      "ghost",
+      "link",
+      "filled",
+      "outlined",
+      "text",
+      "elevated",
+      "filled-tonal"
+    ],
+    "size": [
+      "sm",
+      "md",
+      "lg",
+      "xs",
+      "default"
+    ],
+    "iconOnly": [
+      true,
+      false
+    ],
+    "textCase": [
+      "none",
+      "uppercase"
+    ]
+  },
+  "base": {
+    "[data-slot=\"button\"]": {
+      "appearance": "none",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "position": "relative",
+      "border-style": "solid",
+      "text-decoration": "none",
+      "font": "inherit"
+    },
+    "[data-slot=\"button\"]:disabled": {
+      "pointer-events": "none"
+    },
+    "[data-slot=\"button-spinner\"]": {
+      "position": "absolute",
+      "inset": "0",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center"
+    }
+  },
+  "rows": [
+    {
+      "id": "prop.tone",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "tone",
+      "note": "Salt: 5 sentiments (neutral/accented/negative/positive/caution) via the actionable characteristic. shadcn: default/destructive (only 2 \u2014 no positive/caution equivalent, a real coverage gap). M3: primary/secondary/tertiary/error color roles."
+    },
+    {
+      "id": "prop.emphasis",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "emphasis",
+      "note": "Salt: solid/bordered/transparent/loading (4 appearances \u00d7 5 sentiments = 20 combinations, all through --salt-actionable-*). shadcn: default/outline/secondary/ghost/link. M3: filled/outlined/text/elevated/filled-tonal (5 real components, not variants of one)."
+    },
+    {
+      "id": "prop.size",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "size"
+    },
+    {
+      "id": "prop.icon-only",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "iconOnly"
+    },
+    {
+      "id": "behavior.trigger-active-state",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "aria-expanded+aria-haspopup=menu/dialog forces the active visual state even when not pressed (Salt Button.css, shadcn/M3 equivalent convention) \u2014 identical across systems"
+    },
+    {
+      "id": "behavior.loading",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt has a dedicated 'loading' appearance, already listed in prop.emphasis (cursor:progress, text/bg collapse to one color, spinner overlays). shadcn/M3 have no built-in loading variant \u2014 composed by the consumer (disabled + spinner child), a declared capability gap"
+    },
+    {
+      "id": "state.disabled",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info"
+    },
+    {
+      "id": "state.hover",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info"
+    },
+    {
+      "id": "state.active",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info"
+    },
+    {
+      "id": "state.focus",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info"
+    },
+    {
+      "id": "slot.icon",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info"
+    },
+    {
+      "id": "slot.label",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info"
+    },
+    {
+      "id": "style.root.height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "block-size": "$"
+      }
+    },
+    {
+      "id": "style.root.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "padding-inline": "$"
+      }
+    },
+    {
+      "id": "style.root.gap",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "gap": "$"
+      }
+    },
+    {
+      "id": "style.root.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "border-radius": "$"
+      }
+    },
+    {
+      "id": "style.root.border-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "border-width": "$"
+      }
+    },
+    {
+      "id": "style.root.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "font": "$"
+      }
+    },
+    {
+      "id": "style.root.text-transform",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.root.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "background": "$"
+      }
+    },
+    {
+      "id": "style.root.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "color": "$"
+      }
+    },
+    {
+      "id": "style.root.border-color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "border-color": "$"
+      }
+    },
+    {
+      "id": "style.root.background@hover",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]:hover:not(:disabled)",
+      "declarations": {
+        "background": "$"
+      }
+    },
+    {
+      "id": "style.root.background@active",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]:active:not(:disabled)",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "shadcn has no distinct :active rule in source \u2014 hover and active share one treatment, a genuine cross-system difference, not an oversight"
+    },
+    {
+      "id": "style.root.opacity@disabled",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]:disabled",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.root.focus",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]:focus-visible",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.root.elevation",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]",
+      "declarations": {
+        "box-shadow": "$"
+      }
+    },
+    {
+      "id": "style.root.elevation@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"]:hover:not(:disabled)",
+      "declarations": {
+        "box-shadow": "$"
+      }
+    },
+    {
+      "id": "style.root.background@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"][data-emphasis=\"bordered\"][data-tone=\"neutral\"], [data-slot=\"button\"][data-emphasis=\"outline\"], [data-slot=\"button\"][data-emphasis=\"outlined\"]",
+      "cellIsDeclarations": true,
+      "note": "the outline/bordered emphasis, neutral tone \u2014 one representative non-default axis cell to prove the pattern generalizes; full 20-combination Salt grid documented in provenance, not fully enumerated as separate rows (scope decision, same as Calendar's locale row)"
+    },
+    {
+      "id": "style.icon.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"] svg",
+      "declarations": {
+        "inline-size": "$",
+        "block-size": "$"
+      }
+    }
+  ]
+}
