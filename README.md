@@ -54,15 +54,23 @@ invalidate every one of those citations.
 
 ## Deploying
 
-The site is **generated at build time**, so `1-intro/site/` is gitignored and
-Vercel builds it from source:
+**The website is a visual record of the work, not the work.** One file is
+published — `1-intro/site/index.html`, a single self-contained page — and
+everything else stays in this repo. The rule, the publish command, and two
+traps already hit are in [`PUBLISHING.md`](PUBLISHING.md).
+
+Build locally, then ship the folder:
+
+```bash
+./build.sh                                  # gates -> generate -> sync -> site
+cd 1-intro/site && npx vercel deploy --prod --yes
+```
 
 | | |
 |---|---|
-| build command | `python3 1-intro/build/build-docs.py` |
-| output directory | `1-intro/site` |
-| dependencies | none — the generator is stdlib Python |
+| published | `1-intro/site/index.html` — one self-contained file |
 | domain | `registry.davoranic.com` |
+| built on the host | **no** — Vercel receives a folder, not a build |
 
 A Vercel project already owns `registry.davoranic.com` — it answers
 `x-vercel-error: NOT_FOUND`, meaning the hostname is attached but nothing is

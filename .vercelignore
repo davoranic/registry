@@ -1,8 +1,0 @@
-# never upload the design-system clones — ~600MB of read-only input that the
-# docs build does not touch. The gates need them; the site generator does not.
-3-source/
-
-node_modules/
-2-build/out/gen/
-.git/
-.claude/
