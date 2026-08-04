@@ -62,12 +62,16 @@ Vercel builds it from source:
 | build command | `python3 1-intro/build/build-docs.py` |
 | output directory | `1-intro/site` |
 | dependencies | none — the generator is stdlib Python |
-| domain | `ui.davoranic.com` |
+| domain | `registry.davoranic.com` |
 
-`registry.davoranic.com` is deliberately **not** used: this repo is also a
-shadcn registry (`npx shadcn add davoranic/registry/<item>`), and that hostname
-is left free for the install endpoint. Both names resolve through the
-`*.davoranic.com` wildcard, so neither needs a registrar change.
+A Vercel project already owns `registry.davoranic.com` — it answers
+`x-vercel-error: NOT_FOUND`, meaning the hostname is attached but nothing is
+deployed behind it. Connecting this repo to that project is all that is needed;
+no registrar change, and no domain to move.
+
+This repo is also a shadcn registry (`npx shadcn add davoranic/registry/<item>`).
+The two do not collide: the docs occupy `/`, and **`/r/*` is left free** for the
+install endpoint on the same project, so both can be served from one deployment.
 
 **`build.sh` is never run in CI.** The gates need `3-source/`, the six clones
 (~600MB), which are deliberately not in this repo. Gate results shown on the
