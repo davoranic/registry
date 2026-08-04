@@ -62,7 +62,12 @@ Vercel builds it from source:
 | build command | `python3 1-intro/build/build-docs.py` |
 | output directory | `1-intro/site` |
 | dependencies | none — the generator is stdlib Python |
-| domain | `registry.davoranic.com` |
+| domain | `ui.davoranic.com` |
+
+`registry.davoranic.com` is deliberately **not** used: this repo is also a
+shadcn registry (`npx shadcn add davoranic/registry/<item>`), and that hostname
+is left free for the install endpoint. Both names resolve through the
+`*.davoranic.com` wildcard, so neither needs a registrar change.
 
 **`build.sh` is never run in CI.** The gates need `3-source/`, the six clones
 (~600MB), which are deliberately not in this repo. Gate results shown on the
