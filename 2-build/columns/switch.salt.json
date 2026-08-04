@@ -1,0 +1,155 @@
+{
+  "system": "salt",
+  "component": "switch",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "neutral": "rgb(114, 119, 125)",
+      "neutral-fg": "rgb(95, 100, 106)",
+      "accent": "rgb(0, 120, 207)",
+      "box-bg": "rgb(255, 255, 255)",
+      "text-fg": "rgb(0, 0, 0)",
+      "focus-outline": "rgb(0, 69, 126)",
+      "type-fontFamily": "'Open Sans', sans-serif",
+      "type-fontWeight": "400"
+    },
+    "dark": {
+      "neutral-fg": "rgb(145, 149, 154)",
+      "box-bg": "rgb(16, 24, 32)",
+      "text-fg": "rgb(255, 255, 255)",
+      "focus-outline": "rgb(154, 189, 245)"
+    },
+    "byDensity": {
+      "high":   { "track-width": "28px", "track-height": "16px", "thumb-size": "12px", "track-radius": "4px",  "thumb-radius": "1px", "root-gap": "4px",  "type-fontSize": "11px", "type-lineHeight": "14px" },
+      "medium": { "track-width": "34px", "track-height": "20px", "thumb-size": "14px", "track-radius": "8px",  "thumb-radius": "2px", "root-gap": "8px",  "type-fontSize": "12px", "type-lineHeight": "16px" },
+      "low":    { "track-width": "40px", "track-height": "24px", "thumb-size": "16px", "track-radius": "12px", "thumb-radius": "3px", "root-gap": "12px", "type-fontSize": "14px", "type-lineHeight": "18px" },
+      "touch":  { "track-width": "46px", "track-height": "28px", "thumb-size": "18px", "track-radius": "16px", "thumb-radius": "4px", "root-gap": "16px", "type-fontSize": "16px", "type-lineHeight": "20px" }
+    }
+  },
+  "modeInvariant": ["neutral", "accent", "type-fontFamily", "type-fontWeight"],
+  "provenance": {
+    "canonical-source": "packages/core/src/switch/{Switch.tsx,Switch.css,index.ts} — the whole component, three files, read in full. packages/core/stories/switch/{switch.stories.tsx,switch.qa.stories.tsx}; site/docs/components/switch/{index,usage,accessibility,examples}.mdx; site/src/examples/switch/{Default,DefaultChecked,Disabled,DisabledChecked,Readonly,LeftAlignedLabel}.tsx. Resolution through packages/theme/css/next/characteristics/{selectable,content,focused}.css, next/palette/{neutral,accent,background}.css, next/foundations/color.css, packages/theme/css/foundations/{size,spacing,curve,cursor,borderStyle,zindex}.css. NO validationStatus/status.css resolution — see behavior.validation absence, confirmed below.",
+    "no-validation": "CONFIRMED ABSENCE, grepped directly: Switch.tsx has NO `validationStatus` prop, does not import `../form-field-context`'s validation field, and Switch.css has no `.saltSwitch-error`/`.saltSwitch-warning` class of any kind — unlike Checkbox.tsx, which pulls `checkboxGroup?.validationStatus ?? formFieldValidationStatus ?? validationStatusProp`. Switch's own `useFormFieldProps()` call destructures only `{ a11yProps, disabled, readOnly }`, deliberately NOT `validationStatus`, even though the same hook exposes it to Checkbox.",
+    "neutral": "Switch.css `border-color: var(--salt-selectable-borderColor)` -> next/characteristics/selectable.css `--salt-selectable-borderColor: var(--salt-palette-neutral)` -> next/palette/neutral.css, `--salt-palette-neutral: var(--salt-color-gray-500)` IDENTICAL under both [data-mode] blocks -> foundations/color.css --salt-color-gray-500-rgb: 114, 119, 125. MODE-INVARIANT, the identical fact checkbox.salt.json already recorded for the same token, reused here because Switch.css resolves through the exact same characteristics file.",
+    "neutral-fg": "Switch.css track's resting `color: var(--salt-selectable-foreground)` -> selectable.css -> `var(--salt-palette-neutral-strong)` -> neutral.css, NOT mode-invariant: gray-600 rgb(95,100,106) light, gray-400 rgb(145,149,154) dark — identical values to checkbox.salt.json's own neutral-fg slot.",
+    "accent": "Switch.css `.saltSwitch-checked .saltSwitch-track { border-color: var(--salt-selectable-borderColor-selected); color: var(--salt-selectable-foreground-selected) }` -> selectable.css, BOTH -> `var(--salt-palette-accent)` -> next/palette/accent.css `--salt-palette-accent: var(--salt-color-blue-500)` identical in both mode blocks -> color.css --salt-color-blue-500-rgb: 0, 120, 207. MODE-INVARIANT, same value checkbox.salt.json already used. The `-hover` variant (`--salt-selectable-borderColor-hover`/`-foreground-hover`) resolves to the SAME accent slot, the identical hover-equals-selected coincidence checkbox.salt.json's own accent provenance already recorded.",
+    "box-bg": "Switch.css `.saltSwitch-readOnly .saltSwitch-thumb { background: var(--salt-container-primary-background) }` -> next/characteristics/container.css -> next/palette/background.css, background-snow (light, rgb 255,255,255) / background-jet (dark, rgb 16,24,32) — the SAME slot and values checkbox.salt.json's box-bg already resolved; reused here for the readOnly thumb's fill, since it is the identical token.",
+    "text-fg": "Switch.css `.saltSwitch { color: var(--salt-content-primary-foreground) }` -> next/characteristics/content.css `--salt-content-primary-foreground: var(--salt-palette-foreground-primary)` -> next/palette/foreground.css, black rgb(0,0,0) light / white rgb(255,255,255) dark (a genuinely NEW slot switch needs that checkbox's own root font never resolved through, since checkbox's root.font row never carried a colour) -> foundations/color.css --salt-color-black-rgb / --salt-color-white-rgb.",
+    "focus-outline": "Switch.css `.saltSwitch-input:focus-visible + .saltSwitch-track { outline: var(--salt-focused-outline) }` -> next/characteristics/focused.css `--salt-focused-outline: 2px dotted var(--salt-focused-outlineColor)`, `--salt-focused-outlineColor: var(--salt-palette-accent-stronger)` -> palette/accent.css blue-700 rgb(0,69,126) light / blue-300 rgb(154,189,245) dark — the SAME slot and values checkbox.salt.json's focus-outline already resolved. NOTE, a real divergence from checkbox: Switch.css's own `outline-offset: var(--salt-focused-outlineOffset)` resolves to a LITERAL 0 (focused.css: `--salt-focused-outlineOffset: 0`), whereas checkbox's box used `outline-offset: var(--salt-spacing-fixed-100)` = 1px directly, NOT this same characteristic token — two different components reaching two different offsets through two different mechanisms, recorded rather than smoothed into one number.",
+    "byDensity.track-width/track-height": "Switch.css `.saltSwitch-track { width: calc((var(--salt-size-selectable) + var(--salt-spacing-25) + var(--salt-size-fixed-100)) * 2); height: calc(var(--salt-size-base) - var(--salt-spacing-100)) }` -> foundations/size.css (size-selectable 12/14/16/18, size-base 20/28/36/44, size-fixed-100 1px FIXED) and foundations/spacing.css (spacing-100 4/8/12/16, spacing-25 = 0.25 * spacing-100 = 1/2/3/4), all by DENSITY (high/medium/low/touch). Computed: width = (selectable+spacing-25+1)*2 -> high (12+1+1)*2=28, medium (14+2+1)*2=34, low (16+3+1)*2=40, touch (18+4+1)*2=46. height = size-base - spacing-100 -> high 20-4=16, medium 28-8=20, low 36-12=24, touch 44-16=28.",
+    "byDensity.thumb-size": "Switch.css `.saltSwitch-thumb { height: var(--salt-size-selectable) }` with `aspect-ratio: 1` — the SAME token AND the same per-density numbers (12/14/16/18) as checkbox.salt.json's own box-size.",
+    "byDensity.track-radius": "Switch.css `.saltSwitch-track { border-radius: var(--salt-palette-corner-weak, 0) }` -> next/palette/corner.css `--salt-palette-corner-weak: var(--salt-curve-100)` -> foundations/curve.css, DENSITY scale 4/8/12/16 (high/medium/low/touch) — a DIFFERENT corner token from checkbox's box (which used corner-weaker/curve-50); under [data-corner=\"sharp\"] this collapses to curve-0 = 0px, the identical edition trap CHIP-MATRIX finding-1 and checkbox's own track-radius-adjacent shape row both already recorded.",
+    "byDensity.thumb-radius": "Switch.css `.saltSwitch-thumb { border-radius: var(--salt-palette-corner-weaker, 0) }` -> corner.css `--salt-palette-corner-weaker: var(--salt-curve-50)` -> curve.css, DENSITY scale 1/2/3/4 — the IDENTICAL token AND numbers checkbox.salt.json's own shape-radius slot already used.",
+    "byDensity.root-gap": "Switch.css `.saltSwitch { gap: var(--salt-spacing-100) }` -> foundations/spacing.css, DENSITY scale 4/8/12/16 — the identical token AND numbers checkbox.salt.json's own root-gap slot already used.",
+    "byDensity.type-fontSize/type-lineHeight": "Switch.css `.saltSwitch { font-size: var(--salt-text-fontSize); line-height: var(--salt-text-lineHeight); font-family: var(--salt-text-fontFamily); font-weight: var(--salt-text-fontWeight) }` -> next/characteristics/text.css, the BODY role, DENSITY scale 11/14 . 12/16 . 14/18 . 16/20 — identical to checkbox.salt.json's own root.font resolution. font-weight REGULAR (400).",
+    "border-width-fixed": "Switch.css `.saltSwitch-track { border: var(--salt-size-fixed-100) ... }` and `.saltSwitch-thumb { border: var(--salt-size-fixed-100) ... }` -> foundations/size.css --salt-size-fixed-100: 1px, FIXED (density-invariant) scale, carried as a plain literal rather than a slot, matching checkbox's own convention for the identical token.",
+    "no-pressed-state": "CONFIRMED ABSENCE, checked directly: Switch.css contains no `:active` selector of any kind.",
+    "no-group": "CONFIRMED ABSENCE — no SwitchGroup/switch-group export anywhere in packages/core/src/switch/index.ts or the wider package; unlike Checkbox, Switch composes with an ancestor <FormField> only, never its own group construct.",
+    "no-transition-on-track-hover": "Switch.css's own transition rule is scoped ONLY to `.saltSwitch-input:focus-visible + .saltSwitch-track .saltSwitch-thumb, .saltSwitch:hover .saltSwitch-thumb { transition: transform var(--salt-duration-perceptible) ease-in-out }` — the THUMB's transform eases, but no colour property anywhere in Switch.css carries a `transition`, unlike checkbox's box (which had NO transition of any kind at all). This is a genuinely NEW, switch-only capability not modelled as its own row for scope (the thumb-slide easing is a single, narrow, single-property case; see the matrix doc's 'Declared approximations' for why it is noted, not expanded)."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "label-wrap", "source": "Switch.tsx returns <label className=saltSwitch>{input}{track{thumb{icon}}}{label}</label> — one real <label>, matching Checkbox.tsx's own shape exactly" },
+    "structure.native-input": { "kind": "value", "value": true, "source": "Switch.tsx <input type=\"checkbox\" role=\"switch\" ... /> — a real native input, opacity:0, position:absolute (Switch.css)" },
+    "structure.track": { "kind": "value", "value": true, "source": "Switch.tsx <span className={withBaseName(\"track\")}><span className={withBaseName(\"thumb\")}>...</span></span> — a real, separate track element" },
+    "structure.icon": { "kind": "value", "value": "conditional-checkmark", "source": "Switch.tsx: {checked && !readOnly && <CheckmarkSolidIcon .../>} {checked && readOnly && <CheckmarkIcon .../>} — the identical readOnly-glyph-swap mechanism CheckboxIcon.tsx already used" },
+
+    "behavior.role": { "kind": "value", "value": "explicit `role=\"switch\"` written on the native <input type=\"checkbox\">, with a biome-ignore comment noting aria-checked is unnecessary since input+checked already provides it", "source": "Switch.tsx: `role=\"switch\"` plus `// biome-ignore lint/a11y/useAriaPropsForRole: aria-checked is not needed when input and checked is used.`" },
+    "behavior.keyboard-activation": { "kind": "value", "value": false, "source": "no onKeyDown anywhere in Switch.tsx; accessibility.mdx: 'Space activates switch to change between checked and unchecked state' — enterActivates=false, Space handled natively" },
+    "behavior.label-click-target": { "kind": "value", "value": "the WHOLE label — track/thumb and text both toggle it", "source": "native <label> semantics, since structure.shell=label-wrap" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native `disabled` on the input, merged with the ancestor FormField's (no group merge — switch has none), plus a blanket opacity class on the whole label", "source": "Switch.tsx `const disabled = formFieldDisabled || disabledProp`; Switch.css `.saltSwitch-disabled { opacity: 0.4 }`" },
+    "behavior.readonly": { "kind": "value", "value": "implemented in JS, NOT relying on the (spec-inert) native readonly attribute — identical mechanism to Checkbox", "source": "Switch.tsx handleChange: `if (event.nativeEvent.defaultPrevented || readOnly) { return }`" },
+    "behavior.form-participation": { "kind": "value", "value": "native — the input IS the real form control", "source": "a real <input type=\"checkbox\" name=... value=... checked=.../>, no custom validity machinery needed" },
+
+    "prop.checked-shape": { "kind": "value", "value": "boolean", "source": "SwitchProps: `checked?: boolean; defaultChecked?: boolean` — NO indeterminate field anywhere" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "SwitchProps.disabled?: boolean, merged with the ancestor FormField's" },
+    "prop.read-only": { "kind": "value", "value": [false, true], "source": "SwitchProps.readOnly?: boolean" },
+    "prop.required": { "kind": "value", "value": [false, true], "note": "reachable only via `inputProps.required` (SwitchProps has no top-level `required` field), the same indirect shape checkbox's Salt column used" },
+    "prop.size": { "kind": "off", "note": "density (a registry-wide, document-level axis) plays the equivalent role but is a different mechanism, not a per-instance prop — see the template row's note" },
+    "prop.icons": { "kind": "off", "note": "Salt's icon visibility is driven entirely by checked/readOnly state (see structure.icon), not an opt-in toggle" },
+
+    "slot.label": { "kind": "value", "value": "label?: ReactNode, rendered as the LAST child inside the component's own <label>", "source": "Switch.tsx" },
+    "slot.composes": { "kind": "value", "value": true, "note": "form-field (useFormFieldProps() pulls aria-describedby/aria-labelledby/disabled/readOnly down from an ancestor <FormField> — Switch.tsx), checkbox/radio-button/toggle-button (the three explicitly-excluded siblings, usage.mdx)" },
+
+    "state.rest": { "kind": "value", "value": "neutral gray-500 outline on a white/near-black track fill; a SOLID currentColor thumb with a matching neutral border", "note": "an outline-style track at EVERY state, including checked — see state.checked" },
+    "state.checked": { "kind": "value", "value": "track fill NEVER changes — only track border/icon recolour to accent; thumb INVERTS from solid currentColor to transparent (outline-only), sliding via translateX(100%)", "note": "the fill direction is the OPPOSITE of checkbox's box, which stayed outline-only at every state" },
+    "state.hover": { "kind": "value", "value": "track border+icon AND thumb border recolour to the -hover variant, keyed off the ROOT's :hover", "source": "Switch.css `.saltSwitch:hover .saltSwitch-track`, `.saltSwitch:hover .saltSwitch-thumb`" },
+    "state.focus": { "kind": "value", "value": "2px dotted accent-stronger outline at ZERO offset, plus the hover recolour riding along", "source": "Switch.css `.saltSwitch-input:focus-visible + .saltSwitch-track { outline: ...; outline-offset: var(--salt-focused-outlineOffset) }` = 0" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — no :active selector anywhere" },
+    "state.disabled": { "kind": "value", "value": "blanket opacity 0.4 (a literal) on the whole label, plus not-allowed cursor", "source": "Switch.css `.saltSwitch-disabled { opacity: 0.4; cursor: var(--salt-cursor-disabled) }`" },
+    "state.readonly": { "kind": "value", "value": "track border recolours to a dedicated readonly token; thumb is FORCED to the neutral/rest look in BOTH checked and unchecked states; root cursor becomes text, not not-allowed", "source": "Switch.css `.saltSwitch-readOnly .saltSwitch-track`, `.saltSwitch-readOnly .saltSwitch-thumb, .saltSwitch-readOnly.saltSwitch-checked .saltSwitch-thumb` (identical rule for both), `.saltSwitch-readOnly { cursor: var(--salt-cursor-text) }`" },
+
+    "style.track.size": { "kind": "value", "value": { "width": "var(--track-width)", "height": "var(--track-height)" }, "source": "Switch.css .saltSwitch-track/.saltSwitch-input" },
+    "style.track.size@sm": { "kind": "off", "note": "Salt has no size prop — density plays the equivalent role, see prop.size" },
+    "style.track.shape": { "kind": "alias", "slot": "track-radius" },
+    "style.track.border-width": { "kind": "value", "value": "1px", "source": "Switch.css .saltSwitch-track { border: var(--salt-size-fixed-100) ... } = 1px, FIXED scale" },
+    "style.track.rest": {
+      "kind": "value",
+      "value": { "border-color": "var(--neutral)", "background-color": "var(--box-bg)", "color": "var(--neutral-fg)" },
+      "note": "box-bg is REUSED from checkbox's identical container-primary-background token — Switch.css does not restate a rest background rule of its own beyond `.saltSwitch-track { background: var(--salt-container-primary-background) }`, which resolves to the same slot"
+    },
+    "style.track.checked": {
+      "kind": "value",
+      "value": { "border-color": "var(--accent)", "color": "var(--accent)" },
+      "source": "Switch.css .saltSwitch-checked .saltSwitch-track { border-color: selectable-borderColor-selected; color: selectable-foreground-selected } — no background rule, box-bg is UNCHANGED from rest, repeated here deliberately"
+    },
+    "style.track.hover": {
+      "kind": "value",
+      "value": { "border-color": "var(--accent)", "color": "var(--accent)" },
+      "source": "Switch.css .saltSwitch:hover .saltSwitch-track { border-color: selectable-borderColor-hover; color: selectable-foreground-hover } — both resolve to the SAME accent slot as -selected"
+    },
+    "style.track.focus": {
+      "kind": "value",
+      "value": { "outline": "2px dotted var(--focus-outline)", "outline-offset": "0" },
+      "source": "Switch.css .saltSwitch-input:focus-visible + .saltSwitch-track { outline: var(--salt-focused-outline); outline-offset: var(--salt-focused-outlineOffset) } = 0"
+    },
+    "style.track.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.track.disabled": { "kind": "off", "note": "Salt applies a single flat opacity at the root instead — see style.root.disabled" },
+    "style.track.readonly": {
+      "kind": "value",
+      "value": { "border-color": "var(--neutral)", "color": "var(--text-fg)" },
+      "source": "Switch.css .saltSwitch-readOnly .saltSwitch-track { border-color: selectable-borderColor-readonly; color: content-primary-foreground } — selectable-borderColor-readonly resolves to the same palette-neutral value as rest"
+    },
+
+    "style.thumb.size": { "kind": "value", "value": { "width": "var(--thumb-size)", "height": "var(--thumb-size)" }, "source": "Switch.css .saltSwitch-thumb { height: var(--salt-size-selectable) }, aspect-ratio: 1" },
+    "style.thumb.size@sm": { "kind": "off", "note": "see style.track.size@sm" },
+    "style.thumb.shape": { "kind": "alias", "slot": "thumb-radius" },
+    "style.thumb.size@checked": { "kind": "off", "note": "CONFIRMED ABSENCE — Salt's thumb never changes size on check, only colour and position" },
+    "style.thumb.size@pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — no :active rule of any kind" },
+    "style.thumb.rest": {
+      "kind": "value",
+      "value": { "background-color": "currentColor", "border-color": "var(--neutral)" },
+      "source": "Switch.css .saltSwitch-thumb { background: currentColor; border: var(--salt-size-fixed-100) solid var(--salt-selectable-borderColor) }"
+    },
+    "style.thumb.checked": {
+      "kind": "value",
+      "value": { "background-color": "transparent", "border-color": "var(--accent)", "transform": "translateX(100%)" },
+      "source": "Switch.css .saltSwitch-checked .saltSwitch-thumb { background: transparent; border-color: selectable-borderColor-selected; transform: translateX(100%) } — the fill-to-outline INVERSION"
+    },
+    "style.thumb.hover": {
+      "kind": "value",
+      "value": { "border-color": "var(--accent)" },
+      "source": "Switch.css .saltSwitch-input:focus-visible + .saltSwitch-track .saltSwitch-thumb, .saltSwitch:hover .saltSwitch-thumb { border-color: selectable-borderColor-hover }"
+    },
+    "style.thumb.disabled": { "kind": "off", "note": "Salt applies a single flat opacity at the root instead — see style.root.disabled" },
+    "style.thumb.disabled@checked": { "kind": "off", "note": "see style.thumb.disabled" },
+    "style.thumb.readonly": {
+      "kind": "value",
+      "value": { "background-color": "var(--box-bg)", "border-style": "dashed", "border-color": "var(--neutral)" },
+      "source": "Switch.css .saltSwitch-readOnly .saltSwitch-thumb, .saltSwitch-readOnly.saltSwitch-checked .saltSwitch-thumb { background: container-primary-background; border: fixed-100 dashed selectable-borderColor-readonly } — the IDENTICAL rule for both checked and unchecked"
+    },
+
+    "style.icon.size": { "kind": "value", "value": { "width": "100%", "height": "100%" }, "source": "CheckboxIcon/Icon component default --saltIcon-size: 100% — fills whatever thumb it sits in" },
+
+    "style.root.disabled": { "kind": "value", "value": { "opacity": "0.4", "cursor": "not-allowed" }, "source": "Switch.css .saltSwitch-disabled { opacity: 0.4; cursor: var(--salt-cursor-disabled) }" },
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": "Switch.css .saltSwitch { cursor: var(--salt-cursor-hover) } = pointer" },
+    "style.root.gap": { "kind": "alias", "slot": "root-gap" },
+    "style.root.font": {
+      "kind": "value",
+      "value": { "font-size": "var(--type-fontSize)", "line-height": "var(--type-lineHeight)", "font-family": "var(--type-fontFamily)", "font-weight": "var(--type-fontWeight)", "color": "var(--text-fg)" },
+      "source": "Switch.css .saltSwitch { font-size/line-height/font-family/font-weight: var(--salt-text-*); color: var(--salt-content-primary-foreground) } — the BODY role, REGULAR (400)"
+    },
+    "style.state-layer": { "kind": "off", "note": "CONFIRMED ABSENCE — Salt has no ripple/state-layer concept for switch; hover and focus recolour the track/thumb directly" }
+  }
+}

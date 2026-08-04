@@ -1,0 +1,143 @@
+{
+  "system": "m3",
+  "component": "switch",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "primary": "#6750a4",
+      "on-primary": "#fff",
+      "primary-container": "#eaddff",
+      "on-primary-container": "#21005d",
+      "on-surface": "#1d1b20",
+      "on-surface-variant": "#49454f",
+      "surface": "#fef7ff",
+      "surface-container-highest": "#e6e0e9",
+      "outline": "#79747e"
+    },
+    "dark": {
+      "primary": "#d0bcff",
+      "on-primary": "#381e72",
+      "primary-container": "#4f378b",
+      "on-primary-container": "#eaddff",
+      "on-surface": "#e6e0e9",
+      "on-surface-variant": "#cac4d0",
+      "surface": "#141218",
+      "surface-container-highest": "#36343b",
+      "outline": "#938f99"
+    }
+  },
+  "provenance": {
+    "canonical-source": "switch/internal/switch.ts (the real Lit component — this session's material-web clone is NOT tokens-only, the same finding checkbox.m3.json first recorded for this whole clone; re-confirmed here, not assumed, per that column's own closing caveat), switch/internal/{_switch.scss,_track.scss,_handle.scss,_icon.scss} (the shipped styles source, four files, read in full), switch/switch.ts (the <md-switch> registration), switch/internal/switch_test.ts (the label-activation and form-submission proofs). Tokens: tokens/versions/v0_192/_md-comp-switch.scss (the pinned edition) and tokens/versions/latest/sass/_md-comp-switch.scss (edition diff only, see edition-pin). Colour/shape/state resolution through tokens/versions/v0_192/{_md-sys-color.scss,_md-sys-shape.scss,_md-sys-state.scss}.",
+    "edition-pin": "v0.192, per the owner's registry-wide decision. UNLIKE every other component this pipeline has pinned so far, switch's edition diff is NOT a small addition — `latest`'s _md-comp-switch.scss is a WHOLESALE REDESIGN: v0.192's token function is REPLACED by a flat file of individually-deprecated `$variable` declarations (Sass module vars, not a values() function), several core tokens change VALUE not just name (`$handle-height`/`$handle-width` deprecated at 20px flat, replacing the unselected/selected 16px/24px split this column relies on), and a whole new `focus-indicator-*` family appears (color/offset/thickness, sourced from md-sys-color.secondary) that v0.192 does not have at all. FLAGGED LOUDLY FOR THE OWNER: this is the largest edition delta this registry has found in any component so far — pinning v0.192 is not a minor conservatism here, it is the difference between the CURRENT documented Material 3 switch and a design Google has since deprecated in its own token source. The values in this column are all v0.192, per standing policy, not relitigated.",
+    "state-opacities": "md-sys-state.values(), v0.192: hover-state-layer-opacity 0.08, focus-state-layer-opacity 0.12, pressed-state-layer-opacity 0.12 — the SAME edition-dependent trio checkbox.m3.json already flagged for this component too; `latest` does not change these three specific numbers even though it changes nearly everything else about this component.",
+    "primary/on-primary/on-surface/on-surface-variant/surface/outline": "md-sys-color.values-light()/values-dark(), v0.192 — the SAME hex pairs every M3 column in this pipeline resolves (#6750a4/#d0bcff primary, #1d1b20/#e6e0e9 on-surface, #49454f/#cac4d0 on-surface-variant, #79747e/#938f99 outline — the last of these newly needed here, re-derived from input.m3.json's own already-extracted outline value since it resolves through the identical md-sys-color function). Re-derived here for a self-contained column, not borrowed.",
+    "primary-container/on-primary-container": "md-sys-color.values-light()/values-dark(). primary-container is EDITION-STABLE: #eaddff/#4f378b in both v0.192 and latest. on-primary-container is NOT — one of exactly four sys-color roles that differ between editions (alert.m3.json and chip.m3.json both already flagged this family): v0.192 resolves it to primary10 = #21005d in light mode (latest: primary30 = #4f378b); dark is #eaddff in both editions. THIS COLUMN USES THE v0.192 VALUE (#21005d light / #eaddff dark), per standing policy.",
+    "surface-container-highest": "md-sys-color.values-light()/values-dark() -> neutral90/neutral22 -> #e6e0e9/#36343b, the SAME value card.m3.json's own filled-variant container colour already resolved (re-derived here, not borrowed).",
+    "container-tokens": "track-width: 52px, track-height: 32px, track-outline-width: 2px, track-shape: corner-full (9999px) — ALL hardcoded literals, both editions. unselected-handle-height/-width: 16px; selected-handle-height/-width: 24px — the thumb GROWS on selection, a real CSS-driven size change (`internal/_handle.scss` `.selected .handle { height: ...; width: ... }`). pressed-handle-height/-width: 28px, REGARDLESS of selected state — bigger than either resting size (`internal/_handle.scss` `.selected:not(.disabled):active .handle, .unselected:not(.disabled):active .handle`), the 'overshoot' effect (source comment on `.handle-container`'s own transition: `cubic-bezier(0.175, 0.885, 0.32, 1.275)` — 'this easing is custom to perform the overshoot animation'). handle-shape: corner-full. icon-size/selected-icon-size: BOTH 16px — the icon does NOT grow with the handle, a real, deliberate contrast confirmed by reading both tokens side by side.",
+    "handle-slide-mechanism": "`internal/_handle.scss`: `.handle-container { transition: margin 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275) }`, `$margin: calc(track-width - track-height)` = 52-32 = 20px, `.selected .handle-container { margin-inline-start: $margin }`, `.unselected .handle-container { margin-inline-end: $margin }` — M3 slides its handle via MARGIN on a wrapper, not `transform`, a different MECHANISM from Salt's/shadcn's own `transform: translateX(...)`. This chassis collapses `.handle-container` onto the thumb element itself (declared approximation, see the matrix doc), applying the margin directly to `[data-slot=\"switch-thumb\"]`.",
+    "track-colour-tokens-are-interaction-invariant": "RE-VERIFIED BY READING THE TOKEN VALUES DIRECTLY, not just the selector names, because the first pass assumed hover/focus/pressed would recolour the track the way checkbox's own M3 box did. They do not: `unselected-hover-track-color`/`unselected-focus-track-color`/`unselected-pressed-track-color` ALL equal `unselected-track-color` (surface-container-highest); `selected-hover-track-color`/`selected-focus-track-color`/`selected-pressed-track-color` ALL equal `selected-track-color` (primary); `unselected-hover-track-outline-color`/`unselected-focus-track-outline-color`/`unselected-pressed-track-outline-color` ALL equal `unselected-track-outline-color` (outline). The track's colour never changes on any interaction — see style.track.hover/.focus/.pressed and state.hover's finding.",
+    "handle-colour-tokens-collapse-hover-focus-pressed-together": "Also re-verified directly: `unselected-hover-handle-color`/`unselected-focus-handle-color`/`unselected-pressed-handle-color` are ALL `on-surface-variant`; `selected-hover-handle-color`/`selected-focus-handle-color`/`selected-pressed-handle-color` are ALL `primary-container`. M3 does not distinguish hover from focus from pressed by COLOUR at all for the handle, only by SIZE (pressed alone grows it further) and by the ripple's own opacity (0.08/0.12/0.12). style.thumb.hover in this column's template row is reused for the focus and pressed CASES too, since the colour value is identical across all three.",
+    "unused-disabled-unselected-track-tokens": "`disabled-unselected-track-color` and `disabled-unselected-track-outline-color` are BOTH DEFINED in _md-comp-switch.scss but genuinely UNUSED anywhere in `internal/_track.scss` — grepped directly, no selector references either. The unselected disabled track instead falls through to its ORDINARY rest colour (surface-container-highest / outline) dimmed by the general `disabled-track-opacity: 0.12` rule, never touching these two named tokens at all. The same class of 'a capability the token set declares but the CSS never expresses' finding checkbox.salt.json's no-success-styling note already recorded for a different system.",
+    "disabled-opacities": "disabled-track-opacity: 0.12 (uniform, both selection states). disabled-unselected-handle-opacity: 0.38. disabled-selected-handle-opacity: 1 — NOT DIMMED AT ALL, re-checked twice against the raw token value because it reads like it should be 0.1-something; it is genuinely 1. disabled-unselected-icon-opacity/disabled-selected-icon-opacity: both 0.38.",
+    "state-layer-size-shape": "state-layer-size: 40px, state-layer-shape: corner-full (9999px) — drawn by `md-ripple`, sized independently of BOTH the track (32-52px) and the handle (16-28px), living inside `.handle-container` (i.e. centred on the handle, not the track) — not reproduced as its own element, see the matrix doc's 'Declared approximations'.",
+    "label-click-delegation": "switch.ts constructor: `this.addEventListener('click', (event: MouseEvent) => { if (!isActivationClick(event) || !this.input) { return; } this.focus(); dispatchActivationClick(this.input); })`, the IDENTICAL mechanism checkbox.m3.json's own label-click-delegation cited, importing from the same form-label-activation.js module.",
+    "keyboard-enter-addition": "switch.ts constructor, quoted directly because it is the headline behavioural finding of this whole column: `// Add the aria keyboard interaction pattern for switch and the Enter key. // See https://www.w3.org/WAI/ARIA/apg/patterns/switch/.` followed by a real keydown listener calling `this.input.click()` on Enter, guarded by `!this.disabled`. Checkbox's own M3 column had NO keydown listener of any kind; this one does, and the source comment names its own justification directly.",
+    "form-participation": "getFormValue() returns `this.selected ? this.value : null` (value defaults to the literal 'on'); formResetCallback(): `this.selected = this.hasAttribute('selected')` — reads the raw ATTRIBUTE not the property, source comment: 'The selected property does not reflect, so the original attribute set by the user is used to determine the default value'; [createValidator]() returns `new CheckboxValidator(...)`, REUSING checkbox's own validator class verbatim.",
+    "no-warning-no-error-family": "CONFIRMED ABSENCE, grepped directly: neither edition of _md-comp-switch.scss contains the string 'error' or 'warning' anywhere. Switch has NO validation tone in M3 at all — the exact inverse of checkbox's finding that M3 shipped a full error-* family."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "unwrapped", "source": "switch.ts render() has no label anywhere in the shadow DOM" },
+    "structure.native-input": { "kind": "value", "value": true, "source": "switch.ts render(): <input id=\"switch\" type=\"checkbox\" role=\"switch\" .../>" },
+    "structure.track": { "kind": "value", "value": true, "source": "render(): <span class=\"track\"> ${this.renderHandle()} </span> — a real, separate track element, SIBLING of the <input> (not its parent)" },
+    "structure.icon": { "kind": "value", "value": "optional-pair", "source": "renderIcons() renders BOTH an on-icon and off-icon <slot>, gated by `icons`/`showOnlySelectedIcon` — @property({type:Boolean}) icons = false, so both default OFF" },
+
+    "behavior.role": { "kind": "value", "value": "explicit `role=\"switch\"` written on the native <input>; aria-checked free from the native `checked` property once the role is applied", "source": "switch.ts render(): role=\"switch\" on <input type=\"checkbox\">" },
+    "behavior.keyboard-activation": { "kind": "value", "value": true, "source": "see keyboard-enter-addition — enterActivates=true, Space handled natively PLUS Enter explicitly added via a keydown listener citing the APG switch pattern directly in a source comment" },
+    "behavior.label-click-target": { "kind": "value", "value": "the track/thumb itself, PLUS an explicit redirect from any ancestor <label> click a consumer supplies", "source": "see label-click-delegation" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native ?disabled on the input, PLUS transitions explicitly suppressed on the track/handle around the disabled boundary", "source": "internal/_track.scss `.disabled .track::before, .disabled .track::after { transition: none }`; internal/_handle.scss `.disabled .handle-container { transition: none }`, `.disabled .handle, .disabled .handle::before { transition: none }`" },
+    "behavior.readonly": { "kind": "off", "note": "CONFIRMED ABSENCE — no readonly-* token in either edition, no readOnly property in switch.ts" },
+    "behavior.form-participation": { "kind": "value", "value": "a full form-associated custom element delegating validity to a REUSED CheckboxValidator instance", "source": "see form-participation" },
+
+    "prop.checked-shape": { "kind": "value", "value": "boolean", "source": "@property({type:Boolean}) selected = false — no indeterminate property anywhere in internal/switch.ts" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) disabled, inherited LitElement convention" },
+    "prop.read-only": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "prop.required": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) required, wired directly into CheckboxValidator's constraint-validation computation" },
+    "prop.size": { "kind": "off", "note": "CONFIRMED ABSENCE — no size-related @property anywhere; track/handle dimensions are fixed literals in every instance" },
+    "prop.icons": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) icons = false, SOURCE-DEFAULT-FIRST" },
+
+    "slot.label": { "kind": "off", "note": "CONFIRMED ABSENCE — no label text owned; always external, see behavior.label-click-target" },
+    "slot.composes": { "kind": "value", "value": true, "note": "an external, consumer-authored <label> (behavior.label-click-target); checkbox/radio/toggle-button are the explicitly separate canonical rows" },
+
+    "state.rest": { "kind": "value", "value": "a surface-container-highest-filled track with a 2px outline-coloured border; an outline-coloured, 16px thumb", "note": "smaller than its checked size — see state.checked" },
+    "state.checked": { "kind": "value", "value": "track fill moves to primary with its outline REMOVED (0px, not recoloured); thumb GROWS 16px->24px, recolours outline->on-primary, and slides via margin-inline-start (not transform)", "note": "the fourth sighting of M3's fill-replaces-stroke idiom in this registry" },
+    "state.hover": { "kind": "value", "value": "the TRACK shows NO colour change at all (re-verified directly against the token values); only the THUMB recolours (on-surface-variant unselected / primary-container selected)", "note": "a genuinely different distribution of interactive feedback from Salt, whose track DOES recolour on hover" },
+    "state.focus": { "kind": "value", "value": "same track-invariant / thumb-only-recolour story as hover, plus a 12%-opacity state layer and a separate md-focus-ring element not reproduced here", "note": "see track-colour-tokens-are-interaction-invariant" },
+    "state.pressed": { "kind": "value", "value": "same thumb colour as hover/focus (M3 does not differentiate by colour), but the thumb balloons to 28x28px regardless of selected state — the 'overshoot' effect", "source": "see container-tokens" },
+    "state.disabled": { "kind": "value", "value": "four different numbers: track 0.12 uniform; thumb 0.38 unselected but 1 (undimmed) selected; icon 0.38 either way", "note": "a real, deliberate asymmetry — see disabled-opacities" },
+    "state.readonly": { "kind": "off", "note": "no readonly concept" },
+
+    "style.track.size": { "kind": "value", "value": { "width": "52px", "height": "32px" }, "source": "track-width/track-height, hardcoded literals, both editions" },
+    "style.track.size@sm": { "kind": "off", "note": "CONFIRMED ABSENCE — no size prop, dimensions are fixed literals" },
+    "style.track.shape": { "kind": "value", "value": "9999px", "source": "track-shape: corner-full" },
+    "style.track.border-width": { "kind": "value", "value": "2px", "source": "track-outline-width — the UNSELECTED value; style.track.checked removes it entirely" },
+    "style.track.rest": {
+      "kind": "value",
+      "value": { "background-color": "var(--surface-container-highest)", "border-style": "solid", "border-color": "var(--outline)" },
+      "source": "unselected-track-color: surface-container-highest; unselected-track-outline-color: outline"
+    },
+    "style.track.checked": {
+      "kind": "value",
+      "value": { "background-color": "var(--primary)", "border-width": "0" },
+      "source": "selected-track-color: primary; track-outline-width overridden to 0 for the selected case"
+    },
+    "style.track.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — see track-colour-tokens-are-interaction-invariant; nothing for this row to express" },
+    "style.track.focus": { "kind": "off", "note": "same finding as style.track.hover" },
+    "style.track.pressed": { "kind": "off", "note": "same finding as style.track.hover" },
+    "style.track.disabled": {
+      "kind": "value",
+      "value": { "opacity": "0.12" },
+      "source": "disabled-track-opacity: 0.12, applied uniformly regardless of selection state"
+    },
+    "style.track.readonly": { "kind": "off", "note": "no readonly concept" },
+
+    "style.thumb.size": { "kind": "value", "value": { "width": "16px", "height": "16px" }, "source": "unselected-handle-height/-width: 16px" },
+    "style.thumb.size@sm": { "kind": "off", "note": "see style.track.size@sm" },
+    "style.thumb.shape": { "kind": "value", "value": "9999px", "source": "handle-shape: corner-full" },
+    "style.thumb.size@checked": { "kind": "value", "value": { "width": "24px", "height": "24px" }, "source": "selected-handle-height/-width: 24px" },
+    "style.thumb.size@pressed": { "kind": "value", "value": { "width": "28px", "height": "28px" }, "source": "pressed-handle-height/-width: 28px, regardless of selected state" },
+    "style.thumb.rest": {
+      "kind": "value",
+      "value": { "background-color": "var(--outline)", "margin-inline-end": "20px" },
+      "source": "unselected-handle-color: outline; margin-inline-end: track-width - track-height = 52-32 = 20px, the REST-side position"
+    },
+    "style.thumb.checked": {
+      "kind": "value",
+      "value": { "background-color": "var(--on-primary)", "margin-inline-start": "20px" },
+      "source": "selected-handle-color: on-primary; margin-inline-start: 20px, the CHECKED-side position, mirroring style.thumb.rest's margin-inline-end"
+    },
+    "style.thumb.hover": {
+      "kind": "value",
+      "value": { "background-color": "var(--on-surface-variant)" },
+      "source": "unselected-hover-handle-color: on-surface-variant — the UNSELECTED-hover value; the selected-hover variant (primary-container) is recorded in provenance but not separately expressed, the same declared approximation checkbox.m3.json's own box hover used. Reused for focus and pressed too, since all three tokens are numerically identical for a given selection state"
+    },
+    "style.thumb.disabled": {
+      "kind": "value",
+      "value": { "background-color": "var(--on-surface)", "opacity": "0.38" },
+      "source": "disabled-unselected-handle-color: on-surface; disabled-unselected-handle-opacity: 0.38"
+    },
+    "style.thumb.disabled@checked": {
+      "kind": "value",
+      "value": { "background-color": "var(--surface)", "opacity": "1" },
+      "source": "disabled-selected-handle-color: surface; disabled-selected-handle-opacity: 1 — NOT dimmed, the real asymmetry"
+    },
+    "style.thumb.readonly": { "kind": "off", "note": "no readonly concept" },
+
+    "style.icon.size": { "kind": "value", "value": { "width": "16px", "height": "16px" }, "source": "icon-size/selected-icon-size: BOTH 16px — the icon does NOT grow when the handle does, a real, deliberate contrast" },
+
+    "style.root.disabled": { "kind": "off", "note": "M3's real disabled treatment is per-part and asymmetric by selection state — see style.track.disabled / style.thumb.disabled(@checked); a single flat root number would misrepresent it" },
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": ":host { cursor: pointer }" },
+    "style.root.gap": { "kind": "off", "note": "no owned label, nothing to space" },
+    "style.root.font": { "kind": "off", "note": "no owned label text" },
+    "style.state-layer": { "kind": "value", "value": { "size": "40px", "shape": "9999px" }, "note": "documented, not rendered as its own element — see structure.track / provenance.state-layer-size-shape" }
+  }
+}

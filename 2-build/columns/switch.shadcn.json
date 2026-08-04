@@ -1,0 +1,119 @@
+{
+  "system": "shadcn",
+  "component": "switch",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "track-rest": "oklch(0.922 0 0)",
+      "primary": "oklch(0% 0 0)",
+      "thumb-bg": "oklch(1 0 0)",
+      "thumb-bg-checked": "oklch(1 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "shadow-color": "rgb(0 0 0 / 0.05)"
+    },
+    "dark": {
+      "track-rest": "color-mix(in oklab, oklch(1 0 0 / 15%) 80%, transparent)",
+      "primary": "oklch(0.922 0 0)",
+      "thumb-bg": "oklch(0.985 0 0)",
+      "thumb-bg-checked": "oklch(0.205 0 0)",
+      "ring": "oklch(0.556 0 0)"
+    }
+  },
+  "modeInvariant": ["shadow-color"],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/switch.tsx — ONE element (`SwitchPrimitive.Root`, styled directly as the track — no separate track element), no owned label, no owned group, one cva-free literal className string, plus a `Thumb` child with its OWN literal className string. Token values from apps/v4/app/globals.css (light block from line 100, dark from line 144) — the SAME --primary/--input/--ring/--background/--foreground values every prior shadcn column in this pipeline has resolved from, re-derived here for a self-contained column. Read for the tri-state boundary check (there is none — see prop.checked-shape) and the group boundary: switch-demo.tsx, field-switch.tsx. Read only to fix structural boundaries (NOT canonical): apps/v4/registry/bases/{radix,base,aria}/ui/switch.tsx (radix's own base variant moves an equivalent Root+Thumb structure behind `cn-switch`/`cn-switch-thumb` class tokens, same conclusions, no extra capability — the SAME `size` prop and Root/Thumb shape appear there too) and apps/v4/content/docs/components/radix/switch.mdx, which LINKS to but does not itself document Radix's internal element. **primitives/ (Radix's own source) was NOT cloned** into 3-source/ for this build, matching the project's standing rule. Every cell depending on Radix's internal element/ARIA wiring (structure.native-input, behavior.role, behavior.keyboard-activation, prop.required) is marked [R] and cites the linked docs (https://www.radix-ui.com/docs/primitives/components/switch) rather than a grep.",
+    "no-primitives-clone": "Same standing caveat as checkbox.shadcn.json: everything that is shadcn's OWN literal source — the className strings, the size prop, the absence of hover/pressed/validation classes — is [S]. Everything depending on Radix's INTERNAL element (is Root really a <button>? is there really a hidden bubble input?) is [R], cited to the linked docs.",
+    "track-rest": "class `data-[state=unchecked]:bg-input dark:data-[state=unchecked]:bg-input/80` -> --input globals.css:118 (light, used at FULL strength, unlike checkbox's box which had NO background at rest in light mode at all) / :161 (dark, used at 80% via the `/80` alpha modifier, compiling to `color-mix(in oklab, var(--input) 80%, transparent)` per Tailwind v4's alpha-modifier convention, the same derivation checkbox.shadcn.json's own box-bg slot used).",
+    "primary": "class `data-[state=checked]:bg-primary` -> --primary globals.css:107 (light) / :150 (dark) — the SAME inversion badge.shadcn.json and checkbox.shadcn.json both recorded: light is near-black, dark is near-white.",
+    "thumb-bg / thumb-bg-checked": "Thumb's own className: `bg-background ... dark:data-[state=checked]:bg-primary-foreground dark:data-[state=unchecked]:bg-foreground`. In LIGHT MODE there is NO `data-[state]` override at all — the thumb is `bg-background` (globals.css --background :101) REGARDLESS of checked, so thumb-bg and thumb-bg-checked are IDENTICAL in light mode. In DARK MODE the two diverge: unchecked -> `dark:bg-foreground` (--foreground :145), checked -> `dark:bg-primary-foreground` (--primary-foreground :151) — a real, sourced light/dark ASYMMETRY, the identical class of finding checkbox.shadcn.json's own box-bg slot already recorded for its component.",
+    "ring": "class `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50` -> --ring globals.css:119 (light) / :162 (dark) — applied to the Root/track itself, since there is no separate track element for the ring to sit on.",
+    "shadow-color": "class `shadow-xs` = 0 1px 2px 0 rgb(0 0 0 / 0.05). Tailwind is not vendored in this clone; reused verbatim from button.shadcn.json's already-extracted value, matching every prior shadcn column's own citation of the same fact. MODE-INVARIANT.",
+    "no-hover-no-pressed-no-validation": "CONFIRMED ABSENCE, checked directly against BOTH literal className strings (Root and Thumb): there is no `hover:`, no `active:`, and no `aria-invalid:`/`data-invalid` class of any kind anywhere — switch has NO validation axis at all in this clone, the exact inverse of checkbox's finding that all three systems shipped one.",
+    "size-prop": "Root's own destructured prop: `size = \"default\"` typed `\"sm\" | \"default\"`, SOURCE-DEFAULT-FIRST. `data-[size=default]:h-[1.15rem] data-[size=default]:w-8` (18.4px x 32px) vs `data-[size=sm]:h-3.5 data-[size=sm]:w-6` (14px x 24px); Thumb reads the SAME `size` via `group-data-[size=default]/switch:size-4` (16px) vs `group-data-[size=sm]/switch:size-3` (12px). translateX distance is a single literal, `calc(100% - 2px)`, unchanged by size.",
+    "no-track-element": "CONFIRMED ABSENCE — `SwitchPrimitive.Root` carries the track's OWN background/shape classes directly (`rounded-full`, `border-transparent`, `data-[state=checked]:bg-primary data-[state=unchecked]:bg-input`); only `SwitchPrimitive.Thumb` exists as a child. See structure.track.",
+    "no-group-construct": "CONFIRMED ABSENCE — no switch-group.tsx, no SwitchGroup export, anywhere in this clone."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "unwrapped", "note": "[R] — the rendered root owns no label; switch-demo.tsx pairs it with a separate <Label htmlFor>" },
+    "structure.native-input": { "kind": "value", "value": true, "note": "[R] — the linked Radix docs describe the Root as a <button role=\"switch\"> with a hidden native bubble input for form participation; not independently confirmable without primitives/ cloned. This chassis renders a real native input anyway, the same declared API-shape union checkbox.tsx's chassis already made" },
+    "structure.track": { "kind": "off", "note": "CONFIRMED ABSENCE of a separate track element — see no-track-element. The chassis renders one anyway for cross-system CSS selector uniformity (declared approximation)" },
+    "structure.icon": { "kind": "value", "value": "none", "source": "SwitchPrimitive.Thumb renders no children of any kind — a plain colour-and-position-only circle" },
+
+    "behavior.role": { "kind": "value", "value": "[R] role=switch on a <button> Root, aria-checked maintained by JS (no native `checked` DOM property to read it from, unlike a real input)", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.keyboard-activation": { "kind": "value", "value": false, "note": "[R/declared] enterActivates=false in THIS chassis (a native-input approximation, see the template row's note) — real Radix's button-based Root plausibly answers Space AND Enter natively; not independently confirmable without primitives/ cloned, and not fabricated here" },
+    "behavior.label-click-target": { "kind": "value", "value": "only the track/root itself; extending the target requires the consumer's OWN separate <Label htmlFor>", "source": "switch-demo.tsx, field-switch.tsx" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native disabled + disabled:cursor-not-allowed disabled:opacity-50", "source": "switch.tsx className string" },
+    "behavior.readonly": { "kind": "off", "note": "CONFIRMED ABSENCE — no readOnly/readonly reference anywhere in switch.tsx" },
+    "behavior.form-participation": { "kind": "value", "value": "[R] a hidden native bubble input, per the linked Radix docs", "note": "not independently confirmable without primitives/ cloned" },
+
+    "prop.checked-shape": { "kind": "value", "value": "boolean", "source": "the `checked` prop is a plain boolean per the linked docs — no \"indeterminate\" union member the way checkbox's is" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "native disabled, a real HTML attribute Radix forwards" },
+    "prop.read-only": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "prop.required": { "kind": "value", "value": [false, true], "note": "[R] — Radix's published API includes `required`; not independently confirmable without primitives/ cloned" },
+    "prop.size": { "kind": "value", "value": ["default", "sm"], "source": "switch.tsx's own destructured prop, `size = \"default\"` typed \"sm\" | \"default\", SOURCE-DEFAULT-FIRST" },
+    "prop.icons": { "kind": "off", "note": "CONFIRMED ABSENCE — no icon capability of any kind" },
+
+    "slot.label": { "kind": "off", "note": "CONFIRMED ABSENCE — no label text owned; always external (see slot.composes)" },
+    "slot.composes": { "kind": "value", "value": true, "note": "label (id/htmlFor, switch-demo.tsx), field (FieldContent/FieldLabel/FieldDescription, field-switch.tsx)" },
+
+    "state.rest": { "kind": "value", "value": "a SOLID --input-coloured track fill in every mode (unlike checkbox's box, which had NO fill at rest in light mode), transparent border; a --background-coloured thumb", "note": "switch's track is filled from the start — a real structural difference from checkbox's own rest state" },
+    "state.checked": { "kind": "value", "value": "track becomes a SOLID primary fill; thumb slides via translateX(calc(100% - 2px)); thumb COLOUR only changes in dark mode", "note": "a real, sourced light/dark asymmetry — see thumb-bg / thumb-bg-checked provenance" },
+    "state.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — no hover: class of any kind, on Root or Thumb" },
+    "state.focus": { "kind": "value", "value": "the established translucent 3px ring-ring/50 box-shadow plus a border recolour, on the Root/track itself", "source": "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — no active: class of any kind" },
+    "state.disabled": { "kind": "value", "value": "opacity 0.5, cursor not-allowed", "source": "disabled:cursor-not-allowed disabled:opacity-50" },
+    "state.readonly": { "kind": "off", "note": "CONFIRMED ABSENCE — no readonly concept exists" },
+
+    "style.track.size": { "kind": "value", "value": { "width": "32px", "height": "18.4px" }, "source": "size=\"default\": h-[1.15rem] w-8 = 18.4px x 32px (the size=\"sm\" alternative, 14px x 24px, is a declared config axis via prop.size, not a second cell — see the harness's size toggle)" },
+    "style.track.size@sm": { "kind": "value", "value": { "width": "24px", "height": "14px" }, "source": "size=\"sm\": h-3.5 w-6 = 14px x 24px" },
+    "style.track.shape": { "kind": "value", "value": "9999px", "source": "class rounded-full" },
+    "style.track.border-width": { "kind": "value", "value": "1px", "source": "bare `border` utility, undeclared width, Tailwind's own default — the same unvendored-Tailwind caveat every prior shadcn column has recorded; colour is permanently transparent (border-transparent), see style.track.rest" },
+    "style.track.rest": {
+      "kind": "value",
+      "value": { "background-color": "var(--track-rest)", "border-color": "transparent" },
+      "source": "data-[state=unchecked]:bg-input dark:data-[state=unchecked]:bg-input/80, border-transparent"
+    },
+    "style.track.checked": {
+      "kind": "value",
+      "value": { "background-color": "var(--primary)", "border-color": "transparent" },
+      "source": "data-[state=checked]:bg-primary — a real fill swap, not an addition on top of a transparent rest"
+    },
+    "style.track.hover": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.track.focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--ring)", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)" },
+      "source": "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+    },
+    "style.track.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.track.disabled": { "kind": "off", "note": "shadcn applies a single flat opacity at the root instead — see style.root.disabled" },
+    "style.track.readonly": { "kind": "off", "note": "no readonly concept" },
+
+    "style.thumb.size": { "kind": "value", "value": { "width": "16px", "height": "16px" }, "source": "size=\"default\": group-data-[size=default]/switch:size-4 = 16px (the size=\"sm\" alternative, 12px, is reached via the same prop.size config axis)" },
+    "style.thumb.size@sm": { "kind": "value", "value": { "width": "12px", "height": "12px" }, "source": "size=\"sm\": group-data-[size=sm]/switch:size-3 = 12px" },
+    "style.thumb.shape": { "kind": "value", "value": "9999px", "source": "class rounded-full on the Thumb" },
+    "style.thumb.size@checked": { "kind": "off", "note": "CONFIRMED ABSENCE — shadcn's thumb never changes size on check" },
+    "style.thumb.size@pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — no :active rule of any kind" },
+    "style.thumb.rest": {
+      "kind": "value",
+      "value": { "background-color": "var(--thumb-bg)", "transform": "translateX(0)" },
+      "source": "bg-background, data-[state=unchecked]:translate-x-0"
+    },
+    "style.thumb.checked": {
+      "kind": "value",
+      "value": { "background-color": "var(--thumb-bg-checked)", "transform": "translateX(calc(100% - 2px))" },
+      "source": "dark:data-[state=checked]:bg-primary-foreground (identical to bg-background in light mode), data-[state=checked]:translate-x-[calc(100%-2px)]"
+    },
+    "style.thumb.hover": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.thumb.disabled": { "kind": "off", "note": "shadcn applies a single flat opacity at the root instead — see style.root.disabled" },
+    "style.thumb.disabled@checked": { "kind": "off", "note": "see style.thumb.disabled" },
+    "style.thumb.readonly": { "kind": "off", "note": "no readonly concept" },
+
+    "style.icon.size": { "kind": "off", "note": "CONFIRMED ABSENCE — no icon element exists (structure.icon = none)" },
+
+    "style.root.disabled": { "kind": "value", "value": { "opacity": "0.5", "cursor": "not-allowed" }, "source": "disabled:cursor-not-allowed disabled:opacity-50" },
+    "style.root.cursor": { "kind": "off", "note": "CONFIRMED ABSENCE — no cursor-pointer class at rest; only disabled:cursor-not-allowed exists" },
+    "style.root.gap": { "kind": "off", "note": "no owned label, nothing to space" },
+    "style.root.font": { "kind": "off", "note": "no owned label text" },
+    "style.state-layer": { "kind": "off" }
+  }
+}

@@ -10,7 +10,7 @@ await esbuild.build({
   outfile: join(ROOT, "out/conformance.js"),
 })
 // every component's generated CSS, so behaviour runs against the real styles
-const gen = ["dialog", "select", "tabs", "card", "checkbox"]
+const gen = ["dialog", "select", "tabs", "card", "checkbox", "switch"]
   .flatMap((c) => ["salt", "shadcn", "m3"].map((s) => `out/gen/${c}-${s}.css`))
 const css = ["harness/chrome.css", ...gen]
   .map((f) => { try { return readFileSync(join(ROOT, f), "utf8") } catch { return "" } })

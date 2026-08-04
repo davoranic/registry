@@ -1,0 +1,282 @@
+{
+  "component": "switch",
+  "openUiAnatomy": "no published Open UI switch anatomy consulted directly — union built from the three clones: Salt's Switch (a single <label> wrapping a real, visually-hidden native <input type=\"checkbox\" role=\"switch\">, a track <span>, a thumb <span> nested INSIDE the track carrying an optional checkmark icon, and the label text as a sibling child — the label IS the whole clickable region, same shell mechanism as Checkbox), shadcn's Switch (a bare Radix SwitchPrimitive.Root — a <button role=\"switch\"> per the linked Radix docs, not a native input — directly styled AS the track, with no separate track element and no owned label; a Thumb <span> child slides across it; id/htmlFor association is entirely the consumer's job via a separate Label/FieldLabel component on a different canonical row), and M3's <md-switch> (a Lit custom element whose shadow DOM renders a real native <input type=\"checkbox\" role=\"switch\"> as a SIBLING of a <span class=\"track\"> — not nested inside it — which itself wraps a handle-container (an <md-ripple> plus the handle <span>, which can carry an on/off icon pair), plus a shared md-focus-ring not reproduced here, and no label of its own either).",
+  "behavior": {
+    "pattern": "A two-state (on/off) control for an instantaneous, immediately-applied choice, per the W3C APG switch pattern (https://www.w3.org/WAI/ARIA/apg/patterns/switch/), which both Salt's usage.mdx and M3's own switch.ts source comment cite directly. UNLIKE CHECKBOX, NONE of the three systems give switch a third (indeterminate) state — CONFIRMED ABSENCE in all three: Salt's SwitchProps has no `indeterminate` field, M3's Switch class has no `indeterminate` property, and shadcn/Radix's `checked` prop is a plain boolean with no `\"indeterminate\"` union member (contrast checkbox's `boolean | \"indeterminate\"`). This is the single biggest structural simplification relative to checkbox's matrix: no tri-state prop-shape fork, no indeterminate row family, no dash glyph. The cross-system axes that DO carry real character here are: (1) who owns the label — identical three-way split to checkbox (Salt owns it inside its own <label>; shadcn and M3 own none); (2) WHETHER A SEPARATE TRACK ELEMENT EXISTS AT ALL — Salt and M3 both render a track as its own element, distinct from the interactive root; shadcn/Radix's Root IS the track (no separate element — the button itself carries the track's background/shape), a real structural fact this chassis approximates by rendering one anyway (declared, see below); (3) keyboard activation — Salt is Space-only exactly like checkbox, but M3 EXPLICITLY ADDS Enter as a second activation key (a real, sourced, first-time-in-this-pipeline divergence from checkbox's uniform Space-only story — see the source comment quoted in behavior.keyboard-activation), and shadcn's Root being a <button> plausibly inherits native Enter+Space browser semantics rather than checkbox's Space-only native-checkbox semantics; (4) validation — CONFIRMED ABSENT IN ALL THREE SYSTEMS, the exact inverse of checkbox's finding that all three shipped a validation tone; (5) M3's thumb (handle) GROWS in size when checked (16px unselected -> 24px selected, ballooning further to 28px while pressed, regardless of selected state) — a real, sourced, CSS-driven SIZE change on interaction that checkbox's box never had (checkbox's box was a fixed size in every state); (6) M3's icon pair (on-icon/off-icon) is OPT-IN via `icons`/`showOnlySelectedIcon` properties, defaulting OFF, so by default M3's thumb — like shadcn's — carries no icon at all; only Salt shows an icon by default (a checkmark, only when checked).",
+    "chassis": "skeleton/switch.tsx — written from the template's part union: a root (a real <label> when structure.shell=\"label-wrap\", a plain wrapper otherwise), a real native <input type=\"checkbox\" role=\"switch\"> (always — matching Salt and M3 exactly; a declared, reasonable API-shape approximation for shadcn/Radix, whose Root is documented as a <button role=\"switch\"> rather than a native input, per the same 'let the browser do the work it already offers' declared union checkbox.tsx already established, since primitives/ was not cloned and the OBSERVABLE contract — click toggles, Space toggles, disabled/checked/aria-checked reflect correctly — is what the chassis reproduces, not Radix's literal internal element), a track <span> (config-gated by structure.track — rendered for all three columns even though shadcn's real source fuses track-styling directly onto its Root/button with no separate element; SEE 'Declared approximations' below), and a thumb <span> nested inside the track, carrying an optional icon per structure.icon's three strategies. SELECTOR STRATEGY, chosen DELIBERATELY UP FRONT to avoid CHECKBOX-MATRIX.md findings 10/11's class of defect (a wrong combinator producing silently-dead CSS that passed every gate): the chassis renders <input> and <track> as SIBLINGS, both direct children of <root> — matching Salt's and M3's real DOM exactly (a genuine fidelity win, not just a convenience; both sourced clones confirm input-then-track as siblings, not parent/child). EVERY conditional style rule (checked/hover/focus/pressed/disabled/readonly) is written as `[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:STATE) [data-slot=\"switch-TARGET\"]` — anchoring `:has()` at the ROOT (the one ancestor guaranteed to contain both input and every visual part as descendants) rather than assuming any particular sibling order or adjacency between input and track/thumb. This is invariant to whichever element the DOM shape actually nests things under, which is the whole point: it cannot repeat checkbox's bug (an adjacent-sibling combinator that only worked if the author's assumed DOM shape matched the real one) because it does not depend on adjacency at all. VERIFICATION CAVEAT, stated plainly rather than implied: this session had no headless browser available to run getComputedStyle against the built harness (network-sandboxed, Playwright/Puppeteer Chromium downloads both failed) — the selector logic was verified by hand-tracing the DOM shape the skeleton actually renders against every selector in this file, the same manual review CHECKBOX-MATRIX.md's post-mortem says should have been done BEFORE trusting a passing gate, but it is not the same as watching a live paint. Flagged for the orchestrating session to confirm with getComputedStyle before treating this component as done."
+  },
+  "skeletonParams": {
+    "shell": ["label-wrap", "unwrapped"],
+    "iconMode": ["conditional-checkmark", "none", "optional-pair"],
+    "enterActivates": [false, true],
+    "disabled": [false, true],
+    "readOnly": [false, true],
+    "required": [false, true],
+    "size": ["default", "sm"],
+    "icons": [false, true]
+  },
+  "base": {
+    "[data-slot=\"switch-root\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "align-items": "center",
+      "position": "relative",
+      "width": "fit-content"
+    },
+    "[data-slot=\"switch-input\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "opacity": "0",
+      "margin": "0",
+      "padding": "0",
+      "appearance": "none",
+      "z-index": "1"
+    },
+    "[data-slot=\"switch-track\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "flex-shrink": "0",
+      "position": "relative"
+    },
+    "[data-slot=\"switch-thumb\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "position": "relative"
+    },
+    "[data-slot=\"switch-icon\"]": {
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "pointer-events": "none",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"switch-icon\"] svg": {
+      "display": "block",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"switch-label\"]": {
+      "display": "inline"
+    }
+  },
+  "rows": [
+    { "id": "structure.shell", "piece": "structure", "policy": "locked", "channel": "config", "param": "shell",
+      "note": "Identical shape to checkbox.template.json's row of the same name, re-verified for switch, not assumed. Salt = \"label-wrap\": Switch.tsx returns ONE <label> whose children are the native <input>, the track (containing the thumb), and the `label` prop's ReactNode [S]. shadcn = \"unwrapped\" [R]: the rendered root owns no label; switch-demo.tsx pairs it with a SEPARATE <Label htmlFor>. M3 = \"unwrapped\" [S]: switch.ts's render() has no label anywhere in the shadow DOM, and — like checkbox — explicitly anticipates a consumer-authored ancestor <label> instead (see behavior.label-click-target)." },
+
+    { "id": "structure.native-input", "piece": "structure", "policy": "switchable", "channel": "info",
+      "note": "Salt [S] and M3 [S] both build on a REAL native <input type=\"checkbox\" role=\"switch\">, visually hidden, exactly like checkbox — with ONE addition: because there is no native HTML 'switch' input type, both systems must write an EXPLICIT `role=\"switch\"` attribute (Salt: `Switch.tsx`'s `role=\"switch\"` with a `biome-ignore lint/a11y/useAriaPropsForRole` comment stating \"aria-checked is not needed when input and checked is used\" [S]; M3: `role=\"switch\"` in `switch.ts`'s render() template [S]) — a REAL DIFFERENCE from checkbox, where `role=\"checkbox\"` came free from the input's own `type` attribute and no explicit role was ever written. shadcn/Radix is [R]: the linked Radix docs describe the Root as a `<button role=\"switch\">`, not a native input at all — a declared API-shape approximation this chassis makes anyway (see behavior.chassis), the same category of declared simplification checkbox's shadcn cell already used." },
+
+    { "id": "structure.track", "piece": "structure", "policy": "switchable", "channel": "info",
+      "note": "Salt [S]: `<span className={track}><span className={thumb}>...</span></span>` — a real, separate track element wrapping the thumb (`Switch.tsx`). M3 [S]: `<span class=\"track\"> ${this.renderHandle()} </span>` — likewise a real, separate track wrapping the handle-container (`internal/switch.ts` render()). shadcn: **off** — CONFIRMED ABSENCE of a separate track element: `SwitchPrimitive.Root` IS directly styled with the track's own background/shape classes (`rounded-full ... data-[state=checked]:bg-primary data-[state=unchecked]:bg-input`), and only `SwitchPrimitive.Thumb` exists as a child [S]. NOT a config row (there is nothing for the skeleton to branch on): THE CHASSIS UNCONDITIONALLY RENDERS A TRACK SPAN FOR ALL THREE COLUMNS (declared approximation, see 'Declared approximations') so that every style.track.* row has one uniform selector to target across all three systems — the real, sourced absence for shadcn is recorded on THIS row rather than smoothed away by the chassis's own uniform rendering." },
+
+    { "id": "structure.icon", "piece": "structure", "policy": "locked", "channel": "config", "param": "iconMode",
+      "note": "THREE STRATEGIES, the same category of character checkbox's structure.mark modelled, adapted for switch's simpler two-state world. Salt = \"conditional-checkmark\": `Switch.tsx` renders a `CheckmarkSolidIcon` inside the thumb ONLY when `checked && !readOnly`, and a lighter `CheckmarkIcon` when `checked && readOnly` — the identical readOnly-glyph-swap mechanism checkbox's CheckboxIcon.tsx already used [S]. shadcn = \"none\": CONFIRMED ABSENCE — `SwitchPrimitive.Thumb` renders no children of any kind, a plain colour-and-position-only circle [S]. M3 = \"optional-pair\": `switch.ts`'s `renderIcons()` renders BOTH an on-icon and an off-icon `<slot>` (each with a default SVG glyph, a checkmark and an X respectively) gated by the `icons`/`showOnlySelectedIcon` properties, which DEFAULT TO FALSE — so at M3's own default settings, exactly like shadcn, NO icon renders at all; icons are opt-in, not opt-out [S]. Because Salt is the ONLY column whose icon appears by DEFAULT (checked + not read-only, no extra prop needed), this is a real, sourced asymmetry worth stating plainly: at every column's own out-of-the-box default, only Salt ever shows a glyph inside the thumb." },
+
+    { "id": "behavior.role", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "APG's switch pattern (https://www.w3.org/WAI/ARIA/apg/patterns/switch/, cited by both Salt's usage.mdx References section AND M3's switch.ts source comment) specifies `role=\"switch\"` with `aria-checked` true/false. UNLIKE CHECKBOX'S FREE ROLE, every column here must do SOMETHING deliberate to get it: Salt [S] writes an explicit `role=\"switch\"` on its native `<input type=\"checkbox\">` (there is no native HTML switch input type, so this role is NOT implied by `type=\"checkbox\"` alone, and Salt's `aria-checked` still comes free from the input's own `checked` DOM property once the role is applied — the biome-ignore comment in source says this explicitly). M3 [S] does the identical thing: `role=\"switch\"` written explicitly in `switch.ts`'s input template, `aria-checked` again free from the native `checked` property. shadcn/Radix [R]: the Root is a `<button role=\"switch\">` per the linked docs — since a button has no native `checked` concept at all, Radix MUST write `aria-checked` explicitly and keep it in sync with its own internal `checked` prop, a genuinely different mechanism (JS-maintained vs browser-free) from the other two, though not independently confirmable without primitives/ cloned." },
+
+    { "id": "behavior.keyboard-activation", "piece": "behavior", "policy": "locked", "channel": "config", "param": "enterActivates",
+      "note": "THE HEADLINE BEHAVIOURAL DIVERGENCE FROM CHECKBOX, where all three columns agreed on Space-only. Salt [S]: Space only, no keydown override anywhere in `Switch.tsx` — the browser's native `<input>` semantics do the whole job, byte-identical to checkbox's story (`enterActivates: false`). M3 [S]: Space (native, free) PLUS Enter EXPLICITLY ADDED — `switch.ts`'s constructor: `// Add the aria keyboard interaction pattern for switch and the Enter key. See https://www.w3.org/WAI/ARIA/apg/patterns/switch/.` followed by a real `keydown` listener that calls `this.input.click()` on Enter (guarded by `!this.disabled`) — the APG switch pattern (unlike the checkbox pattern) recommends Enter as well as Space, and M3 is the only column in this pipeline so far caught actually implementing that recommendation with a citation in its own source comment (`enterActivates: true`, reproduced literally in the chassis via the same guarded keydown-to-click delegation). shadcn/Radix [R]: `enterActivates: false` in THIS chassis, a DECLARED SIMPLIFICATION, not a claim about real Radix — Radix's real Root is a `<button role=\"switch\">` per the linked docs, and native buttons plausibly answer Enter for free via browser semantics; but this chassis approximates shadcn with a native `<input>` (which has NO Enter semantics of its own), and inventing an Enter handler for shadcn would fabricate a mechanism that is not independently confirmable without primitives/ cloned — so the chassis leaves it off rather than guess, and says so here rather than silently matching M3's behaviour or silently matching Salt's." },
+
+    { "id": "behavior.label-click-target", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Identical three-way shape to checkbox.template.json's row of the same name, re-verified for switch. Salt: the ENTIRE label — track/thumb AND text — is one native click target, `structure.shell=\"label-wrap\"` [S]. shadcn: only the track/root toggles; extending the target to label text requires the consumer's own separate `<Label htmlFor>` (declared composition) [S/R]. M3 explicitly ANTICIPATES an ancestor `<label>` and redirects that click to its internal input — `switch.ts`'s constructor: `this.addEventListener('click', (event) => { if (!isActivationClick(event) || !this.input) return; this.focus(); dispatchActivationClick(this.input) })`, importing from the SAME `form-label-activation.js` module checkbox's M3 column already cited [S]." },
+
+    { "id": "behavior.disabled-handling", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Salt: native `disabled` on the input, `disabled = formFieldDisabled || disabledProp` (pulled from an ancestor `<FormField>` via `useFormFieldProps()` — NO group merge this time, since switch has no group construct anywhere), plus a `.saltSwitch-disabled` class driving a blanket `opacity: 0.4` on the whole label [S]. shadcn: native `disabled`, `disabled:cursor-not-allowed disabled:opacity-50` [S]. M3: native `?disabled` on the input, PLUS the identical transition-suppression mechanism checkbox's M3 column already documented for its own component — `.disabled .handle-container, .disabled .handle, .disabled .handle::before { transition: none }` and `.disabled .track::before, .disabled .track::after { transition: none; opacity: disabled-track-opacity }` in `internal/_track.scss` / `internal/_handle.scss` — confirmed by the CODE this time (checkbox's citation was a source COMMENT explaining the same mechanism; switch's own files carry no comment, only the rules themselves, so this cell is sourced from the selectors directly) [S]." },
+
+    { "id": "behavior.readonly", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY, and the mechanism is IDENTICAL to checkbox's: the native HTML `readonly` IDL attribute has no effect on `type=\"checkbox\"` inputs [R, spec fact], so Salt's own `handleChange` does the real work itself — `if (event.nativeEvent.defaultPrevented || readOnly) { return }` [S, `Switch.tsx`, byte-identical structure to `Checkbox.tsx`'s own guard], plus a `.saltSwitch-readOnly` class that recolours BOTH track and thumb to dedicated readonly tokens regardless of checked state (see state.readonly and style.track.readonly/style.thumb.readonly — a real, sourced parallel to checkbox's indeterminate-resets-to-neutral finding). shadcn/M3: **off** — CONFIRMED ABSENCE, no `readOnly`/`readonly` concept anywhere in `switch.tsx` or `switch.ts`/`_switch.scss`." },
+
+    { "id": "behavior.form-participation", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "M3 [S]: a full form-associated custom element — `getFormValue()` returns `this.selected ? this.value : null` (`value` defaults to the literal string `\"on\"`), `getFormState()`, `formResetCallback()`, `formStateRestoreCallback()`, AND — a genuinely cute, sourced finding — `[createValidator]()` returns `new CheckboxValidator(...)`, THE SAME validator class checkbox's own M3 column already documented, reused verbatim because \"on/off\" is structurally identical to \"checked/unchecked\" for constraint-validation purposes. ONE REAL NUANCE `formResetCallback` exposes that checkbox's own column did not need to state: `this.selected = this.hasAttribute('selected')` reads the raw ATTRIBUTE, not the reflected property, with the source's own comment explaining why: \"The selected property does not reflect, so the original attribute set by the user is used to determine the default value\" [S]. Salt [S]: native form participation, the real input IS the form control, identical to checkbox. shadcn/Radix [R]: a hidden native bubble input per the linked docs, not independently confirmable, identical framing to checkbox's own cell." },
+
+    { "id": "prop.checked-shape", "piece": "prop", "policy": "locked", "channel": "info",
+      "note": "THE HEADLINE STRUCTURAL SIMPLIFICATION RELATIVE TO CHECKBOX, stated as its own row rather than left implicit. All three columns use a PLAIN BOOLEAN, and none has an indeterminate concept: Salt's `SwitchProps` has `checked?: boolean; defaultChecked?: boolean` with NO `indeterminate` field anywhere [S]. shadcn/Radix's `checked` prop is typed as a plain boolean per the linked docs, with no `| \"indeterminate\"` union member the way checkbox's is [R]. M3's `Switch` class has `@property({type: Boolean}) selected = false` and no `indeterminate` property anywhere in `internal/switch.ts` [S]. Recorded as `locked`/`info` (not a `config` row) because there is no branching for the skeleton to express — every column gets the identical, simplest shape, and that UNIFORMITY across all three (in contrast to checkbox's three-way fork) is itself the finding worth a row." },
+
+    { "id": "prop.disabled", "piece": "prop", "policy": "locked", "channel": "config", "param": "disabled",
+      "note": "[false,true] — CAPABILITY LIST, all three [S]: Salt `disabled?: boolean` (merged with the ancestor FormField's, no group this time), shadcn native `disabled`, M3 `@property({type:Boolean}) disabled`, identical shape to checkbox's own row." },
+
+    { "id": "prop.read-only", "piece": "prop", "policy": "switchable", "channel": "config", "param": "readOnly",
+      "note": "Salt ONLY: [false,true] [S] — `SwitchProps.readOnly?: boolean`. shadcn and M3: **off**, confirmed absence, identical shape to checkbox's own row." },
+
+    { "id": "prop.required", "piece": "prop", "policy": "switchable", "channel": "config", "param": "required",
+      "note": "M3: [false,true] [S] — `@property({type:Boolean}) required`, wired into `CheckboxValidator`'s constraint-validation computation exactly like checkbox's own M3 column. Salt: [false,true] but only reachable through the escape-hatch `inputProps.required` — `SwitchProps` itself has no top-level `required` field, the same indirect shape checkbox's Salt column already documented [S]. shadcn: [false,true] [R] — Radix's published API includes `required`, not independently confirmable without primitives/ cloned." },
+
+    { "id": "prop.size", "piece": "prop", "policy": "switchable", "channel": "config", "param": "size",
+      "note": "shadcn ONLY, and a genuinely NEW axis checkbox never had. `switch.tsx`'s own destructured prop: `size = \"default\"` typed `\"sm\" | \"default\"` [S, SOURCE-DEFAULT-FIRST — \"default\" is the literal fallback value in the function signature]; every dimension downstream (`data-[size=default]:h-[1.15rem] data-[size=default]:w-8` vs `data-[size=sm]:h-3.5 data-[size=sm]:w-6`, and the thumb's own `group-data-[size=default]/switch:size-4` vs `group-data-[size=sm]/switch:size-3`) keys off this ONE prop. Salt: **off** — density (a cross-cutting, registry-wide axis, not modelled as its own prop row, the same convention every prior Salt column has followed) plays the equivalent role but is a DIFFERENT MECHANISM (a document-level data attribute affecting every Salt component at once, not a per-instance prop). M3: **off** — CONFIRMED ABSENCE, `internal/switch.ts` has no size-related `@property` of any kind; `track-width`/`track-height`/handle dimensions are fixed literals in every instance." },
+
+    { "id": "prop.icons", "piece": "prop", "policy": "switchable", "channel": "config", "param": "icons",
+      "note": "M3 ONLY: [false,true], SOURCE-DEFAULT-FIRST (`@property({type:Boolean}) icons = false`) [S] — see structure.icon. A related M3-only sub-property, `showOnlySelectedIcon` (shows only the on-icon, overriding `icons`), is sourced [S] but NOT modelled as its own row, for scope — a single related boolean with no cross-system counterpart, the same category of declared, out-of-scope-but-cited detail CLAUDE.md's method calls for rather than silent omission. Salt/shadcn: **off** — neither has an opt-in icon toggle; Salt's icon visibility is driven entirely by `checked`/`readOnly` state (see structure.icon), and shadcn has no icon capability at all." },
+
+    { "id": "slot.label", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY owns this slot — `label?: ReactNode`, rendered as the LAST child inside the component's own `<label>`, identical mechanism to checkbox's own row [S]. shadcn and M3: **off** — neither renders any label text of its own; the visible label a consumer sees always belongs to a SEPARATE component on the `label`/`field` canonical rows (shadcn: `<Switch id=\"airplane-mode\"/><Label htmlFor=\"airplane-mode\">...</Label>`, `switch-demo.tsx`) [S]." },
+
+    { "id": "slot.composes", "piece": "slot", "policy": "default", "channel": "info",
+      "note": "DECLARED COMPOSITION, same convention as checkbox.template.json's row of the same name. (a) `label` — shadcn's and M3's external label association (an already-scoped, unbuilt canonical row); (b) `field` — helper text / `data-invalid`/`data-disabled` container styling, shadcn's own `Field`/`FieldContent`/`FieldLabel`/`FieldDescription` pattern (`field-switch.tsx`) and Salt's `useFormFieldProps()`; (c) THREE declared-out siblings, not one — switch's own `usage.mdx` draws three separate lines, more than checkbox's single `radio-button` exclusion: `checkbox` (\"To present a list of independent options... Instead, use Checkbox\"), `radio-button` (\"To make a single selection between mutually exclusive choices... Instead, use RadioButton\"), and `toggle-button` (\"To toggle between two (or more) opposing yet mutually exclusive states or options with visual priority. Instead, use ToggleButton\") [S] — switch sits at a busier boundary in Salt's own taxonomy than checkbox did. All render as neutral placeholders in the harness rather than importing those skeletons." },
+
+    { "id": "state.rest", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Unchecked, enabled, unfocused. Salt: a neutral gray-500-outlined track on a white/near-black fill (SAME 'fill never changes on check' character as checkbox's box — see state.checked), a SOLID currentColor-filled thumb with a matching neutral border [S]. shadcn: an `--input`-coloured SOLID track fill (unlike checkbox, which had NO background at rest in light mode — switch's track IS filled from the start in every mode) with a transparent border, and a `--background`-coloured thumb [S]. M3: a `surface-container-highest`-filled track with a 2px `outline`-coloured border, and an `outline`-coloured, 16px thumb — SMALLER than its checked size (see state.checked) [S]." },
+
+    { "id": "state.checked", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Salt: the track's fill STILL never changes (identical mechanism to checkbox) — only the track's border/icon-colour move to accent, AND the thumb goes from a SOLID currentColor circle to `background: transparent` (an outline-only ring in the accent colour), sliding across via `transform: translateX(100%)` — the OPPOSITE fill direction from checkbox's checked box (which stayed an outline at every state; switch's thumb is filled at REST and hollow when CHECKED) [S]. shadcn: the track becomes a SOLID `primary` fill (replacing the `input`-coloured fill, not adding to a transparent one), the thumb slides via `translateX(calc(100% - 2px))`, and — in DARK MODE ONLY — the thumb's OWN colour also changes (`dark:data-[state=checked]:bg-primary-foreground`, vs `dark:data-[state=unchecked]:bg-foreground`); in LIGHT MODE the thumb colour is IDENTICAL whether checked or not (`bg-background` unconditionally) — a real, sourced light/dark ASYMMETRY, the same class of finding checkbox's own shadcn column recorded for its box background [S]. M3: the track fill moves from `surface-container-highest` to `primary` (no outline change — see the track-outline finding under 'Findings', M3's track NEVER shows a border at all when selected, the outline simply isn't drawn once selected, the fourth sighting of the fill-replaces-stroke idiom this registry keeps finding), AND THE THUMB GROWS — 16px unselected -> 24px selected, `selected-handle-height`/`-width` vs `unselected-handle-height`/`-width`, a real CSS-driven SIZE change on toggle that checkbox's own box never had — plus its colour moves from `outline` to `on-primary`, and it slides via a `margin-inline-start` shift (NOT a `transform`, a different sliding MECHANISM from Salt/shadcn's `transform: translateX`) equal to `track-width - track-height` (52px - 32px = 20px, both fixed literals) [S]." },
+
+    { "id": "state.hover", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt: track border+icon colour AND thumb border colour move to the `-hover` variant, keyed off the ROOT's `:hover` [S]. shadcn: **off** — CONFIRMED ABSENCE, no `hover:` class anywhere, identical finding to checkbox's own shadcn column. M3: a genuinely SURPRISING, directly-verified finding (see 'Findings') — re-reading `_md-comp-switch.scss`'s token VALUES (not just the selector NAMES) shows the TRACK'S OWN colour tokens are IDENTICAL at hover/focus/pressed to their rest values in every selection state (`unselected-hover-track-color` = `unselected-track-color` = `surface-container-highest`, `selected-hover-track-color` = `selected-track-color` = `primary`, and so on for every interaction state) — M3's track shows NO VISIBLE COLOUR CHANGE on hover, focus, or pressed AT ALL. The interactive feedback for M3's switch is carried ENTIRELY by the thumb (colour: `unselected-hover-handle-color: on-surface-variant` vs rest `unselected-handle-color: outline`, a real change) and the ripple/state-layer — a genuinely different distribution of interactive-feedback responsibility from Salt (which recolours the TRACK) and checkbox's own M3 column (which DID recolour its box on hover)." },
+
+    { "id": "state.focus", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt: `outline: 2px dotted accent-stronger` at ZERO offset (switch's own `--salt-focused-outlineOffset` resolves to 0, UNLIKE checkbox's box, which used a literal 1px offset instead of this same characteristic token — a real, sourced, small divergence between the two components' own source, not a copy-paste identical rule) plus the hover recolour riding along, keyed off the input's `:focus-visible` [S]. shadcn: the established translucent 3px `ring-ring/50` box-shadow plus a `border-ring` recolour — on the ROOT/track element itself (there is no separate track to distinguish it from) [S]. M3: per state.hover's finding, the TRACK shows no colour change at focus either — `unselected-focus-track-color`/`-outline-color` both equal their rest values; the thumb DOES change (`unselected-focus-handle-color: on-surface-variant`, same magnitude as hover) plus a 12%-opacity state-layer and a SEPARATE `md-focus-ring` element not reproduced here (declared, see 'Declared approximations') [S]." },
+
+    { "id": "state.pressed", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt: **off** — CONFIRMED ABSENCE, no `:active` selector anywhere in `Switch.css`, identical finding to checkbox. shadcn: **off** — CONFIRMED ABSENCE, no `active:` class anywhere in the canonical string, identical finding to checkbox. M3: **on**, and it is the SAME thumb-only story as hover/focus for colour (`unselected-pressed-handle-color: on-surface-variant`, matching hover/focus exactly — M3 does not differentiate hover/focus/pressed COLOUR at all, only SIZE and opacity differ), but pressed ALSO triggers the single most visually dramatic switch-specific effect in this whole matrix: the thumb balloons to 28x28px (`pressed-handle-height`/`-width`, BIGGER than either its 16px unselected OR 24px selected resting size, regardless of which), animated via a deliberately named 'overshoot' cubic-bezier (`cubic-bezier(0.175, 0.885, 0.32, 1.275)`, source comment: \"this easing is custom to perform the 'overshoot' animation\") [S]." },
+
+    { "id": "state.disabled", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Salt: blanket `opacity: 0.4` on the whole label, identical magnitude to checkbox [S]. shadcn: `opacity: 0.5`, identical magnitude to checkbox [S]. M3: NOT ONE NUMBER but FOUR, and genuinely asymmetric in a way checkbox's own disabled treatment never was — `disabled-track-opacity: 0.12` (uniform, both selection states), `disabled-unselected-handle-opacity: 0.38`, but `disabled-selected-handle-opacity: 1` — A SELECTED, DISABLED THUMB IS NOT DIMMED AT ALL, a real, deliberate, sourced asymmetry (see 'Findings') — plus `disabled-unselected-icon-opacity`/`disabled-selected-icon-opacity` both `0.38` [S]." },
+
+    { "id": "state.readonly", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY. `.saltSwitch-readOnly` recolours the track border to a dedicated `-readonly` token and the root text to `content-primary-foreground` [S]; the THUMB, more strikingly, is forced to `background: container-primary-background` with a DASHED `-readonly`-coloured border IN BOTH STATES — `.saltSwitch-readOnly .saltSwitch-thumb, .saltSwitch-readOnly.saltSwitch-checked .saltSwitch-thumb` share the identical rule [S] — meaning a CHECKED, read-only Salt switch's thumb looks EXACTLY like an unchecked one (still slid across via the SAME `transform: translateX(100%)` from the `.saltSwitch-checked` class, which read-only does not touch, but coloured as if it were rest) — the direct switch-shaped cousin of checkbox's own indeterminate-resets-to-neutral finding, and root cursor moves to `text` (not `not-allowed`, a genuinely different cursor from disabled) [S]. shadcn/M3: **off**, no readonly concept exists (see behavior.readonly)." },
+
+    { "id": "style.track.size", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"switch-track\"], [data-slot=\"switch-input\"]",
+      "cellIsDeclarations": true,
+      "note": "Applied to the input too so the (invisible) hit area always matches the visible track, the same convention checkbox's `style.box.size` used. Salt: width `calc((size-selectable + spacing-25 + size-fixed-100) * 2)`, height `calc(size-base - spacing-100)`, by DENSITY [S]. shadcn: `size=\"default\"` -> `h-[1.15rem] w-8` (18.4px x 32px); `size=\"sm\"` -> `h-3.5 w-6` (14px x 24px) [S]. M3: `track-width`/`track-height` = 52px x 32px, hardcoded literals, both editions [S]." },
+
+    { "id": "style.track.size@sm", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-track\"][data-size=\"sm\"], [data-slot=\"switch-input\"][data-size=\"sm\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn ONLY — the row that makes prop.size a REAL, CSS-discriminated axis rather than a dead one (CLAUDE.md drift type 2). `size=\"sm\"` -> `h-3.5 w-6` = 14px x 24px, overriding style.track.size's own `size=\"default\"` value at equal element via the extra `[data-size]` attribute selector's higher specificity [S]. Salt/M3: **off** — neither has a `size` prop (Salt uses density, a different, document-level mechanism; M3's dimensions are fixed literals — see prop.size)." },
+
+    { "id": "style.track.shape", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"switch-track\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: `corner-weak` -> `curve-100` -> 4/8/12/16px by DENSITY (a DIFFERENT corner token from checkbox's box, which used `corner-weaker`/`curve-50` -> 1/2/3/4px — switch's track is proportionally rounder than checkbox's box even before considering the sharp-corner edition trap) [S]. shadcn: `rounded-full` = 9999px, density-invariant [S]. M3: `track-shape` = `corner-full` = 9999px, both editions [S]." },
+
+    { "id": "style.track.border-width", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"switch-track\"]",
+      "declarations": { "border-style": "solid", "border-width": "$" },
+      "note": "Salt: `size-fixed-100` = 1px, FIXED scale [S]. shadcn: a bare `border` utility = 1px, undeclared width, colour permanently `border-transparent` (see style.track.rest — the border EXISTS but is never visible, an interesting middle ground between checkbox's real visible border and M3's outline-removal-on-select mechanism) [S]. M3: `track-outline-width` = 2px — the UNSELECTED value; style.track.checked removes it entirely (see state.checked's fill-replaces-stroke note) [S]." },
+
+    { "id": "style.track.rest", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"switch-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `border-color: neutral; background-color: track-bg; color: neutral-fg` [S]. shadcn: `background-color: track-rest; border-color: transparent` — SOLID from the start, unlike checkbox's box, which had NO fill at rest in light mode [S]. M3: `background-color: surface-container-highest; border-style: solid; border-color: outline` [S]." },
+
+    { "id": "style.track.checked", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:checked) [data-slot=\"switch-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `border-color: accent; color: accent` — background UNCHANGED from rest, repeated here deliberately, the identical 'fill never changes' pattern checkbox's own style.box.checked row already established for this same design system [S]. shadcn: `background-color: primary` — a real fill swap, `border-color` stays transparent (no visible border in either state) [S]. M3: `background-color: primary; border-width: 0` — the outline is REMOVED, not recoloured, the fourth sighting of this exact M3 idiom in this registry (chip's `elevation@elevated` and `flat-selected`, checkbox's `selected-outline-width: 0`, now switch's `selected-outline-width` — well, `track-outline-width` set to 0 the identical way) [S]." },
+
+    { "id": "style.track.hover", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:hover [data-slot=\"switch-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `border-color: accent-hover; color: accent-hover` [S]. shadcn: **off** — CONFIRMED ABSENCE. M3: **off** — see state.hover's finding: the track's own colour tokens at hover are IDENTICAL to rest in both selection states, re-verified by reading the token VALUES not just the selector names; there is genuinely nothing for this row to express for M3, the interactive feedback lives entirely on the thumb (style.thumb.hover) instead." },
+
+    { "id": "style.track.focus", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:focus-visible) [data-slot=\"switch-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `outline: 2px dotted focus-outline; outline-offset: 0` (see state.focus for the offset divergence from checkbox's box) [S]. shadcn: `border-color: ring; box-shadow: 0 0 0 3px color-mix(in oklab, ring 50%, transparent)` [S]. M3: **off** — same finding as style.track.hover; the track's focus-state colour tokens equal its rest tokens. The thumb's own focus recolour and M3's separate (not reproduced) `md-focus-ring` element are where M3's real focus affordance lives — see 'Declared approximations'." },
+
+    { "id": "style.track.pressed", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:active) [data-slot=\"switch-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: **off** — CONFIRMED ABSENCE. shadcn: **off** — CONFIRMED ABSENCE. M3: **off** — same finding again: `unselected-pressed-track-color`/`selected-pressed-track-color` both equal their rest values. Pressed feedback for M3 lives entirely in the thumb's size change (style.thumb.size@pressed) and colour (style.thumb.hover, which this chassis reuses for pressed too, since M3's own tokens make hover/focus/pressed handle-colour numerically identical — see state.pressed)." },
+
+    { "id": "style.track.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:disabled) [data-slot=\"switch-track\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY. `opacity: 0.12` applied uniformly (both selection states use the SAME `disabled-track-opacity`) [S]. Salt/shadcn: **off** — both apply a single flat opacity at the ROOT instead (style.root.disabled), the same declared collapse checkbox's own disabled treatment used; M3 genuinely cannot be expressed that way because its disabled numbers differ by PART (track 0.12, thumb 0.38 or 1 depending on selection — see style.thumb.disabled/@checked), so M3 is modelled per-part instead of at the root." },
+
+    { "id": "style.track.readonly", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"][data-readonly=\"true\"] [data-slot=\"switch-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY [S]: `border-color: neutral` (the SAME base neutral token as rest — `selectable-borderColor-readonly` resolves to the identical `palette-neutral` value `selectable-borderColor` already uses, per `selectable.css`), `color: text-fg` (switching from the neutral-fg icon tone to the root's own body-text colour). shadcn/M3: **off**, no readonly concept." },
+
+    { "id": "style.thumb.size", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "REST (unchecked) size. Salt: `width`/`height` = `size-selectable`, by DENSITY — the SAME token, and the SAME per-density numbers, as checkbox's own box [S]. shadcn: `size=\"default\"` -> `size-4` = 16px; `size=\"sm\"` -> `size-3` = 12px, via `group-data-[size=...]/switch:` [S]. M3: `unselected-handle-height`/`-width` = 16px x 16px [S]." },
+
+    { "id": "style.thumb.shape", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"switch-thumb\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: `corner-weaker` -> `curve-50` -> 1/2/3/4px by DENSITY — the SAME token AND the same collapse-to-0-under-sharp-edition trap as checkbox's box shape [S]. shadcn: `rounded-full` = 9999px [S]. M3: `handle-shape` = `corner-full` = 9999px, both editions [S]." },
+
+    { "id": "style.thumb.size@sm", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-thumb\"][data-size=\"sm\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn ONLY, the thumb half of style.track.size@sm. `size=\"sm\"` -> `group-data-[size=sm]/switch:size-3` = 12px x 12px, overriding style.thumb.size's own `size=\"default\"` value [S]. Salt/M3: **off**, same reasoning as style.track.size@sm." },
+
+    { "id": "style.thumb.size@checked", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:checked) [data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY, and this is the row that makes state.checked's headline finding real CSS rather than prose. `selected-handle-height`/`-width` = 24px x 24px, UP from the 16px rest size [S, `internal/_handle.scss` `.selected .handle { height: ...; width: ... }`]. Salt/shadcn: **off** — CONFIRMED ABSENCE, neither system's thumb changes SIZE on check, only colour/position (see style.thumb.checked)." },
+
+    { "id": "style.thumb.size@pressed", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:active) [data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY. `pressed-handle-height`/`-width` = 28px x 28px, REGARDLESS of selected state — BIGGER than either the 16px unselected or 24px selected resting size, the 'overshoot' effect quoted in state.pressed [S]. Salt/shadcn: **off** — CONFIRMED ABSENCE, no `:active` rule in either." },
+
+    { "id": "style.thumb.rest", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `background-color: currentColor; border-color: neutral` — a SOLID filled circle at rest, inheriting the track's `color` [S]. shadcn: `background-color: thumb-bg; transform: translateX(0)` — the explicit rest position, matching `data-[state=unchecked]:translate-x-0`'s own real citation [S]. M3: `background-color: outline; margin-inline-end: 20px` — the REST-side position, `track-width - track-height` (52-32), achieved via margin rather than transform (a declared collapse of M3's separate `.handle-container` wrapper onto the thumb itself, see 'Declared approximations') [S]." },
+
+    { "id": "style.thumb.checked", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:checked) [data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `background-color: transparent; border-color: accent; transform: translateX(100%)` — the fill-to-outline INVERSION state.checked documents, sliding via a proportional transform [S]. shadcn: `background-color: thumb-bg-checked; transform: translateX(calc(100% - 2px))` — `thumb-bg-checked` equals `thumb-bg` in LIGHT mode and differs only in DARK mode (`primary-foreground` vs `foreground`), see state.checked's light/dark asymmetry finding [S]. M3: `background-color: on-primary; margin-inline-start: 20px` — the CHECKED-side position (mirroring style.thumb.rest's margin-inline-end), the colour moving from `outline` to `on-primary` [S]." },
+
+    { "id": "style.thumb.hover", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:hover [data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `border-color: accent-hover` [S]. shadcn: **off** — CONFIRMED ABSENCE. M3: `background-color: on-surface-variant` — the UNSELECTED-hover value (`unselected-hover-handle-color`); the SELECTED-hover value (`primary-container`) is recorded in the column's provenance but not separately expressed, the same declared approximation checkbox's own M3 column made for its box hover (approximation 3/6) — AND reused here for M3's focus AND pressed thumb colour too, since all three tokens are numerically identical for a given selection state (see state.pressed)." },
+
+    { "id": "style.thumb.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:disabled) [data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY — the UNSELECTED-disabled case. `background-color: on-surface; opacity: 0.38` [S]. Salt/shadcn: **off** — both dim the whole root uniformly instead (style.root.disabled)." },
+
+    { "id": "style.thumb.disabled@checked", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:checked:disabled) [data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY — the SELECTED-disabled case, and the asymmetry finding made concrete. `background-color: surface; opacity: 1` — FULL opacity, not dimmed, `disabled-selected-handle-opacity: 1` is the literal token value, re-checked twice against `_md-comp-switch.scss` because it looked at first like it must be a typo for `0.1`-something; it is not [S]. Salt/shadcn: **off**, same reasoning as style.thumb.disabled." },
+
+    { "id": "style.thumb.readonly", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"][data-readonly=\"true\"] [data-slot=\"switch-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY [S]: `background-color: box-bg; border-style: dashed; border-color: neutral` — applied REGARDLESS of checked, so a checked+readOnly thumb (still physically slid across via style.thumb.checked's transform, which this selector does not override) is coloured as if unchecked, the switch-shaped cousin of checkbox's indeterminate-resets-to-neutral finding (see state.readonly). shadcn/M3: **off**." },
+
+    { "id": "style.icon.size", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-icon\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `--saltIcon-size: 100%` — fills whatever thumb it sits in, the SAME default the Icon component uses everywhere in this registry [S]. shadcn: **off** — CONFIRMED ABSENCE, no icon element exists (structure.icon = \"none\"). M3: `icon-size`/`selected-icon-size` BOTH 16px — unlike the thumb, the icon does NOT grow when selected, a real, sourced, deliberate CONTRAST with style.thumb.size@checked's own growth [S]. Icon COLOUR is not modelled as its own row — it inherits `currentColor` from the thumb's own `color`/`background-color`, the identical structural reuse checkbox's `style.mark.fill` row already established, avoiding a duplicated colour fact." },
+
+    { "id": "style.root.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]:has([data-slot=\"switch-input\"]:disabled)",
+      "cellIsDeclarations": true,
+      "note": "Salt: `opacity: 0.4; cursor: not-allowed` [S]. shadcn: `opacity: 0.5; cursor: not-allowed` [S]. M3: **off** — see style.track.disabled/style.thumb.disabled(@checked); M3's real disabled treatment is genuinely per-part and asymmetric by selection state, so a single flat root number would misrepresent it rather than approximate it faithfully, the reason this row is `switchable` rather than `locked`." },
+
+    { "id": "style.root.cursor", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]",
+      "declarations": { "cursor": "$" },
+      "note": "Salt: `cursor-hover` = pointer [S]. shadcn: **off** — CONFIRMED ABSENCE, no `cursor-pointer` class at rest, identical finding to checkbox's own shadcn column. M3: `:host { cursor: pointer }`, explicit [S]." },
+
+    { "id": "style.root.gap", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt ONLY: `gap: spacing-100`, by DENSITY — the SAME token AND numbers as checkbox's own root gap [S]. shadcn/M3: **off** — neither owns a label, nothing to space." },
+
+    { "id": "style.root.font", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"switch-root\"]",
+      "declarations": { "font-size": "$fontSize", "line-height": "$lineHeight", "font-family": "$fontFamily", "font-weight": "$fontWeight" },
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY: the BODY role, REGULAR (400), by DENSITY — the identical text role checkbox's own root font used, plus `color: text-fg` (a NEW slot switch needs that checkbox's root.font row did not — checkbox's label text colour was folded elsewhere; switch's own `Switch.css` sets `color: var(--salt-content-primary-foreground)` directly on `.saltSwitch`) [S]. shadcn/M3: **off** — no owned label text." },
+
+    { "id": "style.state-layer", "piece": "style", "policy": "switchable", "channel": "info",
+      "note": "M3 ONLY, documented not rendered — the identical declared-not-modelled convention checkbox's `style.box.state-layer` row used. `state-layer-size` = 40px, `state-layer-shape` = `corner-full` (9999px), a full 40px circle centred on the THUMB (not the track — `md-ripple` lives inside `.handle-container`, sized independently of both the 16-24-28px thumb and the 32-52px track) [S]. This chassis approximates the intent via style.thumb.hover/focus/pressed's direct colour tints instead of drawing the larger circle, the same approximation checkbox already made for its own ripple-adjacent state layer." }
+  ]
+}

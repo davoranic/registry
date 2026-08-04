@@ -36,12 +36,14 @@ import { Select } from "../skeleton/select"
 import { Tabs } from "../skeleton/tabs"
 import { Card } from "../skeleton/card"
 import { Checkbox, CheckboxGroup, type CheckboxConfig } from "../skeleton/checkbox"
+import { Switch } from "../skeleton/switch"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
 import tabsCfg from "../out/gen/tabs-config.json"
 import cardCfg from "../out/gen/card-config.json"
 import checkboxCfg from "../out/gen/checkbox-config.json"
+import switchCfg from "../out/gen/switch-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -434,6 +436,135 @@ async function checkCheckbox(host: HTMLElement, system: string) {
   }
 }
 
+// ----------------------------------------------------------------- switch
+
+async function checkSwitch(host: HTMLElement, system: string) {
+  const cfg = (switchCfg as Record<string, any>)[system]
+
+  // 1 — the off->on TRANSITION (switch has no indeterminate state, unlike
+  // checkbox, so this is a plain toggle test — testing the TRANSITION, not
+  // just two static mounts, per CLAUDE.md's method notes).
+  const mount1 = document.createElement("div")
+  mount1.setAttribute("data-theme", system)
+  host.appendChild(mount1)
+  const root1 = createRoot(mount1)
+  function ToggleHarness() {
+    const [checked, setChecked] = React.useState(false)
+    return <Switch config={cfg} checked={checked} onCheckedChange={setChecked} aria-label="toggle" />
+  }
+  root1.render(<ToggleHarness />)
+  await settle()
+  const input1 = mount1.querySelector('[data-slot="switch-input"]') as HTMLInputElement | null
+  record("switch", "structure.native-input", system, !!input1, input1 ? "native input rendered" : "no input found")
+  if (input1) {
+    record("switch", "behavior.role", system, input1.getAttribute("role") === "switch", "role=" + input1.getAttribute("role"))
+    const before = input1.checked
+    input1.click()
+    await settle()
+    record(
+      "switch",
+      "state.checked",
+      system,
+      before === false && input1.checked === true,
+      `before: checked=${before}; after click: checked=${input1.checked}`,
+    )
+  }
+  root1.unmount()
+  mount1.remove()
+
+  // 2 — behavior.keyboard-activation: Enter's effect is SYSTEM-DEPENDENT for
+  // switch, unlike checkbox where it uniformly did nothing. M3 (enterActivates
+  // =true) must toggle on Enter; Salt/shadcn (enterActivates=false in this
+  // chassis) must not. A real Space keypress cannot be synthesized in a
+  // headless page (browsers only run a form control's default action off a
+  // TRUSTED key event), so this asserts the half that IS testable here.
+  const mount2 = document.createElement("div")
+  mount2.setAttribute("data-theme", system)
+  host.appendChild(mount2)
+  const root2 = createRoot(mount2)
+  function KeyHarness() {
+    const [checked, setChecked] = React.useState(false)
+    return <Switch config={cfg} checked={checked} onCheckedChange={setChecked} aria-label="keyboard" />
+  }
+  root2.render(<KeyHarness />)
+  await settle()
+  const input2 = mount2.querySelector('[data-slot="switch-input"]') as HTMLInputElement | null
+  if (input2) {
+    focusFor(input2)
+    key(input2, "Enter")
+    await settle()
+    const expected = Boolean(cfg.enterActivates)
+    const actual = input2.checked
+    record(
+      "switch",
+      "behavior.keyboard-activation",
+      system,
+      actual === expected,
+      `config.enterActivates=${expected}; after Enter: checked=${actual}`,
+    )
+  }
+  root2.unmount()
+  mount2.remove()
+
+  // 3 — behavior.disabled-handling: a disabled switch must not respond to a
+  // click (the native `disabled` attribute blocks the browser's own toggle).
+  const mount3 = document.createElement("div")
+  mount3.setAttribute("data-theme", system)
+  host.appendChild(mount3)
+  const root3 = createRoot(mount3)
+  function DisabledHarness() {
+    const [checked, setChecked] = React.useState(false)
+    return <Switch config={cfg} checked={checked} disabled onCheckedChange={setChecked} aria-label="disabled" />
+  }
+  root3.render(<DisabledHarness />)
+  await settle()
+  const input3 = mount3.querySelector('[data-slot="switch-input"]') as HTMLInputElement | null
+  if (input3) {
+    input3.click()
+    await settle()
+    record(
+      "switch",
+      "behavior.disabled-handling",
+      system,
+      input3.checked === false,
+      "a disabled switch must not toggle on click — checked=" + input3.checked,
+    )
+  }
+  root3.unmount()
+  mount3.remove()
+
+  // 4 — behavior.readonly: Salt ONLY. A read-only switch must not toggle on
+  // click, mirroring checkbox's own readOnly assertion shape.
+  if (Array.isArray(cfg.readOnly) && cfg.readOnly.includes(true)) {
+    const mount4 = document.createElement("div")
+    mount4.setAttribute("data-theme", system)
+    host.appendChild(mount4)
+    const root4 = createRoot(mount4)
+    function ReadOnlyHarness() {
+      const [checked, setChecked] = React.useState(false)
+      return <Switch config={cfg} checked={checked} readOnly onCheckedChange={setChecked} aria-label="readonly" />
+    }
+    root4.render(<ReadOnlyHarness />)
+    await settle()
+    const input4 = mount4.querySelector('[data-slot="switch-input"]') as HTMLInputElement | null
+    if (input4) {
+      input4.click()
+      await settle()
+      record(
+        "switch",
+        "behavior.readonly",
+        system,
+        input4.checked === false,
+        "a read-only switch must not toggle on click — checked=" + input4.checked,
+      )
+    }
+    root4.unmount()
+    mount4.remove()
+  } else {
+    record("switch", "behavior.readonly", system, true, "no readOnly capability in this column (confirmed absence) — nothing to assert")
+  }
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -447,6 +578,7 @@ async function run() {
     try { await checkTabs(host, s) } catch (e) { record("tabs", "(threw)", s, false, String(e)) }
     try { await checkCard(host, s) } catch (e) { record("card", "(threw)", s, false, String(e)) }
     try { await checkCheckbox(host, s) } catch (e) { record("checkbox", "(threw)", s, false, String(e)) }
+    try { await checkSwitch(host, s) } catch (e) { record("switch", "(threw)", s, false, String(e)) }
   }
   host.remove()
 

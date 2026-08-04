@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **15 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **16 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -104,7 +104,7 @@ loop.
   → `3-source/salt-ds`, `material-components/material-web` →
   `3-source/material-web`. Folder names must match exactly — provenance
   strings across every matrix doc cite paths inside them.
-- 64 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
+- 63 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
 
 ### Method notes that cost real time to learn
 
@@ -215,6 +215,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `progress` | [`PROGRESS-MATRIX.md`](PROGRESS-MATRIX.md) | 51 | 40 | 23 | 24 | ✓ |
 | `select` | [`SELECT-MATRIX.md`](SELECT-MATRIX.md) | 113 | 84 | 53 | 51 | — |
 | `spinner` | [`SPINNER-MATRIX.md`](SPINNER-MATRIX.md) | 20 | 12 | 8 | 9 | — |
+| `switch` | [`SWITCH-MATRIX.md`](SWITCH-MATRIX.md) | 53 | 41 | 30 | 38 | ✓ |
 | `tabs` | [`TABS-MATRIX.md`](TABS-MATRIX.md) | 98 | 64 | 54 | 44 | ✓ |
 | `tooltip` | [`TOOLTIP-MATRIX.md`](TOOLTIP-MATRIX.md) | 38 | 27 | 16 | 11 | — |
 
@@ -406,29 +407,41 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `checkbox` (component 14, row 15/79). Committed and pushed
-to `claude/next-component-7e5dex` (commit `54dbeda`). The owner chose "keep
-going, track gaps in a running list" over stopping to clear the queue below —
-see "Known-open work" for the full list, now including two checkbox-specific
-finds (a dead-CSS selector bug affecting checked/indeterminate/focus/pressed/
-validation in ALL THREE columns, and M3's never-implemented mark geometry —
-both fixed, see CHECKBOX-MATRIX.md findings 10–12) plus two infrastructure
-bugs (conformance's `dist/gen` path, the fonts/ path in every check-harness
-script) found while verifying it.
+Last action: built `switch` (component 15, row 16/79), following checkbox.
+Not yet committed — see the note at the end of this section.
 
-Everything regenerates clean; all five gates green; conformance 52/53 (the
-one failure is `tabs`, pre-existing, unrelated — see Known-open work).
+Switch is the first component in this pipeline built with checkbox's two
+findings (10/11, the dead-sibling-selector bug and the never-implemented
+mark geometry) fed into the build prompt AS explicit lessons, and it worked:
+every conditional selector was anchored at `switch-root` via `:has()` from
+the first draft, verified by orchestrator review with live
+`getComputedStyle`/`getBoundingClientRect` (SWITCH-MATRIX.md finding 11's
+closure) to actually move/resize/recolour in all three columns — no dead
+selector found this time. One coarse-measure `check-anatomy.mjs` convergence
+(`salt=m3` identical part-SET, 4/4 rows populated in both) was investigated
+and explained rather than left flagged — see finding 12: the two disagree on
+almost everything else about those four parts, so it's not a retrofit.
+
+Everything regenerates clean; all five gates green; conformance 70/71 (same
+one pre-existing `tabs` failure as before switch was added — see Known-open
+work; switch itself introduced zero new failures).
 
 **Standing priority order — still true, still not done, all deferred by
-explicit owner choice on 2026-08-04:**
+explicit owner choice on 2026-08-04 ("keep going, track gaps in a running
+list" over stopping to clear the queue):**
 
 1. Fix `button`'s missing secondary hover (`style.root.background@secondary-hover`).
 2. Explain or fix `dialog`'s shadcn=m3 identical part-set.
 3. Backfill 250 uncited slots (select 73, input 42, badge, card).
 4. Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure.
 5. Fix the fonts/ path bug across every `build-<name>-check.mjs`.
-6. **Continue components** — 64 canonical rows remain, order per
+6. **Continue components** — 63 canonical rows remain, order per
    `1-intro/content/04-component-map.md`: rows with real cross-system character first.
+
+**If resuming mid-session:** switch's files are written and gate-clean but
+not yet `git commit`ed as of this edit — check `git status` before assuming
+step 6 needs a fresh component; the very next action may just be `git add`
++ commit + push for switch, not a new build.
 
 ## Working with this user
 
