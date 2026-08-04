@@ -63,10 +63,12 @@ breaking the thing it watches before trusting its output.**
 
 - **250 slots carry values but no provenance entry** — invisible to the tier-2
   canary. Concentrated in select (73) and input (42).
-- **`button` has a real defect**: Salt's `--secondary-bg-hover` is defined in
-  both modes and referenced by no rule, so bordered buttons have no hover — and
-  the secondary selector at (0,5,0) would beat `:hover` at (0,4,0) anyway.
-  Needs a `@secondary-hover` row.
+- ~~`button` has a real defect...~~ **Fixed 2026-08-04**: added
+  `style.root.background@secondary-hover` (all three columns), specificity
+  (0,7,0) clears `@secondary`'s (0,5,0). See BUTTON-MATRIX.md Findings #1.
+  **New, same shape**: `@active` ties `@secondary` too (gate A still flags
+  it); Salt has an unused `secondary-bg-active` slot exactly like the hover
+  one did. Needs its own `@secondary-active` row.
 - **`dialog` shadcn=m3 identical part-set** — flagged by check-anatomy, not yet
   explained.
 - 65 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
@@ -378,11 +380,9 @@ is committed — the working tree holds the entire session.
 
 **Do these in order:**
 
-1. **Fix `button`'s missing secondary hover.** Salt's `--secondary-bg-hover` is
-   defined in both modes and referenced by NO rule. Add a
-   `style.root.background@secondary-hover` row with a selector of higher
-   specificity than the plain `@secondary` row, then fill all three columns.
-   Found by `check-structure.py` gate A.
+1. ~~Fix `button`'s missing secondary hover.~~ **Done 2026-08-04** — see
+   BUTTON-MATRIX.md Findings #1 and the Known-open entry above for what
+   shipped, and for the sibling `@active` gap it surfaced but didn't fix.
 2. **Explain or fix `dialog`'s shadcn=m3 identical part-set**, flagged by
    `check-anatomy.mjs`. Either justify the convergence in DIALOG-MATRIX.md or
    find the missing part.

@@ -160,6 +160,11 @@
       "kind": "value",
       "value": "18px",
       "source": "with-icon-icon-size: 18px"
+    },
+    "style.root.background@secondary-hover": {
+      "kind": "expression",
+      "value": "color-mix(in srgb, var(--action-bg) 8%, transparent)",
+      "source": "_md-comp-outlined-button.scss: hover-state-layer-color=primary, hover-state-layer-opacity=0.08 (_md-sys-state.scss, v0.192). Same state-layer opacity token this column's own @hover row already cites; the container operand changes from var(--action-bg) (filled's opaque primary container) to transparent, because outlined's own container (style.root.background@secondary) is transparent."
     }
   }
 }

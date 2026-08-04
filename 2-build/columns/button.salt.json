@@ -225,6 +225,11 @@
       "kind": "alias",
       "slot": "icon-size",
       "source": "Icon.css --icon-base-size: var(--salt-size-icon), density-scaled, matches Sizes foundations page"
+    },
+    "style.root.background@secondary-hover": {
+      "kind": "alias",
+      "slot": "secondary-bg-hover",
+      "source": "Button.css .saltButton-neutral.saltButton-bordered: --button-background-hover: var(--salt-actionable-background-hover), consumed by the generic .saltButton:hover rule (background: var(--saltButton-background-hover, var(--button-background-hover))). Slot already existed in this column (secondary-bg-hover) but no row referenced it — exactly the defect this row fixes."
     }
   }
 }

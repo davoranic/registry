@@ -96,13 +96,29 @@ a mechanism difference.
 
 ## Findings
 
-1. **A real defect, still open.** Salt's `--secondary-bg-hover` slot is defined
-   in both light and dark and is referenced by **no rule**. There is no
-   `@secondary-hover` row in the template, so a Salt bordered button has no
-   hover state at all. Worse, the fix is not just adding the row: the
-   `@secondary` selector is specificity (0,5,0) against `:hover`'s (0,4,0), so
-   a naive hover row would still lose. Found by `check-structure.py` gate A,
-   months of renders after the component was "validated".
+1. **Fixed.** Salt's `--secondary-bg-hover` slot was defined in both light and
+   dark but referenced by no rule, so a Salt bordered button had no hover
+   state. A naive hover row would still have lost the cascade — `@secondary`
+   is (0,5,0) against `:hover`'s (0,4,0) — so the fix is a dedicated
+   `style.root.background@secondary-hover` row combining `@secondary`'s own
+   selector predicate with `:hover:not(:disabled)`, landing at (0,7,0), always
+   above both. All three columns filled: Salt aliases the pre-existing
+   `secondary-bg-hover` slot; shadcn gets a new `outline-hover-bg` slot
+   (`hover:bg-accent` light, `dark:hover:bg-input/50` dark, the dark cell
+   expressed as `color-mix(in oklab, var(--outline-border) 50%, transparent)`
+   since `outline-border`'s dark slot already equals raw `--input` dark and
+   `/50` is Tailwind v4's own opacity mechanism); M3 mirrors the button's own
+   `@hover` row formula with the container operand swapped from
+   `var(--action-bg)` to `transparent` (outlined's real container), same
+   `hover-state-layer-opacity: 0.08` token. `gen-from-template.py button` is
+   clean on all three columns; `check-structure.py` gate A no longer flags
+   this pair. Found by `check-structure.py` gate A, months of renders after
+   the component was "validated".
+   **Related, still open:** the same gate also flags `@active` against
+   `@secondary` at equal specificity — Salt even has an unused
+   `secondary-bg-active` slot, the same shape of bug. Out of scope here
+   (only the hover row was asked for); needs its own
+   `@secondary-active` row the same way.
 2. **Three bugs were caught during the original build**, recorded in
    `CLAUDE.md`: an undefined-array crash on a system with no `size` prop; a
    conflated capability-vs-instance flag that silently blanked shadcn's labels;
@@ -149,7 +165,7 @@ a mechanism difference.
 | `focus` | rgb(0, 69, 126) | rgb(154, 189, 245) | yes |
 | `border-width` | 1px | — | **no** |
 
-**shadcn** — 11 light, 8 dark overrides
+**shadcn** — 12 light, 9 dark overrides
 
 | slot | light | dark | cited |
 |---|---|---|---|
@@ -164,6 +180,7 @@ a mechanism difference.
 | `radius-control` | calc(0.625rem * 0.8) | — | yes |
 | `type-label` | 500 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif | — | yes |
 | `shadow-color` | rgb(0 0 0 / 0.05) | — | **no** |
+| `outline-hover-bg` | oklch(0.97 0 0) | color-mix(in oklab, var(--outline-border) 50%, transparent) | yes |
 
 **m3** — 6 light, 5 dark overrides
 
@@ -209,9 +226,10 @@ a mechanism difference.
 | 27 | `style.root.elevation` | style | switchable | **off** | `0 1px 2px 0 var(--shadow-color)` | `none` |
 | 28 | `style.root.elevation@hover` | style | switchable | **off** | **off** | `0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15)` |
 | 29 | `style.root.background@secondary` | style | switchable | `background: var(--secondary-bg); color: var(--secondary-fg); border-color: var(--secondary-border)` | `background: var(--outline-bg); border: 1px solid var(--outline-border); color: inherit` | `background: transparent; border: 1px solid var(--outline-color); color: var(--action-bg)` |
-| 30 | `style.icon.size` | style | switchable | ⟡ `icon-size` | `16px` | `18px` |
+| 30 | `style.root.background@secondary-hover` | style | switchable | ⟡ `secondary-bg-hover` | ⟡ `outline-hover-bg` | ƒ `color-mix(in srgb, var(--action-bg) 8%, transparent)` |
+| 31 | `style.icon.size` | style | switchable | ⟡ `icon-size` | `16px` | `18px` |
 
-<details><summary>Citations — 52 cells carry a source or note</summary>
+<details><summary>Citations — 55 cells carry a source or note</summary>
 
 | row | system | citation |
 |---|---|---|
@@ -264,6 +282,9 @@ a mechanism difference.
 | `style.root.background@secondary` | salt | actionable-background/foreground/borderColor (bordered/neutral, no -bold suffix) |
 | `style.root.background@secondary` | shadcn | variant=outline: bg-background border shadow-xs hover:bg-accent |
 | `style.root.background@secondary` | m3 | _md-comp-outlined-button.scss: transparent container, outline-color border, primary label |
+| `style.root.background@secondary-hover` | salt | Button.css .saltButton-neutral.saltButton-bordered: --button-background-hover: var(--salt-actionable-background-hover), consumed by the generic .saltButton:hover rule (background: var(--saltButton-background-hover, var(--button-background-hover))). Slot already existed in this column (secondary-bg-hover) but no row referenced it — exactly the defect this row fixes. |
+| `style.root.background@secondary-hover` | shadcn | variant=outline: hover:bg-accent dark:hover:bg-input/50. Light value equals --accent (same token ghost-hover-bg already reads, oklch(0.97 0 0)). Dark value is expressed as color-mix(in oklab, var(--outline-border) 50%, transparent) rather than a hand-computed literal, because outline-border's dark slot already equals raw --input dark (oklch(1 0 0 / 15%)) and /50 is Tailwind v4's own color-mix opac |
+| `style.root.background@secondary-hover` | m3 | _md-comp-outlined-button.scss: hover-state-layer-color=primary, hover-state-layer-opacity=0.08 (_md-sys-state.scss, v0.192). Same state-layer opacity token this column's own @hover row already cites; the container operand changes from var(--action-bg) (filled's opaque primary container) to transparent, because outlined's own container (style.root.background@secondary) is transparent. |
 | `style.icon.size` | salt | Icon.css --icon-base-size: var(--salt-size-icon), density-scaled, matches Sizes foundations page |
 | `style.icon.size` | shadcn | [&_svg:not([class*='size-'])]:size-4 = 1rem = 16px (default size); xs variant drops to size-3=12px |
 | `style.icon.size` | m3 | with-icon-icon-size: 18px |

@@ -319,6 +319,17 @@
       "note": "the outline/bordered emphasis, neutral tone \u2014 one representative non-default axis cell to prove the pattern generalizes; full 20-combination Salt grid documented in provenance, not fully enumerated as separate rows (scope decision, same as Calendar's locale row)"
     },
     {
+      "id": "style.root.background@secondary-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"][data-emphasis=\"bordered\"][data-tone=\"neutral\"]:hover:not(:disabled), [data-slot=\"button\"][data-emphasis=\"outline\"]:hover:not(:disabled), [data-slot=\"button\"][data-emphasis=\"outlined\"]:hover:not(:disabled)",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "the secondary/bordered/outline emphasis's own hover feedback. Without this row, @secondary (switchable scope + 3 attr selectors = (0,5,0), later in source order) always beats @hover (locked scope + 1 attr + :hover + :not(:disabled) = (0,4,0)), so bordered buttons showed no hover. This row's selector adds :hover:not(:disabled) on top of @secondary's own predicate, giving it strictly higher specificity than both."
+    },
+    {
       "id": "style.icon.size",
       "piece": "style",
       "policy": "switchable",
