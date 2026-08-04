@@ -1,0 +1,102 @@
+{
+  "system": "m3",
+  "component": "slider",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "primary": "#6750a4",
+      "on-primary": "#fff",
+      "on-surface": "#1d1b20",
+      "on-surface-variant": "#49454f",
+      "surface-container-highest": "#e6e0e9"
+    },
+    "dark": {
+      "primary": "#d0bcff",
+      "on-primary": "#381e72",
+      "on-surface": "#e6e0e9",
+      "on-surface-variant": "#cac4d0",
+      "surface-container-highest": "#36343b"
+    }
+  },
+  "provenance": {
+    "canonical-source": "slider/internal/slider.ts (the real Lit component, 799 lines — render(), renderTrack/renderHandle/renderInput, willUpdate/updated, the pointer-drag action/flip/clamp state machine for range-overlap prevention, ElementInternals form participation), slider/internal/_slider.scss (the shipped styles source, 521 lines, read in full), slider/slider.ts (the <md-slider> registration), slider/slider_test.ts (spot-checked for the ElementInternals role/value proofs), slider/harness.ts. Tokens: tokens/versions/v0_192/_md-comp-slider.scss (the pinned edition) and tokens/versions/latest/sass/_md-comp-slider*.scss (edition diff — see below, a LARGE one). Colour/state resolution through tokens/versions/v0_192/{_md-sys-color.scss,_md-sys-state.scss}.",
+    "edition-pin": "v0.192, per the owner's standing decision. THE LARGEST STRUCTURAL edition delta this registry has found for slider specifically: `latest`'s token set is SPLIT into FIVE size variants (_md-comp-slider-{xsmall,small,medium,large,xlarge}.scss) replacing v0.192's single flat token set entirely — a real, sourced redesign (M3 sliders gained a `size` axis at some point after v0.192), FLAGGED LOUDLY rather than silently followed. Every value in this column is v0.192's single-size token set, per standing policy, not relitigated.",
+    "range-is-a-boolean-prop": "slider.ts: `@property({type: Boolean}) range = false` forks `value` (single mode) into `valueStart`/`valueEnd` (range mode) on the SAME custom element — CONFIRMED by reading the class directly, the third distinct answer this matrix records to 'how does one component become a range slider' (Salt: two components; shadcn: array length; M3: this boolean).",
+    "handle-is-narrow-and-clipped": "render()'s own `renderInput()` renders a FULL-TRACK-WIDTH `<input type=\"range\">` per thumb (`width:100%; height:100%` in _slider.scss), then CLIPS each one to its own half of the track via `clip-path: inset(...)` computed from the midpoint between the two thumbs' current fractions (`.ranged input.start { clip-path: inset(0 $_clip-to-end 0 0) }` etc.) — a genuinely different mechanism from this chassis's own choice (narrow, per-thumb-centred inputs, matching Salt's own real mechanism instead — see the template's behavior.chassis note) to avoid needing the same clip-path midpoint math for a range pair.",
+    "primary/on-primary/on-surface/on-surface-variant/surface-container-highest": "md-sys-color.values-light()/values-dark(), v0.192 — the SAME hex pairs every prior M3 column in this pipeline resolves (#6750a4/#d0bcff primary, #fff/#381e72 on-primary, #1d1b20/#e6e0e9 on-surface, #49454f/#cac4d0 on-surface-variant, #e6e0e9/#36343b surface-container-highest, the SAME container colour card.m3.json/switch.m3.json both already resolved). Re-derived here for a self-contained column, not borrowed.",
+    "handle-colour-is-interaction-invariant": "RE-VERIFIED BY READING THE TOKEN VALUES DIRECTLY, because the first pass assumed hover/focus/pressed would recolour the handle the way checkbox's/switch's own M3 columns did. They do NOT: `handle-color`, `hover-handle-color`, `focus-handle-color`, and `pressed-handle-color` are ALL literally `primary` — the SAME value, all four, confirmed by reading all four token lines side by side in _md-comp-slider.scss. This is a STARKER finding than switch's own M3 column (which at least varied handle colour between selected/unselected, even if hover/focus/pressed collapsed together within each) — slider's own handle NEVER changes colour, at ANY interaction state, EVER, in v0.192. All visible interaction feedback lives entirely in the ripple/state-layer (hover-state-layer-opacity 0.08, focus/pressed-state-layer-opacity 0.12, the SAME edition-dependent trio every prior M3 column has flagged) and, at focus/hover/active, the CSS-only value-label appearing.",
+    "no-host-cursor": "CONFIRMED ABSENCE, grepped directly against the whole of _slider.scss: no `:host { cursor: ... }` rule anywhere — a real, sourced CONTRAST with switch's own M3 column (SWITCH-MATRIX.md finding 6), which DOES write one. The slider's own cursor comes entirely from the native `input[type=range] { cursor: pointer }` rule instead (see style.thumb.cursor).",
+    "min-width-floor": "`:host { min-inline-size: 200px }` — a real, sourced minimum-width floor unique to this M3 column among the three; re-checked because neither Salt's nor shadcn's own root imposes one.",
+    "disabled-math": "`:host([disabled]) { opacity: var(--_disabled-active-track-opacity) }` = 0.38 (component-wide). `.track::before` (inactive) gets a LOCAL compensating opacity, `calc((1 / var(--_disabled-active-track-opacity)) * var(--_disabled-inactive-track-opacity))` = calc((1/0.38)*0.12) ≈ 0.3158, so its FINAL visible opacity nets to the token's own intended 0.12 after the host-level multiplication — real, sourced CSS arithmetic, not an approximation. Colours: disabled-active-track-color/disabled-inactive-track-color/disabled-handle-color ALL resolve to on-surface.",
+    "no-readonly-no-format-family": "CONFIRMED ABSENCE, grepped directly: no readonly-related @property anywhere in slider.ts; no format-callback mechanism of any kind — value display is either the raw number or a per-instance STATIC STRING override (valueLabel/valueLabelStart/valueLabelEnd), never a computed function."
+  },
+  "cells": {
+    "structure.root": { "kind": "value", "value": "the custom element itself", "source": ":host { display: inline-flex; min-inline-size: 200px }" },
+    "structure.track": { "kind": "value", "value": "pseudo-element track", "source": ".track div; two-tone look drawn via ::before (inactive)/::after (active) in _slider.scss" },
+    "structure.fill": { "kind": "value", "value": "pseudo-element, always present", "source": ".track::after — the SAME pseudo-element handles both single and range modes, range geometry done via clip-path" },
+    "structure.thumb": { "kind": "value", "value": "a solid-filled circular disc (.handleNub) nested inside a larger 40px ripple/state-layer hit-area (.handle)", "source": "_slider.scss .handleNub { border-radius: var(--_handle-shape); background: var(--_handle-color) }" },
+    "structure.native-input": { "kind": "value", "value": true, "source": "slider.ts renderInput(): <input type=\"range\" .../>, opacity:0 (_slider.scss)" },
+    "structure.value-readout": { "kind": "value", "value": "label", "source": "renderLabel(), a scale(0)->scale(1) pill, opt-IN via `labeled` (@property, default false)" },
+    "structure.ticks": { "kind": "value", "value": [false, true], "source": "renderTrack(): ${this.ticks ? html`<div class=\"tickmarks\">` : nothing}, opt-in via `ticks` (@property, default false)" },
+
+    "behavior.role": { "kind": "value", "value": "implicit, free from the native <input type=\"range\">", "source": "no explicit role written anywhere in slider.ts" },
+    "behavior.value-announcement": { "kind": "value", "value": "implicit aria-valuenow from the native input, PLUS explicit PER-THUMB aria-valuemin/aria-valuemax (narrower than the overall min/max in range mode) and a getter-computed aria-valuetext", "source": "renderInput()'s ariaMin/ariaMax computation, renderAriaValueTextStart/End getters" },
+    "behavior.keyboard-value-change": { "kind": "value", "value": "genuinely NATIVE — no keydown override computes new values at all; handleKeydown exists only to track which input is being dragged for the range-overlap flip/clamp logic", "source": "slider.ts handleKeydown -> startAction(), no value computation" },
+    "behavior.pointer-drag": { "kind": "value", "value": "genuinely NATIVE — the real input spans the full interactive area and the browser performs the drag; M3's own pointer listeners exist only to track hover state for the ripple", "source": "handleMove/handleEnter/handleLeave update handleStartHover/handleEndHover only" },
+    "behavior.track-click-jump": { "kind": "value", "value": "genuinely FREE — the native input's own hit area spans the full track width, so clicking anywhere on the track is clicking the input directly", "source": "_slider.scss input[type=range] { width:100%; height:100% }" },
+    "behavior.value-readout-visibility": { "kind": "value", "value": "shown on hover, focus-within, or active — PURE CSS, no JS state at all", "source": "_slider.scss :host(:focus-within) .label, .handleContainer.hover .label, :where(:has(input:active)) .label { transform: scale(1) }" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native ?disabled on each input, PLUS a component-wide opacity dimming and per-part colour swap — see disabled-math", "source": "slider.ts, _slider.scss :host([disabled])" },
+    "behavior.form-participation": { "kind": "value", "value": "a full form-associated custom element — single mode: String(this.value); range mode: a FormData with TWO entries (nameStart/nameEnd), the SAME two-named-values shape Salt's own RangeSlider uses, arrived at independently", "source": "slider.ts [getFormValue]()" },
+
+    "prop.value-shape": { "kind": "value", "value": "ONE component, a range:boolean property forking value into valueStart/valueEnd", "source": "see range-is-a-boolean-prop" },
+    "prop.range": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) range = false" },
+    "prop.bounds": { "kind": "value", "value": { "min": 0, "max": 100 }, "source": "@property({type:Number}) min = 0; max = 100" },
+    "prop.step": { "kind": "value", "value": 1, "source": "@property({type:Number}) step = 1" },
+    "prop.step-multiplier": { "kind": "off", "note": "CONFIRMED ABSENCE — no equivalent property; PageUp/PageDown use the browser's own native range-input large-step heuristic" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) disabled" },
+    "prop.value-format": { "kind": "value", "value": "STATIC STRING overrides per instance (valueLabel/valueLabelStart/valueLabelEnd) — a genuinely different mechanism from Salt's own callback, falls back to the raw value when unset", "source": "slider.ts @property valueLabel/valueLabelStart/valueLabelEnd" },
+    "prop.restrict-to-marks": { "kind": "off", "note": "CONFIRMED ABSENCE — no equivalent concept; relies purely on step" },
+
+    "slot.min-label": { "kind": "off", "note": "CONFIRMED ABSENCE — no endpoint text element of its own (valueLabelStart overrides the START HANDLE's own readout text, it does not add a separate flanking label)" },
+    "slot.max-label": { "kind": "off", "note": "CONFIRMED ABSENCE, same reasoning as slot.min-label" },
+    "slot.composes": { "kind": "value", "value": true, "note": "an external, consumer-authored <label> (ariaLabel/ariaLabelStart/ariaLabelEnd); a REUSED CheckboxValidator-adjacent constraint-validation path is NOT used here (slider has its own inline form-value logic, no separate validator class)" },
+
+    "state.rest": { "kind": "value", "value": "a surface-container-highest inactive track, a primary active track, a primary-filled circular handle", "note": "no border/outline mechanism anywhere — the handle is a solid disc, not an outlined ring" },
+    "state.hover": { "kind": "off", "note": "CONFIRMED ABSENCE for colour — see handle-colour-is-interaction-invariant; all visible feedback lives in the (documented, not rendered) 0.08-opacity ripple" },
+    "state.focus": { "kind": "value", "value": "colour-invariant on the handle (see handle-colour-is-interaction-invariant) — the CSS-only value-label appearing (structure.value-readout) plus a 0.12-opacity ripple and a separate md-focus-ring (not reproduced) are M3's real focus affordance", "source": "focus-handle-color equals handle-color; see behavior.value-readout-visibility" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE for colour, same finding again — a 0.12-opacity ripple plus the (declared out of scope) handle-overlap outline are the only real pressed-adjacent visuals" },
+    "state.disabled": { "kind": "value", "value": "a component-wide opacity(0.38) PLUS per-part colour swap to on-surface, with the inactive track's own local opacity independently compensated back to a net 0.12", "source": "see disabled-math" },
+
+    "style.track.size": { "kind": "value", "value": { "height": "4px" }, "source": "--_inactive-track-height, hardcoded literal, both editions" },
+    "style.track.shape": { "kind": "value", "value": "9999px", "source": "inactive-track-shape: corner-full" },
+    "style.track.rest": { "kind": "value", "value": { "background-color": "var(--surface-container-highest)" }, "source": "inactive-track-color" },
+    "style.track.disabled": { "kind": "value", "value": { "background-color": "var(--on-surface)", "opacity": "calc((1 / 0.38) * 0.12)" }, "source": "see disabled-math" },
+
+    "style.fill.rest": { "kind": "value", "value": { "background-color": "var(--primary)" }, "source": "active-track-color" },
+    "style.fill.disabled": { "kind": "value", "value": { "background-color": "var(--on-surface)" }, "source": "disabled-active-track-color; the host's own opacity:0.38 applies on top, no separate local override needed" },
+
+    "style.thumb.size": { "kind": "value", "value": { "width": "20px", "height": "20px" }, "source": "handle-height/handle-width, hardcoded literals, both editions" },
+    "style.thumb.shape": { "kind": "value", "value": "9999px", "source": "handle-shape: corner-full" },
+    "style.thumb.rest": { "kind": "value", "value": { "background-color": "var(--primary)" }, "source": "handle-color" },
+    "style.thumb.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — see handle-colour-is-interaction-invariant" },
+    "style.thumb.focus": { "kind": "off", "note": "same finding as style.thumb.hover" },
+    "style.thumb.cursor": { "kind": "value", "value": "pointer", "note": "inherited from the native input[type=range] { cursor: pointer } rule — see no-host-cursor" },
+    "style.thumb.cursor@dragging": { "kind": "off", "note": "CONFIRMED ABSENCE — no dedicated active-cursor rule" },
+    "style.thumb.disabled": { "kind": "value", "value": { "background-color": "var(--on-surface)" }, "source": "disabled-handle-color; relies on the host's own opacity:0.38, no separate opacity override" },
+
+    "style.value-label.rest": {
+      "kind": "value",
+      "value": { "background-color": "var(--primary)", "color": "var(--on-primary)", "border-radius": "9999px", "padding": "4px", "min-inline-size": "28px", "min-block-size": "28px" },
+      "source": "label-container-color, label-label-text-color, corner-full, label-container-height=28px"
+    },
+    "style.value-label.visible": { "kind": "value", "value": "the real mechanism this chassis's own CSS-only rule matches exactly", "source": "see behavior.value-readout-visibility" },
+
+    "style.ticks.appearance": { "kind": "value", "value": { "width": "2px", "height": "2px", "border-radius": "9999px", "background-color": "var(--on-surface-variant)" }, "source": "with-tick-marks-container-size=2px, with-tick-marks-container-shape=corner-full, with-tick-marks-inactive-container-color=on-surface-variant — rendered here as real dots rather than M3's own radial-gradient background-image trick" },
+
+    "style.root.disabled": { "kind": "value", "value": { "opacity": "0.38" }, "source": ":host([disabled]) { opacity: var(--_disabled-active-track-opacity) } — see disabled-math; applies TOGETHER WITH the per-part colour swaps (style.track.disabled/style.fill.disabled/style.thumb.disabled), not instead of them" },
+    "style.root.cursor": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-host-cursor" },
+    "style.root.min-width": { "kind": "value", "value": "200px", "source": "see min-width-floor" },
+    "style.root.gap": { "kind": "off", "note": "no owned end-label text, nothing to space" },
+    "style.end-labels.font": { "kind": "off", "note": "no end-label element renders" }
+  }
+}

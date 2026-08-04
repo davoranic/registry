@@ -1,0 +1,289 @@
+{
+  "component": "slider",
+  "openUiAnatomy": "no published Open UI slider anatomy consulted directly — union built from the three clones: Salt's Slider/RangeSlider (a SliderTrack root div wrapping a container -> [minLabel text, a wrapper div carrying the pointer-down-to-jump handler -> a rail div (the visual two-tone track, drawn via ::before/::after pseudo-elements, plus an OPTIONAL real .saltSliderTrack-fill div that Salt renders ONLY in range mode) containing one or two SliderThumb divs (each a real native <input type=\"range\">, a SliderTooltip, and a hidden accessible-text span) -> optional ticks/marks], maxLabel text — TWO SEPARATE EXPORTED COMPONENTS, Slider (single number value) and RangeSlider ([number,number] tuple), sharing the SliderTrack/SliderThumb internals but forking at the PROP-SHAPE level, not a config flag on one component), shadcn's Slider (a single Radix SliderPrimitive.Root rendering AS MANY Thumbs as `value`/`defaultValue` has array entries — range is reached by passing a 2-element array to the SAME component, not a separate export or a boolean — containing a Track div wrapping a Range div (the real, always-present fill element), with Thumb(s) as SIBLINGS of Track, not nested inside it), and M3's <md-slider> (a single Lit custom element with a literal `range: boolean` property forking value/valueStart+valueEnd, rendering a .container holding one or two real native <input type=\"range\"> elements (clip-path-restricted to each one's own half of the track when ranged), a .track div (::before inactive / ::after active, pseudo-elements again), and a .handleContainer holding one or two .handle divs (each an md-focus-ring, an md-ripple, a .handleNub circle, and an OPT-IN .label pill) — genuinely the THIRD different answer to 'how does one component become a range slider' this registry has found for a single canonical row (Salt: two exported components sharing internals; shadcn: one component whose thumb COUNT is driven by array length; M3: one component with a boolean prop forking two named value pairs) — see prop.value-shape.",
+  "behavior": {
+    "pattern": "A continuous, drag-or-key-positioned NUMERIC control for choosing one value (or, in range mode, two values bounding a sub-range) between a min and max, per the W3C APG slider/slider-multithumb patterns. THE HEADLINE STRUCTURAL QUESTION THIS MATRIX ANSWERS, unlike any prior discrete on/off control this pipeline has built: 'is range a separate component, or an axis of the same one?' — Salt says separate component (RangeSlider, a real, independently-exported file grepped this session, sharing SliderTrack/SliderThumb internals but forking the whole outer component and its prop shape: value:number vs value:[number,number], onChange(event,number) vs onChange(event,[number,number])); shadcn says 'axis of the same one, driven by array length' (Slider maps N values to N Thumbs, so 1 value = single, 2 = range, 3+ = 'multiple', genuinely uncapped); M3 says 'axis of the same one, via a boolean prop' (`range: boolean`, forking `value` into `valueStart`/`valueEnd`). This chassis's DECISION (see behavior.chassis) treats range as ONE config axis (`range: [false,true]`, capped at exactly two thumbs) for ALL three columns — a real, declared simplification of shadcn's own uncapped N-thumb capability and Salt's own two-component split, chosen because Salt's OWN two components share every internal part this matrix already models (SliderTrack/SliderThumb are literally the same files for both), and M3's own boolean-prop shape is the closest LITERAL match to what this chassis exposes. SECOND HEADLINE FINDING: unlike checkbox/switch/radio-group, NONE of the three systems' Slider APIs expose a `readOnly`/`readonly` concept anywhere — CONFIRMED ABSENCE in Salt's own SliderProps/RangeSliderProps (unlike Salt's Checkbox/Switch/RadioButton, which all have one), shadcn's Slider (no readOnly prop, no readonly-related class), and M3's Slider class (no readonly-related @property) — the first component in this pipeline where EVERY column agrees on a capability's total absence, not a partial split. THIRD FINDING: keyboard value-change mechanism genuinely forks by MECHANISM even though the RESULT (Arrow/Home/End/PageUp/PageDown behaviour) converges: Salt's own `useSliderThumb` hook attaches its OWN `onKeyDown` to the real native `<input type=\"range\">` and computes every new value itself via `getKeyboardValue` (Arrow ±step, Home->min, End->max, PageUp/PageDown ±step*stepMultiplier) — a JS override that happens to reproduce, keystroke-for-keystroke, what the browser's own native range-input semantics already provide for free, done this way ONLY so Salt can also support `restrictToMarks`/`marks` snapping, which native inputs know nothing about; M3's native input receives NO keydown override for value computation at all (`handleKeydown` exists only to track which thumb is being dragged for the range-overlap 'flip' logic) — its Arrow/Home/End/PageUp/PageDown behaviour is genuinely, unmodified-browser NATIVE; shadcn/Radix has no native input at all (its Thumb is documented as a `<span role=\"slider\">`, not backed by a real `<input>`), so its own keyboard handling is necessarily [R], presumed to reproduce the identical APG pattern via its own JS. This chassis's own native-input approximation (see below) means all three columns CONVERGE on the same OBSERVABLE keyboard behaviour for free, the same convergence-through-approximation shape RADIO-GROUP-MATRIX.md's finding 3 already established for arrow-navigation — but for slider the convergence is JUSTIFIED DIFFERENTLY per column (Salt: real JS reproducing native; M3: real native, no JS; shadcn: declared JS approximation), worth stating plainly rather than assumed uniform.",
+    "chassis": "skeleton/slider.tsx — written from the template's part union: a root, a track (the visual two-tone rail), a fill (the coloured 'progress' segment — ALWAYS a real DOM element in this chassis, a declared approximation of Salt's own per-mode split: Salt draws the single-value fill as a `::before` PSEUDO-element with NO real DOM node, but switches to a real `.saltSliderTrack-fill` DIV the moment `isRange` is true — this chassis renders one real fill element in EVERY mode for uniform cross-system CSS targeting, matching M3's own always-pseudo-but-conceptually-always-present fill and shadcn's own always-real `Range` element), one or two thumbs (each nested INSIDE the track, matching Salt's real DOM exactly — a declared simplification for shadcn, whose real Thumbs are SIBLINGS of Track under Root, and for M3, whose real handles live in a separate `.handleContainer` sibling of `.track`; both are visually and behaviourally equivalent to nesting-inside-track since every part is absolutely positioned against a shared coordinate space either way, and every style row targets its OWN `data-slot` regardless of nesting depth, so this is not a retrofit under rule 1 — no system's selector vocabulary is privileged, only ONE union DOM shape is chosen and named generically), each thumb containing a real native `<input type=\"range\">` (always rendered — matching Salt and M3 exactly; a declared, reasonable approximation for shadcn/Radix, whose real Thumb has no native input at all, per the same 'let the browser do the work it already offers' union checkbox.tsx/switch.tsx/radio-group.tsx already established, since primitives/ was not cloned) SIZED NARROW AND CENTRED ON THE THUMB (matching Salt's own `SliderThumb.css` input positioning exactly: `width: var(--salt-size-base); left: var(--slider-progressPercentage); transform: translateX(-50%)`) rather than M3's real full-track-width clip-path-restricted input pair — chosen because a narrow, per-thumb input needs no clip-path math at all to keep two range thumbs independently draggable, and is the SAME mechanism this component's own Salt source already uses in production. An optional value-readout (`structure.value-readout`, a locked THREE-STRATEGY row — \"tooltip\" for Salt, \"label\" for M3, \"none\" for shadcn, the identical 'genuine strategy fork, not a bare on/off' shape RADIO-GROUP-MATRIX.md's `structure.dot` row already used) nested inside each thumb, shown via CSS-only `:hover`/`:focus-within`/`:has(input:active)` selectors scoped to that ONE thumb (no extra JS state needed — matching M3's own real CSS-only mechanism, and a clean substitute for Salt's own JS-timer-driven hover-delay mechanism, an explicitly declared simplification), plus a `data-force-visible` escape hatch for the harness/conformance driver to demonstrate the readout without simulating a real hover. An optional row of tick marks inside the track (`structure.ticks`, config-gated). Salt-only `slot.min-label`/`slot.max-label` text flanking the track. EVERY conditional style rule anchors its `:has()` at the narrowest ancestor that is guaranteed to contain both the input and its target as descendants (thumb for thumb-scoped rules, root for track/fill-scoped rules that must react to EITHER thumb), per CLAUDE.md rule 12 and the selector-fidelity lesson RADIO-GROUP-MATRIX.md findings 7-8 both taught: verify the selector matches the RIGHT element, not merely SOME element — thumb, track, fill, and value-readout each carry their OWN `data-slot` from this file's first draft, never conflated the way radio-group's own item/dot rows were in ITS first draft."
+  },
+  "skeletonParams": {
+    "range": [false, true],
+    "valueReadout": ["tooltip", "label", "none"],
+    "ticks": [false, true],
+    "disabled": [false, true]
+  },
+  "base": {
+    "[data-slot=\"slider-root\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "position": "relative",
+      "width": "100%",
+      "touch-action": "none"
+    },
+    "[data-slot=\"slider-end-label\"]": {
+      "flex-shrink": "0",
+      "white-space": "nowrap"
+    },
+    "[data-slot=\"slider-track\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "flex": "1",
+      "width": "100%",
+      "overflow": "visible"
+    },
+    "[data-slot=\"slider-fill\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "top": "0",
+      "bottom": "0",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"slider-thumb\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "top": "50%",
+      "transform": "translate(-50%, -50%)",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center"
+    },
+    "[data-slot=\"slider-input\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "inset": "0",
+      "width": "100%",
+      "height": "100%",
+      "margin": "0",
+      "padding": "0",
+      "opacity": "0",
+      "appearance": "none",
+      "cursor": "inherit",
+      "z-index": "2"
+    },
+    "[data-slot=\"slider-value\"]": {
+      "position": "absolute",
+      "bottom": "100%",
+      "left": "50%",
+      "transform": "translate(-50%, -6px)",
+      "pointer-events": "none",
+      "white-space": "nowrap",
+      "opacity": "0",
+      "transition": "opacity 120ms ease"
+    },
+    "[data-slot=\"slider-thumb\"]:is(:hover, :focus-within) [data-slot=\"slider-value\"], [data-slot=\"slider-thumb\"]:has([data-slot=\"slider-input\"]:active) [data-slot=\"slider-value\"], [data-slot=\"slider-thumb\"][data-force-visible=\"true\"] [data-slot=\"slider-value\"]": {
+      "opacity": "1"
+    },
+    "[data-slot=\"slider-ticks\"]": {
+      "position": "absolute",
+      "inset": "0",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"slider-tick\"]": {
+      "position": "absolute",
+      "top": "50%",
+      "transform": "translate(-50%, -50%)"
+    }
+  },
+  "rows": [
+    { "id": "structure.root", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "Salt [S]: `.saltSliderTrack`, the outermost element `SliderTrack` returns, wrapping a `.saltSliderTrack-container` (flex row: minLabel, wrapper, maxLabel). shadcn [S]: `SliderPrimitive.Root` (`data-slot=\"slider\"`), a single flex div that is ALSO the interactive host (`touch-none items-center select-none`). M3 [S]: the `<md-slider>` custom element itself IS the root (`:host { display: inline-flex; min-inline-size: 200px }`), with a `.container` div as its first real child. All three: locked, always present, no config branch needed." },
+
+    { "id": "structure.track", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "Salt [S]: `.saltSliderTrack-rail`, a flex div whose two-tone look is drawn ENTIRELY via `::before` (filled portion)/`::after` (remaining portion) pseudo-elements — no real DOM split between 'filled' and 'unfilled' track. shadcn [S]: `SliderPrimitive.Track` (`data-slot=\"slider-track\"`), a real, always-present div, `overflow-hidden rounded-full bg-muted`. M3 [S]: `.track`, a real div whose OWN two-tone look is ALSO drawn via `::before`/`::after` pseudo-elements (`.track::before` inactive, `.track::after` active) — the SAME pseudo-element mechanism Salt uses, independently. This chassis renders one real track element for all three (uniform selector target); the fill (below) is the row that records Salt's/M3's pseudo-element mechanism as a declared simplification." },
+
+    { "id": "structure.fill", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "THE this-chassis-always-renders-a-real-element row. Salt [S]: NO real DOM node in SINGLE-value mode — `.saltSliderTrack-rail::before` IS the fill, a pseudo-element sized via `width: calc(var(--slider-progressPercentage) - ...)`. The MOMENT `isRange` is true, Salt switches to a REAL `<div className={saltSliderTrack-fill}>` (`SliderTrack.tsx`: `{isRange && <div className={clsx(withBaseName(\"fill\"))} />}`) — a genuinely per-mode structural fact, confirmed by reading the conditional render directly. shadcn [S]: `SliderPrimitive.Range` (`data-slot=\"slider-range\"`), a real, ALWAYS-present div in every mode, absolutely positioned inside Track. M3 [S]: `.track::after`, a pseudo-element, ALWAYS (both single and range modes use the same `.track::after`, with `clip-path` doing the range-vs-single geometry). This chassis renders ONE real `slider-fill` element in EVERY mode for EVERY column (declared approximation for Salt's single-mode pseudo-element and M3's pseudo-element, matching shadcn's own always-real shape) — the SAME class of declared simplification switch.template.json's `structure.track` row already made in the opposite direction (rendering a real element shadcn genuinely lacks)." },
+
+    { "id": "structure.thumb", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "The thumb's SHAPE strategy — whether one or two render is prop.range's job (the config axis), this row documents what a single thumb LOOKS like structurally per system. Salt [S]: `.saltSliderThumb`, a THIN 2px-WIDE BAR (`width: var(--salt-size-fixed-200)` = 2px FIXED, `height: var(--salt-size-selectable)` by density) — NOT a circle, a real, striking structural fact confirmed by reading `SliderThumb.css` directly (no border-radius rule anywhere in the file). shadcn [S]: `SliderPrimitive.Thumb` (`data-slot=\"slider-thumb\"`), a circular `size-4` (16px) disc, `rounded-full border border-primary bg-white`. M3 [S]: `.handleNub`, a circular `corner-full` disc nested inside the larger `.handle` (a 40px state-layer/ripple hit-area, NOT separately modelled — see style.thumb.size's note). Three genuinely different SHAPES for the same conceptual part — Salt's bar, shadcn's ring-bordered white disc, M3's solid-filled disc — recorded under style.thumb.shape/.rest, not smoothed into one look." },
+
+    { "id": "structure.native-input", "piece": "structure", "policy": "switchable", "channel": "info",
+      "note": "Salt [S] and M3 [S] both use a REAL native `<input type=\"range\">` as the actual interaction surface (visually all-but-invisible: Salt `opacity: 0.0001` — a deliberate near-zero rather than a literal 0, presumably to keep the element hit-testable/paintable in every browser; M3 `opacity: 0`). shadcn/Radix [R]: the linked docs describe the Thumb as a `<span role=\"slider\">` with no native input backing it at all (pointer/keyboard driven entirely by Radix's own JS); this chassis renders a real native input anyway (declared union, identical category of approximation checkbox.tsx/switch.tsx/radio-group.tsx already made for their own shadcn columns)." },
+
+    { "id": "structure.value-readout", "piece": "structure", "policy": "locked", "channel": "config", "param": "valueReadout",
+      "note": "A genuine THREE-STRATEGY row, the same shape RADIO-GROUP-MATRIX.md's `structure.dot` row already used (not a bare on/off). Salt = \"tooltip\": `SliderTooltip`, a `visibility: hidden/visible`-toggled bubble with a triangle arrow, shown on pointer-hover (JS-timed, 300ms hide delay), drag, or focus-visible — opt-OUT via `showTooltip`, DEFAULTS TRUE [S]. M3 = \"label\": `.label`, a `transform: scale(0)->scale(1)` pill with a triangle pseudo-element, shown via PURE CSS (`:host(:focus-within)`, `.handleContainer.hover`, `:has(input:active)`) — opt-IN via `labeled`, DEFAULTS FALSE [S]. shadcn = \"none\": CONFIRMED ABSENCE, no value-display element of any kind in the canonical `slider.tsx` [S]. This chassis reproduces the visibility MECHANISM as CSS-only (`:hover`/`:focus-within`/`:has(input:active)`, matching M3's own real mechanism exactly, and a declared simplification of Salt's JS-timer hover-delay — the OBSERVABLE outcome, a readout that appears near the active thumb on hover/focus/drag, is preserved) plus a `data-force-visible` escape hatch for demonstration/testing without simulating a real pointer hover." },
+
+    { "id": "structure.ticks", "piece": "structure", "policy": "switchable", "channel": "config", "param": "ticks",
+      "note": "Salt [S]: `.saltSliderTrack-ticks > .saltSliderTrack-tick`, small rect marks, opt-in via `showTicks` (requires `marks` also be supplied), DEFAULT OFF. Salt ALSO has a SEPARATE, NOT-modelled capability here: `.saltSliderTrack-marks > .saltSliderTrack-markLabel`, text labels positioned under each mark regardless of `showTicks` — declared OUT OF SCOPE (see the matrix doc's scope note: a data-driven array of {label,value} pairs is a distinct multi-item CONTENT mechanism from the single min/max endpoint labels this template DOES model via slot.min-label/slot.max-label, and has no cross-system counterpart to justify the added surface). M3 [S]: `.tickmarks`, a `radial-gradient` dot pattern painted via `background-image` on `::before`/`::after`, opt-in via `ticks`, DEFAULT OFF, count derived from `(max-min)/step`. shadcn: **off** — CONFIRMED ABSENCE, no tick-mark capability of any kind in the canonical `slider.tsx`. This chassis renders real, evenly-spaced tick `<span>`s (capped at a sane count) rather than Salt's discrete rects or M3's radial-gradient background-image, a declared simplification uniform across the two columns that have the capability." },
+
+    { "id": "behavior.role", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Per the W3C APG slider pattern, `role=\"slider\"` with `aria-valuemin`/`aria-valuemax`/`aria-valuenow`. Salt [S] and M3 [S] both get it FOR FREE from the native `<input type=\"range\">`'s own implicit ARIA role — no explicit `role` attribute written by either. shadcn/Radix [R]: the Thumb is documented as an explicit `<span role=\"slider\">`, since it is not a native input at all and must supply the role itself. This chassis's native-input union means every column gets the role for free in practice, the identical convergence-through-approximation RADIO-GROUP-MATRIX.md's own `behavior.role` row already recorded." },
+
+    { "id": "behavior.value-announcement", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Salt [S]: `SliderThumb.tsx` sets `aria-valuenow={value}` and `aria-valuetext={ariaValueText || format?.(value)}` EXPLICITLY on the input, despite `aria-valuenow` already being implicit from a native range input's own `value` — a deliberate belt-and-braces redundancy, confirmed by reading the JSX directly. M3 [S]: relies on the native input's own implicit `aria-valuenow`, PLUS explicit `aria-valuemin`/`aria-valuemax` (because ranged inputs need PER-THUMB bounds narrower than the slider's overall min/max — `ariaMin`/`ariaMax` computed per input in `renderInput()`), PLUS a getter-computed `aria-valuetext` (`renderAriaValueTextStart`/`renderAriaValueTextEnd`). shadcn/Radix [R]: since the Thumb is not a native input, Radix must set `aria-valuenow`/`aria-valuemin`/`aria-valuemax` explicitly in JS, per the linked docs." },
+
+    { "id": "behavior.keyboard-value-change", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "See behavior.pattern's third finding for the full account: Salt is a JS OVERRIDE reproducing native semantics (`useSliderThumb`'s own `handleKeydownOnThumb` -> `getKeyboardValue`: Arrow ±step, Home->min, End->max, PageUp/PageDown ±step*stepMultiplier) [S]; M3 is genuinely NATIVE, no override at all for value computation [S]; shadcn is [R], presumed to reproduce the identical APG pattern via its own JS since there is no native input to lean on. This chassis's real native `<input type=\"range\">` gives every column this behaviour for free in practice (Arrow/Home/End/PageUp\\*/PageDown — \\*stepMultiplier is NOT a native browser concept, so PageUp/PageDown in this chassis move by the BROWSER's own native large-step heuristic for every column, a declared simplification relative to Salt's own configurable `stepMultiplier`, which is recorded under prop.step but not separately reproduced as custom keydown JS)." },
+
+    { "id": "behavior.pointer-drag", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Salt [S]: fully JS-driven — `useSliderThumb`'s `handlePointerMove`, attached to `window` for the duration of the drag, recomputes the value from `clientX` on every move. M3 [S]: genuinely NATIVE — the real input spans the interactive area and the BROWSER performs the drag; M3's own pointer listeners (`handleMove`/`handleEnter`/`handleLeave`) exist ONLY to track hover state for the ripple, not to compute the value. shadcn/Radix [R]: JS pointer tracking, since there is no native input to delegate to. This chassis's real native input makes dragging genuinely native browser behaviour for every column, matching M3's own real mechanism most closely and approximating Salt's/shadcn's JS-driven reality with the SAME declared native-input union already used throughout this row family." },
+
+    { "id": "behavior.track-click-jump", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Clicking anywhere on the track (not just the thumb) jumps the nearest thumb to that position. Salt [S]: explicit JS, `handlePointerDownOnTrack` on the wrapper computes a value from the click position. M3 [S]: genuinely FREE — because the real native input's own hit area spans the FULL track width (`input[type=range] { width:100%; height:100% }`), clicking anywhere on the track IS clicking the input, and the browser's own native range-input click-to-set-value behaviour applies with no extra JS. shadcn/Radix [R]: presumed, the standard Radix Slider convention per the linked docs. This chassis's per-thumb NARROW input (see behavior.chassis) means track-click-jump is reproduced via a small onPointerDown handler on the track itself that finds the nearest thumb and forwards a synthetic value change — a declared, explicit JS mechanism for every column (since the narrow-input choice trades away M3's free full-width click-through in exchange for avoiding clip-path math for range mode)." },
+
+    { "id": "behavior.value-readout-visibility", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "See structure.value-readout for the full mechanism comparison. Salt [S]: shown on pointer-hover (300ms-delayed hide), drag, or keyboard focus — an opt-OUT capability. M3 [S]: shown on hover, focus-within, or active — an opt-IN capability, CSS-only. shadcn: **off** — CONFIRMED ABSENCE, no readout to show." },
+
+    { "id": "behavior.disabled-handling", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Salt [S]: `const disabled = formFieldDisabled || disabledProp` (ancestor `<FormField>` merge, no group construct — Slider has none), `.saltSliderTrack-disabled` sets `pointer-events: none` on the wrapper and dims the whole track. shadcn [S]: native `disabled` on the Root, forwarded to every input; `data-disabled:opacity-50`. M3 [S]: native `?disabled` on each input, PLUS `:host([disabled])` sets a component-wide opacity AND swaps the handle/track colours to `on-surface`-based disabled tokens (a genuinely per-part disabled treatment, unlike Salt's/shadcn's single flat root number — see style.track.disabled/style.fill.disabled/style.thumb.disabled)." },
+
+    { "id": "behavior.form-participation", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Salt [S]: native, the real input(s) ARE the form control(s); in range mode, TWO separate named inputs (`startName`/`endName`) submit independently. shadcn/Radix [R]: presumed hidden native bubble input(s) per the linked docs. M3 [S]: a full form-associated custom element — `getFormValue()` returns a single `String(this.value)` in single mode, or a `FormData` with TWO entries (`nameStart`/`nameEnd`) in range mode — the SAME two-named-values shape Salt's own range variant uses, arrived at independently." },
+
+    { "id": "prop.value-shape", "piece": "prop", "policy": "locked", "channel": "info",
+      "note": "THE headline structural finding of this matrix, stated as its own row — see behavior.pattern's opening paragraph for the full three-way account. Salt: TWO SEPARATE EXPORTED COMPONENTS (`Slider`, `value: number`; `RangeSlider`, `value: [number, number]`), sharing `SliderTrack`/`SliderThumb` internals but forking at the outer component/prop-shape level [S]. shadcn: ONE component, thumb count driven by `value`/`defaultValue` ARRAY LENGTH (`Array.from({length: _values.length}, ...)`) [S]. M3: ONE component, a `range: boolean` property forking `value` into `valueStart`/`valueEnd` [S]. This chassis's own decision — ONE shared `range: [false,true]` config axis, capped at exactly two thumbs — is recorded under prop.range." },
+
+    { "id": "prop.range", "piece": "prop", "policy": "locked", "channel": "config", "param": "range",
+      "note": "The config axis this chassis exposes uniformly for all three columns, capped at two thumbs (see prop.value-shape for why: Salt's own two components already share every internal part this matrix models; M3's own boolean prop is the closest literal match; shadcn's own uncapped N-thumb capability is a declared, out-of-scope superset — see the matrix doc's scope note)." },
+
+    { "id": "prop.bounds", "piece": "prop", "policy": "locked", "channel": "info",
+      "note": "`min`/`max`, all three [S]. A real, sourced DEFAULT DIVERGENCE worth stating plainly: Salt's own default `max` is `10` (`SliderProps.max = 10`, per the JSDoc `@default 10` even though the destructured default in `Slider.tsx` itself reads `max = 100` — RE-CHECKED DIRECTLY: the destructuring default is `max = 100`, so the JSDoc comment is STALE/WRONG relative to the code, a small real doc-vs-code mismatch worth recording rather than trusting the comment — `min = 0` is consistent everywhere). shadcn [S]: `min = 0, max = 100` (Slider.tsx's own destructured defaults). M3 [S]: `min = 0, max = 100` (`@property` defaults). All three converge on 0-100 in the ACTUAL code, despite Salt's own doc comment claiming a 0-10 default." },
+
+    { "id": "prop.step", "piece": "prop", "policy": "locked", "channel": "info",
+      "note": "Salt [S]: `step = 1` default, PLUS a Salt-only `stepMultiplier = 2` (used for PageUp/PageDown, see prop.step-multiplier). shadcn [S]: no explicit default in `slider.tsx` itself, but every canonical example passes `step={1}`; Radix's own published default is also `1` [R] for the library-level default, [S] for shadcn's own consistent usage. M3 [S]: `step = 1` default." },
+
+    { "id": "prop.step-multiplier", "piece": "prop", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY [S]: `stepMultiplier = 2`, multiplies `step` for PageUp/PageDown (`getKeyboardValue`). shadcn/M3: **off** — CONFIRMED ABSENCE, no equivalent prop; PageUp/PageDown on a native range input use the BROWSER's own built-in large-step heuristic instead (not independently configurable)." },
+
+    { "id": "prop.disabled", "piece": "prop", "policy": "locked", "channel": "config", "param": "disabled",
+      "note": "`[false,true]`, all three [S]: Salt `disabled?: boolean` (merged with ancestor FormField), shadcn native `disabled` on Root, M3 `@property({type:Boolean}) disabled`." },
+
+    { "id": "prop.value-format", "piece": "prop", "policy": "switchable", "channel": "info",
+      "note": "Salt [S]: a `format?: (value:number) => string|number` CALLBACK, applied to the tooltip text, min/max labels, AND `aria-valuetext`. M3 [S]: STATIC STRING overrides per instance (`valueLabel`/`valueLabelStart`/`valueLabelEnd`), a genuinely DIFFERENT mechanism (a fixed string, not a function computed per-value) — if unset, M3 falls back to the raw value itself. shadcn: **off** — CONFIRMED ABSENCE, no formatting capability of any kind; the raw numeric value is the only value ever shown (and shadcn shows no value at all by default — see structure.value-readout)." },
+
+    { "id": "prop.restrict-to-marks", "piece": "prop", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY [S]: `restrictToMarks?: boolean`, DEFAULT FALSE — when true, `step` is IGNORED and the value snaps to the nearest `marks[].value` instead (`clamp`'s own branch, confirmed by reading the function). shadcn/M3: **off** — CONFIRMED ABSENCE, no equivalent concept; both rely purely on `step`." },
+
+    { "id": "slot.min-label", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY [S]: `minLabel?: string`, rendered as a `<Text>` flanking the LEFT/start of the track (`SliderTrack.tsx`, falls back to `format?.(min)` when unset). shadcn/M3: **off** — CONFIRMED ABSENCE, neither renders any endpoint text of its own." },
+
+    { "id": "slot.max-label", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY [S]: `maxLabel?: string`, the mirror of slot.min-label, flanking the END of the track. shadcn/M3: **off** — CONFIRMED ABSENCE." },
+
+    { "id": "slot.composes", "piece": "slot", "policy": "default", "channel": "info",
+      "note": "DECLARED COMPOSITION, same convention as every prior template. (a) `label`/`field` — the external label association and helper-text/validation wrapper (shadcn's `field-slider.tsx` `Field`/`FieldTitle`/`FieldDescription`, Salt's `useFormFieldProps()`), an already-scoped, unbuilt canonical row. (b) Salt's own `.saltSliderTrack-marks` value-legend (an array of {label,value} text nodes under each mark) is declared OUT OF SCOPE entirely — a distinct multi-item content mechanism from the single min/max endpoints this template DOES model, with no cross-system counterpart (see structure.ticks's note and the matrix doc's scope table)." },
+
+    { "id": "state.rest", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Salt: a semi-transparent neutral track (`rgba(black,0.5)` light / `rgba(white,0.5)` dark — NOT an opaque grey, a real contrast with every OTHER Salt column's own opaque neutral tokens), an accent-coloured fill and thumb bar. shadcn: a `muted`-coloured track, `primary`-coloured fill, a WHITE thumb disc with a `primary`-coloured 1px ring border (the only column whose thumb is NOT solid-filled with the accent colour — an outline-style thumb on a filled track, the opposite emphasis from Salt/M3's filled thumb). M3: a `surface-container-highest` inactive track, `primary` active track, `primary`-filled circular handle." },
+
+    { "id": "state.hover", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt: **off** for THUMB colour — `SliderThumb.css` has no dedicated `:hover` colour rule (only a cursor change, see style.thumb.cursor); the WRAPPER's own `cursor: var(--salt-cursor-hover)` is the only rest/hover distinction. shadcn: **on** — `hover:ring-4`, a translucent ring appears around the thumb. M3: **off** for colour — `hover-handle-color` is LITERALLY IDENTICAL to `handle-color` (both resolve to `primary`), re-checked directly against the token file specifically because this looked, at a glance, like it should differ the way switch's/checkbox's own hover tokens did; it does not. All visible M3 hover feedback lives in the (documented, not rendered) ripple state-layer at 0.08 opacity." },
+
+    { "id": "state.focus", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Salt: `.saltSliderThumb-focusVisible`, the shared `--salt-focused-*` outline family (2px dotted, characteristic offset/colour tokens). shadcn: `focus-visible:ring-4`, the SAME ring shadcn's own hover state uses (no separate focus-only treatment). M3: **colour-invariant**, the SAME finding as state.hover (`focus-handle-color` also literally equals `primary`) — the only visible M3 focus affordance beyond the (not reproduced) separate `md-focus-ring` element and the (documented, not rendered) 0.12-opacity ripple is the CSS-only value-label appearing (`:host(:focus-within) .label { transform: scale(1) }`, already modelled under structure.value-readout)." },
+
+    { "id": "state.pressed", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt: **off** for colour, **on** for cursor only — `.saltSliderThumb:active, .saltSliderThumb-dragging { cursor: var(--salt-cursor-grab-active) }`, no colour change (see style.thumb.cursor@dragging). shadcn: **off** — CONFIRMED ABSENCE, no `active:` class of any kind; the SAME ring as hover/focus is the only feedback, with no additional pressed-specific treatment. M3: **colour-invariant** again (`pressed-handle-color` also equals `primary`), but the handle-overlap outline mechanism (`with-overlap-handle-outline-*`, applied while two range thumbs coincide) is a real, sourced, PRESSED-adjacent visual — declared OUT OF SCOPE as a modelled style row (it requires live pixel-overlap detection between two thumbs, a JS behaviour, not a themeable CSS declaration; noted here rather than silently dropped, the same documented-not-modelled convention this registry's ripple/state-layer rows already use)." },
+
+    { "id": "state.disabled", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Salt: flat `opacity: 0.4` PLUS `pointer-events: none` on the whole track wrapper. shadcn: flat `opacity: 0.5` on the Root (`data-disabled:opacity-50`), PLUS `disabled:pointer-events-none` on the Thumb specifically. M3: NOT one flat number — `:host([disabled])` sets a component-wide `opacity: 0.38` (`disabled-active-track-opacity`) AND swaps active-track/inactive-track/handle colours all to `on-surface`-based tokens, with the INACTIVE track's own local opacity independently compensated via `calc((1 / 0.38) * 0.12)` so its FINAL visible opacity still nets out to the token's own intended `0.12` after the host-level multiplication — a real, sourced piece of CSS arithmetic, not an approximation." },
+
+    { "id": "style.track.size", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"slider-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `height: var(--track-height)` (= `--salt-size-bar`, by DENSITY: 2/4/6/8px) [S]. shadcn: `h-1.5` = 6px, `data-[orientation=horizontal]:w-full` [S]. M3: `--_inactive-track-height` = 4px, hardcoded literal, both editions [S]." },
+
+    { "id": "style.track.shape", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"slider-track\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: `border-*-radius: var(--salt-palette-corner-weaker)` -> `curve-50`, by DENSITY: 1/2/3/4px [S]. shadcn: `rounded-full` = 9999px [S]. M3: `inactive-track-shape` = `corner-full` = 9999px, both editions [S]." },
+
+    { "id": "style.track.rest", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"slider-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `background-color: var(--track-bg)` -> `--salt-sentiment-neutral-track` -> `--salt-palette-alpha-contrast-high` -> `rgba(black,0.5)` light / `rgba(white,0.5)` dark [S]. shadcn: `background-color: var(--muted)` [S]. M3: `background-color: var(--surface-container-highest)` [S]." },
+
+    { "id": "style.track.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-root\"][data-disabled=\"true\"] [data-slot=\"slider-track\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY, the compensated-opacity math from state.disabled's note, expressed as real CSS. `background-color: var(--on-surface); opacity: calc((1 / 0.38) * 0.12)` [S]. Salt/shadcn: **off** — both dim the whole root uniformly instead (style.root.disabled)." },
+
+    { "id": "style.fill.rest", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"slider-fill\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `background-color: var(--fill-color)` -> `--slider-track-fill` -> `--salt-sentiment-accent-borderColor` -> `--salt-palette-accent` -> blue-500 `rgb(0,120,207)` [S]. shadcn: `background-color: var(--primary)` [S]. M3: `background-color: var(--primary)` (`active-track-color`) [S]." },
+
+    { "id": "style.fill.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-root\"][data-disabled=\"true\"] [data-slot=\"slider-fill\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY: `background-color: var(--on-surface)` (`disabled-active-track-color`) — the host's own `opacity: 0.38` applies on top of this colour swap, with no separate local opacity override needed (unlike the inactive track's compensated math) [S]. Salt/shadcn: **off** — see style.track.disabled." },
+
+    { "id": "style.thumb.size", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"slider-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `width: var(--salt-size-fixed-200)` = 2px FIXED (density-invariant), `height: var(--thumb-height)` (= `--salt-size-selectable`, by density: 12/14/16/18px) — a NARROW BAR, not a disc [S]. shadcn: `size-4` = 16px x 16px [S]. M3: `--_handle-height`/`--_handle-width` = 20px x 20px, hardcoded literals, both editions (the 40px `--_state-layer-size` ripple hit-area around it is NOT separately modelled, the same documented-not-rendered convention every prior M3 state-layer row uses) [S]." },
+
+    { "id": "style.thumb.shape", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-thumb\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: **off** — CONFIRMED ABSENCE, no `border-radius` rule anywhere in `SliderThumb.css`; the thumb is a plain rectangular bar. shadcn: `9999px` (`rounded-full`) [S]. M3: `handle-shape` = `corner-full` = 9999px, both editions [S]." },
+
+    { "id": "style.thumb.rest", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"slider-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `background-color: var(--fill-color)` — the SAME accent slot as the fill, a solid-filled bar [S]. shadcn: `background-color: var(--thumb-bg); border: 1px solid var(--primary); box-shadow: var(--shadow)` — a WHITE disc with a coloured ring border, the only column whose thumb is NOT solid-accent-filled [S]. M3: `background-color: var(--primary)` (`handle-color`) — a solid-filled disc [S]." },
+
+    { "id": "style.thumb.hover", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-thumb\"]:hover",
+      "cellIsDeclarations": true,
+      "note": "shadcn ONLY: `box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent)` (`hover:ring-4`) [S]. Salt/M3: **off** — see state.hover's finding; neither system's thumb changes colour on hover." },
+
+    { "id": "style.thumb.focus", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-thumb\"]:has([data-slot=\"slider-input\"]:focus-visible)",
+      "cellIsDeclarations": true,
+      "note": "Salt: `outline: 2px dotted var(--focus-outline); outline-offset: 1px` (the shared `--salt-focused-*` family) [S]. shadcn: `box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent)` — the SAME ring as hover [S]. M3: **off** — colour-invariant, see state.focus's finding; the CSS-only value-label appearing (structure.value-readout) is M3's real focus affordance here." },
+
+    { "id": "style.thumb.cursor", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"slider-thumb\"]",
+      "declarations": { "cursor": "$" },
+      "note": "Salt: `grab` [S]. shadcn: `pointer` — Tailwind's own default cursor on an interactive element, no dedicated `cursor-grab` class in the canonical source [R, general Tailwind default]. M3: `pointer` — inherited from the native `input[type=range] { cursor: pointer }` rule [S]." },
+
+    { "id": "style.thumb.cursor@dragging", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-thumb\"]:has([data-slot=\"slider-input\"]:active)",
+      "declarations": { "cursor": "$" },
+      "note": "Salt ONLY: `grabbing` (`--salt-cursor-grab-active`, `.saltSliderThumb:active, .saltSliderThumb-dragging`) — a real, sourced cursor-only pressed treatment (see state.pressed) [S]. shadcn/M3: **off** — CONFIRMED ABSENCE, no dedicated active-cursor rule in either." },
+
+    { "id": "style.thumb.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-root\"][data-disabled=\"true\"] [data-slot=\"slider-thumb\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY: `background-color: var(--on-surface)` (`disabled-handle-color`) — relies on the SAME host-level `opacity: 0.38` for its dimming, no separate opacity override [S]. Salt/shadcn: **off** — both dim the whole root uniformly instead (style.root.disabled)." },
+
+    { "id": "style.value-label.rest", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-value\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `background-color: var(--tooltip-bg); border: 1px solid var(--tooltip-border); border-radius: var(--tooltip-radius); box-shadow: var(--tooltip-shadow); padding: var(--spacing-50) var(--spacing-100)` — `container-primary-background`/`container-primary-borderColor`/`corner-weak`/`overlayable-shadow-popout` [S]. M3: `background-color: var(--primary); color: var(--on-primary); border-radius: 9999px; padding: 4px; min-inline-size: 28px; min-block-size: 28px` (`label-container-color`/`label-label-text-color`/`corner-full`/`label-container-height`) [S]. shadcn: **off** — no value-label element renders at all." },
+
+    { "id": "style.value-label.visible", "piece": "style", "policy": "switchable", "channel": "info",
+      "note": "The CSS-only show/hide mechanism itself — see `base`'s own `:is(:hover, :focus-within)`/`:has(input:active)`/`[data-force-visible]` rule and structure.value-readout's note. A single shared mechanism for both Salt (a declared CSS-only simplification of its real JS-timer hover-delay) and M3 (matching its real mechanism exactly)." },
+
+    { "id": "style.ticks.appearance", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-tick\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `width: var(--salt-size-fixed-200); height: var(--tick-height); background-color: var(--track-bg)` (2px-wide rects, `--slider-tick-height` = `(size-selectable - size-bar)/2` by density) [S]. M3: `width: 2px; height: 2px; border-radius: 9999px; background-color: var(--on-surface-variant)` (`with-tick-marks-container-size`/`-inactive-container-color`, rendered here as real dots rather than M3's own radial-gradient background-image trick) [S]. shadcn: **off** — CONFIRMED ABSENCE." },
+
+    { "id": "style.root.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-root\"][data-disabled=\"true\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `opacity: 0.4; pointer-events: none` [S]. shadcn: `opacity: 0.5` (pointer-events are cut at the Thumb specifically, `disabled:pointer-events-none`, not the root) [S]. M3: `opacity: 0.38` (`disabled-active-track-opacity`) — a REAL, sourced HOST-LEVEL multiplier `:host([disabled])` applies UNCONDITIONALLY, found only by live verification: the first draft of this column left this row `off`, reasoning M3's disabled treatment was 'per-part instead' (style.track.disabled/style.fill.disabled/style.thumb.disabled) — TRUE for the per-part COLOUR swaps, but WRONG about opacity: M3 applies BOTH a host-wide 0.38 multiplier AND per-part colour swaps together, not one instead of the other. Confirmed live: without this row, a disabled M3 fill/thumb rendered at full opacity (colour-swapped but undimmed), and the inactive track's own locally-compensated `calc((1/0.38)*0.12)` opacity (style.track.disabled) rendered as its RAW value (~0.32) instead of the NET ~0.12 the compensating math is written to produce once multiplied by the host's own 0.38 — see the matrix doc's findings." },
+
+    { "id": "style.root.cursor", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-root\"]:not([data-disabled=\"true\"])",
+      "declarations": { "cursor": "$" },
+      "note": "Salt: `pointer` (`.saltSliderTrack-wrapper { cursor: var(--salt-cursor-hover) }`) [S]. shadcn: **off** — CONFIRMED ABSENCE, no cursor utility on the Root itself. M3: **off** — CONFIRMED ABSENCE, no `:host { cursor: ... }` rule anywhere in `_slider.scss`, a real, sourced CONTRAST with switch's own M3 column, which DOES write one (SWITCH-MATRIX.md finding 6) — re-checked directly because that precedent made 'M3 writes an explicit host cursor' feel like the default expectation; slider's own source shows it is not." },
+
+    { "id": "style.root.min-width", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-root\"]",
+      "declarations": { "min-inline-size": "$" },
+      "note": "M3 ONLY: `:host { min-inline-size: 200px }` — a real, sourced minimum-width floor unique to M3; neither Salt (`width:100%` of parent, no floor) nor shadcn (`flex` with no min-width utility) impose one [S]." },
+
+    { "id": "style.root.gap", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-root\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt ONLY: `.saltSliderTrack-container { gap: var(--salt-spacing-100) }`, by DENSITY — the space between the min/max end-labels and the track itself [S]. shadcn/M3: **off** — neither owns end-label text, nothing to space." },
+
+    { "id": "style.end-labels.font", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"slider-end-label\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY: `font-size/line-height/font-family/font-weight: var(--label-*)` (the LABEL text role, by density) plus `color: var(--label-fg)` (`content-secondary-foreground`) [S]. shadcn/M3: **off** — no end-label element renders." }
+  ]
+}

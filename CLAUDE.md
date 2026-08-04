@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **17 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **18 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -104,7 +104,7 @@ loop.
   → `3-source/salt-ds`, `material-components/material-web` →
   `3-source/material-web`. Folder names must match exactly — provenance
   strings across every matrix doc cite paths inside them.
-- 62 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
+- 61 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
 
 ### Method notes that cost real time to learn
 
@@ -215,6 +215,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `progress` | [`PROGRESS-MATRIX.md`](PROGRESS-MATRIX.md) | 51 | 40 | 23 | 24 | ✓ |
 | `radio-group` | [`RADIO-GROUP-MATRIX.md`](RADIO-GROUP-MATRIX.md) | 54 | 45 | 34 | 28 | ✓ |
 | `select` | [`SELECT-MATRIX.md`](SELECT-MATRIX.md) | 113 | 84 | 53 | 51 | — |
+| `slider` | [`SLIDER-MATRIX.md`](SLIDER-MATRIX.md) | 53 | 46 | 34 | 41 | ✓ |
 | `spinner` | [`SPINNER-MATRIX.md`](SPINNER-MATRIX.md) | 20 | 12 | 8 | 9 | — |
 | `switch` | [`SWITCH-MATRIX.md`](SWITCH-MATRIX.md) | 53 | 41 | 30 | 38 | ✓ |
 | `tabs` | [`TABS-MATRIX.md`](TABS-MATRIX.md) | 98 | 64 | 54 | 44 | ✓ |
@@ -408,34 +409,37 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `radio-group` (component 16, row 17/79), following
-switch. Committed and pushed to `claude/next-component-7e5dex` (`40a793a`
-was switch; radio-group's commit follows this edit). `switch` itself
-(component 15) is ALSO now committed — the "not yet committed" note that
-used to live here is stale; check `git log` if in doubt rather than
-trusting stale prose.
+Last action: built `slider` (component 17, row 18/79), following
+radio-group. `switch` and `radio-group` are both committed and pushed to
+`claude/next-component-7e5dex`; `slider`'s commit follows this edit —
+check `git log` if in doubt rather than trusting stale prose in this file.
 
-radio-group is the strongest verification pass yet AND the one that proves
-verification has more than one dimension. A headless browser was available
-this time (unlike switch), so the building session itself ran
-`getComputedStyle`/`getBoundingClientRect` live and found one real defect
-(M3's inner dot missing a baseline `opacity:0` — fixed, see finding 1) —
-but that pass checked STATE CHANGES, not LAYOUT, and missed a second real
-defect: 12 `style.item.*` rows targeted the label-wrapping ROOT
-(`radio-item`) instead of the actual circular element (`radio-dot`),
-matching Salt's own `RadioButtonIcon` vs `.saltRadioButton` split. Harmless
-for shadcn/M3 (no owned label to squeeze), but for Salt it force-sized the
-whole label+dot region to a 14px box, crushing the label text against the
-dot with zero gap (the internal gap row didn't exist either). Found on a
-SECOND orchestrator review pass, fixed by retargeting all 12 rows to
-`radio-dot` and adding the missing `style.item.gap` row — see
-RADIO-GROUP-MATRIX.md finding 8 for the full account and the lesson: a
-selector matching its intended element (finding 7's check) is not the same
-guarantee as that element being the RIGHT one (finding 8's check) — verify
-both state AND layout, not just one.
+slider is architecturally the first non-toggle component in this run (a
+continuous, drag/keyboard-positioned numeric value, not a discrete
+checked/unchecked state), and it held up well against BOTH lessons the
+last three components established: every part (track/fill/thumb/value-
+label/tick/end-label) got its own `data-slot` from the first draft (the
+radio-group finding-8 lesson), and the value-label is absolutely
+positioned out of flow above the thumb rather than squeezed into a flex
+row (avoiding radio-group's exact overlap bug by construction, not by
+luck). Orchestrator review independently confirmed, live: a real 3x
+ArrowRight keypress moves the thumb and resizes the fill identically
+(30→33, +36px) in all three columns; `getBoundingClientRect` showed no
+overlap anywhere, including the tooltip-style value readout; M3's disabled
+opacity fix (found and fixed during the build itself — `style.root.disabled`
+was wrongly `off`, real M3 source applies host-level `opacity:0.38` in
+ADDITION to per-part colour swaps) visually confirmed. No new defect found
+on review this time — the running list of lessons is starting to compound.
+
+Range-slider (Salt's separate two-thumb component) was folded into this
+component as a `range: [false,true]` config axis rather than built as a
+separate row, since shadcn and M3 both treat range as an axis of the same
+component and Salt's two components share every internal part already
+modelled here — a deliberate scope decision, recorded in SLIDER-MATRIX.md,
+not a silent absorption.
 
 Everything regenerates clean; all four automated gates green; conformance
-89/89 minus the one pre-existing, unrelated `tabs` failure (unchanged by
+107/107 minus the one pre-existing, unrelated `tabs` failure (unchanged by
 this build — see Known-open work).
 
 **Standing priority order — still true, still not done, all deferred by
@@ -447,21 +451,20 @@ list" over stopping to clear the queue):**
 3. Backfill 250 uncited slots (select 73, input 42, badge, card).
 4. Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure.
 5. Fix the fonts/ path bug across every `build-<name>-check.mjs`.
-6. **Continue components** — 62 canonical rows remain, order per
+6. **Continue components** — 61 canonical rows remain, order per
    `1-intro/content/04-component-map.md`: rows with real cross-system character first.
 
-**New standing lesson for the next component's build prompt, alongside
-checkbox's two:** before finalizing a template, ask not just "does this
-selector match something" (`:has()` solves that) but "does it match the
-right something" — when a shared wrapper conflates two real, separately-
-sized/styled elements from source (a label root vs. a visual box), give
-them separate `data-slot`s from the first draft, the way checkbox's
-root/box/icon three-tier split already did it correctly.
-
-**If resuming mid-session:** switch's files are written and gate-clean but
-not yet `git commit`ed as of this edit — check `git status` before assuming
-step 6 needs a fresh component; the very next action may just be `git add`
-+ commit + push for switch, not a new build.
+**Standing lessons for the next component's build prompt** (checkbox's two,
+plus radio-group's, all still current): (a) verify a selector actually
+matches something in your rendered DOM, don't assume from reading JSX;
+(b) a structure row needs real CSS geometry behind it, not just a declared
+strategy; (c) a selector matching SOMETHING is not the same guarantee as
+matching the RIGHT something — give logically distinct parts (a label root
+vs. a visual box vs. a value readout) separate `data-slot`s from the first
+draft, and verify LAYOUT (`getBoundingClientRect`, no overlap) as a
+separate check from verifying STATE (`getComputedStyle` changes on
+interaction) — slider's clean pass suggests these lessons generalize once
+stated explicitly rather than rediscovered per component.
 
 ## Working with this user
 

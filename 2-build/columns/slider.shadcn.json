@@ -1,0 +1,99 @@
+{
+  "system": "shadcn",
+  "component": "slider",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "muted": "oklch(0.97 0 0)",
+      "primary": "oklch(0% 0 0)",
+      "thumb-bg": "oklch(1 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "shadow-color": "rgb(0 0 0 / 0.05)"
+    },
+    "dark": {
+      "muted": "oklch(0.269 0 0)",
+      "primary": "oklch(0.922 0 0)",
+      "ring": "oklch(0.556 0 0)"
+    }
+  },
+  "modeInvariant": ["thumb-bg", "shadow-color"],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/slider.tsx — ONE component (`SliderPrimitive.Root`), rendering a `Track` (`data-slot=\"slider-track\"`) wrapping an ALWAYS-PRESENT `Range` (`data-slot=\"slider-range\"`), plus N `Thumb`s (`data-slot=\"slider-thumb\"`) as SIBLINGS of `Track` under `Root` — thumb COUNT is `Array.from({length: _values.length}, ...)`, driven purely by how many entries `value`/`defaultValue` has, an uncapped N-thumb capability (see prop.value-shape). Token values from apps/v4/app/globals.css (light block from line 100, dark from line 144) — the SAME --muted/--primary/--ring/shadow values every prior shadcn column in this pipeline has resolved from. Read for range/orientation/disabled: slider-demo.tsx, slider-range.tsx, slider-multiple.tsx, slider-vertical.tsx, slider-disabled.tsx, slider-controlled.tsx, field-slider.tsx, slider-rtl.tsx. Read only to fix structural boundaries (NOT canonical): apps/v4/registry/bases/{radix,base,aria}/ui/slider.tsx (the radix base variant moves the identical Root/Track/Range/Thumb shape behind `cn-slider-*` class tokens, same conclusions, no extra capability) and apps/v4/content/docs/components/radix/slider.mdx, which LINKS to but does not itself document Radix's internal element. **primitives/ was NOT cloned**, per the project's standing rule. Every cell depending on Radix's internal element/ARIA wiring (structure.native-input, behavior.role, behavior.value-announcement, behavior.keyboard-value-change, behavior.pointer-drag, behavior.track-click-jump, behavior.form-participation) is marked [R], citing https://www.radix-ui.com/docs/primitives/components/slider.",
+    "n-thumb-capability": "slider.tsx's own `_values` memo and the `Array.from({length: _values.length}, ...)` Thumb-mapping loop are the WHOLE mechanism — passing a 3+ element `value` array (`slider-multiple.tsx`) renders 3+ thumbs with NO other code change, confirmed by reading the file directly. This registry's own chassis caps at two thumbs (prop.range) — a declared, out-of-scope reduction of shadcn's own genuinely uncapped capability, recorded rather than silently matched or silently dropped.",
+    "orientation": "`data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 ... data-[orientation=vertical]:flex-col` on Root, PLUS matching `data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5` on Track and `data-[orientation=vertical]:w-full` on Range — a real, sourced, SHADCN-ONLY capability (slider-vertical.tsx), declared OUT OF SCOPE per the matrix doc's scope note (Salt has no orientation axis at all; M3's Slider class has no orientation-related @property anywhere in slider.ts, confirmed by reading the class directly) rather than silently built or silently dropped.",
+    "muted": "Track's own className: `bg-muted` -> globals.css --muted :111 (light) / :154 (dark).",
+    "primary": "Range's own className: `bg-primary` -> globals.css --primary :107 (light) / :150 (dark) — the SAME inversion (near-black light, near-white dark) every prior shadcn column has recorded. Thumb's own `border-primary` reuses the identical slot for its ring border.",
+    "thumb-bg": "Thumb's own className: `bg-white` — a LITERAL Tailwind static-white utility, NOT the theme's own `--background` token (checked directly: `bg-white` resolves to the fixed colour white in Tailwind's default palette, unlike `bg-background`, which tracks the theme). MODE-INVARIANT because it is a literal, not a themed slot — a genuinely different mechanism from switch's own `thumb-bg`, which DID track `--background`.",
+    "ring": "Thumb's own className: `ring-ring/50` (hover AND focus-visible both reuse it) -> globals.css --ring :119 (light) / :162 (dark).",
+    "shadow-color": "Thumb's own className: `shadow-sm` = 0 1px 2px 0 rgb(0 0 0 / 0.05). Tailwind is not vendored in this clone; reused verbatim from button.shadcn.json's already-extracted value, matching every prior shadcn column's own citation. MODE-INVARIANT.",
+    "no-value-display": "CONFIRMED ABSENCE, checked directly against the ENTIRE literal source: no tooltip, no label, no value-text element of any kind renders anywhere in the canonical slider.tsx — the raw value is only ever visible if a CONSUMER renders it themselves (field-slider.tsx does exactly this, printing `{value[0]}`/`{value[1]}` in its own FieldDescription, entirely outside this component).",
+    "no-ticks-no-marks": "CONFIRMED ABSENCE — no tick-mark or mark-label capability of any kind anywhere in slider.tsx.",
+    "no-readonly": "CONFIRMED ABSENCE — no readOnly/readonly prop or class anywhere.",
+    "no-format": "CONFIRMED ABSENCE — no value-formatting prop of any kind; the raw numeric value is the only value this component ever knows about."
+  },
+  "cells": {
+    "structure.root": { "kind": "value", "value": "flex host", "source": "SliderPrimitive.Root, data-slot=\"slider\", also the interactive touch-none host" },
+    "structure.track": { "kind": "value", "value": "always-real div", "source": "SliderPrimitive.Track, data-slot=\"slider-track\", overflow-hidden rounded-full bg-muted" },
+    "structure.fill": { "kind": "value", "value": "always-real div", "source": "SliderPrimitive.Range, data-slot=\"slider-range\", absolutely positioned inside Track" },
+    "structure.thumb": { "kind": "value", "value": "a circular 16px disc, ring-bordered, not solid-filled", "source": "SliderPrimitive.Thumb, data-slot=\"slider-thumb\", size-4 rounded-full border border-primary bg-white shadow-sm" },
+    "structure.native-input": { "kind": "value", "value": true, "note": "[R] — the linked Radix docs describe the Thumb as a <span role=\"slider\">, not a native input at all; this chassis renders a real native input anyway, the same declared union checkbox.tsx/switch.tsx/radio-group.tsx already made" },
+    "structure.value-readout": { "kind": "value", "value": "none", "note": "CONFIRMED ABSENCE — see no-value-display; recorded as the genuine third STRATEGY value (not a bare absence) since this row is locked with three real per-system answers" },
+    "structure.ticks": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-ticks-no-marks" },
+
+    "behavior.role": { "kind": "value", "value": "[R] explicit role=\"slider\" on a <span>, per the linked docs — no native element to get it for free from", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.value-announcement": { "kind": "value", "value": "[R] aria-valuenow/aria-valuemin/aria-valuemax set explicitly in JS, per the linked docs", "note": "no native input to read them from" },
+    "behavior.keyboard-value-change": { "kind": "value", "value": "[R] presumed JS reproducing the APG slider pattern (Arrow/Home/End/PageUp/PageDown), since there is no native input to delegate to", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.pointer-drag": { "kind": "value", "value": "[R] JS pointer tracking, since there is no native input to delegate to", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.track-click-jump": { "kind": "value", "value": "[R] presumed, the standard Radix Slider convention per the linked docs", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.value-readout-visibility": { "kind": "off", "note": "no readout to show — see no-value-display" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native disabled on Root, forwarded to every input; data-disabled:opacity-50 on Root, disabled:pointer-events-none on Thumb", "source": "slider.tsx className strings" },
+    "behavior.form-participation": { "kind": "value", "value": "[R] a hidden native bubble input per thumb, per the linked docs", "note": "not independently confirmable without primitives/ cloned" },
+
+    "prop.value-shape": { "kind": "value", "value": "ONE component, thumb count driven by value/defaultValue ARRAY LENGTH — a genuinely uncapped N-thumb capability", "source": "see n-thumb-capability" },
+    "prop.range": { "kind": "value", "value": [false, true], "note": "reached by passing a 2-element array; this chassis caps the real, uncapped N-thumb capability at exactly two — see n-thumb-capability" },
+    "prop.bounds": { "kind": "value", "value": { "min": 0, "max": 100 }, "source": "slider.tsx destructured defaults: min = 0, max = 100" },
+    "prop.step": { "kind": "value", "value": 1, "note": "[S/R] no explicit default in slider.tsx's own destructuring, but every canonical example passes step={1}; Radix's own published library default is also 1" },
+    "prop.step-multiplier": { "kind": "off", "note": "CONFIRMED ABSENCE — no equivalent prop; PageUp/PageDown use whatever large-step heuristic Radix's own JS implements internally, not independently configurable" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "native disabled, a real HTML attribute Radix forwards" },
+    "prop.value-format": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-format" },
+    "prop.restrict-to-marks": { "kind": "off", "note": "CONFIRMED ABSENCE — no marks/ticks capability at all, see no-ticks-no-marks" },
+
+    "slot.min-label": { "kind": "off", "note": "CONFIRMED ABSENCE — no endpoint text of its own" },
+    "slot.max-label": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "slot.composes": { "kind": "value", "value": true, "note": "label/field (id/htmlFor, field-slider.tsx's own Field/FieldTitle/FieldDescription — which is ALSO where the raw value ever becomes visible text, entirely outside this component)" },
+
+    "state.rest": { "kind": "value", "value": "a muted-coloured track, a primary-coloured fill, a WHITE thumb disc with a primary-coloured 1px ring border", "note": "the only column whose thumb is NOT solid-accent-filled — an outline-style thumb on a filled track" },
+    "state.hover": { "kind": "value", "value": "a translucent 4px ring appears around the thumb", "source": "hover:ring-4" },
+    "state.focus": { "kind": "value", "value": "the SAME translucent 4px ring as hover — no separate focus-only treatment", "source": "focus-visible:ring-4" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — no active: class of any kind; the same ring as hover/focus is the only feedback at every interaction state" },
+    "state.disabled": { "kind": "value", "value": "opacity 0.5 on the Root, pointer-events:none on the Thumb specifically", "source": "data-disabled:opacity-50, disabled:pointer-events-none" },
+
+    "style.track.size": { "kind": "value", "value": { "height": "6px" }, "source": "h-1.5" },
+    "style.track.shape": { "kind": "value", "value": "9999px", "source": "rounded-full" },
+    "style.track.rest": { "kind": "value", "value": { "background-color": "var(--muted)" }, "source": "bg-muted" },
+    "style.track.disabled": { "kind": "off", "note": "shadcn applies a single flat opacity at the root instead — see style.root.disabled" },
+
+    "style.fill.rest": { "kind": "value", "value": { "background-color": "var(--primary)" }, "source": "bg-primary" },
+    "style.fill.disabled": { "kind": "off", "note": "see style.track.disabled" },
+
+    "style.thumb.size": { "kind": "value", "value": { "width": "16px", "height": "16px" }, "source": "size-4" },
+    "style.thumb.shape": { "kind": "value", "value": "9999px", "source": "rounded-full" },
+    "style.thumb.rest": { "kind": "value", "value": { "background-color": "var(--thumb-bg)", "border": "1px solid var(--primary)", "box-shadow": "var(--shadow-color)" }, "source": "bg-white border border-primary shadow-sm" },
+    "style.thumb.hover": { "kind": "value", "value": { "box-shadow": "0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent)" }, "source": "hover:ring-4 ring-ring/50" },
+    "style.thumb.focus": { "kind": "value", "value": { "box-shadow": "0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent)" }, "source": "focus-visible:ring-4 ring-ring/50" },
+    "style.thumb.cursor": { "kind": "value", "value": "pointer", "note": "[R] Tailwind's own default interactive-element cursor; no dedicated cursor-grab class in the canonical source" },
+    "style.thumb.cursor@dragging": { "kind": "off", "note": "CONFIRMED ABSENCE — no dedicated active-cursor rule" },
+    "style.thumb.disabled": { "kind": "off", "note": "see style.track.disabled" },
+
+    "style.value-label.rest": { "kind": "off", "note": "no value-label element renders — see no-value-display" },
+    "style.value-label.visible": { "kind": "off", "note": "nothing to show or hide" },
+
+    "style.ticks.appearance": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-ticks-no-marks" },
+
+    "style.root.disabled": { "kind": "value", "value": { "opacity": "0.5" }, "source": "data-disabled:opacity-50 on Root" },
+    "style.root.cursor": { "kind": "off", "note": "CONFIRMED ABSENCE — no cursor utility on Root itself" },
+    "style.root.min-width": { "kind": "off", "note": "CONFIRMED ABSENCE — no min-width utility on Root" },
+    "style.root.gap": { "kind": "off", "note": "no owned end-label text, nothing to space" },
+    "style.end-labels.font": { "kind": "off", "note": "no end-label element renders" }
+  }
+}

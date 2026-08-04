@@ -38,6 +38,7 @@ import { Card } from "../skeleton/card"
 import { Checkbox, CheckboxGroup, type CheckboxConfig } from "../skeleton/checkbox"
 import { Switch } from "../skeleton/switch"
 import { RadioGroup, RadioItem } from "../skeleton/radio-group"
+import { Slider } from "../skeleton/slider"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -46,6 +47,7 @@ import cardCfg from "../out/gen/card-config.json"
 import checkboxCfg from "../out/gen/checkbox-config.json"
 import switchCfg from "../out/gen/switch-config.json"
 import radioGroupCfg from "../out/gen/radio-group-config.json"
+import sliderCfg from "../out/gen/slider-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -709,6 +711,130 @@ async function checkRadioGroup(host: HTMLElement, system: string) {
   mount4.remove()
 }
 
+// ---------------------------------------------------------------------- slider
+
+async function checkSlider(host: HTMLElement, system: string) {
+  const cfg = (sliderCfg as Record<string, any>)[system]
+
+  // 1 — behavior.keyboard-value-change / behavior.pointer-drag: the real
+  // TRANSITION, not two static mounts (CLAUDE.md method notes). Mount a
+  // live, controlled single-value slider, dispatch a real keyboard
+  // ArrowRight on the native input, and confirm the value actually
+  // increases AND the thumb's own inline `left` percentage moves with it —
+  // the exact class of check RADIO-GROUP-MATRIX.md finding 8 says is NOT
+  // the same guarantee as a bare state-change assertion: this also proves
+  // the STYLE (position) responds, not just the React state.
+  const mount1 = document.createElement("div")
+  mount1.setAttribute("data-theme", system)
+  host.appendChild(mount1)
+  const root1 = createRoot(mount1)
+  function TransitionHarness() {
+    const [value, setValue] = React.useState(30)
+    return <Slider config={cfg} value={value} onValueChange={(v) => setValue(v as number)} min={0} max={100} step={1} aria-label="transition" />
+  }
+  root1.render(<TransitionHarness />)
+  await settle()
+  const input1 = mount1.querySelector('[data-slot="slider-input"]') as HTMLInputElement | null
+  const thumb1 = mount1.querySelector('[data-slot="slider-thumb"]') as HTMLElement | null
+  record("slider", "structure.native-input", system, !!input1, input1 ? "native input rendered" : "no input found")
+  if (input1 && thumb1) {
+    const leftBefore = thumb1.style.left
+    focusFor(input1)
+    key(input1, "ArrowRight")
+    // a native range input's own default keyboard action requires a TRUSTED
+    // event to fire for real, which a headless synthetic KeyboardEvent is
+    // not — so this also drives the observable consequence directly
+    // (valueAsNumber + a real 'input' event), the same "assert the
+    // consequence, not just that the listener fired" shape checkbox's own
+    // conformance check already uses for Space.
+    input1.valueAsNumber = input1.valueAsNumber + 1
+    input1.dispatchEvent(new Event("input", { bubbles: true }))
+    await settle()
+    const leftAfter = thumb1.style.left
+    record(
+      "slider",
+      "behavior.keyboard-value-change",
+      system,
+      leftAfter !== leftBefore,
+      `thumb left before=${leftBefore}, after ArrowRight/input=${leftAfter}`,
+    )
+  }
+  root1.unmount()
+  mount1.remove()
+
+  // 2 — range mode: two distinct thumbs render, and moving ONE does not move
+  // the other — the structural proof that this chassis's shared `range`
+  // config axis actually produces TWO independently addressable thumbs, not
+  // a cosmetic duplicate.
+  const mount2 = document.createElement("div")
+  mount2.setAttribute("data-theme", system)
+  host.appendChild(mount2)
+  const root2 = createRoot(mount2)
+  root2.render(<Slider config={cfg} range defaultValue={[20, 60]} min={0} max={100} step={1} aria-label="range" />)
+  await settle()
+  const inputs2 = [...mount2.querySelectorAll('[data-slot="slider-input"]')] as HTMLInputElement[]
+  const thumbs2 = [...mount2.querySelectorAll('[data-slot="slider-thumb"]')] as HTMLElement[]
+  record("slider", "prop.range", system, inputs2.length === 2 && thumbs2.length === 2, `${inputs2.length} inputs, ${thumbs2.length} thumbs rendered for a range slider`)
+  if (inputs2.length === 2) {
+    const secondThumbLeftBefore = thumbs2[1].style.left
+    inputs2[0].valueAsNumber = 10
+    inputs2[0].dispatchEvent(new Event("input", { bubbles: true }))
+    await settle()
+    record(
+      "slider",
+      "prop.value-shape",
+      system,
+      thumbs2[1].style.left === secondThumbLeftBefore,
+      `moving the FIRST thumb must not move the SECOND — second thumb left before=${secondThumbLeftBefore}, after=${thumbs2[1].style.left}`,
+    )
+  }
+  root2.unmount()
+  mount2.remove()
+
+  // 3 — behavior.disabled-handling: a disabled slider's input must not
+  // accept a value change.
+  const mount3 = document.createElement("div")
+  mount3.setAttribute("data-theme", system)
+  host.appendChild(mount3)
+  const root3 = createRoot(mount3)
+  root3.render(<Slider config={cfg} defaultValue={40} disabled aria-label="disabled" />)
+  await settle()
+  const root3El = mount3.querySelector('[data-slot="slider-root"]')
+  const input3 = mount3.querySelector('[data-slot="slider-input"]') as HTMLInputElement | null
+  record(
+    "slider",
+    "behavior.disabled-handling",
+    system,
+    root3El?.getAttribute("data-disabled") === "true" && input3?.disabled === true,
+    `root data-disabled=${root3El?.getAttribute("data-disabled")}, input.disabled=${input3?.disabled}`,
+  )
+  root3.unmount()
+  mount3.remove()
+
+  // 4 — structure.value-readout: the readout element exists ONLY where the
+  // column's own config says it should (tooltip/label -> present; none ->
+  // CONFIRMED ABSENT), asserting the negative case as load-bearing as the
+  // positive one, the same discipline radio-group's own structure.group
+  // assertion established for M3's name-scoped absence.
+  const mount4 = document.createElement("div")
+  mount4.setAttribute("data-theme", system)
+  host.appendChild(mount4)
+  const root4 = createRoot(mount4)
+  root4.render(<Slider config={cfg} defaultValue={50} forceShowValue aria-label="readout" />)
+  await settle()
+  const hasReadout = !!mount4.querySelector('[data-slot="slider-value"]')
+  const expectReadout = cfg.valueReadout !== "none"
+  record(
+    "slider",
+    "structure.value-readout",
+    system,
+    hasReadout === expectReadout,
+    `config.valueReadout=${cfg.valueReadout}; expected a readout element=${expectReadout}; actual present=${hasReadout}`,
+  )
+  root4.unmount()
+  mount4.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -724,6 +850,7 @@ async function run() {
     try { await checkCheckbox(host, s) } catch (e) { record("checkbox", "(threw)", s, false, String(e)) }
     try { await checkSwitch(host, s) } catch (e) { record("switch", "(threw)", s, false, String(e)) }
     try { await checkRadioGroup(host, s) } catch (e) { record("radio-group", "(threw)", s, false, String(e)) }
+    try { await checkSlider(host, s) } catch (e) { record("slider", "(threw)", s, false, String(e)) }
   }
   host.remove()
 

@@ -1,0 +1,131 @@
+{
+  "system": "salt",
+  "component": "slider",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "track-bg": "rgba(0, 0, 0, 0.5)",
+      "accent": "rgb(0, 120, 207)",
+      "tooltip-bg": "rgb(255, 255, 255)",
+      "tooltip-border": "rgba(0, 0, 0, 0.3)",
+      "tooltip-shadow": "0 6px 10px 0 rgba(0, 0, 0, 0.2)",
+      "tooltip-fg": "rgb(0, 0, 0)",
+      "focus-outline": "rgb(0, 69, 126)",
+      "label-fg": "rgb(76, 81, 87)",
+      "type-fontFamily": "'Open Sans', sans-serif",
+      "type-fontWeight": "400"
+    },
+    "dark": {
+      "track-bg": "rgba(255, 255, 255, 0.5)",
+      "tooltip-bg": "rgb(16, 24, 32)",
+      "tooltip-border": "rgba(255, 255, 255, 0.3)",
+      "tooltip-shadow": "0 6px 10px 0 rgba(0, 0, 0, 0.55)",
+      "tooltip-fg": "rgb(255, 255, 255)",
+      "focus-outline": "rgb(154, 189, 245)",
+      "label-fg": "rgb(177, 181, 185)"
+    },
+    "byDensity": {
+      "high":   { "track-height": "2px", "track-radius": "1px", "thumb-height": "12px", "tick-height": "5px", "root-gap": "4px",  "label-fontSize": "10px", "label-lineHeight": "13px" },
+      "medium": { "track-height": "4px", "track-radius": "2px", "thumb-height": "14px", "tick-height": "5px", "root-gap": "8px",  "label-fontSize": "11px", "label-lineHeight": "14px" },
+      "low":    { "track-height": "6px", "track-radius": "3px", "thumb-height": "16px", "tick-height": "5px", "root-gap": "12px", "label-fontSize": "12px", "label-lineHeight": "16px" },
+      "touch":  { "track-height": "8px", "track-radius": "4px", "thumb-height": "18px", "tick-height": "5px", "root-gap": "16px", "label-fontSize": "14px", "label-lineHeight": "18px" }
+    }
+  },
+  "modeInvariant": ["accent", "type-fontFamily", "type-fontWeight"],
+  "provenance": {
+    "canonical-source": "packages/core/src/slider/{Slider.tsx,RangeSlider.tsx,internal/SliderTrack.tsx,internal/SliderTrack.css,internal/SliderThumb.tsx,internal/SliderThumb.css,internal/SliderTooltip.tsx,internal/SliderTooltip.css,internal/useSliderThumb.ts,internal/useRangeSliderThumb.ts,internal/utils.ts} — TEN files, the whole component family (two exported components, five internal files, one shared utils module), read in full. packages/core/stories/{slider/{slider.stories.tsx,slider.qa.stories.tsx},range-slider/{range-slider.stories.tsx,range-slider.qa.stories.tsx}} — CONFIRMED RangeSlider is a real, separately-exported component (`RangeSlider.tsx`, its own props, its own hook `useRangeSliderThumb`), not merely a story or example of `Slider` with two values, per the orchestrator's own scoping question. Resolution through packages/theme/css/next/characteristics/{sentiment,container,content,focused}.css, next/palette/{alpha,accent,foreground,corner}.css, next/foundations/{color,alpha,size,spacing,curve}.css, next/characteristics/text.css (the LABEL role, distinct from every prior column's own BODY role).",
+    "range-slider-is-real": "RESOLVES THE ORCHESTRATOR'S SCOPING QUESTION DIRECTLY: `packages/core/src/slider/RangeSlider.tsx` is a full, independent, exported component (197 lines, its OWN `RangeSliderProps` interface with `value: [number,number]`, `startName`/`endName`, `onChange(event, [number,number])`) — not a thin wrapper or a stories-only example. It shares `SliderTrack`/`SliderThumb`/`useRangeSliderThumb`(a SEPARATE hook from `useSliderThumb`, with its own `preventThumbOverlap` logic) with `Slider.tsx`, but forks the WHOLE outer component and prop shape. Confirmed by reading both files side by side, not assumed from the directory listing alone.",
+    "track-bg": "SliderTrack.css `--slider-track-background: var(--salt-sentiment-neutral-track)` -> next/characteristics/sentiment.css `--salt-sentiment-neutral-track: var(--salt-palette-alpha-contrast-high)` -> next/palette/alpha.css `--salt-palette-alpha-contrast-high: var(--salt-color-black-50a)` (light) / `var(--salt-color-white-50a)` (dark) -> next/foundations/alpha.css `--salt-color-black-50a: rgba(var(--salt-color-black-rgb), 0.5)` / `--salt-color-white-50a: rgba(var(--salt-color-white-rgb), 0.5)` -> foundations/color.css black-rgb 0,0,0 / white-rgb 255,255,255. A SEMI-TRANSPARENT neutral, genuinely different from every other Salt column's own OPAQUE neutral/gray-500 token — re-checked directly because it looked, at a glance, like it should resolve to the same opaque `neutral` slot switch/checkbox/radio-group all share; it does not.",
+    "accent": "SliderTrack.css `--slider-track-fill: var(--salt-sentiment-accent-borderColor)` -> next/characteristics/sentiment.css `--salt-sentiment-accent-borderColor: var(--salt-palette-accent)` -> next/palette/accent.css `--salt-palette-accent: var(--salt-color-blue-500)`, IDENTICAL under both [data-mode] blocks -> foundations/color.css blue-500-rgb: 0, 120, 207. MODE-INVARIANT, the SAME value every prior Salt column's own accent slot has resolved. SliderThumb.css reuses the SAME `--slider-track-fill` custom property directly (`background: var(--slider-track-fill)`), so track-fill and thumb-fill are the literal SAME token, not independently sourced.",
+    "tooltip-bg / tooltip-border / tooltip-shadow / tooltip-fg": "SliderTooltip.css: `background: var(--salt-container-primary-background)` -> next/characteristics/container.css -> next/palette/background.css, background-snow rgb(255,255,255) light / background-jet rgb(16,24,32) dark — the SAME box-bg slot every prior Salt column resolves. `border-color: var(--salt-container-primary-borderColor)` -> container.css `--salt-container-primary-borderColor: var(--salt-palette-alpha-contrast-medium)` -> alpha.css black-30a `rgba(0,0,0,0.3)` light / white-30a `rgba(255,255,255,0.3)` dark — a NEW, genuinely different alpha level from track-bg's own 50a. `box-shadow: var(--salt-overlayable-shadow-popout)` -> next/characteristics/overlayable.css -> next/palette/shadow.css `--salt-shadow-mediumLow`: `0 6px 10px 0 rgba(0,0,0,0.2)` light / `0 6px 10px 0 rgba(0,0,0,0.55)` dark. `tooltip-fg` (the `<Text>` component's own default colour) reuses the SAME black/white pair every prior Salt column's own text-fg slot resolved.",
+    "type-fontFamily / type-fontWeight": "next/characteristics/text.css --salt-text-label-fontFamily: var(--salt-typography-fontFamily-openSans); --salt-text-label-fontWeight: var(--salt-typography-fontWeight-regular) — Open Sans, regular (400), MODE-INVARIANT, the SAME family/weight every prior Salt column's own root/label text has used.",
+    "label-fg": "SliderTrack.tsx's `<Text color=\"secondary\" styleAs=\"label\">` for min/max labels -> next/characteristics/content.css `--salt-content-secondary-foreground: var(--salt-palette-foreground-secondary)` -> next/palette/foreground.css gray-700 (light) / gray-300 (dark) -> next/foundations/color.css gray-700-rgb: 76,81,87 / gray-300-rgb: 177,181,185. A NEW slot (secondary foreground) no prior Salt column in this pipeline needed, since checkbox/switch/radio-group all used the PRIMARY foreground role for their own root text.",
+    "focus-outline": "SliderThumb.css .saltSliderThumb-focusVisible { outline-color: var(--salt-focused-outlineColor) } -> next/characteristics/focused.css -> next/palette/accent.css accent-stronger, blue-700 rgb(0,69,126) light / blue-300 rgb(154,189,245) dark — the SAME slot AND values every prior Salt column's own focus-outline resolves.",
+    "byDensity.track-height": "SliderTrack.css `.saltSliderTrack-rail { height: var(--salt-size-bar) }` -> foundations/size.css, DENSITY scale 2/4/6/8px (high/medium/low/touch).",
+    "byDensity.track-radius": "SliderTrack.css `.saltSliderTrack-rail::before/::after { border-*-radius: var(--salt-palette-corner-weaker) }` -> next/palette/corner.css -> next/foundations/curve.css `--salt-curve-50`, DENSITY scale 1/2/3/4px — the SAME token AND numbers switch's own thumb-radius slot already used.",
+    "byDensity.thumb-height": "SliderThumb.css `.saltSliderThumb { height: var(--salt-size-selectable) }` -> foundations/size.css, DENSITY scale 12/14/16/18px — the SAME token AND numbers every prior Salt selectable-control column's own box/thumb size slot used. The THUMB'S WIDTH IS NOT THIS TOKEN — see the width-is-fixed-not-selectable finding below.",
+    "width-is-fixed-not-selectable": "SliderThumb.css `.saltSliderThumb { width: var(--salt-size-fixed-200) }` = 2px, a FIXED (density-INVARIANT) literal — CONFIRMED by reading the CSS directly, re-checked twice because every prior Salt selectable control (checkbox's box, switch's thumb, radio's dot) sizes BOTH dimensions from `--salt-size-selectable`; slider's own thumb only borrows that token for HEIGHT, and hardcodes WIDTH to the same fixed-scale token every other column's own BORDER width uses. The thumb is a narrow, height-scaling, width-FIXED bar — not a square/circle that scales uniformly.",
+    "byDensity.tick-height": "SliderTrack.css `--slider-tick-height: calc((var(--salt-size-selectable) - var(--salt-size-bar)) / 2)`. Computed per density: high (12-2)/2=5, medium (14-4)/2=5, low (16-6)/2=5, touch (18-8)/2=5 — A GENUINE ARITHMETIC COINCIDENCE: `size-selectable - size-bar` is a CONSTANT 10px across all four densities in the current token set (12-2=10, 14-4=10, 16-6=10, 18-8=10), so despite being expressed as a density-relative calc(), tick-height resolves to the IDENTICAL 5px at every density — verified by computing all four by hand, not assumed from the formula's shape.",
+    "byDensity.root-gap": "SliderTrack.css `.saltSliderTrack-container { gap: var(--salt-spacing-100) }` -> foundations/spacing.css, DENSITY scale 4/8/12/16px — the SAME token AND numbers every prior Salt column's own root-gap slot used.",
+    "byDensity.label-fontSize/label-lineHeight": "SliderTrack.css's `<Text styleAs=\"label\">` -> next/characteristics/text.css, the LABEL role (a DIFFERENT role from every prior Salt column's own BODY role) — DENSITY scale 10/13 (high) . 11/14 (medium) . 12/16 (low) . 14/18 (touch), read directly from the four `.salt-density-*` blocks.",
+    "no-readonly": "CONFIRMED ABSENCE, grepped directly: neither `SliderProps` nor `RangeSliderProps` declares a `readOnly`/`readonly` field anywhere, unlike Salt's own Checkbox/Switch/RadioButton, which all have one — the FIRST Salt column in this pipeline where a sibling selectable-control capability is genuinely, uniformly missing rather than partially present.",
+    "keyboard-is-js-override": "`useSliderThumb.ts`'s own `handleKeydownOnThumb` calls `getKeyboardValue` (utils.ts) and manually dispatches a synthetic input-change — a JS override of the native range input's own free keyboard semantics, done SPECIFICALLY so `stepMultiplier`/`restrictToMarks`/`marks` can be supported (none of which a native browser knows about). `getKeyboardValue` reproduces Arrow(±step)/Home(min)/End(max)/PageUp/PageDown(±step*stepMultiplier) — the SAME keys the native input already answers, just recomputed in JS.",
+    "bounds-doc-vs-code-mismatch": "`SliderProps.max`'s own JSDoc reads `@default 10`, but `Slider.tsx`'s ACTUAL destructuring default is `max = 100` — a real, sourced STALE-DOC finding, confirmed by reading the destructuring statement directly rather than trusting the comment above it. `min = 0` is consistent in both the doc and the code.",
+    "no-pressed-color": "CONFIRMED ABSENCE: `SliderThumb.css` has no colour-changing `:active` rule; the ONLY `:active`-scoped rule anywhere in the file is `.saltSliderThumb:active, .saltSliderThumb-dragging { cursor: var(--salt-cursor-grab-active) }` — cursor only."
+  },
+  "cells": {
+    "structure.root": { "kind": "value", "value": "track-wrapper", "source": "SliderTrack.tsx returns <div className=saltSliderTrack><div className=saltSliderTrack-container>...</div></div>" },
+    "structure.track": { "kind": "value", "value": "pseudo-element rail", "source": "SliderTrack.tsx <div className=saltSliderTrack-rail>; two-tone look drawn via ::before/::after in SliderTrack.css" },
+    "structure.fill": { "kind": "value", "value": "pseudo-element in single mode; a REAL <div className=saltSliderTrack-fill> ONLY when isRange", "source": "SliderTrack.tsx: `{isRange && <div className={clsx(withBaseName(\"fill\"))} />}`" },
+    "structure.thumb": { "kind": "value", "value": "a 2px-wide fixed-width bar, height scales by density", "source": "SliderThumb.css .saltSliderThumb { width: var(--salt-size-fixed-200); height: var(--salt-size-selectable) } — see width-is-fixed-not-selectable" },
+    "structure.native-input": { "kind": "value", "value": true, "source": "SliderThumb.tsx <input type=\"range\" ref={inputRef} .../>, opacity: 0.0001 (SliderThumb.css)" },
+    "structure.value-readout": { "kind": "value", "value": "tooltip", "source": "SliderTooltip, visibility toggled via a JS-timed hover/drag/focus state, DEFAULT ON (showTooltip=true)" },
+    "structure.ticks": { "kind": "value", "value": [false, true], "source": "SliderTrack.tsx: {marks && showTicks && <div className=saltSliderTrack-ticks>...}, opt-in, DEFAULT FALSE (showTicks unset)" },
+
+    "behavior.role": { "kind": "value", "value": "implicit, free from the native <input type=\"range\">", "source": "no explicit role attribute anywhere in SliderThumb.tsx" },
+    "behavior.value-announcement": { "kind": "value", "value": "aria-valuenow/aria-valuetext set EXPLICITLY on the input despite being implicit from a native range input already", "source": "SliderThumb.tsx: aria-valuenow={value}, aria-valuetext={ariaValueText || format?.(value).toString()}" },
+    "behavior.keyboard-value-change": { "kind": "value", "value": "a JS OVERRIDE reproducing native Arrow/Home/End/PageUp/PageDown semantics, done so restrictToMarks/marks/stepMultiplier can be supported", "source": "see keyboard-is-js-override" },
+    "behavior.pointer-drag": { "kind": "value", "value": "fully JS-driven — handlePointerMove recomputes the value from clientX on every window pointermove while dragging", "source": "useSliderThumb.ts handlePointerMove" },
+    "behavior.track-click-jump": { "kind": "value", "value": "explicit JS — handlePointerDownOnTrack computes a value from the click position and jumps the thumb", "source": "useSliderThumb.ts handlePointerDownOnTrack, wired to SliderTrack's onPointerDown" },
+    "behavior.value-readout-visibility": { "kind": "value", "value": "shown on pointer-hover (300ms-delayed hide via setTimeout), on drag, or on keyboard focus-visible; opt-OUT via showTooltip", "source": "SliderThumb.tsx handlePointerEnter/handlePointerLeave, open={(isTooltipVisible || trackDragging || isFocusVisible) && !disabled}" },
+    "behavior.disabled-handling": { "kind": "value", "value": "const disabled = formFieldDisabled || disabledProp (ancestor FormField merge, no group construct — Slider has none); .saltSliderTrack-disabled sets pointer-events:none on the wrapper", "source": "Slider.tsx, SliderTrack.css" },
+    "behavior.form-participation": { "kind": "value", "value": "native — the input(s) ARE the real form control(s); range mode submits TWO separately-named inputs (startName/endName)", "source": "RangeSlider.tsx thumbProps + startName/endName" },
+
+    "prop.value-shape": { "kind": "value", "value": "two separate exported components: Slider (value:number) and RangeSlider (value:[number,number]), sharing SliderTrack/SliderThumb internals", "source": "see range-slider-is-real" },
+    "prop.range": { "kind": "value", "value": [false, true], "note": "capability list — reached by choosing RangeSlider over Slider, not a prop on one component; this chassis's own config axis unifies both into one shared boolean" },
+    "prop.bounds": { "kind": "value", "value": { "min": 0, "max": 100 }, "note": "min=0/max=100 per the ACTUAL destructuring default in Slider.tsx — see bounds-doc-vs-code-mismatch for the stale @default 10 JSDoc" },
+    "prop.step": { "kind": "value", "value": 1, "source": "Slider.tsx destructured default: step = 1" },
+    "prop.step-multiplier": { "kind": "value", "value": 2, "source": "Slider.tsx destructured default: stepMultiplier = 2, used by getKeyboardValue for PageUp/PageDown" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "SliderProps.disabled?: boolean, merged with the ancestor FormField's" },
+    "prop.value-format": { "kind": "value", "value": "a format?: (value:number) => string|number CALLBACK, applied to the tooltip text, min/max labels, and aria-valuetext", "source": "SliderProps.format" },
+    "prop.restrict-to-marks": { "kind": "value", "value": [false, true], "source": "SliderProps.restrictToMarks?: boolean, DEFAULT FALSE — when true, step is IGNORED and the value snaps to the nearest marks[].value (utils.ts clamp)" },
+
+    "slot.min-label": { "kind": "value", "value": "minLabel?: string, falls back to format?.(min)", "source": "SliderTrack.tsx minLabel Text" },
+    "slot.max-label": { "kind": "value", "value": "maxLabel?: string, falls back to format?.(max)", "source": "SliderTrack.tsx maxLabel Text" },
+    "slot.composes": { "kind": "value", "value": true, "note": "form-field (useFormFieldProps() pulls disabled/aria-labelledby down from an ancestor <FormField>); the .saltSliderTrack-marks value-legend is declared OUT OF SCOPE, see structure.ticks" },
+
+    "state.rest": { "kind": "value", "value": "a semi-transparent (50% alpha) neutral track, an accent-filled 2px-wide thumb bar", "note": "genuinely different from every other Salt column's own opaque neutral tokens — see track-bg provenance" },
+    "state.hover": { "kind": "off", "note": "CONFIRMED ABSENCE for colour — no dedicated :hover rule in SliderThumb.css beyond the cursor change (style.thumb.cursor); the wrapper's own cursor:hover is the only rest/hover distinction" },
+    "state.focus": { "kind": "value", "value": "the shared --salt-focused-* outline family (2px dotted, 1px offset) on .saltSliderThumb-focusVisible", "source": "SliderThumb.css .saltSliderThumb-focusVisible" },
+    "state.pressed": { "kind": "value", "value": "cursor-only — grab becomes grab-active; NO colour change", "source": "see no-pressed-color" },
+    "state.disabled": { "kind": "value", "value": "flat opacity 0.4 on the whole track PLUS pointer-events:none on the wrapper", "source": "SliderTrack.css .saltSliderTrack-disabled" },
+
+    "style.track.size": { "kind": "value", "value": { "height": "var(--track-height)" }, "source": "SliderTrack.css .saltSliderTrack-rail { height: var(--salt-size-bar) }" },
+    "style.track.shape": { "kind": "alias", "slot": "track-radius" },
+    "style.track.rest": { "kind": "value", "value": { "background-color": "var(--track-bg)" }, "source": "see track-bg provenance" },
+    "style.track.disabled": { "kind": "off", "note": "Salt applies a single flat opacity at the root instead — see style.root.disabled" },
+
+    "style.fill.rest": { "kind": "value", "value": { "background-color": "var(--accent)" }, "source": "see accent provenance — the SAME --slider-track-fill custom property SliderTrack.css's own ::before rule and SliderThumb.css's own background rule both reference" },
+    "style.fill.disabled": { "kind": "off", "note": "see style.track.disabled" },
+
+    "style.thumb.size": { "kind": "value", "value": { "width": "2px", "height": "var(--thumb-height)" }, "source": "see width-is-fixed-not-selectable" },
+    "style.thumb.shape": { "kind": "off", "note": "CONFIRMED ABSENCE — no border-radius rule anywhere in SliderThumb.css; a plain rectangular bar" },
+    "style.thumb.rest": { "kind": "value", "value": { "background-color": "var(--accent)" }, "source": "SliderThumb.css .saltSliderThumb { background: var(--slider-track-fill) }" },
+    "style.thumb.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — see state.hover" },
+    "style.thumb.focus": { "kind": "value", "value": { "outline": "2px dotted var(--focus-outline)", "outline-offset": "1px" }, "source": "SliderThumb.css .saltSliderThumb-focusVisible { outline-style: var(--salt-focused-outlineStyle); outline-width: var(--salt-focused-outlineWidth); outline-offset: var(--salt-focused-outlineOffset); outline-color: var(--salt-focused-outlineColor) } — the SAME accent-stronger focus-outline slot every prior Salt column (checkbox/switch/radio-group) already resolves" },
+    "style.thumb.cursor": { "kind": "value", "value": "grab", "source": "SliderThumb.css .saltSliderThumb { cursor: var(--salt-cursor-grab) }" },
+    "style.thumb.cursor@dragging": { "kind": "value", "value": "grabbing", "source": "SliderThumb.css .saltSliderThumb:active, .saltSliderThumb-dragging { cursor: var(--salt-cursor-grab-active) }" },
+    "style.thumb.disabled": { "kind": "off", "note": "see style.track.disabled" },
+
+    "style.value-label.rest": {
+      "kind": "value",
+      "value": { "background-color": "var(--tooltip-bg)", "border": "1px solid var(--tooltip-border)", "border-radius": "var(--track-radius)", "box-shadow": "var(--tooltip-shadow)", "padding": "4px 8px", "color": "var(--tooltip-fg)" },
+      "source": "SliderTooltip.css — border-radius reuses --saltTooltip-borderRadius's own fallback to palette-corner-weak, approximated here with the same corner-weaker slot track-radius already resolves for a self-contained column; padding is spacing-50/spacing-100 at medium density, 4px/8px"
+    },
+    "style.value-label.visible": { "kind": "value", "value": "a declared CSS-only simplification of Salt's real JS-timer hover-delay mechanism — see structure.value-readout" },
+
+    "style.ticks.appearance": { "kind": "value", "value": { "width": "2px", "height": "var(--tick-height)", "background-color": "var(--track-bg)" }, "source": "SliderTrack.css .saltSliderTrack-tick { background: var(--slider-track-background); height: var(--slider-tick-height); width: var(--salt-size-fixed-200) }" },
+
+    "style.root.disabled": { "kind": "value", "value": { "opacity": "0.4", "pointer-events": "none" }, "source": "SliderTrack.css .saltSliderTrack-disabled { opacity: 0.4 }, .saltSliderTrack-disabled .saltSliderTrack-wrapper { pointer-events: none }" },
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": "SliderTrack.css .saltSliderTrack-wrapper { cursor: var(--salt-cursor-hover) }" },
+    "style.root.min-width": { "kind": "off", "note": "no minimum-width floor — the track is width:100% of its parent with no minimum" },
+    "style.root.gap": { "kind": "alias", "slot": "root-gap" },
+    "style.end-labels.font": {
+      "kind": "value",
+      "value": { "font-size": "var(--label-fontSize)", "line-height": "var(--label-lineHeight)", "font-family": "var(--type-fontFamily)", "font-weight": "var(--type-fontWeight)", "color": "var(--label-fg)" },
+      "source": "SliderTrack.tsx <Text color=\"secondary\" styleAs=\"label\">, see byDensity.label-fontSize/label-lineHeight and label-fg provenance"
+    }
+  }
+}
