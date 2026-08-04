@@ -1,0 +1,705 @@
+{
+  "component": "input",
+  "openUiAnatomy": "no published Open UI text-input anatomy — union of salt-ds Input (NOT multiline/number/pill/formatted/tokenized/search-input), shadcn Input (new-york-v4), and M3 filled-text-field + outlined-text-field (one component, two emphasis variants — the same treatment button's filled/outlined/text family got). The label + help-text wrapper is a SEPARATE canonical component (`field` / Salt `form-field`) and is not modelled here; only how Salt's Input reads state out of form-field context is recorded, as behavior.status-inheritance. See docs/INPUT-MATRIX.md scope note.",
+  "behavior": {
+    "pattern": "a native single-line text control. Caret, IME, selection and autofill are platform-owned in all three systems. The cross-system axes are: WHERE the chrome lives (a wrapper element vs the input element itself), WHICH mechanism draws the edge (a bottom-only activation indicator vs a full box border), how focus is expressed (dotted outline / translucent ring / thicker indicator), and how wide the validation-status enum is (3 / 1 / 1).",
+    "chassis": "skeleton/input.tsx — written from the template's part union (root box, control, activation indicator, start/end adornment containers, automatic status adornment); inherits from no design system. The root/control split is a config axis, not a fixed DOM: when chrome=\"control\" the wrapper is display:contents and the <input> itself carries every box style, as it does in shadcn."
+  },
+  "skeletonParams": {
+    "chrome": [
+      "wrapper",
+      "control"
+    ],
+    "indicator": [
+      "underline",
+      "box"
+    ],
+    "startAdornment": [
+      true,
+      false
+    ],
+    "endAdornment": [
+      true,
+      false
+    ],
+    "statusAdornment": [
+      true,
+      false
+    ],
+    "emptyReadOnlyMarker": [
+      "—",
+      ""
+    ],
+    "variant": [
+      "primary",
+      "secondary",
+      "tertiary"
+    ],
+    "status": [
+      "error",
+      "warning",
+      "success"
+    ],
+    "textAlign": [
+      "left",
+      "center",
+      "right"
+    ],
+    "disabled": [
+      true,
+      false
+    ],
+    "readOnly": [
+      true,
+      false
+    ]
+  },
+  "base": {
+    "[data-slot=\"input\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "inline-flex",
+      "align-items": "center",
+      "width": "100%",
+      "overflow": "hidden"
+    },
+    "[data-slot=\"input\"][data-chrome=\"control\"]": {
+      "display": "contents"
+    },
+    "[data-slot=\"input-control\"]": {
+      "box-sizing": "border-box",
+      "flex": "1 1 auto",
+      "display": "block",
+      "width": "100%",
+      "min-width": "0",
+      "height": "100%",
+      "margin": "0",
+      "padding": "0",
+      "background": "none",
+      "border": "0 solid transparent",
+      "color": "inherit",
+      "cursor": "inherit",
+      "font": "inherit",
+      "letter-spacing": "inherit",
+      "outline": "none",
+      "overflow": "hidden"
+    },
+    "[data-slot=\"input-indicator\"]": {
+      "position": "absolute",
+      "left": "0",
+      "bottom": "0",
+      "width": "100%",
+      "pointer-events": "none",
+      "border-bottom": "0 solid transparent"
+    },
+    "[data-slot=\"input-start-adornment\"], [data-slot=\"input-end-adornment\"], [data-slot=\"input-status-adornment\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"input\"][data-text-align=\"left\"] [data-slot=\"input-control\"]": {
+      "text-align": "left"
+    },
+    "[data-slot=\"input\"][data-text-align=\"center\"] [data-slot=\"input-control\"]": {
+      "text-align": "center"
+    },
+    "[data-slot=\"input\"][data-text-align=\"right\"] [data-slot=\"input-control\"]": {
+      "text-align": "right"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.root-wrapper",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "chrome",
+      "note": "WHERE the chrome lives, and it is real structure, not a DOM-shape convenience. Salt and M3 need a wrapper: adornments and an activation indicator have to sit inside the box beside the text (Salt: <div class=\"saltInput\"> around <input class=\"saltInput-input\">, plus .saltInput-activationIndicator and the adornment containers). shadcn does NOT: input.tsx renders a bare <input data-slot=\"input\"> and nothing else, so its border/background/padding/radius/height/shadow all sit on the input element itself. Every box-level style row's selector below unions BOTH vocabularies ([data-chrome=\"wrapper\"] on the root, [data-chrome=\"control\"] descending to the control), and the skeleton gives the wrapper display:contents when chrome=\"control\" so shadcn's rendered box model really is a single element. Wrapping shadcn in a styled div would have been the box-model equivalent of the tooltip's one-rotated-square arrow — invisible in a screenshot, wrong in source."
+    },
+    {
+      "id": "structure.indicator",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "indicator",
+      "note": "The edge mechanism, and a genuine two-way structural split — NOT one bordered box with a colour delta. \"underline\" is a bottom-only rule that thickens on focus; \"box\" is a full border on all four sides. THE SURPRISE, straight from source: Salt's DEFAULT is underline, not box. Input.css renders .saltInput-activationIndicator unconditionally and `bordered` defaults to false, so an out-of-the-box Salt input is an underline that goes 1px -> 2px on focus — the identical mechanism AND the identical numbers as M3's filled-text-field (active-indicator-height 1px -> focus-active-indicator-height 2px). Salt's box border is the opt-in (`bordered={true}`, which zeroes the indicator). So the real alignment is Salt-default + M3-filled = underline, versus Salt-bordered + shadcn + M3-outlined = box. shadcn has no underline mechanism at all."
+    },
+    {
+      "id": "structure.start-adornment",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "startAdornment",
+      "note": "Salt: `startAdornment` prop -> .saltInput-startAdornmentContainer (padding-right spacing-100, column-gap spacing-100, and dedicated size overrides for composed Buttons). M3: leading-icon-size 24px + leading-icon-color + with-leading-content-leading-space. shadcn: OFF — the bare input has no adornment slot; adornments are the separate `input-group` component (docs/COMPONENTS.md), out of scope here."
+    },
+    {
+      "id": "structure.end-adornment",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "endAdornment",
+      "note": "Salt: `endAdornment` prop. M3: trailing-icon-size 24px + trailing-icon-color (and error-trailing-icon-color). shadcn: OFF, same reason as the start adornment."
+    },
+    {
+      "id": "structure.status-adornment",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "statusAdornment",
+      "note": "An AUTOMATIC validation glyph the component inserts itself — Salt only: `{!isDisabled && validationStatus && <StatusAdornment status={validationStatus} />}`. M3 is OFF for a precise reason: it defines error-trailing-icon-color, i.e. it RECOLOURS a trailing icon in the error state, but never inserts one — the glyph is always consumer-supplied content. shadcn has no icon concept on input at all. DECLARED COMPOSITION: which glyph renders, and its own fill, belong to Salt's StatusAdornment/semantic-icon-provider — a future registry icon component; only size, placement and colour source are modelled here."
+    },
+    {
+      "id": "behavior.native-control",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant: all three render a native single-line <input>. Caret movement, text selection, IME composition, autofill and clipboard are platform-owned and identical — nothing to switch per column."
+    },
+    {
+      "id": "behavior.focus-tracking",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "HOW each system knows it is focused, and it is not the same mechanism. Salt: React state — useState(focused) with onFocus/onBlur handlers on the <input>, applied as a .saltInput-focused CLASS on the WRAPPER (not :focus-within, not :focus-visible; and onFocus is not even attached when disabled). shadcn: the native :focus-visible pseudo-class, no JS. M3: [R], no live component in the tokens-only clone. This skeleton reproduces Salt's mechanism (React focus state -> a data-focused attribute on the root) because it is the only one of the three that works identically for both chrome values; for a text input :focus-visible matches on pointer focus too, so the rendered result matches shadcn as well. Declared."
+    },
+    {
+      "id": "behavior.status-inheritance",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION with the separate `field` component (docs/COMPONENTS.md's field row = Salt's form-field). Salt only: useFormFieldProps() supplies disabled, readOnly, necessity and validationStatus plus a11yProps (aria-labelledby/aria-describedby, merged with the instance's own). The precedence is NOT uniform and is worth recording exactly: isDisabled = disabled || formFieldDisabled and isReadOnly = readOnlyProp || formFieldReadOnly (OR — either source can switch it on), but validationStatus = formFieldValidationStatus ?? validationStatusProp (the CONTEXT WINS OUTRIGHT over the instance prop). shadcn has no context channel at all — its Field marks itself data-invalid and the input's own aria-invalid is set per instance. M3: [R]."
+    },
+    {
+      "id": "behavior.empty-readonly-marker",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "emptyReadOnlyMarker",
+      "note": "Salt only: an empty read-only Input renders the literal em-dash \"—\" in place of the value (emptyReadOnlyMarker prop, default \"—\"; passing '' disables it). This is CONTENT FORMATTING, not CSS — exactly the class of character CALENDAR-MATRIX.md's post-mortem found the deleted pilot had silently lost, so it is a first-class config row rather than a footnote. shadcn and M3 have no equivalent."
+    },
+    {
+      "id": "behavior.disabled-tabindex",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt writes tabIndex={isDisabled ? -1 : 0} onto the input explicitly, overriding the native default, and omits the onFocus handler entirely while disabled. shadcn relies on the native disabled attribute plus disabled:pointer-events-none. M3: [R]. Same capability, two different levels of explicitness."
+    },
+    {
+      "id": "prop.variant",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "variant",
+      "note": "The background-intensity axis. Salt: \"primary\" | \"secondary\" | \"tertiary\", default \"primary\"; each class reassigns --input-background / --input-background-disabled to editable-{variant}-background (snow / marble / limestone in light). shadcn: OFF, no such axis. M3: OFF as a SEPARATE axis — M3's only variant axis is filled-vs-outlined, which is already modelled as structure.indicator; recording it here as well would invent a second axis M3 does not have and would leave the two toggles able to contradict each other."
+    },
+    {
+      "id": "prop.validation-status",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "status",
+      "note": "Coverage is 3 / 1 / 1. Salt: error | warning | success — and note that `info` is DELIBERATELY EXCLUDED, because Input takes FormFieldValidationStatus, which is literally Omit<ValidationStatuses,\"info\"> (Salt's Banner and Tooltip both DO accept info; one design system, two status enums for two of its own components). shadcn: a single boolean, aria-invalid — error only, no warning, no success, the same tone-coverage gap already recorded for Button and Alert. M3: a single error-* token family; direct grep of both text-field files finds no warning or success token anywhere."
+    },
+    {
+      "id": "prop.text-align",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "textAlign",
+      "note": "Salt only: \"left\" | \"center\" | \"right\", default \"left\", applied as an inline --input-textAlign custom property that .saltInput-input reads. Discriminated by the theme-invariant [data-text-align=\"…\"] rules in this template's base block (text-align is genuinely theme-invariant, so it belongs there rather than in a per-column cell). shadcn and M3 have no equivalent prop."
+    },
+    {
+      "id": "prop.disabled",
+      "piece": "prop",
+      "policy": "locked",
+      "channel": "config",
+      "param": "disabled",
+      "note": "All three. Discriminated by four separate style rows below (background/colour/border/indicator) plus style.control.disabled — and the three systems answer it with three different mechanisms: Salt retokenises each colour to a 40%-alpha sibling, shadcn drops one blanket opacity:0.5 over the whole element, M3 layers FOUR different per-element opacities (container 4%, outline 12%, indicator 38%, text 38%) over the enabled colours."
+    },
+    {
+      "id": "prop.read-only",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "readOnly",
+      "note": "Salt: a real prop WITH a dedicated visual state (its own background, border colour and cursor). shadcn: the native attribute works and the skeleton sets it (so the control genuinely becomes non-editable), but there is NO visual state — input.tsx has no read-only: variant and the docs page has Disabled and Invalid sections with no read-only section at all. That non-variation is sourced, not a missing cell, so the shadcn read-only instance in the harness renders identically to rest BY DESIGN. M3: OFF — no read-only token in either text-field file."
+    },
+    {
+      "id": "slot.value",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned value and placeholder text in all three."
+    },
+    {
+      "id": "slot.start-adornment",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned content, where the system has the part. Salt accepts any ReactNode and gives composed Buttons dedicated overrides (--saltButton-height: calc(size-base - spacing-100), --saltButton-borderRadius: palette-corner-weaker, negative margins to bleed to the box edge); M3 expects a 24px icon; shadcn has no slot."
+    },
+    {
+      "id": "slot.end-adornment",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "same as slot.start-adornment, on the trailing side."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION (the pattern calendar.template.json's slot.composes established). Three compositions are deliberately NOT reimplemented here: (a) the `field` wrapper — label, help text, necessity marker, and Salt's whole form-field context channel — a separate canonical component; (b) `button`, for Salt's adornment buttons and shadcn's input-group buttons; (c) an icon set, for the status adornment glyph and any leading/trailing icons. All three render as neutral placeholders in this skeleton rather than importing another component's skeleton, keeping this build self-contained; their own matrices will replace the approximations."
+    },
+    {
+      "id": "state.rest-hover-focus",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Rest and focus exist in all three. HOVER DOES NOT: shadcn's input has no hover: class of any kind — every class in input.tsx was read, this is a confirmed absence, not an unfound value. Salt recolours border/indicator to palette-accent on hover; M3 recolours to on-surface. shadcn's input does not react to the pointer at all until it is focused."
+    },
+    {
+      "id": "state.disabled",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "all three; see prop.disabled for the three different mechanisms."
+    },
+    {
+      "id": "state.read-only",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "a distinct VISUAL state in Salt only. Salt's read-only background is `transparent` (editable-background-readonly -> color-transparent), so a read-only input dissolves into the page; its border/indicator go to palette-neutral-readonly (gray-500 at 10% alpha). Its cursor token --salt-cursor-readonly resolves to `text`, the SAME value as --salt-cursor-text — a tokenised distinction with no visual consequence, recorded here rather than given a row of its own."
+    },
+    {
+      "id": "state.validation",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "see prop.validation-status. Worth recording separately: M3 is the only system whose HOVER colour in the error state is a different role from its rest colour in the error state (error-hover-active-indicator-color / error-hover-outline-color both resolve to on-error-container, not error)."
+    },
+    {
+      "id": "style.root.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "shown at each system's default (Salt variant=primary, M3 filled). Every column aliases the same indirection slot name, `bg-current`, which the variant/status rows below reassign — mirroring Salt's own --input-background mechanism."
+    },
+    {
+      "id": "style.root.background@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-indicator=\"box\"], [data-slot=\"input\"][data-chrome=\"control\"][data-indicator=\"box\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "M3 only, and it is the outlined variant's defining difference: _md-comp-outlined-text-field.scss has NO container-color token at all (direct grep — contrast filled's), so an outlined field is transparent. Salt is OFF because `bordered` changes the border and nothing else — a real non-variation. shadcn is OFF because box is its only mode."
+    },
+    {
+      "id": "style.root.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "the control inherits this (base gives [data-slot=\"input-control\"] color:inherit), matching Salt, where .saltInput sets the colour and .saltInput-input inherits it. shadcn is the honest outlier: input.tsx sets NO text-colour class, so this is the ambient --foreground, recorded as such rather than presented as a component token."
+    },
+    {
+      "id": "style.root.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "font": "$"
+      },
+      "note": "Salt: --salt-text-* body role by density; Input.css sets family/size/line-height but NOT weight, so the 400 in this shorthand is the ambient --salt-text-fontWeight (regular), recorded not invented. shadcn: text-base md:text-sm — the value here is the >=768px one (0.875rem/1.25rem); see the DECLARED GENERATOR GAP in the column provenance and INPUT-MATRIX.md finding 9, since this generator has no @media channel. M3: body-large (1rem/1.5rem, weight-regular), Roboto self-hosted per this pipeline's standing M3 precedent."
+    },
+    {
+      "id": "style.root.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "letter-spacing": "$"
+      },
+      "note": "a separate row from style.root.font because the CSS `font` shorthand does not carry letter-spacing. Salt: --salt-text-letterSpacing = 0, declared explicitly in Input.css. shadcn: OFF — no tracking utility on the element. M3: body-large-tracking = 0.03125rem."
+    },
+    {
+      "id": "style.root.height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "height": "$",
+        "min-height": "$"
+      },
+      "note": "Salt sets both height and min-height to --salt-size-base (20/28/36/44 by density). shadcn: h-9 = 36px, density-invariant (shadcn has no density capability — foundations/density.md). M3: container-height 56px, which arrives in the `latest` edition already stamped @deprecated and does not exist at all in v0.192 — the only sourced height number in either edition, recorded with that caveat rather than replaced by a guess."
+    },
+    {
+      "id": "style.root.min-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "min-width": "$"
+      },
+      "note": "Salt: 4em, the hardcoded --saltInput-minWidth default fallback. Checked against TOOLTIP-MATRIX.md's frozen-token lesson and kept as a literal: it is em-relative, so it already scales with the density-driven font size, unlike a bare px literal would. shadcn: min-w-0 = 0. M3: OFF, no width token."
+    },
+    {
+      "id": "style.root.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: padding-left/right = spacing-100 and NO vertical padding at all — height alone sets the vertical rhythm. shadcn: py-1 px-3 = 4px 12px. M3: 16px uniform (top/bottom/leading/trailing-space from tokens/_md-comp-{filled,outlined}-field.scss, a declared cross-edition borrow — see the Edition pin in INPUT-MATRIX.md); 16 + 24 (body-large line-height) + 16 reproduces the 56px container height exactly."
+    },
+    {
+      "id": "style.root.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"]",
+      "declarations": {
+        "column-gap": "$"
+      },
+      "note": "the space between the box's edge content (adornments, status glyph) and the text. ONE row covers both of Salt's gaps because they are the same token: the adornment containers' padding-right/padding-left AND their internal column-gap are all --salt-spacing-100, as is StatusAdornment's padding-left. M3: content-space = 16px. shadcn: OFF, it has no adornments (and no wrapper for a gap to live on)."
+    },
+    {
+      "id": "style.root.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "Salt: palette-corner-weak -> curve-100 (rounded edition pin, same as Button/Tooltip) = 2/4/6/8px by density. shadcn: rounded-md -> --radius-md = 0.625rem * 0.8 = 8px. M3 filled: corner-extra-small-TOP = `4px 4px 0 0` — rounded on the top only, so the activation indicator sits on a square bottom edge. That asymmetry is the filled variant's signature and is why it is a four-value radius, not a single number."
+    },
+    {
+      "id": "style.root.shape@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-indicator=\"box\"], [data-slot=\"input\"][data-chrome=\"control\"][data-indicator=\"box\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "M3 only: the outlined variant is corner-extra-small = 4px on ALL FOUR corners, since it has no bottom indicator to sit flat on. Salt is OFF — its corner is independent of `bordered`. shadcn is OFF — box is its only mode, already covered by style.root.shape."
+    },
+    {
+      "id": "style.root.cursor",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "cursor": "$"
+      },
+      "note": "Salt only, and explicitly tokenised: .saltInput:hover { cursor: var(--salt-cursor-text) }. shadcn and M3 declare no cursor at rest and inherit the native <input> default — recorded as an absence, not as an inherited value."
+    },
+    {
+      "id": "style.root.shadow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "box-shadow": "$"
+      },
+      "note": "shadcn only: shadow-xs. Same value already extracted for button.shadcn.json's style.root.elevation, reused rather than re-derived. Salt has no box-shadow anywhere in Input.css (the same total absence TOOLTIP-MATRIX.md found on Salt's tooltip motion); M3 has no elevation token in either text-field file."
+    },
+    {
+      "id": "style.root.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"], [data-slot=\"input\"][data-chrome=\"control\"] [data-slot=\"input-control\"]",
+      "declarations": {
+        "transition": "$"
+      },
+      "note": "shadcn only: transition-[color,box-shadow] — the PROPERTY LIST is sourced [S], but no duration or easing utility is present, so Tailwind's own defaults apply and Tailwind is not vendored in this clone. 150ms / cubic-bezier(0.4,0,0.2,1) are therefore [R], the same unvendored-package caveat TOOLTIP-MATRIX.md recorded for tw-animate-css. Salt: no transition/animation rule exists in Input.css at all. M3: no motion token in either text-field file."
+    },
+    {
+      "id": "style.control.placeholder",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input-control\"]::placeholder",
+      "cellIsDeclarations": true,
+      "note": "All three style the placeholder, but only Salt changes its WEIGHT: --salt-text-fontWeight-small -> fontWeight-light = 300, alongside content-secondary-foreground. DECLARED RENDERING APPROXIMATION: this repo self-hosts Open Sans at 400 and 600 only (fonts/), so a 300 request resolves to the 400 face — the sourced 300 is kept in the cell (source truth) and the shortfall is declared rather than the value being quietly rounded. shadcn: placeholder:text-muted-foreground, colour only. M3: input-text-placeholder-color -> on-surface-variant, colour only."
+    },
+    {
+      "id": "style.control.caret-color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input-control\"]",
+      "declarations": {
+        "caret-color": "$"
+      },
+      "note": "M3 only — the only system that tokenises the text cursor's colour (caret-color -> primary, and error-focus-caret-color -> error, which the status row below reassigns). Salt and shadcn both leave the caret to the platform. A one-cell row, but exactly the kind of detail a 'close enough' shared chassis silently drops."
+    },
+    {
+      "id": "style.root.border@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-indicator=\"box\"], [data-slot=\"input\"][data-chrome=\"control\"][data-indicator=\"box\"] [data-slot=\"input-control\"]",
+      "cellIsDeclarations": true,
+      "note": "the full four-sided border. All three have one (Salt only when bordered={true}), and all three read it through the same `border-current` indirection slot so a single status reassignment recolours the border, its hover/focus variants and — in Salt's case — the activation indicator and the status glyph too."
+    },
+    {
+      "id": "style.indicator.border@underline",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-indicator=\"underline\"] [data-slot=\"input-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "the bottom-only activation indicator — a SEPARATE MECHANISM from the box border above, not a colour delta on it. Salt: 1px solid, reading the same --input-borderColor indirection as its box border. M3 filled: active-indicator-height 1px, active-indicator-color -> on-surface-variant, which is a DIFFERENT sys-color role from the outlined variant's `outline`. shadcn: OFF — no underline mechanism of any kind."
+    },
+    {
+      "id": "style.root.border@box-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-indicator=\"box\"]:hover, [data-slot=\"input\"][data-chrome=\"control\"][data-indicator=\"box\"] [data-slot=\"input-control\"]:hover",
+      "cellIsDeclarations": true,
+      "note": "Salt: recolour only, to editable-borderColor-hover (palette-accent). M3: recolour to on-surface; hover-outline-width stays 1px. shadcn: OFF, and this is a CONFIRMED ABSENCE — every class in input.tsx was read and there is no hover: rule of any kind; a shadcn input does not react to the pointer until it is focused."
+    },
+    {
+      "id": "style.indicator.border@underline-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-indicator=\"underline\"]:hover [data-slot=\"input-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: --input-borderColor-hover (accent). M3: hover-active-indicator-color -> on-surface. shadcn: OFF."
+    },
+    {
+      "id": "style.root.border@box-focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-indicator=\"box\"][data-focused], [data-slot=\"input\"][data-chrome=\"control\"][data-indicator=\"box\"][data-focused] [data-slot=\"input-control\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: recolour to editable-borderColor-active (palette-accent-stronger), width unchanged. shadcn: recolour to --ring (focus-visible:border-ring), width unchanged. M3 outlined: recolour to primary AND thicken to 3px (focus-outline-width) — 2px in v0.192, the single substantive value divergence between the two M3 editions."
+    },
+    {
+      "id": "style.indicator.border@underline-focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-indicator=\"underline\"][data-focused] [data-slot=\"input-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "A real convergence, arrived at independently: Salt thickens the indicator to --salt-size-fixed-200 = 2px and recolours to accent-stronger; M3 thickens to focus-active-indicator-height = 2px and recolours to primary. Same mechanism, same number. shadcn: OFF."
+    },
+    {
+      "id": "style.indicator.border@box-focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-indicator=\"box\"][data-focused] [data-slot=\"input-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, and an easily-missed source detail modelled rather than dropped: Input.css zeroes the activation indicator whenever `bordered` — EXCEPT when also focused, where .saltInput-bordered.saltInput-focused .saltInput-activationIndicator brings it back at --salt-size-fixed-100 = 1px on top of the box border. M3's outlined field has no indicator at all; shadcn has none either."
+    },
+    {
+      "id": "style.root.focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-focused], [data-slot=\"input\"][data-chrome=\"control\"][data-focused] [data-slot=\"input-control\"]",
+      "cellIsDeclarations": true,
+      "note": "a genuine three-way structural split for 'how does focus read'. Salt: a 2px DOTTED OUTLINE outside the box (focused-outlineWidth=size-fixed-200, focused-outlineStyle=borderStyle-dotted, focused-outlineColor=palette-accent-stronger), IN ADDITION to the border/indicator recolour above. shadcn: outline:none plus a 3px TRANSLUCENT RING drawn as a box-shadow (ring-[3px] ring-ring/50). M3: OFF — nothing extra at all; focus is expressed entirely by the indicator/outline thickening and recolouring. M3's focus-indicator-outline-* tokens do exist but carry an explicit '@deprecated — instead use focus outline tokens' annotation, so this is a sourced off, not an unfound value."
+    },
+    {
+      "id": "style.root.background@readonly",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-readonly], [data-slot=\"input\"][data-chrome=\"control\"][data-readonly] [data-slot=\"input-control\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "Salt only: editable-background-readonly -> color-transparent, so a read-only Salt input dissolves into the page. Reads the bg-current-readonly indirection, which the status rows also reassign (Salt tints a read-only input with the status background). shadcn and M3 are OFF — a sourced non-variation and a missing token respectively, not gaps in extraction."
+    },
+    {
+      "id": "style.root.border-color@readonly",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-indicator=\"box\"][data-readonly], [data-slot=\"input\"][data-chrome=\"control\"][data-indicator=\"box\"][data-readonly] [data-slot=\"input-control\"]",
+      "declarations": {
+        "border-color": "$"
+      },
+      "note": "Salt only: editable-borderColor-readonly -> palette-neutral-readonly -> gray-500 at 10% alpha, mode-invariant."
+    },
+    {
+      "id": "style.indicator.border-color@readonly",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-readonly] [data-slot=\"input-indicator\"]",
+      "declarations": {
+        "border-bottom-color": "$"
+      },
+      "note": "Salt only, same palette-neutral-readonly value as the box border."
+    },
+    {
+      "id": "style.root.background@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-disabled], [data-slot=\"input\"][data-chrome=\"control\"][data-disabled] [data-slot=\"input-control\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "Salt: editable-primary-background-disabled, i.e. the 40%-alpha sibling of the enabled background, reassigned per variant by the variant rows. M3: on-surface at 4% (disabled-container-opacity). shadcn: OFF — one blanket opacity:0.5 does the whole job instead (see style.control.disabled)."
+    },
+    {
+      "id": "style.root.background@box-disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-indicator=\"box\"][data-disabled], [data-slot=\"input\"][data-chrome=\"control\"][data-indicator=\"box\"][data-disabled] [data-slot=\"input-control\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "M3 only, and a precision row rather than a new mechanism: disabled-container-opacity (4%) is a FILLED-variant token — _md-comp-outlined-text-field.scss has no disabled-container-color and no container-color at all — so an outlined M3 field must stay transparent when disabled. Without this row the shared style.root.background@disabled rule would tint it, inventing a value source does not have. Salt is OFF because its disabled background is indicator-independent; shadcn is OFF because it has no disabled background at all."
+    },
+    {
+      "id": "style.root.color@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-disabled], [data-slot=\"input\"][data-chrome=\"control\"][data-disabled] [data-slot=\"input-control\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "Salt: content-primary-foreground-disabled (black/white at 40% alpha). M3: on-surface at 38% (disabled-input-text-opacity). shadcn: OFF, opacity again."
+    },
+    {
+      "id": "style.root.border-color@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-chrome=\"wrapper\"][data-indicator=\"box\"][data-disabled], [data-slot=\"input\"][data-chrome=\"control\"][data-indicator=\"box\"][data-disabled] [data-slot=\"input-control\"]",
+      "declarations": {
+        "border-color": "$"
+      },
+      "note": "Salt: editable-borderColor-disabled -> palette-neutral-disabled (gray-500 at 40% alpha), mode-invariant. M3: on-surface at 12% (disabled-outline-opacity) — note M3 uses a DIFFERENT opacity for the outline (12%) than for the indicator (38%) or the text (38%). shadcn: OFF."
+    },
+    {
+      "id": "style.indicator.border-color@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-disabled] [data-slot=\"input-indicator\"]",
+      "declarations": {
+        "border-bottom-color": "$"
+      },
+      "note": "Salt: the same palette-neutral-disabled as its box border. M3: on-surface at 38% (disabled-active-indicator-opacity) — three times the outline's 12%. shadcn: OFF."
+    },
+    {
+      "id": "style.control.disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-disabled] [data-slot=\"input-control\"]",
+      "cellIsDeclarations": true,
+      "note": "the non-colour part of disabled. Salt: cursor:not-allowed (--salt-cursor-disabled). shadcn: opacity:0.5 + cursor:not-allowed + pointer-events:none — and because shadcn's control IS its box, that one opacity dims border, background and text together, which is precisely why its four colour rows above are OFF. M3: OFF, its disabled treatment is entirely per-element opacity baked into the colour rows."
+    },
+    {
+      "id": "style.adornment.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input-start-adornment\"], [data-slot=\"input-end-adornment\"]",
+      "declarations": {
+        "height": "$"
+      },
+      "note": "DECLARED COMPOSITION: Salt's number here is not an icon size, it is Salt sizing a composed Button inside the adornment container — --saltButton-height: calc(var(--salt-size-base) - var(--salt-spacing-100)), i.e. 16/20/24/28px by density. M3's is a real icon token (leading-icon-size / trailing-icon-size = 24px). shadcn: OFF, no adornments."
+    },
+    {
+      "id": "style.status-adornment.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input-status-adornment\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only: StatusAdornment.css height/min-height = --salt-size-adornment = 6/8/10/12px by density. Checked against TOOLTIP-MATRIX.md's frozen-token lesson — this is the row that would most plausibly have been a bare literal, and it is not: it is already a density token in source."
+    },
+    {
+      "id": "style.status-adornment.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input-status-adornment\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "Salt only. Aliased to the SAME border-current indirection the box/indicator read, because in source they resolve to the identical value: StatusAdornment's --statusAdornment-color -> status-{s}-foreground-decorative -> palette-{negative,warning,positive}, and Input's --input-borderColor -> status-{s}-borderColor -> the same palette-{role} token. One indirection, three consumers — the same reuse ALERT-MATRIX.md's tone-active slot made for border + icon."
+    },
+    {
+      "id": "style.root.variant@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-variant=\"secondary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Reassigns the background indirection exactly as .saltInput-secondary does (--input-background / --input-background-disabled -> editable-secondary-*), rather than duplicating the background rows. shadcn and M3 have no such axis."
+    },
+    {
+      "id": "style.root.variant@tertiary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-variant=\"tertiary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — see style.root.variant@secondary."
+    },
+    {
+      "id": "style.root.status@error",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-status=\"error\"]",
+      "cellIsDeclarations": true,
+      "note": "Modelled as an indirection reassignment because that is literally what every source does. Salt's .saltInput-error sets SIX custom properties in one block (--input-background, --input-background-readonly, --input-borderColor, --input-borderColor-active, --input-borderColor-hover, --input-outlineColor) which eleven separate rules elsewhere in Input.css consume; duplicating that as per-property overrides would have meant ~30 rows. shadcn reassigns border + focus-border to --destructive AND changes the focus ring's ALPHA from 50% to 20% light / 40% dark (aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40) — modelled with a ring-alpha slot so the mode split stays in the slots block where it belongs. M3 reassigns outline, outline-hover, outline-focus, indicator, indicator-hover, indicator-focus and the caret; note its hover colour in the error state is on-error-container, a DIFFERENT role from its rest colour."
+    },
+    {
+      "id": "style.root.status@warning",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-status=\"warning\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — palette-warning / warning-weakest. shadcn has NO warning state at all (its status axis is the single aria-invalid boolean) and M3 has no warning token in either text-field file: the same tone-coverage gap already recorded for Button and Alert, now confirmed a third time."
+    },
+    {
+      "id": "style.root.status@success",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"input\"][data-status=\"success\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — palette-positive / positive-weakest. shadcn and M3: no success state, see style.root.status@warning."
+    }
+  ]
+}

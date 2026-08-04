@@ -1,0 +1,173 @@
+/* Neutral page chrome — deliberately unthemed; only the stages are themed. */
+* { margin: 0; }
+body { font: 14px/1.5 system-ui, sans-serif; background: #f4f4f5; color: #18181b; }
+.shell { min-height: 100vh; display: flex; flex-direction: column; }
+header { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #fff; border-bottom: 1px solid #e4e4e7; }
+header .dim { color: #71717a; }
+header .spacer { flex: 1; }
+header button { font: inherit; padding: 4px 10px; border: 1px solid #d4d4d8; background: #fff; border-radius: 6px; cursor: pointer; }
+header button:disabled { background: #e4e4e7; cursor: default; }
+.body { display: flex; flex: 1; align-items: flex-start; }
+main { flex: 1; display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; align-items: flex-start; }
+/* Stages carry NO chrome styling of their own — no radius, no shadow, no
+   background. The component's own surface, corner, and border must be the
+   only character visible. */
+.stage { margin: 0; }
+.stage figcaption { font: 11px/1.4 system-ui; color: #71717a; margin-block-end: 12px; }
+body.dark { background: #1c1c1e; color: #fafafa; }
+body.dark header { background: #26262a; border-color: #3f3f46; }
+body.dark header button { background: #26262a; border-color: #52525b; color: #fafafa; }
+body.dark header button:disabled { background: #3f3f46; }
+body.dark .stage figcaption { color: #a1a1aa; }
+body.dark .side { background: #26262a; border-color: #3f3f46; }
+body.dark .tabs { border-color: #3f3f46; }
+body.dark .tabs button { color: #a1a1aa; }
+body.dark .tabs button[data-active] { color: #fafafa; border-bottom-color: #fafafa; }
+body.dark .panel h2 { color: #a1a1aa; }
+body.dark .panel .row { border-color: #3f3f46; }
+body.dark .panel .cell { color: #fafafa; }
+body.dark .panel .pattern { color: #a1a1aa; }
+body.dark .panel .policy { background: #3f3f46; color: #a1a1aa; }
+body.dark .panel .policy[data-policy="locked"] { background: #312e81; color: #c7d2fe; }
+body.dark .panel .policy[data-policy="switchable"] { background: #365314; color: #d9f99d; }
+.side { inline-size: 340px; background: #fff; border-left: 1px solid #e4e4e7; align-self: stretch; }
+.tabs { display: flex; border-bottom: 1px solid #e4e4e7; }
+.tabs button { flex: 1; font: inherit; padding: 8px; border: none; background: none; cursor: pointer; color: #71717a; border-bottom: 2px solid transparent; }
+.tabs button[data-active] { color: #18181b; border-bottom-color: #18181b; }
+.panel { padding: 12px 16px; overflow-y: auto; max-block-size: calc(100vh - 90px); }
+.panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; margin: 16px 0 8px; }
+.panel .pattern { font-size: 12px; color: #52525b; margin-bottom: 8px; }
+.panel .row { padding: 6px 0; border-bottom: 1px solid #f4f4f5; }
+.panel .row-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.panel code { font-size: 12px; }
+.panel .policy { font-size: 10px; padding: 1px 6px; border-radius: 999px; background: #f4f4f5; color: #71717a; }
+.panel .policy[data-policy="locked"] { background: #e0e7ff; color: #3730a3; }
+.panel .policy[data-policy="switchable"] { background: #ecfccb; color: #3f6212; }
+.panel .cell { font-size: 12px; font-family: ui-monospace, monospace; color: #18181b; margin-top: 2px; word-break: break-word; }
+.panel .row[data-kind="off"] .cell { color: #a1a1aa; }
+.panel .src { font-size: 11px; color: #a1a1aa; margin-top: 2px; word-break: break-word; }
+.stage-controls { margin-inline-start: 10px; }
+.stage-controls button { font: 10px/1.4 system-ui; padding: 1px 7px; margin-inline-end: 3px; border: 1px solid #d4d4d8; background: #fff; border-radius: 999px; cursor: pointer; color: #52525b; }
+.stage-controls button:disabled { background: #e4e4e7; cursor: default; }
+body.dark .stage-controls button { background: #26262a; border-color: #52525b; color: #a1a1aa; }
+body.dark .stage-controls button:disabled { background: #3f3f46; }
+.cap-control { display: inline-flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.cap-control button { font: 11px/1.4 system-ui; padding: 2px 9px; border: 1px solid #d4d4d8; background: #fff; border-radius: 999px; cursor: pointer; color: #52525b; }
+.cap-control button:disabled { background: #18181b; border-color: #18181b; color: #fff; cursor: default; }
+body.dark .cap-control button { background: #26262a; border-color: #52525b; color: #a1a1aa; }
+body.dark .cap-control button:disabled { background: #fafafa; border-color: #fafafa; color: #18181b; }
+.toggle { display: flex; align-items: center; gap: 6px; margin-top: 4px; cursor: pointer; }
+.toggle input { margin: 0; }
+.toggle span { font: 11px/1.4 ui-monospace, monospace; color: #52525b; }
+.toggle[data-disabled] { cursor: default; }
+.toggle[data-disabled] span { color: #d4d4d8; }
+body.dark .toggle span { color: #a1a1aa; }
+body.dark .toggle[data-disabled] span { color: #52525b; }
+.policy[data-policy="not-applicable"] { background: #f4f4f5; color: #a1a1aa; border: 1px dashed #d4d4d8; padding: 0 5px; }
+body.dark .policy[data-policy="not-applicable"] { background: #26262a; color: #71717a; border-color: #3f3f46; }
+.button-spin { animation: button-spin 0.9s linear infinite; }
+@keyframes button-spin { to { transform: rotate(360deg); } }
+@keyframes spinner-rotate { to { transform: rotate(360deg); } }
+@keyframes tooltip-fade-in { from { opacity: 0; } to { opacity: 1; } }
+main[style] .stage { padding: 16px 20px; }
+/* appended for select-check: shadcn's SelectContent composes tw-animate-css's
+   animate-in + fade-in-0 + zoom-in-95. That package is a declared dependency
+   but is NOT vendored in this clone, so the keyframe below is a REGISTRY
+   RENDERING APPROXIMATION of those three utilities (docs/SELECT-MATRIX.md,
+   style.popup.animation) — same treatment tooltip-fade-in got. */
+@keyframes select-popup-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
+/* appended for dialog-check: TWO entrance mechanisms, not one. Salt's
+   Dialog.css composes --salt-animation-fade-in-center / -fade-out-back,
+   whose keyframes in foundations/animation.css are OPACITY ONLY (the
+   "-back" in the exit name promises a transform its body does not
+   contain). shadcn's DialogContent composes tw-animate-css's
+   animate-in + fade-in-0 + zoom-in-95 (and the closing mirror), which is
+   opacity AND a 0.95 scale; that package is a declared dependency but is
+   NOT vendored in this clone, so the zoom keyframes below are a REGISTRY
+   RENDERING APPROXIMATION of those utilities — same treatment
+   tooltip-fade-in and select-popup-in got. See docs/DIALOG-MATRIX.md
+   style.panel.animation. */
+@keyframes dialog-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dialog-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes dialog-zoom-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
+@keyframes dialog-zoom-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(0.95); } }
+/* the pinned-open inspection frame: a positioned box so a `contained`
+   dialog is bounded by its stage instead of covering the viewport. */
+.dialog-frame { position: relative; height: 360px; width: 100%; overflow: hidden; border: 1px dashed #d4d4d8; border-radius: 4px; }
+body.dark .dialog-frame { border-color: #3f3f46; }
+/* appended for tabs-check: a plain measuring box so the strip has a real
+   width to overflow against. `narrow` is the ONLY way to reach Salt's
+   overflow menu (structure.overflow-menu) — shadcn and M3 have no
+   overflow affordance at all and simply compress or spill, which is
+   itself part of what this stage is showing. No component styling here:
+   the tab strip's own surface, corner and divider must stay the only
+   character visible. */
+.tabs-frame { width: 100%; }
+.tabs-frame-narrow { max-width: 320px; }
+/* appended for card-check: measuring frames only. The stages carry NO
+   chrome of their own — the card's surface, corner, border and shadow
+   must stay the only character visible, which matters more here than for
+   any previous component because "what separates this surface from the
+   page" IS the component. The frames give each card a real width to fill
+   and a caption; the page behind them is deliberately plain, because
+   Salt's `ghost` tone is a translucent wash and would read wrong over a
+   card-coloured backdrop. */
+.card-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.card-frame { width: 280px; }
+.card-frame-wide { width: 100%; }
+.card-label { font: 11px/1.4 ui-monospace, monospace; color: #71717a; margin-block-end: 8px; }
+body.dark .card-label { color: #a1a1aa; }
+
+/* --- badge-check (appended; do not edit rules above) ------------------ */
+.badge-block { margin-block-end: 18px; }
+.badge-label { font: 11px/1.4 ui-monospace, monospace; color: #71717a; margin-block-end: 8px; }
+.badge-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-block-end: 8px; }
+.badge-cell { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.badge-note { font: 10px/1.3 ui-monospace, monospace; color: #a1a1aa; max-inline-size: 200px; }
+.badge-legend { font: 11px/1.5 system-ui; color: #71717a; max-inline-size: 620px; border-left: 2px solid #e4e4e7; padding-inline-start: 10px; }
+
+/* --- progress-check (appended; do not edit rules above) --------------- */
+/* The travelling band, reproduced from Salt's own keyframe:
+   LinearProgress.css @keyframes salt-indeterminate-progress-bar
+   { 0% translateX(-100%); 60% translateX(155%); 100% translateX(200%) },
+   with the source's own comment on the middle stop: "155% is slightly more
+   than moving the bar off screen (with width of 66%)". The 66% width and the
+   keyframe itself are theme-invariant structural geometry (they live in the
+   template's `base`); only the duration and the easing are themed rows.
+   M3's column reuses this keyframe under a DECLARED registry default —
+   see themes/columns/progress.m3.json style.indeterminate.duration. */
+@keyframes progress-indeterminate-band {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(155%); }
+  100% { transform: translateX(200%); }
+}
+/* Measuring frames only. The stages carry no chrome of their own: the
+   track, the groove, the fill and the label must stay the only character
+   visible. A linear progress needs a real width to fill, and Salt demands
+   400px of it (style.root.min-width), so the frame is wide enough to show
+   that constraint being met rather than hiding it behind an overflow. */
+.progress-block { margin-block-end: 20px; }
+.progress-caption { font: 11px/1.4 ui-monospace, monospace; color: #71717a; margin-block-end: 8px; }
+.progress-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-block-end: 10px; }
+.progress-cell { display: flex; flex-direction: column; gap: 6px; }
+.progress-frame { inline-size: 460px; max-inline-size: 100%; }
+.progress-note { font: 10px/1.3 ui-monospace, monospace; color: #a1a1aa; max-inline-size: 460px; }
+.progress-legend { font: 11px/1.5 system-ui; color: #71717a; max-inline-size: 640px; border-left: 2px solid #e4e4e7; padding-inline-start: 10px; }
+.progress-aria { font: 10px/1.4 ui-monospace, monospace; color: #a1a1aa; word-break: break-word; max-inline-size: 460px; }
+body.dark .progress-caption, body.dark .progress-legend { color: #a1a1aa; }
+body.dark .progress-legend { border-color: #3f3f46; }
+
+/* appended for chip-check: harness layout classes only — same family as the
+   existing .dialog-frame / .tabs-frame helpers. These were written inline in
+   page/chip-check.tsx because chip was built CONCURRENTLY with progress and
+   two agents appending to this file would have clobbered each other; merged
+   here once both landed. No component styling: the chip's own surface,
+   corner and stroke stay the only character visible. */
+.chip-block { padding: 8px 12px 14px; border-top: 1px solid rgba(128,128,128,0.25); }
+.chip-label { font: 600 11px/1.4 ui-sans-serif, system-ui, sans-serif; opacity: 0.75; margin-bottom: 8px; }
+.chip-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; }
+.chip-cell { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; max-width: 260px; }
+.chip-note { font: 400 10px/1.35 ui-sans-serif, system-ui, sans-serif; opacity: 0.6; }
+.chip-legend { font: 400 11px/1.5 ui-sans-serif, system-ui, sans-serif; opacity: 0.7; max-width: 62ch; }
+.chip-legend b { font-weight: 600; }
+.chip-swatch { display: inline-flex; align-items: center; gap: 8px; }

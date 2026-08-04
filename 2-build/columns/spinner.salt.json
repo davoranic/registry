@@ -1,0 +1,50 @@
+{
+  "system": "salt",
+  "component": "spinner",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "accent": "rgb(0, 120, 207)"
+    },
+    "dark": {
+      "accent": "rgb(0, 120, 207)"
+    },
+    "byDensity": {
+      "high":   { "spinner-diameter": "20px", "spinner-stroke-width": "2px" },
+      "medium": { "spinner-diameter": "28px", "spinner-stroke-width": "4px" },
+      "low":    { "spinner-diameter": "36px", "spinner-stroke-width": "6px" },
+      "touch":  { "spinner-diameter": "44px", "spinner-stroke-width": "8px" }
+    }
+  },
+  "modeInvariant": ["accent"],
+  "provenance": {
+    "accent": "Spinner.css .saltSpinner-gradientStop stop-color: var(--saltSpinner-gradient-color, var(--salt-sentiment-accent-background)) -> characteristics/sentiment.css --salt-sentiment-accent-background: var(--salt-palette-accent) -> palette-accent base, blue #0078CF (mode-invariant, same slot family as Button/Calendar's focus and today-marker)",
+    "byDensity": "Spinner.css .saltSpinner-medium: height/width var(--salt-size-base) [diameter], --spinner-strokeWidth: var(--salt-size-bar) — both foundation tokens, same density scale as Button's control-size/Calendar's day size (20/28/36/44 and 2/4/6/8 by density, foundations/sizes.md)",
+    "small-variant": "DECLARED DEFERRAL (same limitation as Button's size prop): size=small uses a DIFFERENT formula — diameter max(--salt-size-icon, 12px), stroke-width --salt-size-fixed-200 (2px, fixed, NOT density-scaled) — not resolvable by the generator's single-value-per-row model yet. size=large: diameter salt-size-base*2 (56px@medium), same stroke-width as medium. style.root.size/style.arc.stroke-width below render size=medium only.",
+    "role": "Spinner.tsx role=\"img\" (hardcoded)",
+    "label": "Spinner.tsx aria-label default \"loading\" (ariaLabel prop, lowercase)",
+    "repeatAnnounce": "Spinner.tsx useAriaAnnouncer: announcerInterval=5000, announcerTimeout=20000, completionAnnouncement=`finished ${ariaLabel}` — re-announces on an interval until timeout, then stops with a notice",
+    "duration": "Spinner.css @keyframes spinner, .saltSpinner-spinner { animation: spinner 0.9s linear infinite } — hardcoded literal, not a var() reference to any duration foundation token"
+  },
+  "cells": {
+    "structure.track": { "kind": "off", "note": "no track element or token in Spinner.css" },
+    "structure.gradient-trail": { "kind": "value", "value": true, "source": "SpinnerSVG.tsx: second <circle> wrapped in a <linearGradient>, stop-opacity 1->0 across offset 15%->100%" },
+
+    "behavior.role": { "kind": "value", "value": "img", "source": "Spinner.tsx: role=\"img\"" },
+    "behavior.label": { "kind": "value", "value": "loading", "source": "Spinner.tsx: aria-label default \"loading\"" },
+    "behavior.repeat-announce": { "kind": "value", "value": true, "source": "Spinner.tsx useAriaAnnouncer hook" },
+
+    "prop.size": { "kind": "value", "value": ["small", "medium", "large"], "source": "SpinnerSizeValues: default/large/small/medium (default aliases to medium)" },
+
+    "style.root.size": { "kind": "alias", "slot": "spinner-diameter" },
+    "style.arc.stroke-width": { "kind": "alias", "slot": "spinner-stroke-width" },
+    "style.arc.radius": { "kind": "value", "value": "calc((var(--spinner-diameter) - var(--spinner-stroke-width)) / 2)", "source": "Spinner.css .saltSpinner-medium .saltSpinner-arc { r: calc((var(--salt-size-base) - var(--spinner-strokeWidth)) / 2) } — same formula, our slot names" },
+    "style.track.thickness": { "kind": "off" },
+    "style.track.radius": { "kind": "off" },
+    "style.track.color": { "kind": "off" },
+    "style.arc.color": { "kind": "alias", "slot": "accent" },
+    "style.gradient-trail": { "kind": "alias", "slot": "accent", "note": "same accent as the flat arc — Salt's own fallback chain resolves the gradient color to sentiment-accent-background by default" },
+    "style.root.duration": { "kind": "value", "value": "0.9s", "source": "Spinner.css: animation: spinner 0.9s linear infinite (hardcoded, not a token reference)" },
+    "style.root.easing": { "kind": "value", "value": "linear", "source": "Spinner.css: animation: spinner 0.9s linear infinite" }
+  }
+}

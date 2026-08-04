@@ -1,0 +1,954 @@
+{
+  "component": "dialog",
+  "openUiAnatomy": "no published Open UI dialog anatomy — union of salt-ds Dialog + DialogHeader/DialogContent/DialogActions/DialogCloseButton + Scrim (NOT Drawer), shadcn Dialog (new-york-v4, Radix-based; NOT alert-dialog), and M3 md.comp.dialog + md.comp.scrim (NOT full-screen-dialog). The scrim/backdrop is modelled here as a PART, but docs/COMPONENTS.md carries it as its own canonical row — see docs/DIALOG-MATRIX.md for the exact list of rows that migrate if it is split out. Actions buttons, the close glyph, the status glyph and the portal/floating engine are DECLARED COMPOSITIONS.",
+  "behavior": {
+    "pattern": "APG dialog (modal) pattern: an overlay surface that takes focus, traps it while open, returns it to the invoker on close, dismisses on Escape and (by default in all three) on an outside press, and locks background scrolling. The cross-system axes are: HOW the background is suppressed (inert vs aria-hidden siblings), whether aria-modal is set at all, WHERE the close affordance lives and whether it is on by default, whether the body is a dedicated scroll region with its own scroll dividers, how the panel is sized (percent-of-viewport per size+breakpoint vs a fixed max-width vs a spec min/max pair), and what colour a scrim is — which is NOT the same answer in any two systems.",
+    "chassis": "skeleton/dialog.tsx — written from the template's part union (scrim, panel, header with an optional decoration/preheader/title/description/header-actions, an optional dedicated content scroller, an actions row, an optional close button); inherits from no design system. Every behavior row below is implemented in that file and asserted by scripts/check-dialog-behavior.mjs, which exists because locked behavior rows have no generator gate (docs/SELECT-MATRIX.md finding 16)."
+  },
+  "skeletonParams": {
+    "scrim": [true, false],
+    "headerDecoration": ["accent-bar", "icon", "none"],
+    "preheader": [true, false],
+    "headerActions": [true, false],
+    "closeButton": ["optional", "default", "none"],
+    "contentScroller": [true, false],
+    "actions": [true, false],
+    "description": [true, false],
+    "ariaModal": [true, false],
+    "backgroundSuppression": ["inert", "aria-hidden"],
+    "focusTrap": [true, false],
+    "initialFocus": ["first-tabbable", "configurable"],
+    "focusReturn": [true, false],
+    "dismissOnEscape": [true, false],
+    "dismissOnOutside": [true, false],
+    "scrollLock": [true, false],
+    "describedBy": [true, false],
+    "exitAnimation": [true, false],
+    "scrollRegionFocusable": [true, false],
+    "size": ["small", "medium", "large"],
+    "status": ["info", "error", "warning", "success"]
+  },
+  "base": {
+    "[data-slot=\"dialog\"]": {
+      "display": "contents"
+    },
+    "[data-slot=\"dialog\"][data-contained] [data-slot=\"dialog-scrim\"], [data-slot=\"dialog\"][data-contained] [data-slot=\"dialog-panel\"]": {
+      "position": "absolute"
+    },
+    "[data-slot=\"dialog-scrim\"]": {
+      "box-sizing": "border-box",
+      "position": "fixed",
+      "inset": "0",
+      "animation-fill-mode": "both"
+    },
+    "[data-slot=\"dialog-panel\"]": {
+      "box-sizing": "border-box",
+      "position": "fixed",
+      "inset": "0",
+      "margin": "auto",
+      "display": "flex",
+      "flex-direction": "column",
+      "height": "min-content",
+      "animation-fill-mode": "both"
+    },
+    "[data-slot=\"dialog-header\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "flex-direction": "row",
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"dialog-header\"][data-decoration=\"accent-bar\"]": {
+      "position": "relative"
+    },
+    "[data-slot=\"dialog-header-text\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "flex-direction": "column",
+      "flex": "1 1 auto",
+      "min-width": "0",
+      "align-items": "flex-start",
+      "text-align": "left",
+      "word-break": "break-word"
+    },
+    "[data-slot=\"dialog-header-actions\"]": {
+      "align-self": "flex-start",
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"dialog-header-icon\"]": {
+      "flex": "0 0 auto",
+      "display": "inline-flex",
+      "align-items": "flex-start"
+    },
+    "[data-slot=\"dialog-accent-bar\"]": {
+      "position": "absolute",
+      "top": "0",
+      "left": "0"
+    },
+    "[data-slot=\"dialog-title\"], [data-slot=\"dialog-description\"], [data-slot=\"dialog-preheader\"]": {
+      "margin": "0"
+    },
+    "[data-slot=\"dialog-preheader\"]": {
+      "display": "block"
+    },
+    "[data-slot=\"dialog-content\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "flex",
+      "flex": "1 1 auto",
+      "min-height": "0",
+      "min-width": "0"
+    },
+    "[data-slot=\"dialog-content-inner\"]": {
+      "box-sizing": "border-box",
+      "overflow-y": "auto",
+      "flex": "1 1 auto",
+      "max-height": "inherit",
+      "min-width": "0",
+      "outline-offset": "-2px"
+    },
+    "[data-slot=\"dialog-actions\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "flex-direction": "row",
+      "justify-content": "flex-end",
+      "align-items": "center",
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"dialog-close\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "margin": "0",
+      "padding": "0",
+      "border": "0",
+      "background": "none",
+      "color": "inherit",
+      "cursor": "pointer",
+      "font": "inherit"
+    },
+    "[data-slot=\"dialog-close\"] svg": {
+      "display": "block",
+      "width": "1em",
+      "height": "1em"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.scrim",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "scrim",
+      "note": "All three ship a backdrop, and all three own it differently. Salt: a SEPARATE exported component (packages/core/src/scrim/Scrim.tsx), wrapped around the dialog by ConditionalScrimWrapper and suppressible with disableScrim. shadcn: DialogOverlay, declared inside dialog.tsx and rendered unconditionally by DialogContent — there is no prop to remove it. M3: its OWN token file, tokens/versions/latest/sass/_md-comp-scrim.scss (two tokens: container-color, container-opacity). docs/COMPONENTS.md carries `scrim (overlay backdrop)` as its own canonical row (Salt ✓ scrim, M3 ✓ scrim, shadcn `— (part of dialog)`), so this part and every style.scrim.* row is a declared BORROW that would migrate wholesale if scrim is split out. See docs/DIALOG-MATRIX.md scope note for the exact migration list."
+    },
+    {
+      "id": "structure.header-decoration",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "headerDecoration",
+      "note": "Three different answers to 'what marks the top of a dialog', and it is a shape/structure split, not a colour delta. Salt draws an ACCENT BAR: DialogHeader.css .saltDialogHeader-withAccent::before, a --salt-size-bar (2/4/6/8px by density) vertical stripe of --salt-sentiment-accent-background running down the left edge of the header, inset from the bottom by spacing-300 — and Salt SWAPS it for a StatusIndicator glyph whenever a status is set (the class is applied only when `!disableAccent && !status`), which the skeleton reproduces. shadcn draws NOTHING: DialogHeader is `flex flex-col gap-2` and no decoration element exists. M3 declares an ICON: with-icon-icon-size 24px + with-icon-icon-color -> md-sys-color.$secondary, a centred glyph above the headline in its with-icon variant. Modelling all three as 'an optional icon' would have been the tooltip-arrow mistake again."
+    },
+    {
+      "id": "structure.preheader",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "preheader",
+      "note": "Salt only — DialogHeader's `preheader` prop renders <Text color=\"primary\"> INSIDE the H2, above the header text, so it is part of the accessible name. Because it is a .saltText (not h2.saltText) it takes the BODY type ramp inside a heading. shadcn and M3 have no equivalent slot."
+    },
+    {
+      "id": "structure.header-actions",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "headerActions",
+      "note": "Salt only — DialogHeader's `actions` prop renders a .saltDialogHeader-actionsContainer (align-self: flex-start) at the trailing edge of the header row. Distinct from DialogActions (the footer) and from DialogCloseButton (which is absolutely positioned against the PANEL, not the header). shadcn and M3 have no header-level action region in the basic dialog; M3's is a full-screen-dialog feature (header-action-* tokens), which is out of scope."
+    },
+    {
+      "id": "structure.close-button",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "closeButton",
+      "note": "A three-way split on BOTH placement and default. Salt: `optional` — DialogCloseButton is an exported component the consumer must add (site/src/examples/dialog/Default.tsx has none; CloseButton.tsx adds one), and DialogCloseButton.css pins it to `top: 0; right: 0` with NO inset at all, flush into the panel's corner. shadcn: `default` — DialogContent takes showCloseButton = true, so an X is rendered unless it is switched off, at `absolute top-4 right-4` (16px inset). M3: `none` — md.comp.dialog has no close token of any kind; a basic M3 dialog is dismissed by its actions or the scrim. The glyph itself is a DECLARED COMPOSITION in every column (Salt composes its own Button appearance=\"transparent\" + CloseIcon; shadcn composes lucide's XIcon)."
+    },
+    {
+      "id": "structure.content-scroller",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "contentScroller",
+      "note": "Salt only, and it is a whole extra element with behaviour attached. DialogContent renders TWO divs: .saltDialogContent (a flex box with asymmetric margins) wrapping .saltDialogContent-inner (overflow-y: auto, 1px transparent top and bottom borders reserved for scroll dividers, max-height: inherit), plus a ResizeObserver-driven overflow check and an onScrollCapture handler that toggles -scrollTop/-scrollBottom. shadcn has NO content part at all — children are direct grid items of DialogContent, with no overflow handling anywhere in dialog.tsx (its docs add a per-instance `overflow-y-auto` in the Scrollable Content example). M3 has no content token."
+    },
+    {
+      "id": "structure.actions",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "actions",
+      "note": "All three have a trailing action region, none of them own the buttons. Salt: DialogActions (flex, justify-content: flex-end, gap spacing-100, padding spacing-300 with padding-bottom: 0). shadcn: DialogFooter (`flex flex-col-reverse gap-2 sm:flex-row sm:justify-end`, i.e. REVERSED COLUMN below 640px and a right-aligned row at and above — this matrix carries the >=640px form, see the @media gap note). M3: an action-* token family that material-web's own hand-authored tokens/_md-comp-dialog.scss lists entirely under $unsupported-tokens with the comment 'currently ignoring tokens for action-*-label-text and action-*-state-layer since actions are spec'd as standard text buttons'. The buttons themselves are a DECLARED COMPOSITION in all three."
+    },
+    {
+      "id": "structure.description",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "description",
+      "note": "All three: Salt's DialogHeader `description` prop (<Text color=\"secondary\">), shadcn's DialogDescription (Radix Description, a <p>), M3's supporting-text-* token family. What differs is the WIRING — see behavior.described-by: only shadcn references it from the dialog's aria-describedby."
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "role=\"dialog\" in all three. Salt writes it directly on the FloatingComponent (Dialog.tsx line 153); Radix writes it on DismissableLayer (primitives dialog.tsx line 461); M3 [R] per APG. Converges, like tooltip's role and unlike spinner's."
+    },
+    {
+      "id": "behavior.aria-modal",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "ariaModal",
+      "note": "A REAL divergence, and it is deliberate on both sides. Salt sets aria-modal=\"true\" on the dialog (Dialog.tsx line 154). Radix does NOT set it anywhere — it aria-hides every sibling instead, with the source comment 'aria-hide everything except the content (better supported equivalent to setting aria-modal)' (primitives/packages/react/dialog/src/dialog.tsx, DialogContentModal). M3 [R]: APG's dialog-modal pattern specifies aria-modal, so true. Two libraries, two readings of the same spec sentence."
+    },
+    {
+      "id": "behavior.background-suppression",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "backgroundSuppression",
+      "note": "The mechanism behind behavior.aria-modal, and it is genuinely different code. Salt passes `outsideElementsInert: true` to floating-ui's FloatingFocusManager — the browser's INERT attribute, which removes outside content from hit-testing, focus AND the accessibility tree. shadcn/Radix calls hideOthers(content) from the `aria-hidden` package — aria-hidden=\"true\" on siblings, which removes them from the a11y tree only (pointer suppression is done separately by DismissableLayer's disableOutsidePointerEvents). M3 [R]: aria-hidden, the APG-documented fallback. Implemented in the skeleton as two branches over the same sibling list."
+    },
+    {
+      "id": "behavior.focus-trap",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "focusTrap",
+      "note": "All three trap, and both live systems wrap. Salt: floating-ui FloatingFocusManager, documented in site/docs/components/dialog/accessibility.mdx ('Tab ... If the last element in the dialog has focus, Tab wraps to the first focusable element'). shadcn: Radix FocusScope with `trapped` and `loop`. M3 [R] per APG. The skeleton implements a real keydown-based Tab/Shift+Tab cycle over the panel's tabbable set."
+    },
+    {
+      "id": "behavior.initial-focus",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "initialFocus",
+      "note": "Salt is `configurable`: DialogProps.initialFocus accepts a tabbable INDEX or a ref, default 0, and its a11y docs prescribe which control should take it ('For dialogs that prompt for user confirmation, the call to action button takes focus first. For dialogs with destructive interactions, the cancel button takes focus first'). shadcn is `first-tabbable`: Radix's FocusScope onMountAutoFocus default, with no index prop exposed. M3 [R]: first-tabbable per APG. The skeleton honours an initialFocusIndex prop only when this value is `configurable`."
+    },
+    {
+      "id": "behavior.focus-return",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "focusReturn",
+      "note": "All three return focus to the invoker. Salt: FloatingFocusManager's returnFocus default, documented in accessibility.mdx ('When the dialog is closed, focus will return to the element that triggered the dialog'). shadcn: EXPLICIT — DialogContentModal's onCloseAutoFocus does `event.preventDefault(); context.triggerRef.current?.focus()`. M3 [R] per APG. The skeleton records document.activeElement at open and restores it on close."
+    },
+    {
+      "id": "behavior.dismiss-escape",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "dismissOnEscape",
+      "note": "All three. Salt: useDismiss(context, ...) — escapeKey is on by default and Dialog never disables it (disableDismiss only sets outsidePress: false). shadcn: DismissableLayer's onEscapeKeyDown -> onDismiss. M3 [R] per APG. The skeleton listens on the document in the capture phase so a keypress inside the panel still closes."
+    },
+    {
+      "id": "behavior.dismiss-outside",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "dismissOnOutside",
+      "note": "On by default in all three, and this is the row SELECT-MATRIX.md finding 16 was written about — a locked-looking behavior row that nothing checks. Salt: useDismiss(context, { outsidePress: !disableDismiss }), so ON unless the consumer opts out. shadcn: DismissableLayer pointerdown-outside, with a right-click guard (`if (isRightClick) event.preventDefault()`) and onFocusOutside prevented. M3 [R]: m3 basic dialogs dismiss on scrim tap. The skeleton uses a capture-phase pointerdown that closes when the press lands outside the panel, ignores button 2 / ctrl+left exactly as Radix does, and is skipped entirely while the harness pins the dialog open."
+    },
+    {
+      "id": "behavior.scroll-lock",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "scrollLock",
+      "note": "All three lock the page, and Salt's mechanism is the one worth copying. Dialog.tsx passes `lockScroll` to FloatingComponent, which calls usePreventScroll (a refactor of react-spectrum's): preventScrollStandard() sets documentElement.style.overflow = 'hidden' AND documentElement.style.paddingRight = (window.innerWidth - documentElement.clientWidth) + 'px', so the page does not shift when the scrollbar disappears; it also ref-counts across nested locks. shadcn: react-remove-scroll on the Overlay when modal. M3 [R]. The skeleton reproduces Salt's two-line standard path INLINE ON THE ELEMENT (documentElement.style.*), never through a theme-scoped custom property — the exact trap docs/SELECT-MATRIX.md finding 14 recorded."
+    },
+    {
+      "id": "behavior.labelled-by",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "All three name the dialog from its title, by three different wirings. Salt: DialogHeader generates an id with useId, pushes it up through DialogContext.setId, and Dialog reads it back as aria-labelledby={clsx(ariaLabelledBy, headerId) || undefined} — a child-to-parent context channel, and the `idProp` prop is deprecated precisely because of it. shadcn: Radix counts mounted Titles and sets aria-labelledby={context.titlePresent ? context.titleId : undefined}, i.e. the attribute is ABSENT when no Title is rendered. M3 [R] per APG. The skeleton generates the title id and wires it whenever a title is rendered."
+    },
+    {
+      "id": "behavior.described-by",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "describedBy",
+      "note": "SOURCED NON-CONVERGENCE. shadcn/Radix sets aria-describedby to the Description's id when one is mounted (primitives dialog.tsx, concatAriaDescribedby(ariaDescribedby, context.descriptionId)). Salt does NOT: a direct grep of packages/core/src/dialog for `aria-describedby` returns nothing — Salt's `description` is visible text with no programmatic association to the dialog at all. M3 [R]: on, per APG. Recorded as an absence, not as an oversight in this matrix."
+    },
+    {
+      "id": "behavior.exit-animation",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "exitAnimation",
+      "note": "Whether the panel stays mounted to play a closing animation. Salt: yes, and it does it twice over — a useEffect keeps showComponent true for a hardcoded `300); // var(--salt-duration-perceptible)` after open flips false, AND an onAnimationEnd handler unmounts early if the animation finishes first. shadcn: yes, via Radix Presence + data-[state=closed]:animate-out. M3: off — _md-comp-dialog.scss has no motion token at all, so there is nothing to source an exit from. The skeleton defers unmount by the row's own duration when this is on."
+    },
+    {
+      "id": "behavior.scroll-region-focusable",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "scrollRegionFocusable",
+      "note": "Salt only. When DialogContent detects overflow (scrollWidth > offsetWidth || scrollHeight > offsetHeight, re-checked by a ResizeObserver) it spreads role=\"region\", tabIndex={0} and aria-labelledby={headerId ?? dialogId} onto the inner scroller, so keyboard users can reach and arrow-scroll the body — its accessibility.mdx cites WCAG 2.1.1 for this. shadcn and M3 have no scroll region and therefore no such affordance. The skeleton measures overflow and applies the same three attributes."
+    },
+    {
+      "id": "behavior.portal",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "DECLARED GAP. Salt renders through floating-ui's FloatingPortal (and re-applies a SaltProvider inside it, `applyClassesTo=\"scope\"`, because the portal escapes the theme scope). shadcn renders through Radix's DialogPortal. M3 [R]. The skeleton does NOT portal: it renders the scrim and panel in place as position:fixed siblings under a display:contents root, which keeps them inside the harness's [data-theme] scope. That is a real difference in stacking-context behaviour under transformed ancestors, and it is declared rather than silently approximated."
+    },
+    {
+      "id": "prop.size",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "size",
+      "note": "Salt only: `size?: \"small\" | \"medium\" | \"large\"`, default \"medium\", and it is really a size x BREAKPOINT matrix — Dialog.tsx composes withBaseName(size, currentBreakpoint) into fifteen classes (.saltDialog-{small,medium,large}-{xs,sm,md,lg,xl}), each setting a percentage width and a percentage max-height, under a source comment 'Pending design decision on heights and widths'. shadcn's Dialog has NO size prop (its alert-dialog does — `size?: \"default\" | \"sm\"` — which is one of the reasons alert-dialog is out of scope). M3 has no size token. See docs/DIALOG-MATRIX.md for the declared breakpoint pin."
+    },
+    {
+      "id": "prop.status",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "status",
+      "note": "Salt only, and note the enum: DialogProps.status is the FULL `ValidationStatus` = error | warning | success | INFO — four values, where Salt's own Input/Dropdown take Omit<ValidationStatuses,\"info\"> and get three. Same design system, two different status enums for two of its own components (INPUT-MATRIX.md finding 4, confirmed again here from the other side). The status recolours the panel border AND replaces the accent bar with a StatusIndicator. shadcn and M3 have no status axis on dialog at all."
+    },
+    {
+      "id": "prop.disable-dismiss",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only — `disableDismiss` sets useDismiss's outsidePress to false. It does NOT disable Escape. shadcn's equivalent would be preventing onPointerDownOutside per instance (not a prop); M3 has none."
+    },
+    {
+      "id": "prop.disable-scrim",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only — `disableScrim` makes ConditionalScrimWrapper render a fragment instead of <Scrim fixed>. shadcn's DialogOverlay is rendered unconditionally inside DialogContent, so removing it is a source edit, not an instance toggle (the same class of expressibility gap TOOLTIP-MATRIX.md recorded for shadcn's arrow). M3 has no such switch."
+    },
+    {
+      "id": "prop.disable-accent",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only — DialogHeaderProps.disableAccent removes the accent bar. Note the source condition: withAccent applies when `!disableAccent && !status`, so setting a status ALSO removes the bar (it is replaced by the StatusIndicator). Two props, one slot."
+    },
+    {
+      "id": "prop.show-close-button",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "shadcn only — DialogContent takes showCloseButton = TRUE by default, and DialogFooter takes a second showCloseButton that defaults to FALSE and renders a composed <Button variant=\"outline\">Close</Button>. Two props of the same name, two different defaults, in one file. Salt's close button is an opt-in component instead; M3 has none."
+    },
+    {
+      "id": "slot.title",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in all three. Salt renders it into an <H2> (a composed Text component, DECLARED COMPOSITION); shadcn into Radix's Title (a Primitive.h2); M3's headline-* is a token family with no element."
+    },
+    {
+      "id": "slot.description",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned in all three."
+    },
+    {
+      "id": "slot.content",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in all three; only the scrolling chrome around it is modelled (and only Salt has any)."
+    },
+    {
+      "id": "slot.actions",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned. DECLARED COMPOSITION: the buttons belong to the future `button` registry component — Salt's examples use <Button sentiment=\"accented\" appearance=\"bordered\"/>, shadcn's use <Button variant=\"outline\"/>, M3's action-* tokens are explicitly deferred to 'standard text buttons'. Rendered here as neutral placeholders."
+    },
+    {
+      "id": "slot.preheader",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, consumer-owned."
+    },
+    {
+      "id": "slot.header-actions",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, consumer-owned."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION, same pattern as CALENDAR-MATRIX.md's nav buttons: (a) `button`, for the actions row, Salt's DialogCloseButton (literally a <Button appearance=\"transparent\">) and shadcn's footer Close button; (b) an ICON set — the close X, Salt's StatusIndicator glyph, M3's with-icon glyph; (c) `scrim`, which docs/COMPONENTS.md carries as its own canonical row and which is borrowed into this matrix as a part; (d) the PORTAL / floating engine (see behavior.portal); (e) `text`, for Salt's H2/Text components which supply the title and description type. None is imported by this skeleton; all render as neutral placeholders."
+    },
+    {
+      "id": "state.closed-open",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "the primary state in all three; Salt and shadcn both keep the panel mounted through the exit animation (see behavior.exit-animation), M3 has no motion token."
+    },
+    {
+      "id": "state.content-overflow",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only — three distinct sub-states (isOverflowing, canScrollUp, canScrollDown) driving four class hooks, plus the extra right padding that appears only when overflowing so text does not sit under the scrollbar."
+    },
+    {
+      "id": "state.status",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only — four values, each recolouring the panel border and swapping the header decoration."
+    },
+    {
+      "id": "state.close-button-interaction",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "shadcn only — its close control has real rest/hover/focus styling of its own (opacity 70 -> 100, a 2px ring with a 2px offset). Salt's close button has NO states of its own in DialogCloseButton.css: it inherits every one from the composed Button. M3 has no close button."
+    },
+    {
+      "id": "style.scrim.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-scrim\"]",
+      "declarations": { "background": "$" },
+      "note": "THREE SYSTEMS, THREE DIFFERENT SCRIMS — and one of them is not dark. Salt: --salt-overlayable-background -> palette-alpha-higher, which is white-65a in LIGHT mode and black-65a in dark, i.e. a 65%-opaque WHITE veil over a light page. shadcn: bg-black/50, black at 50%, identical in both modes. M3: scrim (= md.ref.palette.neutral0 = #000) at container-opacity 0.32. Assuming 'a scrim is a dark wash' would have been wrong for Salt in exactly the mode most people look at first."
+    },
+    {
+      "id": "style.scrim.z-index",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-scrim\"]",
+      "declarations": { "z-index": "$" },
+      "note": "Salt: calc(var(--salt-zIndex-drawer) - 1) = 1199, i.e. deliberately one below the drawer layer and 101 below the modal layer its panel uses. shadcn: z-50, the same bare Tailwind index as its content. M3: off — no z-index token anywhere (docs/foundations/layers.md: Salt is the only system with a shared z-index scale)."
+    },
+    {
+      "id": "style.scrim.animation",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-scrim\"]",
+      "declarations": { "animation": "$" },
+      "note": "Salt: OFF — Scrim.css contains no animation or transition rule of any kind; the veil appears instantly under a panel that fades. shadcn: data-[state=open]:animate-in fade-in-0. M3: off, no motion token."
+    },
+    {
+      "id": "style.panel.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "background": "$" }
+    },
+    {
+      "id": "style.panel.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "color": "$" },
+      "note": "Only shadcn sets a panel-level text colour, and even that is ambient: DialogContent has bg-background and NO text-colour class, so its children inherit --foreground. Salt declares colour on DialogContent instead (see style.content.color) and leaves the header inheriting currentColor. M3 colours the headline and supporting text individually and has no panel-level text token. Kept as three different answers rather than hoisted to one row."
+    },
+    {
+      "id": "style.panel.border",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: size-fixed-100 (1px, density-invariant) solid separable-tertiary-borderColor, reached through the --border-current indirection so one status reassignment recolours it. shadcn: the bare `border` utility -> 1px solid --border. M3: OFF — md.comp.dialog has no outline or border token; an M3 dialog is elevation-only, exactly as its menu is."
+    },
+    {
+      "id": "style.panel.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: var(--salt-palette-corner, 0) — note the UNSUFFIXED stop (curve-150 = 3/6/9/12px), a rounder corner than the corner-weak its input/dropdown use. shadcn: rounded-lg -> --radius-lg -> --radius = 0.625rem = 10px. M3: corner-extra-large = 28px, by far the roundest surface in this registry so far."
+    },
+    {
+      "id": "style.panel.shadow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "box-shadow": "$" },
+      "note": "Salt: overlayable-shadow-modal -> shadow-medium, the heaviest stop in Salt's scale and the only component in this registry to use it. shadcn: shadow-lg [R] (Tailwind not vendored). M3: container-elevation level3 = 6dp, rendered as M3's published two-layer level-3 shadow [R] — the same derivation button.m3.json used for level1 and select.m3.json for level2. NOTE material-web's own hand-authored tokens/_md-comp-dialog.scss lists container-elevation under $unsupported-tokens with the comment 'Unused without a shadow color'; this matrix takes the generated token's value and records the disownment, exactly as SELECT-MATRIX.md finding 6 did for the menu tokens."
+    },
+    {
+      "id": "style.panel.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt: padding-top AND padding-bottom spacing-300, and NO horizontal padding at all — the header, content and actions each carry their own left/right insets, which is why the content's margins are asymmetric. shadcn: p-6 = 24px uniform on DialogContent, with header and footer adding none. M3: 24px uniform [R] (m3.material.io basic-dialog spec; no spacing token exists in _md-comp-dialog.scss, the same total absence TOOLTIP-MATRIX.md found for plain-tooltip padding)."
+    },
+    {
+      "id": "style.panel.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "gap": "$" },
+      "note": "shadcn: gap-4 = 16px on the content grid, the single rhythm between header, body and footer. M3: 16px [R], the spec's headline-to-supporting-text step, applied here as the panel rhythm since M3 has no per-part token. Salt: OFF — Salt spaces its parts with per-part padding, not a container gap, so adding one would double every seam."
+    },
+    {
+      "id": "style.panel.width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "width": "$" },
+      "note": "shadcn: w-full, then capped by max-width. M3: 100% [R], likewise capped. Salt: OFF here because its width IS the size axis — see style.panel.size@small/@medium/@large."
+    },
+    {
+      "id": "style.panel.min-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "min-width": "$" },
+      "note": "M3 only: 280px [R] (m3.material.io basic-dialog spec). Salt and shadcn declare no floor."
+    },
+    {
+      "id": "style.panel.max-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "max-width": "$" },
+      "note": "shadcn: TWO caps in source — max-w-[calc(100%-2rem)] always, and sm:max-w-lg (32rem) at >=640px. The desktop value is carried here, per the declared @media gap (INPUT-MATRIX.md finding 9). M3: 560px [R], spec. Salt: OFF — its width is a percentage of the viewport with no absolute cap."
+    },
+    {
+      "id": "style.panel.max-height",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "max-height": "$" },
+      "note": "OFF in every column, and that is the finding rather than a gap. Salt sets max-height per size (the size rows below), so a blanket row would fight them. shadcn sets NONE — dialog.tsx has no max-h utility, so a long shadcn dialog simply grows past the viewport; its docs' 'Scrollable Content' example adds the cap per instance. M3 has no height token. The row is retained so a future reader does not add one by assumption."
+    },
+    {
+      "id": "style.panel.overflow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "overflow-y": "$" },
+      "note": "Salt only: the PANEL itself is overflow-y: auto, in addition to the inner content scroller — two nested scroll containers, both real. shadcn and M3 have no overflow declaration."
+    },
+    {
+      "id": "style.panel.z-index",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "z-index": "$" },
+      "note": "Salt: zIndex-modal = 1300. shadcn: z-50, the SAME index as its overlay — the panel wins on DOM order alone. M3: off."
+    },
+    {
+      "id": "style.panel.outline",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"]",
+      "declarations": { "outline": "$" },
+      "note": "shadcn only — `outline-none` on DialogContent, because Radix focuses the panel itself when nothing tabbable is inside it. Salt and M3 leave the platform default."
+    },
+    {
+      "id": "style.panel.animation",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-state=\"open\"]",
+      "declarations": { "animation": "$" },
+      "note": "Two different keyframes, not one with a different duration. Salt: --salt-animation-fade-in-center = `fade-in-center var(--salt-animation-duration) var(--salt-animation-timing-function)` -> 300ms ease-in-out, and the keyframe is OPACITY ONLY (foundations/animation.css). shadcn: animate-in fade-in-0 zoom-in-95 with duration-200 -> opacity AND a 0.95 scale over 200ms [R] (tw-animate-css is a declared dependency but is not vendored in this clone). M3: 300ms cubic-bezier(0.2,0,0,1) [R], borrowed from docs/foundations/motion.md's medium2 + standard easing because _md-comp-dialog.scss has no motion token — the same principled-placeholder treatment TOOLTIP-MATRIX.md gave M3's tooltip. The two keyframes are appended to page/chrome.css."
+    },
+    {
+      "id": "style.panel.animation@exit",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-state=\"closed\"]",
+      "declarations": { "animation": "$" },
+      "note": "Salt: --salt-animation-fade-out-back = `fade-out-back var(--salt-animation-duration) ease-in-out both`. The NAME says 'back' but the keyframe body is opacity 1 -> 0 with no transform at all (foundations/animation.css lines 149-156) — a source quirk reproduced rather than corrected, and the reason the exit keyframe here is a plain fade. shadcn: data-[state=closed]:animate-out fade-out-0 zoom-out-95. M3: off."
+    },
+    {
+      "id": "style.panel.size@small",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-size=\"small\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. .saltDialog-small-lg { width: 24%; max-height: 48% } — see the breakpoint pin in docs/DIALOG-MATRIX.md: Salt computes the breakpoint in JS (useCurrentBreakpoint) and emits one of five classes per size, so all fifteen values are real; this matrix carries the `lg` column (1280-1919px, the harness's own viewport) and records the other four in the column's provenance."
+    },
+    {
+      "id": "style.panel.size@medium",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-size=\"medium\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, the default size. .saltDialog-medium-lg { width: 48%; max-height: 72% }."
+    },
+    {
+      "id": "style.panel.size@large",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-size=\"large\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. .saltDialog-large-lg { width: 72%; max-height: 84% }."
+    },
+    {
+      "id": "style.header.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-header\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt only: padding-bottom/left/right spacing-300 and NO padding-top (the panel's own padding-top supplies it). shadcn and M3 give the header no padding of its own — the panel's uniform 24px covers it."
+    },
+    {
+      "id": "style.header.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-header\"]",
+      "declarations": { "column-gap": "$" },
+      "note": "The ROW gap, between the decoration/status glyph and the text block. Salt: spacing-100. M3: 16px [R], the spec's icon-to-headline step. shadcn: OFF — it has no decoration, so there is nothing to gap from."
+    },
+    {
+      "id": "style.header.text-gap",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-header-text\"]",
+      "declarations": { "row-gap": "$" },
+      "note": "The COLUMN gap, between title and description. Salt: spacing-50, i.e. HALF its row gap — 2/4/6/8px. shadcn: gap-2 = 8px, its only header gap. M3: 16px [R]. Three systems, three different ideas of how tight a title sits to its own description."
+    },
+    {
+      "id": "style.header.text-offset",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-header-text\"]",
+      "declarations": { "padding-top": "$" },
+      "note": "Salt only, and it is a formula, not a constant: calc((var(--salt-size-base) - var(--salt-text-h2-lineHeight)) / 2) -> 1/2/2/1px by density. It optically centres the H2's first line against a size-base-tall row so the accent bar and status glyph line up with the text. The same expression is repeated on the StatusIndicator (style.header-icon.offset)."
+    },
+    {
+      "id": "style.accent-bar.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-accent-bar\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. DialogHeader.css .saltDialogHeader-withAccent::before { width: var(--salt-size-bar); background: var(--salt-sentiment-accent-background); bottom: var(--salt-spacing-300) } — a density-scaled 2/4/6/8px accent stripe that stops short of the header's own bottom padding, so it aligns with the text block rather than the box. FROZEN-TOKEN CHECK (TOOLTIP-MATRIX.md lesson): size-bar is on the density scale, not the fixed scale, so the width really does move with density; nothing here is a snapshotted literal."
+    },
+    {
+      "id": "style.header-icon.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-header-icon\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: DialogHeader.css overrides the StatusIndicator's own icon box with --icon-size: var(--salt-text-h2-lineHeight) -> 18/24/32/42px, so the glyph is exactly as tall as one line of the title it sits beside — a formula, not a fixed icon size, and NOT --salt-size-icon. M3: with-icon-icon-size 24px, density-invariant. shadcn: off."
+    },
+    {
+      "id": "style.header-icon.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-header-icon\"]",
+      "declarations": { "color": "$" },
+      "note": "M3: with-icon-icon-color -> md-sys-color.$secondary, which is the only place in an M3 dialog the secondary role appears. Salt: the glyph's own fill belongs to StatusIndicator (DECLARED COMPOSITION) and rides the status indirection, so this row reassigns the same --status-active property the border reads. shadcn: off."
+    },
+    {
+      "id": "style.header-icon.offset",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-header-icon\"]",
+      "declarations": { "padding-top": "$" },
+      "note": "Salt only — the identical calc((size-base - text-h2-lineHeight)/2) the text block uses, applied to the glyph so the two share one optical baseline."
+    },
+    {
+      "id": "style.title.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-title\"]",
+      "declarations": { "font": "$" },
+      "note": "Salt: the h2 role — 600 (semiBold) 18px/24px 'Open Sans' at medium, 14/18 - 18/24 - 24/32 - 32/42 by density. The FAMILY is Open Sans and not Amplitude because SaltProvider's DEFAULT_HEADING_FONT is \"Open Sans\" (SaltProvider.tsx line 42) and next/characteristics/text.css keys the Amplitude block off [data-heading-font=\"Amplitude\"]. shadcn: text-lg font-semibold with leading-none, i.e. 600 1.125rem/1 — the only title in this registry with a line-height of exactly 1. M3: headline-small = 400 1.5rem/2rem Roboto — the LARGEST title and the LIGHTEST weight of the three."
+    },
+    {
+      "id": "style.title.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-title\"]",
+      "declarations": { "color": "$" },
+      "note": "M3 only: headline-color -> on-surface. Salt's H2 gets no colour variant, so Text.css's --text-color falls through to `currentColor` and the title inherits whatever the panel inherits; shadcn's DialogTitle likewise has no text-colour class. Two systems leave the title's colour to context, one tokenises it."
+    },
+    {
+      "id": "style.title.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-title\"]",
+      "declarations": { "letter-spacing": "$" },
+      "note": "Salt: 0 (--salt-text-letterSpacing, declared on .saltText). M3: headline-small-tracking = 0rem — declared and zero, which is not the same as absent. shadcn: off, no tracking utility."
+    },
+    {
+      "id": "style.preheader.font",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-preheader\"]",
+      "declarations": { "font": "$" },
+      "note": "Salt only. The preheader is a <Text> nested INSIDE the H2, and because Text.css's h2 rule is `h2.saltText, .saltText-h2.saltText` it does not match a plain .saltText child — so the preheader renders at the BODY ramp (400 12px/16px at medium) inside a 600 18px/24px heading. A real typographic inversion, sourced by reading which selector actually wins."
+    },
+    {
+      "id": "style.preheader.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-preheader\"]",
+      "declarations": { "color": "$" },
+      "note": "Salt only — <Text color=\"primary\"> -> .saltText-primary -> content-primary-foreground. Note it is the PRIMARY foreground while the description below it is secondary, so the preheader reads stronger than the description despite being smaller than the title."
+    },
+    {
+      "id": "style.description.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-description\"]",
+      "declarations": { "font": "$" },
+      "note": "Salt: the body ramp, 400 12px/16px at medium. shadcn: text-sm = 400 0.875rem/1.25rem. M3: supporting-text -> body-medium = 400 0.875rem/1.25rem Roboto. shadcn and M3 land on the identical numbers by different routes."
+    },
+    {
+      "id": "style.description.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-description\"]",
+      "declarations": { "color": "$" },
+      "note": "The one colour all three tokenise, and all three de-emphasise: Salt content-secondary-foreground, shadcn --muted-foreground, M3 on-surface-variant."
+    },
+    {
+      "id": "style.description.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-description\"]",
+      "declarations": { "letter-spacing": "$" },
+      "note": "Salt 0; M3 body-medium-tracking 0.015625rem; shadcn off."
+    },
+    {
+      "id": "style.content.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-content\"]",
+      "declarations": { "color": "$" },
+      "note": "Salt only — DialogContent.css declares content-primary-foreground (and re-declares the container background) on the body wrapper, which is why the panel itself carries no colour. shadcn inherits from the panel; M3 has no content token."
+    },
+    {
+      "id": "style.content.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-content\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, and the asymmetry is real, not a typo: margin-left spacing-200, margin-right spacing-300, padding-left spacing-100 (8/16/24/32 - 12/24/36/48 - 4/8/12/16 by density). Left inset = 16+8 = 24 = spacing-300 at medium, matching the header and actions; the extra padding-left exists so a focus ring inside the scroll region is not clipped by overflow. Also re-declares the container background, as source does."
+    },
+    {
+      "id": "style.content.min-height",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-content\"]",
+      "declarations": { "min-height": "$" },
+      "note": "Salt only: min-height: var(--salt-text-lineHeight) -> 14/16/18/20px, i.e. an empty dialog body still reserves exactly one line."
+    },
+    {
+      "id": "style.content.padding@overflow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-content-inner\"][data-overflow]",
+      "declarations": { "padding-right": "$" },
+      "note": "Salt only — .saltDialogContent-overflow { padding-right: var(--salt-spacing-100) }, applied ONLY while the body actually overflows, so text does not run under the scrollbar. A state-conditional spacing rule, which is rarer than it sounds."
+    },
+    {
+      "id": "style.content.scroll-divider",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-content-inner\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. The inner scroller always carries a size-fixed-100 (1px) TRANSPARENT top and bottom border, so the box does not jump when a divider appears. Reserving the space is the whole point of the rule."
+    },
+    {
+      "id": "style.content.scroll-divider@top",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-content-inner\"][data-scroll-top]",
+      "declarations": { "border-top-color": "$" },
+      "note": "Salt only — .saltDialogContent-scrollTop, applied when scrollTop > 0; separable-tertiary-borderColor, the same token as the panel's own border."
+    },
+    {
+      "id": "style.content.scroll-divider@bottom",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-content-inner\"][data-scroll-bottom]",
+      "declarations": { "border-bottom-color": "$" },
+      "note": "Salt only — .saltDialogContent-scrollBottom, applied when scrollHeight - scrollTop - clientHeight > 1. Note the source's `> 1` tolerance, not `> 0`."
+    },
+    {
+      "id": "style.actions.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-actions\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt: spacing-300 on top/left/right and padding-bottom: 0 — the panel's own padding-bottom finishes the box. shadcn: none, the panel's p-6 and gap-4 do the work. M3: padding-top 24px [R], the spec's supporting-text-to-actions step."
+    },
+    {
+      "id": "style.actions.gap",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-actions\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt spacing-100 (4/8/12/16); shadcn gap-2 = 8px; M3 8px [R]. All three right-align at desktop width, which is why the justification lives in `base` rather than in a row."
+    },
+    {
+      "id": "style.close-button.position",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-close\"]",
+      "cellIsDeclarations": true,
+      "note": "The placement half of structure.close-button, and the two live systems differ by a full inset. Salt: top 0, right 0 — DialogCloseButton.css pins it flush into the panel's corner, ON TOP of the panel's own padding, so it visually overlaps the header's top-right. shadcn: top-4 right-4 = 16px in from both edges. M3: off."
+    },
+    {
+      "id": "style.close-button.shape",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-close\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "shadcn only: rounded-xs. NOTE shadcn's globals.css defines --radius-sm through --radius-4xl but NOT --radius-xs, so this one utility falls through to Tailwind's own default (0.125rem = 2px) rather than to shadcn's --radius scale — recorded as [R] and flagged, not silently mapped onto --radius-sm. Salt's close button is a composed Button and takes that component's corner; M3 has no close button."
+    },
+    {
+      "id": "style.close-button.glyph-size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-close\"] svg",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: [&_svg:not([class*='size-'])]:size-4 -> 16px, plus [&_svg]:pointer-events-none and [&_svg]:shrink-0. Density-invariant (shadcn has no density capability). Salt's glyph size comes from the composed Button + semantic-icon-provider (DECLARED COMPOSITION); M3 has none."
+    },
+    {
+      "id": "style.close-button.opacity",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-close\"]",
+      "declarations": { "opacity": "$" },
+      "note": "shadcn only: opacity-70 at rest. A dimmed-by-default affordance, which is the opposite of Salt's approach (a full-strength transparent Button)."
+    },
+    {
+      "id": "style.close-button.opacity@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-close\"]:hover",
+      "declarations": { "opacity": "$" },
+      "note": "shadcn only: hover:opacity-100."
+    },
+    {
+      "id": "style.close-button.focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-close\"]:focus-visible",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 ring-offset-background — a 2px ring with a 2px background-coloured offset, expressed as a two-layer box-shadow. Note this is a `focus:` rule, not `focus-visible:`, unlike the ring on shadcn's own input and select triggers; the skeleton applies it on :focus-visible because a mouse-clicked close button showing a ring would be a rendering artefact of the harness, and the divergence is declared here rather than hidden."
+    },
+    {
+      "id": "style.close-button.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-close\"]",
+      "declarations": { "transition": "$" },
+      "note": "shadcn only: transition-opacity, with Tailwind's default 150ms / cubic-bezier(0.4,0,0.2,1) [R] since Tailwind is not vendored — the same caveat input.shadcn.json and select.shadcn.json record."
+    },
+    {
+      "id": "style.panel.status@info",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-status=\"info\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Dialog.css .saltDialog-info { border-color: var(--salt-status-info-borderColor) }, modelled as a reassignment of the single --status-active indirection so the panel border AND the header's StatusIndicator recolour together — the same one-property pattern Tooltip.css uses and INPUT-MATRIX.md finding 3 identified."
+    },
+    {
+      "id": "style.panel.status@error",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-status=\"error\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — palette-negative."
+    },
+    {
+      "id": "style.panel.status@warning",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-status=\"warning\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — palette-warning. shadcn and M3 have no warning state on dialog, the same coverage gap already recorded for button, alert, input and select."
+    },
+    {
+      "id": "style.panel.status@success",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dialog-panel\"][data-status=\"success\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — palette-positive."
+    }
+  ]
+}

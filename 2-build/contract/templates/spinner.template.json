@@ -1,0 +1,233 @@
+{
+  "component": "spinner",
+  "openUiAnatomy": "no published Open UI spinner anatomy — indeterminate-only loading glyph, union of salt-ds Spinner, shadcn Spinner (wraps lucide Loader2Icon), M3 circular-progress-indicator (baseline, indeterminate). Determinate progress is a separate future component (see docs/SPINNER-MATRIX.md scope note).",
+  "behavior": {
+    "pattern": "non-interactive status indicator — no keyboard pattern, no tabindex, no focus/hover/disabled states in any source. The only cross-system behavior axis is HOW loading is announced to assistive tech (role + label + optional repeat-announce), not interaction.",
+    "chassis": "skeleton/spinner.tsx — written from the template's part union; inherits from no design system"
+  },
+  "skeletonParams": {
+    "size": ["small", "medium", "large", "default", "baseline"],
+    "role": ["img", "status", "progressbar"],
+    "ariaLabelDefault": ["loading", "Loading"],
+    "repeatAnnounce": [true, false],
+    "track": [true, false],
+    "gradientTrail": [true, false]
+  },
+  "base": {
+    "[data-slot=\"spinner\"]": {
+      "position": "relative",
+      "display": "inline-block"
+    },
+    "[data-slot=\"spinner-svg\"]": {
+      "position": "absolute",
+      "inset": "0",
+      "width": "100%",
+      "height": "100%",
+      "animation-name": "spinner-rotate",
+      "animation-iteration-count": "infinite"
+    },
+    "[data-slot=\"spinner-arc\"], [data-slot=\"spinner-arc-trail\"]": {
+      "fill": "none",
+      "cx": "50%",
+      "cy": "50%"
+    },
+    "[data-slot=\"spinner-track\"]": {
+      "fill": "none",
+      "cx": "50%",
+      "cy": "50%"
+    },
+    "[data-slot=\"spinner-trail-stop-a\"]": {
+      "stop-opacity": "1"
+    },
+    "[data-slot=\"spinner-trail-stop-b\"]": {
+      "stop-opacity": "0"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.track",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "track",
+      "note": "M3 only (latest circular-progress-indicator schema) — a static background ring behind the moving arc. Absent from Salt/shadcn source."
+    },
+    {
+      "id": "structure.gradient-trail",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "gradientTrail",
+      "note": "Salt only — two overlapping half-stroked circles, the second wrapped in a fading linear-gradient. shadcn/M3 render a flat single-color arc."
+    },
+    {
+      "id": "slot.content",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant, not a gap: no source accepts children/content — Spinner is a closed glyph in all three systems."
+    },
+    {
+      "id": "behavior.non-interactive",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "no tabindex, no keyboard pattern, no interaction handlers in any source — identical across all three"
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "role",
+      "note": "three different ARIA roles for the same concept: Salt role=img, shadcn role=status, M3 role=progressbar [R] — a real divergence, not a documentation gap"
+    },
+    {
+      "id": "behavior.label",
+      "piece": "behavior",
+      "policy": "default",
+      "channel": "config",
+      "param": "ariaLabelDefault",
+      "note": "content formatting IS character (same lesson as Calendar): Salt defaults to lowercase 'loading' via an overridable prop; shadcn hardcodes capitalized 'Loading', not exposed as a prop"
+    },
+    {
+      "id": "behavior.repeat-announce",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "repeatAnnounce",
+      "note": "Salt only — useAriaAnnouncer re-announces the label every announcerInterval (default 5000ms) until announcerTimeout (default 20000ms), then announces a stop notice; announces a completion message on unmount. shadcn/M3 have no equivalent — a declared capability gap, not a silent drop."
+    },
+    {
+      "id": "prop.size",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "size",
+      "note": "Salt: discrete enum small/medium/large. shadcn: not a prop — arbitrary className (size-3/4/6/8), continuous, off here. M3: baseline only in scope (thick variant declared out of scope)."
+    },
+    {
+      "id": "state.spinning",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "the only visual state — always animating while mounted"
+    },
+    {
+      "id": "state.none-else",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant: confirmed no hover/focus/active/disabled rule in any source — Spinner is non-interactive end to end"
+    },
+    {
+      "id": "style.root.size",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner\"]",
+      "declarations": {
+        "inline-size": "$",
+        "block-size": "$"
+      },
+      "note": "diameter shown at size=medium (Salt) / baseline (M3). DECLARED DEFERRAL, same limitation as Button's size prop: per-prop-value style resolution (small/large also render, at different diameters — see spinner.salt.json provenance) needs a generator extension, not yet built."
+    },
+    {
+      "id": "style.arc.stroke-width",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-arc\"], [data-slot=\"spinner-arc-trail\"]",
+      "declarations": {
+        "stroke-width": "$"
+      },
+      "note": "shadcn: Loader2Icon's stroke is baked into its glyph path, not independently controllable via this component's API — the value here is a REGISTRY RENDERING APPROXIMATION (not a shadcn-sourced number), declared as such rather than left silently blank"
+    },
+    {
+      "id": "style.arc.radius",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-arc\"], [data-slot=\"spinner-arc-trail\"]",
+      "declarations": {
+        "r": "$"
+      },
+      "note": "derived geometry (radius = (diameter - stroke-width) / 2, minus the track's thickness+gap where a track exists) — each column supplies its own formula/value rather than a shared cross-system token, since it depends on that column's own size + stroke-width + (optionally) track dimensions"
+    },
+    {
+      "id": "style.track.thickness",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-track\"]",
+      "declarations": {
+        "stroke-width": "$"
+      },
+      "note": "M3 only"
+    },
+    {
+      "id": "style.track.radius",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-track\"]",
+      "declarations": {
+        "r": "$"
+      },
+      "note": "M3 only — radius = (diameter - track-thickness) / 2"
+    },
+    {
+      "id": "style.track.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-track\"]",
+      "declarations": {
+        "stroke": "$"
+      },
+      "note": "M3 only"
+    },
+    {
+      "id": "style.arc.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-arc\"]",
+      "declarations": {
+        "stroke": "$"
+      }
+    },
+    {
+      "id": "style.gradient-trail",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-trail-stop-a\"], [data-slot=\"spinner-trail-stop-b\"]",
+      "declarations": {
+        "stop-color": "$"
+      },
+      "note": "Salt only — both gradient stops share one color (the same accent used by the flat arc); the fade itself is the stop-opacity ramp declared as a theme-invariant structural rule in base, since it is always 1→0 by position, never a per-DS value"
+    },
+    {
+      "id": "style.root.duration",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-svg\"]",
+      "declarations": {
+        "animation-duration": "$"
+      },
+      "note": "Salt hardcodes 0.9s inline in source (not routed through Salt's own duration foundation); shadcn uses Tailwind's default animate-spin (1s, unmodified in this repo); M3 [R] — no duration token in the tokens-only clone, registry default applies"
+    },
+    {
+      "id": "style.root.easing",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"spinner-svg\"]",
+      "declarations": {
+        "animation-timing-function": "$"
+      }
+    }
+  ]
+}

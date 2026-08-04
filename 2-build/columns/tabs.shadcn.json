@@ -1,0 +1,181 @@
+{
+  "system": "shadcn",
+  "component": "tabs",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "muted": "oklch(0.97 0 0)",
+      "tablist-fg": "oklch(0.556 0 0)",
+      "fg": "oklch(0% 0 0)",
+      "tab-fg": "color-mix(in oklab, oklch(0% 0 0) 60%, transparent)",
+      "tab-active-bg": "oklch(1 0 0)",
+      "tab-active-border": "transparent",
+      "ring": "oklch(0.708 0 0)",
+      "ring-shadow": "0 0 0 3px color-mix(in oklab, oklch(0.708 0 0) 50%, transparent)",
+      "shadow-sm": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      "type-tab": "500 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif"
+    },
+    "dark": {
+      "muted": "oklch(0.269 0 0)",
+      "tablist-fg": "oklch(0.708 0 0)",
+      "fg": "oklch(0.985 0 0)",
+      "tab-fg": "oklch(0.708 0 0)",
+      "tab-active-bg": "color-mix(in oklab, oklch(1 0 0 / 15%) 30%, transparent)",
+      "tab-active-border": "oklch(1 0 0 / 15%)",
+      "ring": "oklch(0.556 0 0)",
+      "ring-shadow": "0 0 0 3px color-mix(in oklab, oklch(0.556 0 0) 50%, transparent)"
+    }
+  },
+  "modeInvariant": [
+    "shadow-sm"
+  ],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/tabs.tsx — the SOLE source for every style cell in this column, read utility by utility. apps/v4/app/globals.css for the token values. apps/v4/registry/new-york-v4/examples/tabs-demo.tsx for the default composition (a bare <TabsList> with two <TabsTrigger>s, i.e. the `default` variant, horizontal). Read for BEHAVIOR ONLY, never for a style cell: primitives/packages/react/tabs/src/tabs.tsx (Radix Tabs) and its dependency @radix-ui/react-roving-focus.",
+    "four-class-strings-not-one": "tabs.tsx's TabsTrigger is FOUR separate class strings passed to cn(), and reading only the first would have produced a wrong matrix. String 1 is the box, type, hover, focus, disabled and the default-variant active fill. String 2 is the LINE-variant transparency overrides. String 3 is the active state and its dark-mode counterparts. String 4 is the entire ::after indicator, including both orientations. This is the same failure mode DIALOG-MATRIX.md finding 5 recorded for shadcn's two same-named showCloseButton props.",
+    "muted / tablist-fg": "TabsList's `bg-muted` and `text-muted-foreground` -> globals.css --muted oklch(0.97 0 0) / oklch(0.269 0 0) and --muted-foreground oklch(0.556 0 0) / oklch(0.708 0 0). The list is a TRAY, which is why the selected tab reads as a pill sitting in it — neither of the other two systems gives the strip a fill.",
+    "fg / tab-fg": "The trigger's resting colour is `text-foreground/60` — an ALPHA of --foreground, expressed as color-mix exactly as Tailwind compiles it — and its dark counterpart is not the same mechanism at all: `dark:text-muted-foreground` swaps to a different TOKEN (oklch(0.708 0 0)) rather than dimming the same one. Recorded as a light/dark asymmetry in the slots block rather than smuggled into one cell, the way SELECT-MATRIX.md finding 2 handled the dark-only hover. Hover and active both resolve to plain --foreground: oklch(0% 0 0) / oklch(0.985 0 0).",
+    "tab-active-bg / tab-active-border": "`data-[state=active]:bg-background` -> --background oklch(1 0 0) light. In dark the source does NOT use --background: `dark:data-[state=active]:bg-input/30` -> color-mix(in oklab, oklch(1 0 0 / 15%) 30%, transparent), and it ADDS a border it does not have in light: `dark:data-[state=active]:border-input` -> oklch(1 0 0 / 15%). So a selected shadcn tab is an opaque white pill in light mode and a faint translucent wash with a visible edge in dark. The reserved `border border-transparent` on every trigger is what stops the dark border shifting the layout.",
+    "ring / ring-shadow": "focus-visible is THREE layers in one class string: `focus-visible:border-ring` (recolours the reserved border), `focus-visible:ring-[3px] focus-visible:ring-ring/50` (a 3px box-shadow at 50% of --ring), and `focus-visible:outline-1 focus-visible:outline-ring` (a real 1px outline). --ring oklch(0.708 0 0) / oklch(0.556 0 0). Note this IS focus-visible here, unlike the bare `focus:` on shadcn's own dialog close button (DIALOG-MATRIX.md declared approximation 3) — so no divergence has to be declared for tabs.",
+    "shadow-sm": "`group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm`, i.e. the pill is lifted only in the default variant (the line variant explicitly restates `shadow-none`). Tailwind is NOT vendored in this clone, so the two-layer value is [R], taken from Tailwind v4's own shadow-sm definition — the same caveat select.shadcn.json recorded for shadow-md and dialog.shadcn.json for shadow-lg. Mode-invariant, as all Tailwind shadows are.",
+    "type-tab": "`text-sm font-medium` = 500 0.875rem/1.25rem. A FLAT text-sm with no responsive variant, so INPUT-MATRIX.md finding 9's missing-@media gap does not bite here. Family read as the generic Tailwind sans stack per the button/input/tooltip/select precedent — no font-family utility appears anywhere in tabs.tsx.",
+    "radius-values": "rounded-lg on the list -> --radius-lg -> --radius = 0.625rem = 10px; rounded-md on the trigger -> --radius-md -> --radius * 0.8 = 0.5rem = 8px. The trigger's corner is deliberately a step tighter than the tray's so the pill nests inside the 3px padding. Both from globals.css lines 50-56, 100.",
+    "arbitrary-values": "THREE arbitrary-value utilities in this file, all recorded as literals because none maps to a scale step: `p-[3px]` on the list, `h-[calc(100%-1px)]` on the trigger, and `bottom-[-5px]` on the indicator. The last two are the interesting pair — the pill is one pixel shorter than its tray and the underline hangs five pixels below the pill, which together put the line variant's rule where the tray's own bottom edge would be.",
+    "indicator-is-always-painted": "The ::after is not conditional: `after:absolute after:bg-foreground after:opacity-0 after:transition-opacity`. Every trigger in every variant carries a fully-formed, foreground-coloured indicator; only its OPACITY moves, and only in the line variant (`group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100`). That is the whole reason structure.indicator-motion is `fade` for shadcn and `static` for Salt — and it is why style.indicator.selected@contained exists, to restate the 0 that the default variant keeps.",
+    "vertical-is-real": "Five separate vertical branches in source, all driven by `group-data-[orientation=vertical]/tabs`: the root goes row (the horizontal case is the one that sets flex-col), the list gets h-fit + flex-col, the trigger gets w-full + justify-start, and the indicator moves from `inset-x-0 bottom-[-5px] h-0.5` to `inset-y-0 -right-1 w-0.5` — note the offset also changes, 5px below vertically becoming 4px to the right. shadcn is the only one of the three with a real vertical mode.",
+    "radix-behaviour": "primitives/packages/react/tabs/src/tabs.tsx, read for behaviour only. activationMode defaults to ActivationMode.Automatic and TabsTrigger's onFocus calls context.onValueChange when it is not Manual — arrowing across a shadcn tab bar swaps the panel on every step, which Salt does not do. TabsList's loop defaults to true. RovingFocusGroup.Item takes focusable={!disabled} and the button carries the native disabled attribute, so a disabled tab is skipped entirely. onMouseDown (not onClick) commits, guarded by `event.button === 0 && event.ctrlKey === false`, and focuses the trigger BEFORE changing the value with the source comment explaining that the active tab's element can be removed before its blur fires (radix-ui/primitives#3600). Content is wrapped in <Presence present={forceMount || isSelected}> and renders `{present && children}`, so an inactive panel is UNMOUNTED. Content hard-codes tabIndex={0} regardless of whether it holds focusable children.",
+    "no-tab-bar": "CONFIRMED ABSENCE: there is no wrapper element around TabsList, no divider rule under it, and no inset padding anywhere in tabs.tsx. shadcn's strip floats with nothing beneath it.",
+    "no-overflow": "CONFIRMED ABSENCE: no measurement, no scroll affordance, no overflow menu. A shadcn TabsList that outgrows its container simply overflows — `w-fit` plus `flex-1` triggers means the tabs compress instead, and there is no scroll button of any kind.",
+    "no-actions-no-badge": "CONFIRMED ABSENCE: no nested-action or badge convention. Because Radix's trigger IS the button, a nested interactive control would be invalid HTML — which is exactly the constraint Salt's wrapper shell exists to escape."
+  },
+  "cells": {
+    "structure.tab-bar": { "kind": "off", "note": "CONFIRMED ABSENCE — TabsList is the outermost strip element; no bar, no divider, no inset" },
+    "structure.tab-shell": { "kind": "value", "value": "single", "source": "TabsTrigger renders Radix's Primitive.button directly; the tab IS the button" },
+    "structure.active-indicator": { "kind": "value", "value": true, "source": "the after:* utility group on TabsTrigger" },
+    "structure.indicator-motion": { "kind": "value", "value": "fade", "source": "`after:bg-foreground after:opacity-0 after:transition-opacity` + `group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100` — the mark is always painted and cross-fades in place; it does not move and it does not appear instantly" },
+    "structure.tab-icon": { "kind": "value", "value": true, "source": "`[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4`" },
+    "structure.tab-actions": { "kind": "off", "note": "CONFIRMED ABSENCE — and structurally blocked: the trigger IS a <button>, so a nested control would be invalid HTML" },
+    "structure.tab-badge": { "kind": "off", "note": "CONFIRMED ABSENCE — no badge convention in tabs.tsx or tabs-demo.tsx" },
+    "structure.overflow-menu": { "kind": "off", "note": "CONFIRMED ABSENCE — no measurement and no scroll affordance anywhere" },
+    "structure.panel": { "kind": "value", "value": true, "source": "TabsContent -> Radix Content, role=tabpanel" },
+
+    "behavior.roving-tabindex": { "kind": "value", "value": true, "source": "RovingFocusGroup.Item active={isSelected}, via @radix-ui/react-roving-focus" },
+    "behavior.arrow-keys": { "kind": "value", "value": "orientation", "source": "TabsList passes orientation={context.orientation} to RovingFocusGroup.Root, so the arrow axis follows the orientation prop — Left/Right horizontal, Up/Down vertical" },
+    "behavior.home-end": { "kind": "value", "value": true, "source": "@radix-ui/react-roving-focus handles Home/End" },
+    "behavior.wrap": { "kind": "value", "value": true, "source": "TabsList's own `loop = true` default, passed to RovingFocusGroup.Root" },
+    "behavior.activation-mode": { "kind": "value", "value": ["automatic", "manual"], "source": "Tabs takes `activationMode = ActivationMode.Automatic` and TabsTrigger's onFocus does `const isAutomaticActivation = context.activationMode !== ActivationMode.Manual; if (!isSelected && !disabled && isAutomaticActivation) context.onValueChange(value)`. Listed DEFAULT FIRST — the skeleton and the harness take value[0] as the resting mode, and a manual-first list would have made every shadcn tab bar behave like Salt's against source." },
+    "behavior.disabled-navigation": { "kind": "value", "value": "skipped", "source": "RovingFocusGroup.Item focusable={!disabled} plus the native `disabled` attribute on Primitive.button — a disabled shadcn tab is out of the roving order and out of the pointer entirely" },
+    "behavior.pointer-activation": { "kind": "value", "value": "mousedown", "source": "onMouseDown, not onClick: `if (!disabled && event.button === 0 && event.ctrlKey === false) { event.currentTarget.focus(); context.onValueChange(value) } else { event.preventDefault() }`. The focus() BEFORE the value change is deliberate (radix-ui/primitives#3600)." },
+    "behavior.panel-focusable": { "kind": "value", "value": "always", "source": "Content hard-codes tabIndex={0} with no check for focusable children — the opposite of Salt's measured, conditional answer to the same APG sentence" },
+    "behavior.panel-mounting": { "kind": "value", "value": "unmount", "source": "<Presence present={forceMount || isSelected}> wrapping `{present && children}` — an inactive panel's subtree is destroyed unless the consumer opts into forceMount" },
+    "behavior.scroll-into-view": { "kind": "off", "note": "CONFIRMED ABSENCE — nothing scrolls a focused tab into view" },
+    "behavior.overflow-navigation": { "kind": "off" },
+
+    "prop.appearance": { "kind": "value", "value": ["contained", "plain"], "source": "tabsListVariants variant?: 'default' | 'line', defaultVariants { variant: 'default' } -> contained / plain. Listed DEFAULT FIRST." },
+    "prop.emphasis": { "kind": "off", "note": "M3-only axis" },
+    "prop.orientation": { "kind": "value", "value": ["horizontal", "vertical"], "source": "Tabs takes orientation = 'horizontal' and writes both data-orientation and Radix's orientation prop; five style branches in tabs.tsx read it. Listed default-first." },
+    "prop.active-color": { "kind": "off", "note": "Salt-only axis" },
+    "prop.divider": { "kind": "off", "note": "no rule under the list" },
+    "prop.inset": { "kind": "off" },
+    "prop.disabled": { "kind": "value", "value": [true, false], "source": "Radix TabsTrigger's `disabled = false`, the native attribute; styled with disabled:pointer-events-none disabled:opacity-50" },
+
+    "slot.tab-icon": { "kind": "value", "value": true },
+    "slot.tab-actions": { "kind": "off" },
+
+    "state.hover": { "kind": "value", "value": true, "source": "`hover:text-foreground` and `dark:hover:text-foreground` — a LABEL colour change only; there is no hover background in either variant" },
+    "state.disabled": { "kind": "value", "value": true, "source": "disabled:pointer-events-none disabled:opacity-50" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — no active: utility in tabs.tsx" },
+    "state.overflowing": { "kind": "off" },
+
+    "style.tab-bar.divider": { "kind": "off" },
+    "style.tab-bar.inset": { "kind": "off" },
+
+    "style.tablist.background": { "kind": "alias", "slot": "muted", "source": "tabsListVariants variant.default: `bg-muted`" },
+    "style.tablist.background@plain": { "kind": "value", "value": "transparent", "source": "tabsListVariants variant.line: `bg-transparent`" },
+    "style.tablist.color": { "kind": "alias", "slot": "tablist-fg", "source": "TabsList base class `text-muted-foreground`" },
+    "style.tablist.min-height": { "kind": "value", "value": { "height": "36px" }, "source": "`group-data-[orientation=horizontal]/tabs:h-9` = 36px — a real, DEFINITE height, kept as a height because the trigger's own h-[calc(100%-1px)] resolves against it" },
+    "style.tablist.gap": { "kind": "off", "note": "the default variant declares no gap — the pills sit flush inside the tray" },
+    "style.tablist.gap@plain": { "kind": "value", "value": "4px", "source": "tabsListVariants variant.line: `gap-1`" },
+    "style.tablist.padding": { "kind": "value", "value": "3px", "source": "`p-[3px]` — an arbitrary value, not a scale step; it is the clearance the selected pill's corner needs" },
+    "style.tablist.shape": { "kind": "value", "value": "10px", "source": "`rounded-lg` -> --radius-lg -> --radius = 0.625rem" },
+    "style.tablist.shape@plain": { "kind": "value", "value": "0", "source": "`data-[variant=line]:rounded-none`" },
+    "style.tablist.orientation@vertical": {
+      "kind": "value",
+      "value": { "flex-direction": "column", "height": "fit-content" },
+      "source": "`group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col`; min-height is reset here because the horizontal h-9 is carried as min-height (see style.tablist.min-height)"
+    },
+
+    "style.tab.font": { "kind": "alias", "slot": "type-tab" },
+    "style.tab.letter-spacing": { "kind": "off", "note": "no tracking utility" },
+    "style.tab.color": { "kind": "alias", "slot": "tab-fg", "source": "`text-foreground/60` light, `dark:text-muted-foreground` dark — two different mechanisms, resolved in the slots block" },
+    "style.tab.height": { "kind": "value", "value": { "height": "calc(100% - 1px)" }, "source": "`h-[calc(100%-1px)]` — a real height tied to the tray, one pixel short of it" },
+    "style.tab.min-width": { "kind": "off", "note": "sized by flex-1 instead" },
+    "style.tab.flex": { "kind": "value", "value": "1", "source": "`flex-1` — shadcn tabs divide the tray equally" },
+    "style.tab.padding": { "kind": "value", "value": "4px 8px", "source": "`px-2 py-1`" },
+    "style.tab.gap": { "kind": "value", "value": "6px", "source": "`gap-1.5`" },
+    "style.tab.shape": { "kind": "value", "value": "8px", "source": "`rounded-md` -> --radius-md -> --radius * 0.8 = 0.5rem" },
+    "style.tab.border": { "kind": "value", "value": { "border": "1px solid transparent" }, "source": "`border border-transparent` — all four sides reserved, because dark mode adds a border on the active state" },
+    "style.tab.overflow": { "kind": "off", "note": "MUST be absent: the indicator sits at bottom: -5px, outside the tab's own box, and would be clipped" },
+    "style.tab.cursor": { "kind": "off", "note": "platform default" },
+    "style.tab.transition": { "kind": "value", "value": "all 150ms cubic-bezier(0.4, 0, 0.2, 1)", "source": "`transition-all`; duration and easing are Tailwind's defaults [R] — Tailwind is not vendored in this clone" },
+    "style.tab.orientation@vertical": {
+      "kind": "value",
+      "value": { "width": "100%", "justify-content": "flex-start" },
+      "source": "`group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start`"
+    },
+    "style.tab.color@hover": { "kind": "alias", "slot": "fg", "source": "`hover:text-foreground` / `dark:hover:text-foreground`" },
+    "style.tab.color@selected": { "kind": "alias", "slot": "fg", "source": "`data-[state=active]:text-foreground` / `dark:data-[state=active]:text-foreground`" },
+    "style.tab.selected-fill@contained": {
+      "kind": "value",
+      "value": { "background": "var(--tab-active-bg)", "border-color": "var(--tab-active-border)", "box-shadow": "var(--shadow-sm)" },
+      "source": "`data-[state=active]:bg-background` + `group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm`, with `dark:data-[state=active]:bg-input/30` and `dark:data-[state=active]:border-input` pushed into the slots block. The line variant restates bg-transparent / shadow-none / (dark) border-transparent, which this row's contained scoping already produces."
+    },
+    "style.tab.state-layer@hover": { "kind": "off", "note": "no state-layer mechanism; shadcn moves the label colour instead" },
+    "style.tab.state-layer@focus": { "kind": "off" },
+    "style.tab.state-layer@selected-hover": { "kind": "off" },
+    "style.tab.focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--ring)", "box-shadow": "var(--ring-shadow)", "outline": "1px solid var(--ring)" },
+      "source": "`focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring` — three layers at once, and genuinely focus-VISIBLE here unlike the bare focus: on shadcn's dialog close button"
+    },
+    "style.tab.disabled": { "kind": "value", "value": { "opacity": "0.5", "pointer-events": "none" }, "source": "`disabled:pointer-events-none disabled:opacity-50` — one blanket dim, where Salt recolours and keeps the tab reachable" },
+    "style.tab.active-color@secondary": { "kind": "off", "note": "Salt-only axis" },
+    "style.tab.active-color@tertiary": { "kind": "off", "note": "Salt-only axis" },
+    "style.tab.emphasis@secondary": { "kind": "off", "note": "M3-only axis" },
+
+    "style.indicator.size": { "kind": "value", "value": "2px", "source": "`group-data-[orientation=horizontal]/tabs:after:h-0.5` = 2px, density-invariant (shadcn has no density capability)" },
+    "style.indicator.edge": {
+      "kind": "value",
+      "value": { "left": "0", "right": "0", "bottom": "-5px" },
+      "source": "`group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px]` — the mark hangs five pixels BELOW the tab, outside its box, so it lands where the tray's bottom edge is"
+    },
+    "style.indicator.edge@contained": { "kind": "off", "note": "shadcn's contained (default) variant keeps the mark at the bottom and hides it instead of moving it; only Salt relocates the edge" },
+    "style.indicator.shape": { "kind": "off", "note": "square mark" },
+    "style.indicator.rest": {
+      "kind": "value",
+      "value": { "background": "var(--fg)", "opacity": "0" },
+      "source": "`after:bg-foreground after:opacity-0` — always painted, hidden by opacity, which is what makes after:transition-opacity possible"
+    },
+    "style.indicator.background@hover": { "kind": "off", "note": "CONFIRMED ABSENCE — no hover state on the indicator at all; Salt is alone in previewing the mark" },
+    "style.indicator.background@focus-visible": { "kind": "off" },
+    "style.indicator.selected": { "kind": "value", "value": { "opacity": "1" }, "source": "`group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100` — the colour was already there; only the opacity moves" },
+    "style.indicator.selected@contained": { "kind": "value", "value": { "opacity": "0" }, "source": "the reveal above is scoped to the LINE variant only, so in the default variant the selected pill keeps a fully-formed but invisible indicator. Restated here so the base row cannot leak; must be emitted after style.indicator.selected, which the template's row order guarantees." },
+    "style.indicator.transition": { "kind": "value", "value": "opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)", "source": "`after:transition-opacity`; Tailwind's default duration/easing [R]" },
+    "style.indicator.emphasis@secondary": { "kind": "off", "note": "M3-only axis" },
+    "style.indicator.orientation@vertical": {
+      "kind": "value",
+      "value": { "top": "0", "bottom": "0", "left": "auto", "right": "-4px", "width": "2px", "height": "auto" },
+      "source": "`group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5` — note the offset shrinks from 5px to 4px when the mark rotates"
+    },
+
+    "style.tab-icon.size": { "kind": "value", "value": { "width": "16px", "height": "16px" }, "source": "`[&_svg:not([class*='size-'])]:size-4`, density-invariant" },
+    "style.tab-icon.color": { "kind": "off", "note": "no colour utility on the svg — currentColor, so the glyph tracks the label through all four states" },
+
+    "style.panel.box": { "kind": "value", "value": { "flex": "1 1 0%" }, "source": "TabsContent `flex-1`" },
+    "style.panel.outline": { "kind": "value", "value": "none", "source": "TabsContent `outline-none` — combined with Radix's unconditional tabIndex={0}, a shadcn panel is focusable and shows no ring, the exact inverse of Salt" },
+    "style.panel.focus": { "kind": "off", "note": "suppressed, see style.panel.outline" },
+
+    "style.overflow-list.box": { "kind": "off" },
+    "style.overflow-item.box": { "kind": "off" },
+    "style.overflow-item.background@hover": { "kind": "off" }
+  }
+}

@@ -1,0 +1,1219 @@
+{
+  "component": "select",
+  "openUiAnatomy": "no published Open UI select anatomy adopted here — union of salt-ds Dropdown (+ the Option/OptionList/OptionGroup parts it composes), shadcn Select (new-york-v4, on radix-ui's Select primitive), and M3 filled-select + outlined-select (one canonical component with an emphasis/variant axis, the same treatment input's filled/outlined text-field got). shadcn's native-select, Salt's combo-box / list-box / list(-next) / static-list, Salt's `multiselect` prop and M3's autocomplete are each declared out of scope with a structural reason in docs/SELECT-MATRIX.md's scope note. THE OPTION AND THE POPUP SURFACE ARE MODELLED HERE AS PARTS OF SELECT, not as their own canonical components — see the scope note's 'what would migrate' list.",
+  "behavior": {
+    "pattern": "a single-choice dropdown: a trigger showing the current value, plus a popup listbox of options. The cross-system axes are: WHICH mechanism draws the trigger's edge (a bottom-only activation indicator vs a full box border — the same two-way split input found), WHERE the popup is anchored (below the trigger vs overlaying it so the selected item lands on the trigger), HOW selection is marked (a trailing checkmark vs a filled option background), whether pointer hover moves the active/highlighted option, and how wide the validation-status enum is (3 / 1 / 1).",
+    "chassis": "skeleton/select.tsx — written from the template's part union (root, trigger, start adornment, value/placeholder, status adornment, toggle icon, activation indicator, popup surface, listbox, group, group label, option, selected marker, separator); inherits from no design system. Open/close and option selection are real so the render is checkable; the floating-position engine each real system composes is a DECLARED GAP, see behavior.positioning-engine."
+  },
+  "skeletonParams": {
+    "indicator": [
+      "underline",
+      "box"
+    ],
+    "size": [
+      "default",
+      "sm"
+    ],
+    "startAdornment": [
+      true,
+      false
+    ],
+    "statusAdornment": [
+      true,
+      false
+    ],
+    "toggleIcon": [
+      "static",
+      "swap"
+    ],
+    "selectedMarker": [
+      "check",
+      "fill"
+    ],
+    "popupAnchor": [
+      "below",
+      "overlay"
+    ],
+    "activateOnHover": [
+      true,
+      false
+    ],
+    "group": [
+      true,
+      false
+    ],
+    "separator": [
+      true,
+      false
+    ],
+    "emptyReadOnlyMarker": [
+      "—",
+      ""
+    ],
+    "variant": [
+      "primary",
+      "secondary",
+      "tertiary"
+    ],
+    "status": [
+      "error",
+      "warning",
+      "success"
+    ],
+    "disabled": [
+      true,
+      false
+    ],
+    "readOnly": [
+      true,
+      false
+    ]
+  },
+  "base": {
+    "[data-slot=\"select\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "block",
+      "width": "100%"
+    },
+    "[data-slot=\"select-trigger\"]": {
+      "box-sizing": "border-box",
+      "appearance": "none",
+      "margin": "0",
+      "display": "inline-flex",
+      "align-items": "center",
+      "position": "relative",
+      "overflow": "hidden",
+      "text-align": "left",
+      "background": "none",
+      "border": "0 solid transparent",
+      "color": "inherit",
+      "font": "inherit",
+      "letter-spacing": "inherit",
+      "outline": "none"
+    },
+    "[data-slot=\"select-value\"]": {
+      "flex": "1 1 auto",
+      "min-width": "0",
+      "overflow": "hidden",
+      "text-overflow": "ellipsis",
+      "white-space": "nowrap"
+    },
+    "[data-slot=\"select-indicator\"]": {
+      "position": "absolute",
+      "left": "0",
+      "bottom": "0",
+      "width": "100%",
+      "pointer-events": "none",
+      "border-bottom": "0 solid transparent"
+    },
+    "[data-slot=\"select-start-adornment\"], [data-slot=\"select-status-adornment\"], [data-slot=\"select-toggle-icon\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"select-popup\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "left": "0",
+      "display": "flex",
+      "flex-direction": "column",
+      "overflow-x": "hidden",
+      "overflow-y": "auto"
+    },
+    "[data-slot=\"select-listbox\"], [data-slot=\"select-group\"]": {
+      "display": "flex",
+      "flex-direction": "column",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"select-option\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "position": "relative",
+      "flex-shrink": "0",
+      "width": "100%",
+      "text-align": "left",
+      "-webkit-user-select": "none",
+      "user-select": "none"
+    },
+    "[data-slot=\"select-option-marker\"]": {
+      "position": "absolute",
+      "right": "0",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"select-group-label\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"select-separator\"]": {
+      "flex": "0 0 auto"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.trigger",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant: all three render a single focusable trigger element that shows the current value and opens the popup. Salt: <button role=\"combobox\" type=\"button\"> carrying every box style itself (there is no wrapper div — unlike Salt's own Input, whose chrome lives on a wrapper around a real <input>). shadcn: Radix's SelectTrigger, also role=\"combobox\", also a single element. M3: [R], a text-field container per the select token file's own `text-field-*` prefix. NOTE the contrast with input: there is no chrome=wrapper|control axis here, because all three put the chrome on one element."
+    },
+    {
+      "id": "structure.indicator",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "indicator",
+      "note": "The trigger's edge mechanism, and the SAME two-way structural split input found — a bottom-only rule that thickens on focus vs a full four-sided border. Salt's Dropdown.tsx has `bordered = false` by default and Dropdown.css renders .saltDropdown-activationIndicator unconditionally, so an out-of-the-box Salt dropdown is an UNDERLINE, exactly like its Input. M3: underline = filled-select (text-field-active-indicator-*), box = outlined-select (text-field-outline-*). shadcn: box only — there is no underline mechanism anywhere in select.tsx."
+    },
+    {
+      "id": "structure.start-adornment",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "startAdornment",
+      "note": "Salt: `startAdornment` prop -> .saltDropdown-startAdornmentContainer (margin-right: spacing-100). M3: text-field-leading-icon-size 24px + text-field-leading-icon-color. shadcn: OFF — SelectTrigger renders {children} plus a fixed trailing SelectPrimitive.Icon and has no leading slot of its own. NOTE Salt's Dropdown has NO endAdornment prop at all, unlike Salt's Input — the trailing edge belongs to the status adornment and the toggle icon."
+    },
+    {
+      "id": "structure.status-adornment",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "statusAdornment",
+      "note": "An AUTOMATIC validation glyph the component inserts itself — Salt only: `{!disabled && validationStatus && <StatusAdornment status={validationStatus} />}` in Dropdown.tsx, identical to Input's. M3 RECOLOURS a trailing icon on error (text-field-error-trailing-icon-color) but never inserts one; shadcn has no validation glyph. DECLARED COMPOSITION: which glyph renders and its own fill belong to Salt's StatusAdornment / semantic-icon-provider, a future registry icon component; only size, placement and colour source are modelled here."
+    },
+    {
+      "id": "structure.toggle-icon",
+      "piece": "structure",
+      "policy": "default",
+      "channel": "config",
+      "param": "toggleIcon",
+      "note": "Every system draws a trailing disclosure chevron, but only one SWAPS it. Salt: `<ExpandIcon open={openState}/>` renders CollapseIcon when open and ExpandIcon when closed — two different glyphs from useIcon() — and the icon is omitted entirely when readOnly (`{!readOnly && <ExpandIcon .../>}`). shadcn: a single ChevronDownIcon, never swapped, never conditional. M3: [R] — a trailing icon size/colour token pair with no live component to say whether it swaps; recorded as \"static\", flagged. DECLARED COMPOSITION: the glyph itself belongs to a future icon component; only its box size, colour and margin are modelled."
+    },
+    {
+      "id": "structure.popup",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant: all three render a floating surface containing a role=\"listbox\" of role=\"option\" children. Salt: OptionList -> FloatingComponent (role=listbox) wrapping OptionListBase (.saltOptionList-container). shadcn: SelectPrimitive.Portal > Content (role=listbox) > Viewport, plus ScrollUp/ScrollDownButton parts not modelled here (a scroll affordance, declared scope trim). M3: the select token files carry a whole `menu-*` family (container colour/elevation/shape, divider, list-item) — see structure.popup-ownership."
+    },
+    {
+      "id": "structure.popup-ownership",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION BOUNDARY, stated because this matrix models the popup surface and the option as PARTS OF SELECT and they are arguably canonical components of their own (docs/COMPONENTS.md has separate `popover`, `dropdown-menu` and `list` rows). Each system says something different about ownership: Salt's Option/OptionList/OptionGroup are separate exported components in packages/core/src/option, shared with ComboBox and ListBox; shadcn's SelectItem/SelectContent are select-specific files; M3 declares the menu tokens INSIDE the select token set (md.comp.filled-select.menu.*) and then its own hand-authored tokens/_md-comp-filled-select.scss lists every one of them under $unsupported-tokens, i.e. the library composes the standalone md-menu instead. If popup/option are later split out, the rows that migrate are every style.popup.*, style.option.*, style.group-label.*, style.separator.* and style.selected-marker.* row, plus structure.option-group / structure.separator / structure.selected-marker."
+    },
+    {
+      "id": "structure.option-group",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "group",
+      "note": "Salt: OptionGroup — role=\"group\", an aria-hidden label div, and a border-top separating it from the previous group (removed on :first-of-type). shadcn: SelectGroup + SelectLabel, a separate labelled part. M3: OFF — no group or group-label token exists in either select token file, nor in _md-comp-menu.scss; M3's only intra-list division is the divider (structure.separator)."
+    },
+    {
+      "id": "structure.separator",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "separator",
+      "note": "A standalone divider ELEMENT between options. shadcn: SelectSeparator (h-px bg-border, negative inline margins so it bleeds past the viewport padding). M3: menu-divider-height 1px + menu-divider-color -> surface-variant. Salt: OFF — it has no separator component; the same visual job is done by a border-top on the OptionGroup itself (style.group.border-top), which is a different mechanism, not a missing part."
+    },
+    {
+      "id": "structure.selected-marker",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "selectedMarker",
+      "note": "HOW a chosen option reads, and it is a genuine mechanism split, not a colour delta (TOOLTIP-MATRIX.md's arrow lesson). shadcn: a trailing CHECKMARK — SelectPrimitive.ItemIndicator holding a CheckIcon, absolutely positioned right-2, with pr-8 reserved on every item — and NO selected background whatsoever (there is no data-[state=checked] class in select.tsx). Salt and M3 both: a FILLED background and no glyph — Salt's Option renders a CheckboxIcon only when `multiselect` (out of scope), and its single-select marker is selectable-background-selected plus a three-layer box-shadow bracket; M3's is menu-list-item-selected-container-color. A skeleton that drew a check for all three would be wrong for two of them, and one that filled for all three would be wrong for shadcn."
+    },
+    {
+      "id": "structure.popup-anchor",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "popupAnchor",
+      "note": "WHERE the popup lands, and it is structure. Salt: `placement: \"bottom-start\"` with `offset(1)` — the list sits 1px BELOW the trigger, left edges aligned. shadcn: SelectContent's default is `position=\"item-aligned\"`, Radix's native-select-like mode that places the popup so the SELECTED ITEM sits over the trigger — the list OVERLAYS the control (its own docs page states this in the 'Align Item With Trigger' section; `position=\"popper\"` is the opt-in below-the-trigger mode). M3: [R] — no live component; recorded as \"below\", flagged."
+    },
+    {
+      "id": "behavior.open-trigger",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: useClick + useFocus + useDismiss (@floating-ui/react), plus ArrowDown/ArrowUp opening the list from the closed state, plus any printable key opening it through typeahead. A focus-not-blur guard in handleOpenChange suppresses the focus-opened case, and readOnly suppresses opening entirely. shadcn/Radix: pointerdown on the trigger, plus OPEN_KEYS = [' ', 'Enter', 'ArrowUp', 'ArrowDown']; SELECTION_KEYS = [' ', 'Enter'] commit the highlighted item. M3: [R]."
+    },
+    {
+      "id": "behavior.typeahead",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Both live systems implement type-to-jump and they disagree on the buffer window. Salt: Dropdown.tsx keeps its own `typeaheadString` ref and clears it with `window.setTimeout(..., 500)` — 500ms. Radix (which shadcn consumes unchanged): useTypeaheadSearch resets with `window.setTimeout(() => updateSearch(''), 1000)` — 1000ms. Salt additionally OPENS the list on a typeahead keystroke; Radix's trigger-level typeahead selects without opening. M3: [R]."
+    },
+    {
+      "id": "behavior.focus-model",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Two different answers to 'what is focused while the list is open'. Salt: VIRTUAL focus — the trigger keeps DOM focus and carries aria-activedescendant={activeState?.id}; options are tabIndex={-1} divs and Option.handleClick calls listRef.current.focus({preventScroll:true}). shadcn/Radix: REAL DOM focus moves onto the item element (hence shadcn styles the highlighted item with `focus:bg-accent`, not a hover or data-state class; Radix also stamps data-highlighted). This skeleton uses a data-active attribute driven by keyboard/pointer, which renders identically for both, and declares that the underlying focus mechanism is not reproduced. M3: [R]."
+    },
+    {
+      "id": "behavior.pointer-activates-option",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "activateOnHover",
+      "note": "Whether moving the pointer over an option makes it the ACTIVE/highlighted one, not merely hovered. Salt: yes — Option.handleMouseOver calls setActive(optionValue), and the Dropdown's own onMouseOver clears focusVisibleState. shadcn/Radix: yes — the item is focused on pointermove, which is why shadcn has no hover: class on SelectItem at all and its highlight is a focus: rule. M3: NO [R] — M3 keeps hover (state layer 8%) and focus (state layer 10%) as separate states with different opacities, so a pointer hover must not be modelled as focus. This is a config'd skeleton branch precisely so M3's 8% is reachable."
+    },
+    {
+      "id": "behavior.positioning-engine",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "DECLARED GAP, the same one TOOLTIP-MATRIX.md recorded. Salt composes @floating-ui/react directly — offset(1), a size() middleware that writes --overlay-minWidth (the trigger's width) and --overlay-maxHeight onto the floating element, and flip({fallbackStrategy:'initialPlacement'}). shadcn composes Radix's own Popper primitive, which publishes --radix-select-content-available-height / --radix-select-trigger-width / --radix-select-content-transform-origin. M3: [R]. NONE of the three is reimplemented here: skeleton/select.tsx uses a simple absolutely-positioned popup inside the select root, measures the trigger to publish --select-trigger-width, and for popupAnchor=\"overlay\" offsets the popup upward by the selected option's index — enough to make both anchoring modes real and checkable, honestly short of collision detection, flipping and available-height clamping."
+    },
+    {
+      "id": "behavior.status-inheritance",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION with the separate `field` component (docs/COMPONENTS.md's field row = Salt's form-field). Salt only, and the precedence is the same non-uniform pair Input has: disabled = Boolean(disabledProp) || formFieldDisabled and readOnly = Boolean(readOnlyProp) || formFieldReadOnly (OR — either source switches it on), but validationStatus = formFieldValidationStatus ?? validationStatusProp (context WINS outright). Dropdown adds one Input does not: `required = formFieldRequired ? ['required','asterisk'].includes(formFieldRequired) : requiredProp`, i.e. the necessity channel is read too and mapped onto aria-required. shadcn: no context channel. M3: [R]."
+    },
+    {
+      "id": "behavior.empty-readonly-marker",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "emptyReadOnlyMarker",
+      "note": "Salt only, and identical to Input's: `emptyReadOnlyMarker = \"—\"`, with `valueText = readOnly && displayedValue === \"\" ? emptyReadOnlyMarker : displayedValue`. CONTENT FORMATTING, not CSS — a first-class config row rather than a footnote, per CLAUDE.md rule 3. shadcn and M3 have no equivalent."
+    },
+    {
+      "id": "behavior.readonly-suppresses-popup",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, and it is more than a style: readOnly (a) returns early from handleOpenChange so the list can never open, (b) returns early from handleKeyDown so ArrowDown/typeahead do nothing, (c) removes the toggle chevron from the DOM entirely, and (d) sets aria-readonly=\"true\" on the trigger (the trigger is a <button>, which has no native readonly). shadcn's Select has no readOnly prop at all; M3 has no read-only token."
+    },
+    {
+      "id": "behavior.multiselect",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "DECLARED OUT OF SCOPE, recorded rather than dropped. Salt's Dropdown takes a `multiselect` boolean that changes the selection model to an array, joins the trigger's value with \", \", sets aria-multiselectable on the list, renders a CheckboxIcon inside every Option, and changes Tab's behaviour (single-select commits the active option on Tab; multiselect does not). That is a different selection model, not a style variant. shadcn's Select is single-choice only (Radix has no multiple prop); M3's select tokens have no multi-select vocabulary."
+    },
+    {
+      "id": "prop.size",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "size",
+      "note": "shadcn only, and a real difference from its own Input: SelectTrigger takes `size?: \"sm\" | \"default\"` (default \"default\") and writes data-size, driving data-[size=default]:h-9 / data-[size=sm]:h-8. shadcn's Input has no such prop. Salt: OFF — trigger height is --salt-size-base, i.e. the density capability rather than a per-instance prop. M3: OFF — one container-height token."
+    },
+    {
+      "id": "prop.variant",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "variant",
+      "note": "The background-intensity axis. Salt: \"primary\" | \"secondary\" | \"tertiary\", default \"primary\"; each class reassigns --dropdown-background / -disabled / -readonly to editable-{variant}-background (snow / marble / limestone in light). shadcn: OFF. M3: OFF as a separate axis — M3's only variant axis is filled-vs-outlined, already modelled as structure.indicator."
+    },
+    {
+      "id": "prop.validation-status",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "status",
+      "note": "Coverage is 3 / 1 / 1, exactly as for input. Salt: FormFieldValidationStatus = Omit<ValidationStatuses,\"info\"> -> error | warning | success. shadcn: the single aria-invalid boolean (aria-invalid:border-destructive aria-invalid:ring-destructive/20). M3: a single error-* token family; direct grep of both select files finds no warning-* and no success-* token."
+    },
+    {
+      "id": "prop.disabled",
+      "piece": "prop",
+      "policy": "locked",
+      "channel": "config",
+      "param": "disabled",
+      "note": "All three, three mechanisms again. Salt retokenises background and colour to their 40%-alpha siblings and sets cursor:not-allowed. shadcn drops opacity:0.5 + cursor:not-allowed over the trigger — and NOTE it omits the disabled:pointer-events-none its own Input carries. M3 layers per-element opacities: filled container 4%, outline 12%, active indicator 38%, input text 38%."
+    },
+    {
+      "id": "prop.read-only",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "readOnly",
+      "note": "Salt only, with a full visual AND behavioural state (see behavior.readonly-suppresses-popup). shadcn's Select has no readOnly prop — unlike shadcn's Input, where the native attribute at least exists with no styling. M3 has no read-only token."
+    },
+    {
+      "id": "slot.value",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned. Salt derives it from the selected items via valueToString (or the controlled `value` prop) and renders it in a .saltDropdown-content span that ellipsises; shadcn's SelectValue takes a `placeholder` and line-clamps to 1; M3: [R]."
+    },
+    {
+      "id": "slot.option-content",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in all three: Salt's Option renders `children ?? valueToString(value)`, shadcn's SelectItem wraps children in SelectPrimitive.ItemText, M3's list-item takes a label plus optional leading/trailing icons (24px tokens)."
+    },
+    {
+      "id": "slot.start-adornment",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned, where the system has the part. Salt takes any ReactNode; M3 expects a 24px leading icon; shadcn has no leading slot."
+    },
+    {
+      "id": "slot.group-label",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned heading text for a group of options — Salt's OptionGroup `label` prop (rendered aria-hidden and referenced by aria-labelledby), shadcn's SelectLabel children. M3 has no group concept."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION (the pattern calendar.template.json's slot.composes established). Four compositions are deliberately NOT reimplemented here: (a) the `field` wrapper — label, help text, necessity marker, and Salt's whole form-field context channel; (b) an ICON SET, for the disclosure chevron (both glyphs, since Salt swaps them), the status glyph and shadcn's CheckIcon; (c) the FLOATING-POSITION ENGINE (see behavior.positioning-engine); (d) in M3's case the whole standalone `menu` component, which its own hand-authored token file says the select composes rather than styling itself. All render as neutral placeholders or simplified stand-ins; their own matrices will replace the approximations."
+    },
+    {
+      "id": "state.open-closed",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "all three. Salt: openState from useListControl, mirrored onto aria-expanded and (when open) aria-controls; the OptionList is always rendered but gets .saltOptionList-collapsed { display: none } when closed — note the list is ALSO shown on focus alone (`open={(openState || focusedState) && !readOnly && childCount > 0}`) while collapsed, a measurement/priming trick rather than a visible state. shadcn: Radix mounts/unmounts through a Portal and stamps data-state=open|closed for the enter/exit animation. M3: [R]."
+    },
+    {
+      "id": "state.trigger-hover-focus",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Rest, hover and focus exist in all three — and here shadcn's select DIVERGES FROM ITS OWN INPUT. select.tsx carries `dark:hover:bg-input/50`, so a shadcn select trigger DOES react to the pointer, but ONLY in dark mode; in light mode it is inert until focused, exactly like shadcn's input. Salt recolours border/indicator to palette-accent on hover; M3 adds an on-surface state layer at 8% AND recolours the outline/indicator to on-surface."
+    },
+    {
+      "id": "state.option",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "The option's own state set is the widest in this matrix: rest, hover, active/highlighted, selected, focus-visible, disabled. Salt gives hover and active the SAME value (selectable-background-hover) through two different selectors, and adds a focusVisible outline that no other system has. shadcn has NO hover rule and expresses highlight through focus:. M3 separates hover (8%) from focus (10%) by opacity."
+    },
+    {
+      "id": "state.disabled",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Trigger and option are disabled by different amounts in every system. Trigger: Salt retokenised colours, shadcn opacity 0.5, M3 four per-element opacities. Option: Salt opacity 0.4, shadcn opacity 0.5, M3 0.38 (list-item-disabled-label-text-opacity, borrowed from _md-comp-menu.scss — the select's own file has no option-disabled token). Three systems, three numbers, none of them the same."
+    },
+    {
+      "id": "state.read-only",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only. Background -> editable-background-readonly (transparent), border/indicator -> editable-borderColor-readonly (gray-500 at 10% alpha), cursor -> --salt-cursor-readonly (which resolves to `text`, the same value as --salt-cursor-text — a tokenised distinction with no visual consequence), the chevron removed, and the popup unreachable."
+    },
+    {
+      "id": "state.validation",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "see prop.validation-status. As with input, M3 is the only system whose HOVER colour in the error state is a different role from its rest colour (error-hover-active-indicator-color / error-hover-outline-color both -> on-error-container, not error). Salt is the only system whose error state also tints the trigger BACKGROUND."
+    },
+    {
+      "id": "style.trigger.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "shown at each system's default (Salt variant=primary, M3 filled). Every column aliases the same indirection slot, `bg-current`, which the variant/status rows reassign — mirroring Salt's own --dropdown-background mechanism."
+    },
+    {
+      "id": "style.trigger.background@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "OFF IN ALL THREE COLUMNS, and kept precisely because that is the surprise. For INPUT this row carried M3's defining outlined difference: _md-comp-outlined-text-field.scss has no container-color at all, so an outlined text field is transparent. _md-comp-outlined-SELECT.scss DOES have one — `$text-field-container-color: md-sys-color.$surface-container-highest`, the identical value as filled — in BOTH the latest and the v0.192 editions. So M3's outlined select is filled, and the filled/outlined axis for select moves only the edge mechanism and the corner shape. Salt is off because `bordered` changes the border and nothing else; shadcn is off because box is its only mode."
+    },
+    {
+      "id": "style.trigger.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "Salt: --dropdown-color -> content-primary-foreground, declared once per variant class. shadcn: SelectTrigger sets no text-colour class, so this is the ambient --foreground, recorded as such. M3: text-field-input-text-color -> on-surface."
+    },
+    {
+      "id": "style.trigger.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "font": "$"
+      },
+      "note": "Salt: the --salt-text-* body role by density, and unlike Input, Dropdown.css DOES declare font-weight explicitly (var(--salt-text-fontWeight) = regular 400). shadcn: text-sm = 0.875rem/1.25rem — and NOTE that select.tsx uses a flat `text-sm`, not the responsive `text-base md:text-sm` its Input carries, so the @media generator gap INPUT-MATRIX.md finding 9 declared does not bite here. M3: body-large (1rem/1.5rem, weight-regular), Roboto per this pipeline's standing M3 precedent."
+    },
+    {
+      "id": "style.trigger.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "letter-spacing": "$"
+      },
+      "note": "a separate row from style.trigger.font because the CSS `font` shorthand does not carry letter-spacing. Salt: --salt-text-letterSpacing = 0, declared explicitly in Dropdown.css. shadcn: OFF, no tracking utility. M3: text-field-input-text-tracking -> body-large-tracking = 0.03125rem."
+    },
+    {
+      "id": "style.trigger.width",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "width": "$"
+      },
+      "note": "a real divergence, and the reason the template's base block declares no width at all. Salt: `width: 100%` in Dropdown.css — a Salt dropdown fills its container. shadcn: `w-fit` — the trigger is sized to its content, which is why every shadcn example that wants a fixed width passes className=\"w-[180px]\". M3: [R], no width token; recorded as 100% per M3's published exposed-dropdown-menu layout and flagged."
+    },
+    {
+      "id": "style.trigger.min-height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "min-height": "$"
+      },
+      "note": "min-height rather than height because that is what Salt declares (.saltDropdown { min-height: var(--salt-size-base) } — 20/28/36/44 by density), and the other two are content-bounded to the same number anyway. shadcn: data-[size=default]:h-9 = 36px, density-invariant. M3: text-field-container-height 56px, present only in `latest` and arriving already @deprecated — the same caveat input recorded; 16 + 24 + 16 reproduces it exactly."
+    },
+    {
+      "id": "style.trigger.min-height@sm",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-size=\"sm\"] [data-slot=\"select-trigger\"]",
+      "declarations": {
+        "min-height": "$"
+      },
+      "note": "shadcn only — data-[size=sm]:h-8 = 32px. This row exists so the declared `size` prop axis is discriminated by real CSS rather than being a dead toggle (ALERT-MATRIX.md finding 10). Salt and M3 have no size prop."
+    },
+    {
+      "id": "style.trigger.min-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "min-width": "$"
+      },
+      "note": "Salt: 4em, a hardcoded literal in Dropdown.css (not even behind an override variable, unlike Input's --saltInput-minWidth). Kept as a literal per TOOLTIP-MATRIX.md's frozen-token test: it is em-relative, so it already tracks the density-driven font size. shadcn: OFF — SelectTrigger is `w-fit`, sized to content. M3: OFF, no width token."
+    },
+    {
+      "id": "style.trigger.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: `padding: 0 var(--salt-spacing-100)` — no vertical padding at all, min-height sets the rhythm. shadcn: px-3 py-2 = 8px 12px (its Input is py-1, so the select trigger is genuinely taller-padded than the input at the same 36px height). M3: 16px uniform — a DECLARED CROSS-COMPONENT BORROW from tokens/_md-comp-{filled,outlined}-field.scss, because neither select token file carries any spacing token at all; the borrow is legitimate because the select file's own tokens are literally prefixed `text-field-*` and material-web's select composes md-filled-field."
+    },
+    {
+      "id": "style.trigger.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "column-gap": "$"
+      },
+      "note": "the space between the value text and the trigger's edge content. Salt expresses it as MARGINS rather than a gap — .saltDropdown-startAdornmentContainer { margin-right: spacing-100 } and .saltDropdown .saltDropdown-toggle { margin-left: spacing-100 }, plus StatusAdornment's own padding-left — all the same --salt-spacing-100 token, so one column-gap row reproduces it (a declared, visually equivalent simplification). shadcn: gap-2 = 8px, a real gap. M3: content-space = 16px, same cross-component borrow as the padding row."
+    },
+    {
+      "id": "style.trigger.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "Salt: palette-corner-weak -> curve-100 (rounded edition pin) = 2/4/6/8px by density. shadcn: rounded-md -> --radius-md = 0.625rem * 0.8 = 8px. M3 filled: corner-extra-small-TOP = `4px 4px 0 0`, rounded on the top only so the activation indicator sits on a square bottom edge."
+    },
+    {
+      "id": "style.trigger.shape@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "M3 only: outlined-select's container-shape is corner-extra-small = 4px on all four corners, since it has no bottom indicator to sit flat on. Salt's corner is independent of `bordered`; shadcn has one mode."
+    },
+    {
+      "id": "style.trigger.cursor",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "cursor": "$"
+      },
+      "note": "Salt only, and note WHICH token: `.saltDropdown:hover { cursor: var(--salt-cursor-hover) }` resolves to `pointer` — not the `text` cursor its own Input uses, because a dropdown trigger is a button, not a text field. shadcn and M3 declare no cursor; a <button> already shows the platform default."
+    },
+    {
+      "id": "style.trigger.shadow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "box-shadow": "$"
+      },
+      "note": "shadcn only: shadow-xs, the same value already extracted for button.shadcn.json / input.shadcn.json and reused rather than re-derived. Salt has no box-shadow in Dropdown.css; M3 has no elevation token on the select's text-field half (its menu half does — see style.popup.shadow)."
+    },
+    {
+      "id": "style.trigger.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]",
+      "declarations": {
+        "transition": "$"
+      },
+      "note": "shadcn only: transition-[color,box-shadow]. The PROPERTY LIST is sourced [S]; the 150ms / cubic-bezier(0.4,0,0.2,1) are Tailwind's own defaults and Tailwind is not vendored in this clone, so those two numbers are [R] — the same unvendored-package caveat as tw-animate-css. Salt's Dropdown.css contains no transition or animation rule anywhere; M3 has no motion token."
+    },
+    {
+      "id": "style.trigger.border@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"]",
+      "cellIsDeclarations": true,
+      "note": "the full four-sided border. All three have one (Salt only when bordered={true}), and all three read it through the same `border-current` indirection, so one status reassignment recolours the border, its hover/focus variants and — in Salt's case — the activation indicator and the status glyph too. That is Salt's own mechanism: Dropdown.css declares --dropdown-borderColor once per variant/status class and eleven rules consume it."
+    },
+    {
+      "id": "style.indicator.border@underline",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"underline\"] [data-slot=\"select-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "the bottom-only activation indicator — a SEPARATE MECHANISM from the box border above. Salt: 1px solid, reading the same --dropdown-borderColor indirection as the box border. M3 filled: active-indicator-height 1px, active-indicator-color -> on-surface-variant (a different sys-color role from outlined's `outline`). shadcn: OFF."
+    },
+    {
+      "id": "style.trigger.background@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"]:where(:not([data-disabled]):not([data-readonly])):hover",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "THE ROW THAT CONTRADICTS INPUT'S FINDING 5. shadcn's input has no hover rule of any kind; shadcn's SELECT trigger has `dark:hover:bg-input/50` — a real pointer reaction, but only in dark mode. The cell therefore carries a light value identical to rest (transparent, the sourced non-change) and a dark value that is the 50% mix, so the mode split lives in the slots block where it belongs. M3: the hover STATE LAYER — on-surface at hover-state-layer-opacity (0.08) composited over the container colour. Salt: OFF — Dropdown.css changes the border and the cursor on hover, never the background."
+    },
+    {
+      "id": "style.trigger.border@box-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"]:where(:not([data-disabled]):not([data-readonly])):hover",
+      "cellIsDeclarations": true,
+      "note": "Salt: recolour only, to --dropdown-borderColor-hover (palette-accent). M3: hover-outline-color -> on-surface, hover-outline-width stays 1px. shadcn: OFF — select.tsx has no hover: border class (its only hover utility is the dark background above)."
+    },
+    {
+      "id": "style.indicator.border@underline-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"underline\"] [data-slot=\"select-trigger\"]:where(:not([data-disabled]):not([data-readonly])):hover [data-slot=\"select-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: --dropdown-borderColor-hover. M3: hover-active-indicator-color -> on-surface, height stays 1px. shadcn: OFF."
+    },
+    {
+      "id": "style.trigger.border@box-focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"][data-focused]:where(:not([data-readonly]))",
+      "cellIsDeclarations": true,
+      "note": "Salt: recolour to --dropdown-borderColor-active (palette-accent-stronger), width unchanged. shadcn: recolour to --ring (focus-visible:border-ring), width unchanged. M3 outlined: recolour to primary AND thicken to focus-outline-width = md-sys-state-focus-indicator.$thickness = 3px (2px in v0.192 — the single substantive value divergence between the two editions for this component, exactly as for input)."
+    },
+    {
+      "id": "style.indicator.border@underline-focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"underline\"] [data-slot=\"select-trigger\"][data-focused]:where(:not([data-readonly])) [data-slot=\"select-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: thickens to --salt-size-fixed-200 = 2px and recolours to accent-stronger. M3 filled: 3px, NOT 2px — the versioned token says focus-active-indicator-height: 2px, but material-web's hand-authored tokens/_md-comp-filled-select.scss overrides it via _get-override-tokens() to 3px with the comment `TODO(b/259455114): remove when focus tokens update to 3px`. A library-level override of its own generated token, taken because it is the value material-web actually ships. shadcn: OFF."
+    },
+    {
+      "id": "style.indicator.border@box-focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"][data-focused] [data-slot=\"select-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, the same easily-missed detail its Input has: Dropdown.css zeroes the activation indicator whenever `bordered` — EXCEPT when also focused, where .saltDropdown-bordered.saltDropdown:focus .saltDropdown-activationIndicator brings it back at size-fixed-100 = 1px on top of the box border, with the source comment 'Activation indicator width minus the border from the input.'"
+    },
+    {
+      "id": "style.trigger.focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"][data-focused]",
+      "cellIsDeclarations": true,
+      "note": "the same genuine three-way split input found. Salt: a 2px DOTTED outline outside the box (focused-outlineWidth/Style/Color), reassigned to the status colour by --dropdown-outlineColor. shadcn: outline:none plus a 3px translucent ring drawn as a box-shadow (focus-visible:ring-[3px] ring-ring/50), with the shadow-xs layer repeated after it because Tailwind composes box-shadow as `var(--tw-ring-shadow), var(--tw-shadow)`. M3: OFF — focus is expressed entirely by the indicator/outline thickening and recolouring."
+    },
+    {
+      "id": "style.trigger.background@readonly",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"][data-readonly]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "Salt only: --dropdown-background-readonly -> editable-background-readonly -> color-transparent, so a read-only Salt dropdown dissolves into the page. Reads the bg-current-readonly indirection, which the status rows also reassign (a read-only error dropdown keeps the error tint)."
+    },
+    {
+      "id": "style.trigger.border-color@readonly",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"][data-readonly]",
+      "declarations": {
+        "border-color": "$"
+      },
+      "note": "Salt only: editable-borderColor-readonly -> palette-neutral-readonly -> gray-500 at 10% alpha, mode-invariant. NOTE Salt hangs this rule off the [aria-readonly=\"true\"] ATTRIBUTE, not a class — because the trigger is a <button>, which has no native readonly."
+    },
+    {
+      "id": "style.indicator.border-color@readonly",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"][data-readonly] [data-slot=\"select-indicator\"]",
+      "declarations": {
+        "border-bottom-color": "$"
+      },
+      "note": "Salt only, same palette-neutral-readonly value as the box border."
+    },
+    {
+      "id": "style.trigger.background@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"][data-disabled]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "Salt: --dropdown-background-disabled, the 40%-alpha sibling of the enabled background, reassigned per variant. M3 filled: on-surface at disabled-container-opacity 0.04. shadcn: OFF — one blanket opacity:0.5 does the whole job."
+    },
+    {
+      "id": "style.trigger.background@box-disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"][data-disabled]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "M3 only, and a precision row rather than a new mechanism — but it points the OPPOSITE way from input's equivalent. _md-comp-outlined-select.scss has a container-color and NO disabled-container-color / disabled-container-opacity, so an outlined M3 select keeps its enabled container fill when disabled. This row restates the enabled value so the shared disabled-background rule above (a filled-only 4% token) does not silently repaint it."
+    },
+    {
+      "id": "style.trigger.color@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"][data-disabled]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "Salt: content-primary-foreground-disabled (black/white at 40% alpha). M3: on-surface at disabled-input-text-opacity 0.38. shadcn: OFF, opacity again."
+    },
+    {
+      "id": "style.trigger.border-color@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-indicator=\"box\"] [data-slot=\"select-trigger\"][data-disabled]",
+      "declarations": {
+        "border-color": "$"
+      },
+      "note": "Salt: editable-borderColor-disabled -> palette-neutral-disabled (gray-500 at 40% alpha), mode-invariant. M3: on-surface at disabled-outline-opacity 0.12 — a different opacity from the indicator's 38%. shadcn: OFF."
+    },
+    {
+      "id": "style.indicator.border-color@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"][data-disabled] [data-slot=\"select-indicator\"]",
+      "declarations": {
+        "border-bottom-color": "$"
+      },
+      "note": "Salt: the same palette-neutral-disabled as its box border. M3: on-surface at disabled-active-indicator-opacity 0.38. shadcn: OFF."
+    },
+    {
+      "id": "style.trigger.disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"][data-disabled]",
+      "cellIsDeclarations": true,
+      "note": "the non-colour part of disabled. Salt: cursor:not-allowed (--salt-cursor-disabled). shadcn: opacity:0.5 + cursor:not-allowed — and note the ABSENCE of pointer-events:none, which shadcn's own Input does carry; a disabled shadcn select trigger still receives pointer events, it is the native `disabled` attribute that stops it doing anything. M3: OFF, its disabled treatment is entirely the per-element opacities in the colour rows."
+    },
+    {
+      "id": "style.value.placeholder",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-trigger\"][data-placeholder] [data-slot=\"select-value\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: .saltDropdown-placeholder sets colour content-secondary-foreground AND font-weight --salt-text-fontWeight-small = 300 — the same weight change its Input's ::placeholder makes, and the same DECLARED RENDERING APPROXIMATION applies (this repo self-hosts Open Sans at 400/600 only, so 300 resolves to the 400 face; the sourced value is kept). shadcn: data-[placeholder]:text-muted-foreground, colour only, and note it is stamped on the TRIGGER by Radix, not on the value span. M3: OFF — and this is a real difference from M3's own text field, which has input-text-placeholder-color; neither select file has any placeholder token, because an M3 select shows a floating LABEL instead (label-text-color -> on-surface-variant), and the label belongs to the separate field wrapper."
+    },
+    {
+      "id": "style.toggle-icon.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-toggle-icon\"]",
+      "cellIsDeclarations": true,
+      "note": "DECLARED COMPOSITION — the glyph belongs to a future icon component; only its box is modelled. Salt: .saltIcon computes `max(var(--salt-size-icon) * 1, 12px)`, i.e. 12/12/14/16 by density — note the 12px FLOOR, which makes the high-density icon 12px rather than size-icon's 10px. Checked against TOOLTIP-MATRIX.md's frozen-token lesson from the other direction: here the token IS used and then clamped, so the literal 12 is a real minimum, not a snapshot. shadcn: size-4 = 16px, density-invariant. M3: text-field-trailing-icon-size = 24px."
+    },
+    {
+      "id": "style.toggle-icon.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-toggle-icon\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: OFF — .saltIcon's fill is `currentColor` and Dropdown never applies .saltIcon-primary/-secondary, so the chevron simply inherits the trigger's own colour, including its disabled value. shadcn: text-muted-foreground (from the trigger's [&_svg:not([class*='text-'])] group rule, which the chevron matches because its only classes are size-4 and opacity-50) PLUS opacity 0.5 — two separate dimming mechanisms stacked. M3: text-field-trailing-icon-color -> on-surface-variant."
+    },
+    {
+      "id": "style.adornment.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-start-adornment\"]",
+      "declarations": {
+        "height": "$"
+      },
+      "note": "Salt: the start-adornment container has no size rule of its own — whatever it holds sizes itself — so this aliases the same icon box the toggle uses (DECLARED COMPOSITION, and marked [R] as a registry choice rather than a Dropdown.css value). M3: text-field-leading-icon-size = 24px. shadcn: OFF, no leading slot."
+    },
+    {
+      "id": "style.status-adornment.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-status-adornment\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only: StatusAdornment.css height/min-height = --salt-size-adornment = 6/8/10/12px by density. Already a density token in source, not a literal."
+    },
+    {
+      "id": "style.status-adornment.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-status-adornment\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "Salt only. Aliased to the SAME border-current indirection the box/indicator read, because in source they resolve to the identical value (--statusAdornment-color -> status-{s}-foreground-decorative -> palette-{role}; --dropdown-borderColor -> status-{s}-borderColor -> the same palette-{role}). One indirection, three consumers — the reuse ALERT-MATRIX.md's tone-active slot made."
+    },
+    {
+      "id": "style.popup.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "Salt: container-primary-background -> snow/jet, the SAME surface its Tooltip and its containers use. shadcn: bg-popover -> --popover (pure white light / oklch(0.205 0 0) dark) — a dedicated popover role, distinct from --background. M3: menu-container-color -> surface-container (#f3edf7 / #211f26), a LOWER surface tone than the trigger's surface-container-highest, so an M3 popup is lighter than the control that opened it."
+    },
+    {
+      "id": "style.popup.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "where each system declares it differs: Salt puts colour on .saltOption (content-primary-foreground) rather than on the list; shadcn puts text-popover-foreground on the Content and the item inherits; M3's menu-list-item-label-text-color -> on-surface is an item token. Modelled once on the popup with the option inheriting, which renders identically in all three."
+    },
+    {
+      "id": "style.popup.border",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt's is the surprise: `border: size-fixed-100 solid var(--salt-selectable-borderColor-selected)` -> palette-accent -> blue-500, mode-invariant. Salt outlines its option list in the ACCENT colour, not a neutral — the same token its selected option's bracket uses, so the list frame and the selection frame are literally one value. shadcn: a bare `border` utility -> --border (note: --border, NOT the --input token its trigger uses; they diverge in dark mode, 10% vs 15% white). M3: OFF — no outline or border token anywhere in the menu family; an M3 menu is elevation-only."
+    },
+    {
+      "id": "style.popup.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "Salt: --salt-palette-corner (NOT corner-weak, which the trigger uses) -> curve-150 = 3/6/9/12px by density — the popup is rounder than the control. shadcn: rounded-md = 8px, the same as its trigger. M3: menu-container-shape -> corner-extra-small = 4px."
+    },
+    {
+      "id": "style.popup.shadow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "box-shadow": "$"
+      },
+      "note": "Salt: overlayable-shadow-popout -> shadow-mediumLow, reused from docs/foundations/elevation.md rather than re-derived. shadcn: shadow-md — Tailwind's default two-layer value, [R] for the same unvendored-Tailwind reason as shadow-xs. M3: menu-container-elevation -> level2 (3dp) + menu-container-shadow-color -> shadow (#000); M3 ships a dp HEIGHT, not a shadow string, so the two-layer CSS is [R], derived the same way button.m3.json derived its level1 hover shadow."
+    },
+    {
+      "id": "style.popup.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: 0 — .saltOptionList-container declares display/flex-direction/gap/max-height/min-height and no padding at all, so Salt's options run edge to edge inside the accent frame (contrast .saltListBox, the standalone component, which does add 1px top/bottom). shadcn: the Viewport's p-1 = 4px on all sides. M3: `8px 0` — top-space/bottom-space = 8px from the hand-authored tokens/_md-comp-menu.scss $new-tokens, a DECLARED CROSS-FILE BORROW (the select's own file has no menu spacing token); M3 has no horizontal menu padding, the list item's own leading/trailing space does that job."
+    },
+    {
+      "id": "style.popup.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-listbox\"], [data-slot=\"select-group\"]",
+      "declarations": {
+        "row-gap": "$"
+      },
+      "note": "Salt only: --salt-spacing-fixed-100 = 1px between options. The FIXED spacing scale is density-invariant by design (docs/foundations/spacing.md), so this 1px is not a frozen snapshot of a scaling token — checked. shadcn and M3 stack their items flush."
+    },
+    {
+      "id": "style.popup.min-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "min-width": "$"
+      },
+      "note": "Salt: --overlay-minWidth, which floating-ui's size() middleware writes onto the floating element as `${rects.reference.width}px` — the popup is never narrower than the trigger. The column aliases a slot whose value is `var(--select-trigger-width)`, a custom property the skeleton measures and sets inline, mirroring Salt's own inline mechanism. shadcn: min-w-[8rem] = 128px, a fixed floor independent of the trigger (its trigger-width var is only applied in position=\"popper\" mode, which is not the default). M3: OFF, no width token."
+    },
+    {
+      "id": "style.popup.max-height",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "max-height": "$"
+      },
+      "note": "Salt only, and PARTIALLY modelled — declared. Source writes --overlay-maxHeight as `max(calc((size-base + spacing-100) * 5), calc(${availableHeight}px - spacing-100))`, i.e. at least five rows tall, otherwise the viewport space the positioning engine measured. Only the five-row floor is expressible here (120/180/240/300px by density); the availableHeight half needs the floating engine this skeleton declares as a gap. shadcn: OFF — max-h-(--radix-select-content-available-height) is entirely Popper-computed, the same gap. M3: OFF, no token."
+    },
+    {
+      "id": "style.popup.z-index",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "z-index": "$"
+      },
+      "note": "Salt: --salt-zIndex-flyover = 1500 (docs/foundations/layers.md). shadcn: z-50, a bare Tailwind stacking index, undeclared as a token. M3: OFF — no z-index token; platform-managed."
+    },
+    {
+      "id": "style.popup.animation",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-popup\"]",
+      "declarations": {
+        "animation": "$"
+      },
+      "note": "shadcn only: data-[state=open]:animate-in fade-in-0 zoom-in-95 plus a per-side slide-in, from tw-animate-css. The package is a declared dependency but is NOT vendored in this clone, so the duration/easing are [R] — same caveat TOOLTIP-MATRIX.md recorded. The keyframe itself (select-popup-in) is appended to page/chrome.css. Salt: no animation rule anywhere in OptionList.css or Dropdown.css — it appears instantly, the same total absence its Tooltip has. M3: no motion token in the select or menu files."
+    },
+    {
+      "id": "style.option.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "all three transparent at rest, arrived at three ways: Salt declares it (--salt-selectable-background -> color-transparent), shadcn simply has no background class on SelectItem, and M3's hand-authored _md-comp-menu-item.scss explicitly overrides container-color to `transparent` with the comment that menu items inherit their parent menu's colour so a selected background can sit on top."
+    },
+    {
+      "id": "style.option.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "Salt only declares a colour on the option itself (content-primary-foreground); shadcn and M3 both inherit the popup's colour with no separate token, so both are OFF here rather than duplicating style.popup.color."
+    },
+    {
+      "id": "style.option.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "font": "$"
+      },
+      "note": "Salt: the same --salt-text-* body role as the trigger — an option reads exactly like the value it will become. shadcn: text-sm, also the same as its trigger. M3 is the outlier: menu-list-item-label-text-* -> LABEL-LARGE (0.875rem/1.25rem at weight-MEDIUM 500), a different role and a heavier weight than the trigger's body-large 1rem/1.5rem at 400. So in two systems the list matches the control and in one it deliberately does not."
+    },
+    {
+      "id": "style.option.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "letter-spacing": "$"
+      },
+      "note": "Salt: --salt-text-letterSpacing = 0, declared. shadcn: OFF. M3: menu-list-item-label-text-tracking -> label-large-tracking = 0.00625rem (a different value from the trigger's body-large 0.03125rem)."
+    },
+    {
+      "id": "style.option.min-height",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "min-height": "$"
+      },
+      "note": "Salt: calc(size-base + spacing-100) = 24/36/48/60px by density — an option row is deliberately TALLER than the trigger it fills. M3: menu-list-item-container-height = 48px (note the standalone _md-comp-list.scss says 56px for a list item; the menu family says 48px, and the select's own file agrees with menu). shadcn: OFF — SelectItem has no height class at all; its 6px vertical padding plus a 20px line box makes it content-driven."
+    },
+    {
+      "id": "style.option.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: calc(spacing-100 + spacing-25) vertical, spacing-100 horizontal = 5/4 · 10/8 · 15/12 · 20/16 px by density (and 10+16+10 = 36 = the medium min-height exactly). shadcn: py-1.5 pl-2 pr-8 = `6px 32px 6px 8px` — the asymmetric right padding is the reserved lane for the checkmark, so it exists only because of structure.selected-marker. M3: 12px vertical (the hand-authored _md-comp-list-item.scss $new-tokens) and 16px horizontal (list-item-leading-space / -trailing-space) — a DECLARED CROSS-FILE BORROW, since the select's own file carries no list-item spacing."
+    },
+    {
+      "id": "style.option.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "column-gap": "$"
+      },
+      "note": "Salt: --salt-spacing-100, 4/8/12/16 by density. shadcn: gap-2 = 8px. M3: list-item-between-space = 12px (same cross-file borrow)."
+    },
+    {
+      "id": "style.option.shape",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "shadcn only: rounded-sm -> --radius-sm = 0.625rem * 0.6 = 6px. shadcn is the only system that rounds an individual option — which is also why it pads the popup by 4px, so the rounded highlight has somewhere to sit. Salt and M3 both let the option run flush to the popup's inner edge."
+    },
+    {
+      "id": "style.option.cursor",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]",
+      "declarations": {
+        "cursor": "$"
+      },
+      "note": "A direct, sourced disagreement. Salt: --salt-cursor-hover -> `pointer` — an option advertises itself as clickable. shadcn: `cursor-default` — explicitly NOT a pointer, the native-menu convention Radix follows. M3: OFF, no cursor token."
+    },
+    {
+      "id": "style.option.background@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"]:where(:not([data-disabled])):hover",
+      "cellIsDeclarations": true,
+      "note": "Salt: selectable-background-hover -> palette-accent-weakest (blue-100 / blue-900). shadcn: OFF — a CONFIRMED ABSENCE; SelectItem has no hover: class of any kind, because Radix moves real focus on pointermove and the focus: rule does the work (see behavior.pointer-activates-option). M3: the hover STATE LAYER, on-surface at 8%, expressed as a background-IMAGE so it composites over a selected option's background-colour instead of replacing it — which is how a state layer actually works. The M3 values come from _md-comp-menu.scss's md.comp.menu.list-item.hover.state-layer.*, a DECLARED CROSS-FILE BORROW: the select's own file names the list item's height, label and selected colour but no interaction state."
+    },
+    {
+      "id": "style.option.active",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"][data-active]:where(:not([data-disabled]))",
+      "cellIsDeclarations": true,
+      "note": "the keyboard-highlighted / roving-active option. Salt: .saltOption-active -> selectable-background-hover, the IDENTICAL value as its hover rule, reached through a different selector — recorded as two rows because they are two rules in source, not because they differ. shadcn: focus:bg-accent focus:text-accent-foreground — the only system that also changes the TEXT colour when highlighted. M3: the focus state layer at 10%, two points heavier than its hover layer, again as a background-image overlay."
+    },
+    {
+      "id": "style.option.focus-visible",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"][data-focus-visible]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, and it is a distinct third state on top of active: .saltOption-focusVisible (set only when focusVisibleState && active, i.e. after keyboard navigation, and cleared by any mouseover) draws --salt-focused-outline (2px dotted accent-stronger) with outline-offset calc(size-fixed-100 * -2) = -2px so the dots sit inside the row. shadcn's items carry outline-hidden and rely on the background swap; M3's menu has focus-indicator tokens but they belong to the standalone menu component and its own select file does not reference them."
+    },
+    {
+      "id": "style.option.disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"][data-disabled]",
+      "cellIsDeclarations": true,
+      "note": "three different fades: Salt opacity 0.4 (plus an explicit restatement of the rest colour and background so hover/active cannot win, and cursor:not-allowed); shadcn opacity 0.5 + pointer-events:none; M3 0.38 (list-item-disabled-label-text-opacity, cross-file borrow from _md-comp-menu.scss — the select's own file has no option-disabled token at all)."
+    },
+    {
+      "id": "style.option.selected",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option\"][data-selected]",
+      "cellIsDeclarations": true,
+      "note": "DELIBERATELY LAST among the option rows, because that is the order source implies: Salt's [aria-selected=\"true\"] rule is the final block in Option.css and therefore beats its own hover/active rules, and M3's state layers are background-IMAGES that composite over this background-colour rather than being overridden by it. Salt: selectable-background-selected -> palette-accent-weaker, PLUS a three-layer box-shadow bracket reproduced verbatim (a 2px accent-weakest strip on the left, a 1px accent ring shifted left, and a 1px accent line on top) and z-index 1 so the bracket paints over its neighbours' 1px gaps. M3: menu-list-item-selected-container-color -> surface-container-highest — and note that the STANDALONE menu component's equivalent token is secondary-container, so the select overrides it; the select's own value is the one used here. shadcn: OFF — a selected shadcn item has no background at all, only the checkmark."
+    },
+    {
+      "id": "style.selected-marker.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-option-marker\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only, and only because shadcn is the only system with a marker element: `absolute right-2 flex size-3.5` (a 14px box) holding a 16px CheckIcon. Salt and M3 are OFF because their selection marker is the option's own background (structure.selected-marker), not a glyph."
+    },
+    {
+      "id": "style.group-label.font",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-group-label\"]",
+      "declarations": {
+        "font": "$"
+      },
+      "note": "Salt: the LABEL typescale at fontWeight-strong — --salt-text-label-fontSize/-lineHeight (10/13 · 11/14 · 12/16 · 14/18 by density) at semiBold 600. shadcn: text-xs = 0.75rem/1rem at the ambient 400 — no weight utility, so a shadcn group label is smaller but NOT bolder than its options, the exact inverse of Salt. M3: OFF, no group concept."
+    },
+    {
+      "id": "style.group-label.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-group-label\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "Salt: content-secondary-foreground — the same token its placeholder uses. shadcn: text-muted-foreground — likewise the same token as its placeholder. Two systems, one convention, arrived at independently."
+    },
+    {
+      "id": "style.group-label.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-group-label\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: identical padding and min-height to an Option (calc(spacing-100 + spacing-25) / spacing-100, min-height calc(size-base + spacing-100)) so the label occupies a full row in the rhythm. shadcn: px-2 py-1.5 = 6px 8px, half an item's vertical size — its label is a caption, not a row."
+    },
+    {
+      "id": "style.group-label.background",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-group-label\"]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "Salt only: OptionGroup.css re-declares container-primary-background on the label. It is the same value the popup already has, but it is declared — and it matters, because the selected option's box-shadow bracket paints outside its own box and an opaque label stops the bracket bleeding under it. shadcn's label has no background."
+    },
+    {
+      "id": "style.group.border-top",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-group\"] + [data-slot=\"select-group\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, and it is Salt's ANSWER to the separator that shadcn and M3 solve with an element: .saltOptionGroup { border-top: size-fixed-100 solid separable-tertiary-borderColor } with .saltOptionGroup:first-of-type { border-top: 0 }. The adjacent-sibling selector here reproduces the :first-of-type reset without needing a first-child rule."
+    },
+    {
+      "id": "style.separator",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select-separator\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn: `-mx-1 my-1 h-px bg-border` — 1px tall, 4px of vertical margin, and NEGATIVE 4px inline margins so the rule bleeds through the viewport's own 4px padding to touch both edges. M3: menu-divider-height 1px, menu-divider-color -> surface-variant, full width (the select file has no divider inset token; _md-comp-list.scss's 16px divider-leading/trailing-space belongs to the standalone list, not the menu). Salt: OFF, see style.group.border-top."
+    },
+    {
+      "id": "style.trigger.variant@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-variant=\"secondary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Reassigns the background indirections exactly as .saltDropdown-secondary does (--dropdown-background / -disabled / -readonly -> editable-secondary-*), rather than duplicating the background rows."
+    },
+    {
+      "id": "style.trigger.variant@tertiary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-variant=\"tertiary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — see style.trigger.variant@secondary."
+    },
+    {
+      "id": "style.trigger.status@error",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-status=\"error\"]",
+      "cellIsDeclarations": true,
+      "note": "Modelled as an indirection reassignment because that is literally what every source does (TOOLTIP-MATRIX.md lesson 3). Salt's .saltDropdown-error sets SIX custom properties in one block — --dropdown-color, --dropdown-background, --dropdown-background-readonly, --dropdown-borderColor, --dropdown-borderColor-active, --dropdown-borderColor-hover, --dropdown-outlineColor — which a dozen rules elsewhere in Dropdown.css consume; note that unlike Input's error block, Salt's dropdown error also pins --dropdown-borderColor-hover to the STATUS colour, so an errored dropdown does not go accent-blue on hover. shadcn reassigns border + focus-border to --destructive and swaps the ring alpha (50% -> 20% light / 40% dark). M3 reassigns outline, outline-hover (on-error-container, a different role), outline-focus, indicator, indicator-hover, indicator-focus."
+    },
+    {
+      "id": "style.trigger.status@warning",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-status=\"warning\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — palette-warning / warning-weakest. shadcn has no warning state (its whole validation axis is aria-invalid) and neither select token file contains a warning-* token: the same coverage gap recorded for button, alert and input, now confirmed a fourth time."
+    },
+    {
+      "id": "style.trigger.status@success",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"select\"][data-status=\"success\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — palette-positive / positive-weakest. shadcn and M3: no success state, see style.trigger.status@warning."
+    }
+  ]
+}

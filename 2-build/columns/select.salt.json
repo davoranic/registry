@@ -1,0 +1,762 @@
+{
+  "system": "salt",
+  "component": "select",
+  "fontFaces": [
+    {
+      "family": "Open Sans",
+      "weight": "400",
+      "file": "fonts/open-sans-400.woff2"
+    },
+    {
+      "family": "Open Sans",
+      "weight": "600",
+      "file": "fonts/open-sans-600.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "field-bg": "rgb(255, 255, 255)",
+      "field-bg-secondary": "rgb(245, 247, 248)",
+      "field-bg-tertiary": "rgb(250, 248, 242)",
+      "field-bg-disabled": "rgba(255, 255, 255, 0.4)",
+      "field-bg-secondary-disabled": "rgba(245, 247, 248, 0.4)",
+      "field-bg-tertiary-disabled": "rgba(250, 248, 242, 0.4)",
+      "field-bg-readonly": "transparent",
+      "fg": "rgb(0, 0, 0)",
+      "fg-disabled": "rgba(0, 0, 0, 0.4)",
+      "fg-secondary": "rgb(76, 81, 87)",
+      "border": "rgb(114, 119, 125)",
+      "border-hover": "rgb(0, 120, 207)",
+      "border-active": "rgb(0, 69, 126)",
+      "border-readonly": "rgba(114, 119, 125, 0.1)",
+      "border-disabled": "rgba(114, 119, 125, 0.4)",
+      "accent": "rgb(0, 120, 207)",
+      "accent-weakest": "rgb(234, 246, 255)",
+      "accent-weaker": "rgb(199, 222, 255)",
+      "status-error": "rgb(229, 33, 53)",
+      "status-warning": "rgb(199, 83, 0)",
+      "status-success": "rgb(0, 135, 93)",
+      "status-error-bg": "rgb(255, 236, 234)",
+      "status-warning-bg": "rgb(255, 236, 217)",
+      "status-success-bg": "rgb(234, 245, 242)",
+      "popup-bg": "rgb(255, 255, 255)",
+      "popup-shadow": "0 6px 10px 0 rgba(0, 0, 0, 0.2)",
+      "separator-color": "rgba(0, 0, 0, 0.2)",
+      "popup-gap": "1px",
+      "bg-current": "var(--field-bg)",
+      "bg-current-disabled": "var(--field-bg-disabled)",
+      "bg-current-readonly": "var(--field-bg-readonly)",
+      "border-current": "var(--border)",
+      "border-current-hover": "var(--border-hover)",
+      "border-current-active": "var(--border-active)",
+      "outline-current": "var(--border-active)",
+      "select-trigger-width": "0px"
+    },
+    "dark": {
+      "field-bg": "rgb(16, 24, 32)",
+      "field-bg-secondary": "rgb(26, 34, 41)",
+      "field-bg-tertiary": "rgb(38, 41, 43)",
+      "field-bg-disabled": "rgba(16, 24, 32, 0.4)",
+      "field-bg-secondary-disabled": "rgba(26, 34, 41, 0.4)",
+      "field-bg-tertiary-disabled": "rgba(38, 41, 43, 0.4)",
+      "fg": "rgb(255, 255, 255)",
+      "fg-disabled": "rgba(255, 255, 255, 0.4)",
+      "fg-secondary": "rgb(177, 181, 185)",
+      "border-active": "rgb(154, 189, 245)",
+      "accent-weakest": "rgb(0, 23, 54)",
+      "accent-weaker": "rgb(0, 45, 89)",
+      "status-error-bg": "rgb(69, 0, 2)",
+      "status-warning-bg": "rgb(66, 32, 0)",
+      "status-success-bg": "rgb(0, 41, 21)",
+      "popup-bg": "rgb(16, 24, 32)",
+      "popup-shadow": "0 6px 10px 0 rgba(0, 0, 0, 0.55)",
+      "separator-color": "rgba(255, 255, 255, 0.2)"
+    },
+    "byDensity": {
+      "high": {
+        "control-height": "20px",
+        "field-padding": "0 4px",
+        "field-gap": "4px",
+        "corner-weak": "2px",
+        "popup-corner": "3px",
+        "type-body": "400 11px/14px 'Open Sans', sans-serif",
+        "type-group-label": "600 10px/13px 'Open Sans', sans-serif",
+        "toggle-icon-size": "12px",
+        "adornment-size": "6px",
+        "option-min-height": "24px",
+        "option-padding": "5px 4px",
+        "popup-max-height": "120px"
+      },
+      "medium": {
+        "control-height": "28px",
+        "field-padding": "0 8px",
+        "field-gap": "8px",
+        "corner-weak": "4px",
+        "popup-corner": "6px",
+        "type-body": "400 12px/16px 'Open Sans', sans-serif",
+        "type-group-label": "600 11px/14px 'Open Sans', sans-serif",
+        "toggle-icon-size": "12px",
+        "adornment-size": "8px",
+        "option-min-height": "36px",
+        "option-padding": "10px 8px",
+        "popup-max-height": "180px"
+      },
+      "low": {
+        "control-height": "36px",
+        "field-padding": "0 12px",
+        "field-gap": "12px",
+        "corner-weak": "6px",
+        "popup-corner": "9px",
+        "type-body": "400 14px/18px 'Open Sans', sans-serif",
+        "type-group-label": "600 12px/16px 'Open Sans', sans-serif",
+        "toggle-icon-size": "14px",
+        "adornment-size": "10px",
+        "option-min-height": "48px",
+        "option-padding": "15px 12px",
+        "popup-max-height": "240px"
+      },
+      "touch": {
+        "control-height": "44px",
+        "field-padding": "0 16px",
+        "field-gap": "16px",
+        "corner-weak": "8px",
+        "popup-corner": "12px",
+        "type-body": "400 16px/20px 'Open Sans', sans-serif",
+        "type-group-label": "600 14px/18px 'Open Sans', sans-serif",
+        "toggle-icon-size": "16px",
+        "adornment-size": "12px",
+        "option-min-height": "60px",
+        "option-padding": "20px 16px",
+        "popup-max-height": "300px"
+      }
+    }
+  },
+  "modeInvariant": [
+    "border",
+    "border-hover",
+    "border-readonly",
+    "border-disabled",
+    "accent",
+    "status-error",
+    "status-warning",
+    "status-success",
+    "field-bg-readonly"
+  ],
+  "provenance": {
+    "primary-source": "packages/core/src/dropdown/{Dropdown.tsx,Dropdown.css} for the trigger; packages/core/src/option/{Option.tsx,Option.css,OptionList.tsx,OptionList.css,OptionListBase.tsx,OptionGroup.tsx,OptionGroup.css} for the popup and its contents; packages/core/src/list-control/ListControlState.ts (via Dropdown.tsx) for the selection/typeahead model. Dropdown composes these — they are separate exported components shared with ComboBox and ListBox, which is why docs/SELECT-MATRIX.md's scope note flags every popup/option row as a migration candidate if `option`/`popover` are later split out.",
+    "accent-pin": "Salt's editable-borderColor-hover/-active and every selectable-* stop resolve through palette-accent*, which carries a data-accent axis (blue default, teal alternate — next/palette/accent.css). This column pins BLUE, Salt's default, the same scope trim button.salt.json and input.salt.json made; only calendar.salt.json models byAccent so far.",
+    "field-bg / field-bg-secondary / field-bg-tertiary": "Dropdown.css .saltDropdown-{primary,secondary,tertiary} { --dropdown-background: var(--salt-editable-{variant}-background) } -> next/characteristics/editable.css -> palette-background-{primary,secondary,tertiary} -> snow 255,255,255 / marble 245,247,248 / limestone 250,248,242 light; jet 16,24,32 / granite 26,34,41 / leather 38,41,43 dark. Identical resolution to input.salt.json, cross-checked rather than re-derived.",
+    "field-bg-*-disabled": "--dropdown-background-disabled -> editable-{variant}-background-disabled -> palette-background-{...}-disabled -> next/foundations/alpha.css background-{snow,marble,limestone,jet,granite,leather}-40a = rgba(<same rgb>, 0.4)",
+    "field-bg-readonly": "--dropdown-background-readonly -> editable-background-readonly -> --salt-color-transparent. All three variant blocks set it, so a read-only Salt dropdown is transparent at every variant.",
+    "fg / fg-disabled": "--dropdown-color -> content-primary-foreground (declared identically in all three variant blocks and in all three status blocks); .saltDropdown:disabled { color: var(--salt-content-primary-foreground-disabled) } -> black-40a / white-40a",
+    "fg-secondary": "ONE token, TWO consumers: .saltDropdown-placeholder { color: var(--salt-content-secondary-foreground) } and .saltOptionGroup-label { color: var(--salt-content-secondary-foreground) } -> palette-foreground-secondary -> gray-700 (76,81,87) light / gray-300 (177,181,185) dark. The placeholder additionally sets font-weight: var(--salt-text-fontWeight-small) -> typography fontWeight-light = 300.",
+    "border / border-hover / border-active": "--dropdown-borderColor -> editable-borderColor -> palette-neutral -> gray-500 (114,119,125), identical in both mode blocks; -hover -> editable-borderColor-hover -> palette-accent -> blue-500 (0,120,207), also mode-invariant; -active -> editable-borderColor-active -> palette-accent-stronger -> blue-700 (0,69,126) light / blue-300 (154,189,245) dark. --dropdown-outlineColor -> focused-outlineColor, which is the same palette-accent-stronger stop, hence outline-current aliases border-active.",
+    "border-readonly / border-disabled": "Dropdown.css hangs these off the ATTRIBUTE [aria-readonly=\"true\"] and the :disabled pseudo-class respectively (not classes) -> editable-borderColor-readonly -> palette-neutral-readonly -> gray-500-10a; editable-borderColor-disabled -> palette-neutral-disabled -> gray-500-40a. Both mode-invariant.",
+    "accent / accent-weakest / accent-weaker": "next/characteristics/selectable.css: --salt-selectable-borderColor-selected -> palette-accent (blue-500, mode-invariant) — used BOTH as OptionList's border and as the selected option's bracket; --salt-selectable-background-hover -> palette-accent-weakest -> blue-100 (234,246,255) light / blue-900 (0,23,54) dark; --salt-selectable-background-selected -> palette-accent-weaker -> blue-200 (199,222,255) light / blue-800 (0,45,89) dark. --salt-selectable-background itself is color-transparent.",
+    "status-*": "Dropdown.css .saltDropdown-{error,warning,success} { --dropdown-borderColor: var(--salt-status-{s}-borderColor) } -> next/characteristics/status.css -> palette-{negative,warning,positive} -> red-500 229,33,53 / orange-500 199,83,0 / green-500 0,135,93, all mode-invariant. Matches alert.salt.json and input.salt.json exactly.",
+    "status-*-bg": "--dropdown-background / --dropdown-background-readonly -> status-{s}-background -> palette-{role}-weakest -> the 100 stop light / 900 stop dark.",
+    "popup-bg": "OptionList.css .saltOptionList { background: var(--salt-container-primary-background) } -> next/characteristics/container.css -> palette-background-primary -> snow / jet. The same surface value as a primary-variant trigger, arrived at through the CONTAINER characteristic rather than the EDITABLE one.",
+    "popup-shadow": "OptionList.css box-shadow: var(--salt-overlayable-shadow-popout) -> next/characteristics/overlayable.css -> --salt-shadow-mediumLow. Value reused from docs/foundations/elevation.md (0 6px 10px 0 rgba(0,0,0,0.2) light / 0.55 dark) rather than re-derived, the same reuse tooltip.salt.json made.",
+    "separator-color": "OptionGroup.css .saltOptionGroup { border-top: var(--salt-size-fixed-100) solid var(--salt-separable-tertiary-borderColor) } -> next/characteristics/separable.css -> palette-alpha-contrast-mediumLow -> black-20a light / white-20a dark (foundations/alpha.css).",
+    "popup-gap": "OptionList.css .saltOptionList-container { gap: var(--salt-spacing-fixed-100) } = 1px. The FIXED spacing scale is density-invariant by design (foundations/spacing.css declares --salt-spacing-fixed-100: 1px once, outside every density block), so this literal is not a frozen snapshot of a scaling token — the TOOLTIP-MATRIX.md check was run and passed.",
+    "popup-min-width": "Dropdown.tsx's floating-ui size() middleware writes elements.floating.style --overlay-minWidth = `${rects.reference.width}px`, and OptionList.css reads it as min-width. This column aliases a slot whose value is var(--select-trigger-width), an inline custom property skeleton/select.tsx measures and sets on the popup — the same inline mechanism, minus the positioning engine (declared gap).",
+    "byDensity.control-height": "Dropdown.css min-height: var(--salt-size-base) -> foundations/size.css 20/28/36/44px. NOTE it is min-height, not height, unlike Input.css which sets both.",
+    "byDensity.field-padding": "Dropdown.css padding: 0 var(--salt-spacing-100) — literally zero vertical padding, min-height alone sets the rhythm. spacing-100 = 4/8/12/16px.",
+    "byDensity.field-gap": "THREE source declarations, one token: .saltDropdown-startAdornmentContainer { margin-right: var(--salt-spacing-100) }, .saltDropdown .saltDropdown-toggle { margin-left: var(--salt-spacing-100) }, and StatusAdornment.css's own padding-left. Modelled as a single column-gap — a declared, visually equivalent simplification.",
+    "byDensity.corner-weak / popup-corner": "Dropdown.css border-radius: var(--salt-palette-corner-weak, 0) -> curve-100 = 2/4/6/8px; OptionList.css border-radius: var(--salt-palette-corner, 0) -> curve-150 = 3/6/9/12px. Two DIFFERENT corner stops on the same component — the popup is deliberately rounder than the control. Rounded edition pin, same as button/tooltip/input (docs/foundations/shape.md).",
+    "byDensity.type-body": "Dropdown.css font-family/-size/-weight/-line-height/letter-spacing -> --salt-text-* body role. Unlike Input.css, Dropdown.css DOES declare font-weight explicitly (var(--salt-text-fontWeight) -> typography fontWeight-regular = 400), so the 400 in this shorthand is sourced rather than ambient. Option.css declares the identical five properties, which is why style.option.font aliases the same slot.",
+    "byDensity.type-group-label": "OptionGroup.css .saltOptionGroup-label uses the LABEL role: --salt-text-label-fontSize/-lineHeight (10/13 · 11/14 · 12/16 · 14/18 by density, next/characteristics/text.css density blocks) with --salt-text-label-fontWeight-strong -> typography fontWeight-semiBold = 600.",
+    "byDensity.toggle-icon-size": "DECLARED COMPOSITION. Dropdown.css sizes nothing on .saltDropdown-toggle except margin-left; the box comes from the composed icon component — packages/icons/src/icon/Icon.css: --icon-size: max(calc(var(--salt-size-icon) * 1), 12px). size-icon is 10/12/14/16 by density, so the CLAMPED result is 12/12/14/16. The 12px floor is Salt's own documented minimum ('Icons should never be smaller than 12px for readability'), i.e. the high-density value is a real clamp, not the frozen-token case TOOLTIP-MATRIX.md warned about — checked in both directions.",
+    "byDensity.adornment-size": "StatusAdornment.css height/min-height: var(--salt-size-adornment) = 6/8/10/12px. Already a density token in source.",
+    "byDensity.option-min-height / option-padding": "Option.css min-height: calc(var(--salt-size-base) + var(--salt-spacing-100)) = 24/36/48/60; padding: calc(var(--salt-spacing-100) + var(--salt-spacing-25)) var(--salt-spacing-100), with spacing-25 = 0.25 * spacing-100, giving 5/4 · 10/8 · 15/12 · 20/16. Internally consistent: 10 + 16 (medium body line-height) + 10 = 36. OptionGroup.css's label repeats both formulas verbatim.",
+    "byDensity.popup-max-height": "PARTIAL, declared. Dropdown.tsx writes --overlay-maxHeight = max(calc((var(--salt-size-base) + var(--salt-spacing-100)) * 5), calc(<availableHeight>px - var(--salt-spacing-100))). Only the five-row floor is expressible without the positioning engine: 5 * (20+4)=120, 5 * (28+8)=180, 5 * (36+12)=240, 5 * (44+16)=300.",
+    "border-width-literals": "1px = --salt-size-fixed-100, 2px = --salt-size-fixed-200 (foundations/size.css). Density-INVARIANT by design (docs/foundations/sizes.md), so kept as literals deliberately.",
+    "min-width-literal": "Dropdown.css min-width: 4em — a bare literal with no override variable at all (Input.css at least offers --saltInput-minWidth). em-relative, so it already tracks the density-driven font size.",
+    "focus-outline": "Dropdown.css .saltDropdown:focus { outline: var(--salt-focused-outlineWidth) var(--salt-focused-outlineStyle) var(--dropdown-outlineColor) } -> focused.css: 2px, dotted (foundations/borderStyle.css), accent-stronger — reassigned to the status colour by the .saltDropdown-{status} blocks. Option.css uses the shortcut token --salt-focused-outline for the same three values, with outline-offset: calc(var(--salt-size-fixed-100) * -2) = -2px.",
+    "cursors": "foundations/cursor.css: --salt-cursor-hover: pointer (used by BOTH .saltDropdown:hover/:focus and .saltOption), --salt-cursor-disabled: not-allowed, --salt-cursor-readonly: text. Note the trigger cursor is POINTER here, where Salt's Input uses `text` — a button, not a text field.",
+    "no-shadow-no-motion-on-trigger": "Dropdown.css contains no box-shadow, no transition and no animation rule anywhere; OptionList.css has a box-shadow but likewise no motion. Confirmed absences by full-file read.",
+    "form-field-context": "Dropdown.tsx useFormFieldProps(): disabled = Boolean(disabledProp) || formFieldDisabled; readOnly = Boolean(readOnlyProp) || formFieldReadOnly; validationStatus = formFieldValidationStatus ?? validationStatusProp; required = formFieldRequired ? ['required','asterisk'].includes(formFieldRequired) : requiredProp. The necessity channel is Dropdown-only — Input.tsx does not read it.",
+    "aria": "trigger: role=\"combobox\", type=\"button\", aria-expanded, aria-activedescendant, aria-controls (only while open), aria-readonly (only when readOnly), aria-required. Popup: role=\"listbox\" on the FloatingComponent, aria-multiselectable when multiselect. Option: role=\"option\", aria-selected, aria-disabled, tabIndex={-1}."
+  },
+  "cells": {
+    "structure.indicator": {
+      "kind": "value",
+      "value": [
+        "underline",
+        "box"
+      ],
+      "note": "ordered with the real default first. Dropdown.tsx: `bordered = false`, and Dropdown.css renders .saltDropdown-activationIndicator unconditionally — so an out-of-the-box Salt dropdown is an UNDERLINE, exactly as its Input is.",
+      "source": "Dropdown.tsx bordered?: boolean, default false; Dropdown.css .saltDropdown-bordered vs .saltDropdown-activationIndicator"
+    },
+    "structure.start-adornment": {
+      "kind": "value",
+      "value": true,
+      "source": "Dropdown.tsx startAdornment prop -> .saltDropdown-startAdornmentContainer. NOTE there is no endAdornment prop on Dropdown, unlike Input."
+    },
+    "structure.status-adornment": {
+      "kind": "value",
+      "value": true,
+      "source": "Dropdown.tsx: {!disabled && validationStatus && <StatusAdornment status={validationStatus} />}"
+    },
+    "structure.toggle-icon": {
+      "kind": "value",
+      "value": "swap",
+      "source": "Dropdown.tsx ExpandIcon({open}) returns useIcon().CollapseIcon when open and useIcon().ExpandIcon when closed — two different glyphs; and the whole icon is omitted when readOnly ({!readOnly && <ExpandIcon .../>})"
+    },
+    "structure.option-group": {
+      "kind": "value",
+      "value": true,
+      "source": "packages/core/src/option/OptionGroup.tsx — role=\"group\", aria-labelledby to an aria-hidden label div"
+    },
+    "structure.separator": {
+      "kind": "off",
+      "note": "Salt has no separator component in the option package. The same visual job is done by a border-top on the OptionGroup itself — a different mechanism, recorded as style.group.border-top rather than as a missing part."
+    },
+    "structure.selected-marker": {
+      "kind": "value",
+      "value": "fill",
+      "source": "Option.tsx renders CheckboxIcon ONLY when multiselect (out of scope); a single-select Salt option is marked by Option.css's [aria-selected=\"true\"] background + box-shadow bracket, with no glyph at all"
+    },
+    "structure.popup-anchor": {
+      "kind": "value",
+      "value": "below",
+      "source": "Dropdown.tsx useFloatingUI({ placement: \"bottom-start\", middleware: [offset(1), size({...}), flip({fallbackStrategy:\"initialPlacement\"})] }) — 1px below the trigger, left edges aligned"
+    },
+    "behavior.pointer-activates-option": {
+      "kind": "value",
+      "value": true,
+      "source": "Option.tsx handleMouseOver -> setActive(optionValue); Dropdown.tsx handleListMouseOver -> setFocusVisibleState(false), so a pointer makes the option active but suppresses the focus-visible outline"
+    },
+    "behavior.status-inheritance": {
+      "kind": "value",
+      "value": true,
+      "source": "Dropdown.tsx useFormFieldProps() — see the form-field-context provenance entry, including the necessity channel Input does not read"
+    },
+    "behavior.empty-readonly-marker": {
+      "kind": "value",
+      "value": "—",
+      "source": "Dropdown.tsx emptyReadOnlyMarker = \"—\"; valueText = readOnly && displayedValue === \"\" ? emptyReadOnlyMarker : displayedValue"
+    },
+    "behavior.readonly-suppresses-popup": {
+      "kind": "value",
+      "value": true,
+      "source": "Dropdown.tsx handleOpenChange early-returns on readOnly; handleKeyDown early-returns on readOnly; {!readOnly && <ExpandIcon/>}; OptionList open={... && !readOnly && ...}; aria-readonly=\"true\" on the button"
+    },
+    "behavior.multiselect": {
+      "kind": "value",
+      "value": true,
+      "note": "DECLARED OUT OF SCOPE — recorded as a real Salt capability, not modelled. `multiselect` switches the selection model to an array, joins the trigger value with \", \", sets aria-multiselectable, renders a CheckboxIcon in every Option and changes Tab's commit behaviour.",
+      "source": "Dropdown.tsx multiselect?: boolean; Option.tsx {multiselect && <CheckboxIcon checked={selected} />}"
+    },
+    "prop.size": {
+      "kind": "off",
+      "note": "no size prop — trigger height is --salt-size-base, i.e. the DENSITY capability rather than a per-instance prop. The nearest thing to shadcn's size axis is the density toggle."
+    },
+    "prop.variant": {
+      "kind": "value",
+      "value": [
+        "primary",
+        "secondary",
+        "tertiary"
+      ],
+      "source": "Dropdown.tsx variant?: \"primary\" | \"secondary\" | \"tertiary\", default \"primary\""
+    },
+    "prop.validation-status": {
+      "kind": "value",
+      "value": [
+        "error",
+        "warning",
+        "success"
+      ],
+      "note": "FormFieldValidationStatus = Omit<ValidationStatuses,'info'> — info is deliberately excluded, the same enum Input takes.",
+      "source": "Dropdown.tsx validationStatus?: FormFieldValidationStatus"
+    },
+    "prop.disabled": {
+      "kind": "value",
+      "value": [
+        true,
+        false
+      ],
+      "source": "Dropdown.tsx disabled prop, OR-ed with form-field context; written onto the <button> as the native disabled attribute"
+    },
+    "prop.read-only": {
+      "kind": "value",
+      "value": [
+        true,
+        false
+      ],
+      "source": "Dropdown.tsx readOnly prop, OR-ed with form-field context; expressed as aria-readonly because a <button> has no native readonly"
+    },
+    "slot.start-adornment": {
+      "kind": "value",
+      "value": true
+    },
+    "slot.group-label": {
+      "kind": "value",
+      "value": true
+    },
+    "state.read-only": {
+      "kind": "value",
+      "value": true
+    },
+    "style.trigger.background": {
+      "kind": "alias",
+      "slot": "bg-current"
+    },
+    "style.trigger.background@box": {
+      "kind": "off",
+      "note": "`bordered` declares a border and nothing else (Dropdown.css .saltDropdown-bordered.saltDropdown) — the background is untouched. A confirmed non-variation."
+    },
+    "style.trigger.color": {
+      "kind": "alias",
+      "slot": "fg"
+    },
+    "style.trigger.font": {
+      "kind": "alias",
+      "slot": "type-body"
+    },
+    "style.trigger.letter-spacing": {
+      "kind": "value",
+      "value": "0",
+      "source": "Dropdown.css letter-spacing: var(--salt-text-letterSpacing) -> next/characteristics/text.css: 0"
+    },
+    "style.trigger.width": {
+      "kind": "value",
+      "value": "100%",
+      "source": "Dropdown.css .saltDropdown { width: 100% } — a Salt dropdown fills its container"
+    },
+    "style.trigger.min-height": {
+      "kind": "alias",
+      "slot": "control-height"
+    },
+    "style.trigger.min-height@sm": {
+      "kind": "off",
+      "note": "no size prop — see prop.size"
+    },
+    "style.trigger.min-width": {
+      "kind": "value",
+      "value": "4em",
+      "source": "Dropdown.css min-width: 4em — a bare literal, not even behind an override variable"
+    },
+    "style.trigger.padding": {
+      "kind": "alias",
+      "slot": "field-padding"
+    },
+    "style.trigger.gap": {
+      "kind": "alias",
+      "slot": "field-gap"
+    },
+    "style.trigger.shape": {
+      "kind": "alias",
+      "slot": "corner-weak"
+    },
+    "style.trigger.shape@box": {
+      "kind": "off",
+      "note": "corner radius is independent of `bordered` — one border-radius declaration on .saltDropdown serves both"
+    },
+    "style.trigger.cursor": {
+      "kind": "value",
+      "value": "pointer",
+      "source": "Dropdown.css .saltDropdown:hover and .saltDropdown:focus { cursor: var(--salt-cursor-hover) } -> foundations/cursor.css: pointer"
+    },
+    "style.trigger.shadow": {
+      "kind": "off",
+      "note": "no box-shadow anywhere in Dropdown.css — a confirmed absence"
+    },
+    "style.trigger.transition": {
+      "kind": "off",
+      "note": "no transition and no animation rule anywhere in Dropdown.css"
+    },
+    "style.trigger.border@box": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--border-current)"
+      },
+      "source": "Dropdown.css .saltDropdown-bordered.saltDropdown { border: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) var(--dropdown-borderColor) }"
+    },
+    "style.indicator.border@underline": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "var(--border-current)"
+      },
+      "source": "Dropdown.css .saltDropdown-activationIndicator { border-bottom: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) var(--dropdown-borderColor) } — the SAME indirection the box border reads"
+    },
+    "style.trigger.background@hover": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — Dropdown.css's only :hover declarations are the cursor, the border colour and the indicator colour. The background never changes on hover."
+    },
+    "style.trigger.border@box-hover": {
+      "kind": "value",
+      "value": {
+        "border-color": "var(--border-current-hover)"
+      },
+      "source": "Dropdown.css .saltDropdown-bordered.saltDropdown:hover { border-color: var(--dropdown-borderColor-hover) }"
+    },
+    "style.indicator.border@underline-hover": {
+      "kind": "value",
+      "value": {
+        "border-bottom-color": "var(--border-current-hover)"
+      },
+      "source": "Dropdown.css .saltDropdown:hover .saltDropdown-activationIndicator { border-bottom-color: var(--dropdown-borderColor-hover) }"
+    },
+    "style.trigger.border@box-focus": {
+      "kind": "value",
+      "value": {
+        "border-color": "var(--border-current-active)"
+      },
+      "source": "Dropdown.css .saltDropdown-bordered.saltDropdown:focus { border-color: var(--dropdown-borderColor-active) } — recolour only, width unchanged"
+    },
+    "style.indicator.border@underline-focus": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "2px",
+        "border-bottom-color": "var(--border-current-active)"
+      },
+      "source": "Dropdown.css .saltDropdown:focus .saltDropdown-activationIndicator { border-bottom: var(--salt-size-fixed-200) var(--salt-borderStyle-solid) var(--dropdown-borderColor-active) } — 1px -> 2px"
+    },
+    "style.indicator.border@box-focus": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "var(--border-current-active)"
+      },
+      "source": "Dropdown.css zeroes the indicator under .saltDropdown-bordered, EXCEPT .saltDropdown-bordered.saltDropdown:focus .saltDropdown-activationIndicator { border-bottom-width: var(--salt-size-fixed-100) } — source comment: 'Activation indicator width minus the border from the input.'"
+    },
+    "style.trigger.focus": {
+      "kind": "value",
+      "value": {
+        "outline": "2px dotted var(--outline-current)"
+      },
+      "source": "Dropdown.css .saltDropdown:focus { outline: var(--salt-focused-outlineWidth) var(--salt-focused-outlineStyle) var(--dropdown-outlineColor) } -> 2px dotted accent-stronger, or the status colour"
+    },
+    "style.trigger.background@readonly": {
+      "kind": "alias",
+      "slot": "bg-current-readonly",
+      "source": "Dropdown.css .saltDropdown.saltDropdown[aria-readonly=\"true\"] { background: var(--dropdown-background-readonly) }"
+    },
+    "style.trigger.border-color@readonly": {
+      "kind": "alias",
+      "slot": "border-readonly",
+      "source": "Dropdown.css .saltDropdown-bordered.saltDropdown[aria-readonly=\"true\"] { border-color: var(--salt-editable-borderColor-readonly) }"
+    },
+    "style.indicator.border-color@readonly": {
+      "kind": "alias",
+      "slot": "border-readonly",
+      "source": "Dropdown.css .saltDropdown[aria-readonly=\"true\"] .saltDropdown-activationIndicator { border-bottom-color: var(--salt-editable-borderColor-readonly) }"
+    },
+    "style.trigger.background@disabled": {
+      "kind": "alias",
+      "slot": "bg-current-disabled",
+      "source": "Dropdown.css .saltDropdown.saltDropdown:disabled { background: var(--dropdown-background-disabled) }"
+    },
+    "style.trigger.background@box-disabled": {
+      "kind": "off",
+      "note": "Salt's disabled background is indicator-independent — one rule covers both"
+    },
+    "style.trigger.color@disabled": {
+      "kind": "alias",
+      "slot": "fg-disabled",
+      "source": "Dropdown.css .saltDropdown.saltDropdown:disabled { color: var(--salt-content-primary-foreground-disabled) }"
+    },
+    "style.trigger.border-color@disabled": {
+      "kind": "alias",
+      "slot": "border-disabled",
+      "source": "Dropdown.css .saltDropdown-bordered.saltDropdown-disabled { border-color: var(--salt-editable-borderColor-disabled) }"
+    },
+    "style.indicator.border-color@disabled": {
+      "kind": "alias",
+      "slot": "border-disabled",
+      "source": "Dropdown.css .saltDropdown-disabled .saltDropdown-activationIndicator { border-bottom-color: var(--salt-editable-borderColor-disabled) }"
+    },
+    "style.trigger.disabled": {
+      "kind": "value",
+      "value": {
+        "cursor": "not-allowed"
+      },
+      "source": "Dropdown.css .saltDropdown.saltDropdown:disabled { cursor: var(--salt-cursor-disabled) }"
+    },
+    "style.value.placeholder": {
+      "kind": "value",
+      "value": {
+        "color": "var(--fg-secondary)",
+        "font-weight": "300"
+      },
+      "source": "Dropdown.css .saltDropdown-placeholder { color: var(--salt-content-secondary-foreground); font-weight: var(--salt-text-fontWeight-small) }",
+      "note": "DECLARED RENDERING APPROXIMATION, identical to input.salt.json's: weight 300 (fontWeight-light) is source-true but this repo self-hosts Open Sans at 400/600 only, so the browser resolves 300 to the 400 face. The sourced value is kept."
+    },
+    "style.toggle-icon.size": {
+      "kind": "value",
+      "value": {
+        "width": "var(--toggle-icon-size)",
+        "height": "var(--toggle-icon-size)"
+      },
+      "source": "packages/icons/src/icon/Icon.css --icon-size: max(calc(var(--salt-size-icon) * var(--icon-size-multiplier)), 12px) with multiplier 1 -> 12/12/14/16 by density",
+      "note": "DECLARED COMPOSITION — the glyph belongs to a future icon component. Dropdown.css sizes nothing on .saltDropdown-toggle."
+    },
+    "style.toggle-icon.color": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — .saltIcon's fill is currentColor and Dropdown never applies .saltIcon-primary/-secondary, so the chevron inherits the trigger's own colour (including its disabled 40%-alpha value)"
+    },
+    "style.adornment.size": {
+      "kind": "alias",
+      "slot": "toggle-icon-size",
+      "note": "[R] as a registry choice: .saltDropdown-startAdornmentContainer declares only margin-right, so whatever it holds sizes itself. Aliased to the same composed-icon box the toggle uses, which is what a Salt icon adornment resolves to in practice."
+    },
+    "style.status-adornment.size": {
+      "kind": "value",
+      "value": {
+        "height": "var(--adornment-size)",
+        "width": "var(--adornment-size)"
+      },
+      "source": "StatusAdornment.css height/min-height: var(--salt-size-adornment)"
+    },
+    "style.status-adornment.color": {
+      "kind": "alias",
+      "slot": "border-current",
+      "note": "aliased to the border indirection because in source they resolve to the identical value: --statusAdornment-color -> status-{s}-foreground-decorative -> palette-{role}, and --dropdown-borderColor -> status-{s}-borderColor -> the same palette-{role}"
+    },
+    "style.popup.background": {
+      "kind": "alias",
+      "slot": "popup-bg",
+      "source": "OptionList.css background: var(--salt-container-primary-background)"
+    },
+    "style.popup.color": {
+      "kind": "alias",
+      "slot": "fg",
+      "note": "declared on .saltOption rather than on the list in source (Option.css color: var(--salt-content-primary-foreground)); modelled on the popup with the option inheriting, which renders identically"
+    },
+    "style.popup.border": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--accent)"
+      },
+      "source": "OptionList.css border: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) var(--salt-selectable-borderColor-selected)",
+      "note": "the ACCENT colour, not a neutral — the same token the selected option's bracket uses, so the list frame and the selection frame are literally one value"
+    },
+    "style.popup.shape": {
+      "kind": "alias",
+      "slot": "popup-corner",
+      "source": "OptionList.css border-radius: var(--salt-palette-corner, 0) -> curve-150 — a ROUNDER stop than the trigger's corner-weak"
+    },
+    "style.popup.shadow": {
+      "kind": "alias",
+      "slot": "popup-shadow",
+      "source": "OptionList.css box-shadow: var(--salt-overlayable-shadow-popout) -> shadow-mediumLow"
+    },
+    "style.popup.padding": {
+      "kind": "value",
+      "value": "0",
+      "source": "OptionList.css .saltOptionList-container declares display/flex-direction/gap/max-height/min-height and NO padding — options run edge to edge inside the accent frame. (Contrast .saltListBox, the standalone component, which does add 1px top/bottom.)"
+    },
+    "style.popup.gap": {
+      "kind": "alias",
+      "slot": "popup-gap",
+      "source": "OptionList.css .saltOptionList-container { gap: var(--salt-spacing-fixed-100) } = 1px, density-invariant"
+    },
+    "style.popup.min-width": {
+      "kind": "alias",
+      "slot": "select-trigger-width",
+      "source": "OptionList.css min-width: var(--overlay-minWidth), written inline by floating-ui's size() middleware as the trigger's own width",
+      "note": "Resolves the trigger width DIRECTLY on the popup, not through a second slot. Fixed in validation: the first build declared `--popup-min-width: var(--select-trigger-width, 0px)` at theme scope and aliased to it, but a var() inside a custom-property declaration is substituted at the element that DECLARES it - the theme root, where the skeleton's inline --select-trigger-width does not exist - so it computed to the 0px fallback and inherited down as 0px. The popup rendered 190px narrower than its own trigger. The slot now carries only the 0px DEFAULT; the skeleton's inline declaration on the popup overrides it, and the min-width rule reads the property on the element where it is actually set."
+    },
+    "style.popup.max-height": {
+      "kind": "alias",
+      "slot": "popup-max-height",
+      "note": "PARTIAL — only the five-row floor of Dropdown.tsx's max(...) is expressible; the availableHeight half needs the positioning engine this skeleton declares as a gap"
+    },
+    "style.popup.z-index": {
+      "kind": "value",
+      "value": "1500",
+      "source": "OptionList.css z-index: var(--salt-zIndex-flyover) -> foundations/zindex.css: 1500 (docs/foundations/layers.md)"
+    },
+    "style.popup.animation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no animation or transition rule in OptionList.css or Dropdown.css; the list appears instantly, the same total absence TOOLTIP-MATRIX.md found on Salt's tooltip"
+    },
+    "style.option.background": {
+      "kind": "value",
+      "value": "transparent",
+      "source": "Option.css background: var(--salt-selectable-background) -> next/characteristics/selectable.css -> --salt-color-transparent"
+    },
+    "style.option.color": {
+      "kind": "alias",
+      "slot": "fg",
+      "source": "Option.css color: var(--salt-content-primary-foreground) — Salt is the only system that declares a colour on the option itself"
+    },
+    "style.option.font": {
+      "kind": "alias",
+      "slot": "type-body",
+      "source": "Option.css declares the same five --salt-text-* body properties the trigger does — an option reads exactly like the value it will become"
+    },
+    "style.option.letter-spacing": {
+      "kind": "value",
+      "value": "0",
+      "source": "Option.css letter-spacing: var(--salt-text-letterSpacing)"
+    },
+    "style.option.min-height": {
+      "kind": "alias",
+      "slot": "option-min-height",
+      "source": "Option.css min-height: calc(var(--salt-size-base) + var(--salt-spacing-100))"
+    },
+    "style.option.padding": {
+      "kind": "alias",
+      "slot": "option-padding",
+      "source": "Option.css padding: calc(var(--salt-spacing-100) + var(--salt-spacing-25)) var(--salt-spacing-100)"
+    },
+    "style.option.gap": {
+      "kind": "alias",
+      "slot": "field-gap",
+      "source": "Option.css gap: var(--salt-spacing-100) — the same token as the trigger's gap"
+    },
+    "style.option.shape": {
+      "kind": "off",
+      "note": "Option.css declares no border-radius; a Salt option runs flush to the popup's inner edge"
+    },
+    "style.option.cursor": {
+      "kind": "value",
+      "value": "pointer",
+      "source": "Option.css cursor: var(--salt-cursor-hover) -> pointer"
+    },
+    "style.option.background@hover": {
+      "kind": "value",
+      "value": {
+        "background-color": "var(--accent-weakest)"
+      },
+      "source": "Option.css .saltOption:hover { background: var(--salt-selectable-background-hover) } -> palette-accent-weakest"
+    },
+    "style.option.active": {
+      "kind": "value",
+      "value": {
+        "background-color": "var(--accent-weakest)"
+      },
+      "source": "Option.css .saltOption-active { background: var(--salt-selectable-background-hover) } — the IDENTICAL value as the hover rule, through a different selector; two rows because they are two rules in source"
+    },
+    "style.option.focus-visible": {
+      "kind": "value",
+      "value": {
+        "outline": "2px dotted var(--border-active)",
+        "outline-offset": "-2px"
+      },
+      "source": "Option.css .saltOption-focusVisible { outline: var(--salt-focused-outline); outline-offset: calc(var(--salt-size-fixed-100) * -2) }",
+      "note": "a distinct THIRD option state on top of active — set only when focusVisibleState && active (i.e. after keyboard navigation) and cleared by any mouseover. No other system has it."
+    },
+    "style.option.disabled": {
+      "kind": "value",
+      "value": {
+        "opacity": "0.4",
+        "cursor": "not-allowed",
+        "color": "var(--fg)",
+        "background-color": "transparent"
+      },
+      "source": "Option.css .saltOption[aria-disabled=\"true\"] { color: var(--salt-content-primary-foreground); background: var(--salt-selectable-background); opacity: 0.4; cursor: var(--salt-cursor-disabled) }",
+      "note": "the colour and background are RESTATED in source, not merely faded — that is how Salt stops its own hover/active rules winning on a disabled option"
+    },
+    "style.option.selected": {
+      "kind": "value",
+      "value": {
+        "background-color": "var(--accent-weaker)",
+        "z-index": "1",
+        "box-shadow": "-2px 0 0 0 var(--accent-weakest), -1px 0 0 1px var(--accent), 0 -1px 0 var(--accent)"
+      },
+      "source": "Option.css .saltOption[aria-selected=\"true\"] { z-index: var(--salt-zIndex-default); background: var(--salt-selectable-background-selected); box-shadow: calc(var(--salt-size-fixed-100) * -2) 0 0 0 var(--salt-selectable-background-hover), calc(var(--salt-size-fixed-100) * -1) 0 0 var(--salt-size-fixed-100) var(--salt-selectable-borderColor-selected), 0 calc(var(--salt-size-fixed-100) * -1) 0 var(--salt-selectable-borderColor-selected) }",
+      "note": "reproduced layer for layer with the calc()s resolved (size-fixed-100 = 1px, density-invariant). z-index 1 (--salt-zIndex-default) lets the bracket paint over the 1px gaps between neighbouring options."
+    },
+    "style.selected-marker.box": {
+      "kind": "off",
+      "note": "no marker element in single-select — see structure.selected-marker"
+    },
+    "style.group-label.font": {
+      "kind": "alias",
+      "slot": "type-group-label",
+      "source": "OptionGroup.css .saltOptionGroup-label uses the LABEL typescale at --salt-text-label-fontWeight-strong (semiBold 600)"
+    },
+    "style.group-label.color": {
+      "kind": "alias",
+      "slot": "fg-secondary",
+      "source": "OptionGroup.css color: var(--salt-content-secondary-foreground) — the same token the placeholder uses"
+    },
+    "style.group-label.padding": {
+      "kind": "value",
+      "value": {
+        "padding": "var(--option-padding)",
+        "min-height": "var(--option-min-height)"
+      },
+      "source": "OptionGroup.css repeats Option.css's padding and min-height formulas verbatim, so a Salt group label occupies a full row in the list's rhythm"
+    },
+    "style.group-label.background": {
+      "kind": "alias",
+      "slot": "popup-bg",
+      "source": "OptionGroup.css background: var(--salt-container-primary-background) — the same value the list already has, but declared, and load-bearing: an opaque label stops a neighbouring selected option's box-shadow bracket bleeding under it"
+    },
+    "style.group.border-top": {
+      "kind": "value",
+      "value": {
+        "border-top": "1px solid var(--separator-color)"
+      },
+      "source": "OptionGroup.css .saltOptionGroup { border-top: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) var(--salt-separable-tertiary-borderColor) } with .saltOptionGroup:first-of-type { border-top: 0 } — reproduced with an adjacent-sibling selector"
+    },
+    "style.separator": {
+      "kind": "off",
+      "note": "no separator element — see style.group.border-top"
+    },
+    "style.trigger.variant@secondary": {
+      "kind": "value",
+      "value": {
+        "--bg-current": "var(--field-bg-secondary)",
+        "--bg-current-disabled": "var(--field-bg-secondary-disabled)"
+      },
+      "source": "Dropdown.css .saltDropdown-secondary { --dropdown-background: var(--salt-editable-secondary-background); --dropdown-background-disabled: var(--salt-editable-secondary-background-disabled) }"
+    },
+    "style.trigger.variant@tertiary": {
+      "kind": "value",
+      "value": {
+        "--bg-current": "var(--field-bg-tertiary)",
+        "--bg-current-disabled": "var(--field-bg-tertiary-disabled)"
+      },
+      "source": "Dropdown.css .saltDropdown-tertiary { --dropdown-background: var(--salt-editable-tertiary-background); --dropdown-background-disabled: var(--salt-editable-tertiary-background-disabled) }"
+    },
+    "style.trigger.status@error": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-error)",
+        "--border-current-hover": "var(--status-error)",
+        "--border-current-active": "var(--status-error)",
+        "--outline-current": "var(--status-error)",
+        "--bg-current": "var(--status-error-bg)",
+        "--bg-current-readonly": "var(--status-error-bg)"
+      },
+      "source": "Dropdown.css .saltDropdown-error reassigns --dropdown-color, --dropdown-background, --dropdown-background-readonly, --dropdown-borderColor, --dropdown-borderColor-active and --dropdown-borderColor-hover in one block; --dropdown-color is unchanged from the variant blocks so it needs no entry here"
+    },
+    "style.trigger.status@warning": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-warning)",
+        "--border-current-hover": "var(--status-warning)",
+        "--border-current-active": "var(--status-warning)",
+        "--outline-current": "var(--status-warning)",
+        "--bg-current": "var(--status-warning-bg)",
+        "--bg-current-readonly": "var(--status-warning-bg)"
+      },
+      "source": "Dropdown.css .saltDropdown-warning"
+    },
+    "style.trigger.status@success": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-success)",
+        "--border-current-hover": "var(--status-success)",
+        "--border-current-active": "var(--status-success)",
+        "--outline-current": "var(--status-success)",
+        "--bg-current": "var(--status-success-bg)",
+        "--bg-current-readonly": "var(--status-success-bg)"
+      },
+      "source": "Dropdown.css .saltDropdown-success"
+    }
+  }
+}

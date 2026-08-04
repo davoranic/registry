@@ -1,0 +1,81 @@
+{
+  "system": "salt",
+  "component": "alert",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "container-bg": "rgb(255, 255, 255)",
+      "content-fg": "rgb(0, 0, 0)",
+      "tone-info": "rgb(0, 120, 207)",
+      "tone-error": "rgb(229, 33, 53)",
+      "tone-warning": "rgb(199, 83, 0)",
+      "tone-success": "rgb(0, 135, 93)",
+      "bg-info-secondary": "rgb(234, 246, 255)",
+      "bg-error-secondary": "rgb(255, 236, 234)",
+      "bg-warning-secondary": "rgb(255, 236, 217)",
+      "bg-success-secondary": "rgb(234, 245, 242)",
+      "tone-active": "var(--tone-info)",
+      "bg-secondary-active": "var(--bg-info-secondary)"
+    },
+    "dark": {
+      "container-bg": "rgb(16, 24, 32)",
+      "content-fg": "rgb(255, 255, 255)",
+      "bg-info-secondary": "rgb(0, 23, 54)",
+      "bg-error-secondary": "rgb(69, 0, 2)",
+      "bg-warning-secondary": "rgb(66, 32, 0)",
+      "bg-success-secondary": "rgb(0, 41, 21)"
+    },
+    "byDensity": {
+      "high":   { "banner-padding": "2px 4px", "banner-gap": "3px", "banner-radius": "3px", "banner-min-height": "24px", "type-body": "400 11px/14px 'Open Sans', sans-serif" },
+      "medium": { "banner-padding": "4px 8px", "banner-gap": "6px", "banner-radius": "6px", "banner-min-height": "36px", "type-body": "400 12px/16px 'Open Sans', sans-serif" },
+      "low":    { "banner-padding": "6px 12px", "banner-gap": "9px", "banner-radius": "9px", "banner-min-height": "48px", "type-body": "400 14px/18px 'Open Sans', sans-serif" },
+      "touch":  { "banner-padding": "8px 16px", "banner-gap": "12px", "banner-radius": "12px", "banner-min-height": "60px", "type-body": "400 16px/20px 'Open Sans', sans-serif" }
+    }
+  },
+  "modeInvariant": ["tone-info", "tone-error", "tone-warning", "tone-success"],
+  "provenance": {
+    "container-bg": "Banner.css --banner-background: var(--salt-container-primary-background) -> characteristics/container.css -> palette-background-primary -> snow #FFFFFF light / jet #101820 dark (variant=primary, the default)",
+    "content-fg": "Banner.css color: var(--salt-content-primary-foreground) -> characteristics/content.css -> palette-foreground-primary -> #000000 light / #FFFFFF dark (does NOT vary by status)",
+    "tone-*": "Banner.css --banner-borderColor: var(--saltBanner-borderColor, var(--banner-borderColor)) with .saltBanner-{status} { --banner-borderColor: var(--salt-status-{status}-borderColor) } -> characteristics/status.css -> palette-{info,negative,warning,positive} base (500 stop) -> theme/css/next/palette/{info,negative,warning,positive}.css, mode-invariant (500 stop is identical light/dark). SAME value also used by StatusIndicator.css's --statusIndicator-{status}-color -> status-{status}-foreground-decorative -> the identical palette-{role} token, so this one slot family serves BOTH style.root.border-color and style.icon.color, matching source truth exactly.",
+    "bg-*-secondary": "Banner.css .saltBanner-secondary.saltBanner-{status} { --banner-background: var(--salt-status-{status}-background) } -> characteristics/status.css -> palette-{role}-weakest -> the 100-stop (light) / 900-stop (dark) of that color ramp",
+    "byDensity.banner-padding": "Banner.css padding: var(--saltBanner-padding, var(--salt-spacing-50) var(--salt-spacing-100)) -> foundations/spacing.css spacing-50 (block axis) spacing-100 (inline axis), both density-scaled from the spacing unit (foundations/spacing.md)",
+    "byDensity.banner-gap": "Banner.css gap: var(--salt-spacing-75) -> foundations/spacing.css, 0.75x the density unit",
+    "byDensity.banner-radius": "Banner.css border-radius: var(--saltBanner-borderRadius, var(--salt-palette-corner, 0)) -> next/palette/corner.css [data-corner=\"rounded\"] --salt-palette-corner: var(--salt-curve-150) -> foundations/curve.css curve-150, same rounded-edition pin as Calendar/Button (foundations/shape.md)",
+    "byDensity.banner-min-height": "Banner.css min-height: calc(var(--salt-size-base) + var(--salt-spacing-100)) -> foundations/size.css size-base + foundations/spacing.css spacing-100, both density-scaled",
+    "byDensity.type-body": "characteristics/text.css 'Body text (should be used as default)' block: --salt-text-fontFamily (Open Sans), --salt-text-fontWeight (fontWeight-regular=400), --salt-text-fontSize/-lineHeight (density-scaled, same body role as foundations/typography.md), used directly by Banner.css's font-family/font-size/font-weight/line-height declarations"
+  },
+  "cells": {
+    "structure.image": { "kind": "off", "note": "no leading-image concept — StatusIndicator is icon-only" },
+    "structure.title": { "kind": "off", "note": "no dedicated title subcomponent in Banner/BannerContent — bold-first-line is a content-formatting convention only, see banner.stories.tsx 'Issue'/'MultipleLines'" },
+    "structure.actions": { "kind": "value", "value": true, "source": "BannerActions.tsx/.css — optional wrapper, min-height size-base, gap spacing-100" },
+    "structure.close": { "kind": "off", "note": "no dedicated close part — a close-labeled Button composed inside the generic BannerActions, see banner.stories.tsx 'Dismissible'" },
+
+    "behavior.role": { "kind": "off", "note": "Banner.tsx sets no role attribute; site/docs/components/banner/accessibility.mdx instructs the consumer to apply role=\"alert\" or role=\"status\" themselves depending on use case — a real, sourced absence of a default, not a research gap" },
+
+    "prop.tone": { "kind": "value", "value": ["info", "error", "warning", "success"], "source": "Banner.tsx status?: ValidationStatus, default \"info\" -> status-indicator/ValidationStatus.ts ValidationStatusValues" },
+    "prop.emphasis": { "kind": "value", "value": ["primary", "secondary"], "source": "Banner.tsx variant?: \"primary\" | \"secondary\", default \"primary\"" },
+
+    "style.root.background": { "kind": "alias", "slot": "container-bg", "note": "variant=primary (default) — always the neutral container background regardless of status" },
+    "style.root.background@emphasis": { "kind": "alias", "slot": "bg-secondary-active", "note": "variant=secondary. Resolves through the tone indirection (defaults to bg-info-secondary, reassigned by the style.root.tone@* rows) — Banner.css .saltBanner-secondary.saltBanner-{status}" },
+    "style.root.border-color": { "kind": "alias", "slot": "tone-active", "note": "border color IS status-driven in Salt (unlike shadcn). Consumes the tone indirection slot, matching Banner.css's own `border-color: var(--banner-borderColor)` + per-status reassignment" },
+    "style.root.border-width": { "kind": "value", "value": "1px", "source": "Banner.css border-width: var(--saltBanner-borderWidth, var(--salt-size-fixed-100)) = 1px, density-invariant" },
+    "style.icon.color": { "kind": "alias", "slot": "tone-active", "note": "StatusIndicator resolves to the SAME palette-{status} value as the border — Salt is the only system where this is a distinct token from the body text color. Same tone indirection as the border" },
+
+    "style.root.tone@error": { "kind": "value", "value": { "--tone-active": "var(--tone-error)", "--bg-secondary-active": "var(--bg-error-secondary)" }, "source": "Banner.css .saltBanner-error { --banner-borderColor: var(--salt-status-error-borderColor) } + .saltBanner-secondary.saltBanner-error { --banner-background: var(--salt-status-error-background) }" },
+    "style.root.tone@warning": { "kind": "value", "value": { "--tone-active": "var(--tone-warning)", "--bg-secondary-active": "var(--bg-warning-secondary)" }, "source": "Banner.css .saltBanner-warning + .saltBanner-secondary.saltBanner-warning" },
+    "style.root.tone@success": { "kind": "value", "value": { "--tone-active": "var(--tone-success)", "--bg-secondary-active": "var(--bg-success-secondary)" }, "source": "Banner.css .saltBanner-success + .saltBanner-secondary.saltBanner-success" },
+    "style.root.tone@destructive": { "kind": "off", "note": "not a Salt tone name — Salt's four-value enum is info/error/warning/success (see prop.tone)" },
+
+    "style.root.padding": { "kind": "alias", "slot": "banner-padding" },
+    "style.root.gap": { "kind": "alias", "slot": "banner-gap" },
+    "style.root.shape": { "kind": "alias", "slot": "banner-radius" },
+    "style.root.min-height": { "kind": "alias", "slot": "banner-min-height" },
+    "style.root.font": { "kind": "alias", "slot": "type-body" },
+    "style.root.color": { "kind": "alias", "slot": "content-fg" },
+
+    "style.title.font": { "kind": "off", "note": "no distinct title part to style (see structure.title)" },
+    "style.description.color": { "kind": "off", "note": "BannerContent.css sets no color of its own — inherits content-primary-foreground from the root, i.e. the same value as style.root.color, not a separate token" }
+  }
+}

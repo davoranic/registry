@@ -1,5 +1,12 @@
+# 3-source — the design-system clones. Each is its own git repository (~600MB
+# total) and is read-only input: never edited here, so never versioned here.
+3-source/
+
+# generated output — rebuilt by build.sh, never hand-edited
+1-intro/site/
+2-build/out/
+
 node_modules/
-dist/
 .claude/
 *.log
 .DS_Store

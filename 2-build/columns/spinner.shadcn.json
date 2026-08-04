@@ -1,0 +1,36 @@
+{
+  "system": "shadcn",
+  "component": "spinner",
+  "fontFaces": [],
+  "slots": {},
+  "provenance": {
+    "structure": "spinner.tsx: a single lucide-react Loader2Icon, no wrapper div, no track, no gradient",
+    "color": "no dedicated color slot — arc renders in currentColor (inherited ambient text color); changed only by applying a text-* utility class in context, per the docs' own spinner-color.tsx example",
+    "stroke-width": "not independently controllable — baked into the Loader2Icon glyph path",
+    "size": "size-4 (1rem = 16px) via className, the only size any example/doc renders by default; size-3/6/8 appear only in the docs' spinner-size.tsx demo, not a component prop",
+    "role": "spinner.tsx: role=\"status\" (hardcoded)",
+    "label": "spinner.tsx: aria-label=\"Loading\" (hardcoded, not a prop)",
+    "duration": "Tailwind's built-in animate-spin utility class (1s linear infinite) — app/globals.css grepped, no project override found"
+  },
+  "cells": {
+    "structure.track": { "kind": "off" },
+    "structure.gradient-trail": { "kind": "off" },
+
+    "behavior.role": { "kind": "value", "value": "status", "source": "spinner.tsx role=\"status\"" },
+    "behavior.label": { "kind": "value", "value": "Loading", "source": "spinner.tsx aria-label=\"Loading\" (hardcoded, no prop)" },
+    "behavior.repeat-announce": { "kind": "off", "note": "no re-announcement logic — static label only" },
+
+    "prop.size": { "kind": "off", "note": "not a discrete prop — arbitrary className (size-3/4/6/8 Tailwind utilities), continuous, not expressible as a skeleton enum" },
+
+    "style.root.size": { "kind": "value", "value": "16px", "source": "size-4 (default, and the only size shipped without an ad-hoc className override)" },
+    "style.arc.stroke-width": { "kind": "value", "value": "2px", "note": "REGISTRY RENDERING APPROXIMATION, not a shadcn-sourced number — Loader2Icon's stroke is part of the fixed glyph path, not an independent CSS-controllable dimension in the real component (declared expressibility gap)" },
+    "style.arc.radius": { "kind": "value", "value": "7px", "note": "derived: (16px size - 2px approximated stroke-width) / 2 — inherits the same approximation caveat as stroke-width above" },
+    "style.track.thickness": { "kind": "off" },
+    "style.track.radius": { "kind": "off" },
+    "style.track.color": { "kind": "off" },
+    "style.arc.color": { "kind": "value", "value": "currentColor", "source": "no stroke/color override in spinner.tsx — the Loader2Icon glyph inherits ambient text color" },
+    "style.gradient-trail": { "kind": "off" },
+    "style.root.duration": { "kind": "value", "value": "1s", "source": "Tailwind's default animate-spin keyframe duration, unmodified in this repo" },
+    "style.root.easing": { "kind": "value", "value": "linear", "source": "Tailwind's default animate-spin timing function" }
+  }
+}

@@ -1,0 +1,284 @@
+{
+  "system": "shadcn",
+  "component": "chip",
+  "slots": {},
+  "provenance": {
+    "canonical-source": "THERE IS NO SOURCE. This column is a CONFIRMED ABSENCE, not an unfilled column. shadcn/ui ships no chip, no tag and no pill component. Every row below is `off` and every one carries a citation, because CLAUDE.md law 3 says a silent gap is a failing build and an absence that is merely blank is indistinguishable from one that was never checked. The file exists so the generator emits chip-shadcn.css (the chassis's theme-invariant base layout and nothing else) and so the panel shows an explicit, evidenced 'no' in every cell.",
+    "evidence-1-directory-listing": "`ls ui/apps/v4/registry/new-york-v4/ui/` returns 63 files. There is no chip.tsx, no tag.tsx and no pill.tsx. The nearest neighbours in this space are badge.tsx (ALREADY BUILT as its own registry component — docs/BADGE-MATRIX.md), toggle.tsx / toggle-group.tsx (a different canonical row, excluded by the brief) and combobox.tsx (see evidence 3).",
+    "evidence-2-filename-search": "`find ui -not -path '*/node_modules/*' \\( -iname '*chip*' -o -iname '*pill*' -o -iname '*tag*.tsx' \\)` returns NOTHING — not one file in the entire clone is named for any of the three.",
+    "evidence-3-every-chip-string-in-the-clone": "`grep -ril chip` across apps/v4 returns exactly four kinds of hit, and every one of them is the chip-INSIDE-A-FIELD pattern the brief excludes by structural reason: (a) registry/new-york-v4/ui/combobox.tsx, which exports ComboboxChips, ComboboxChip, ComboboxChipsInput and renders ComboboxPrimitive.Chip / ComboboxPrimitive.ChipRemove from Base UI's combobox — these are the combobox's own tokenised-input parts, imported from the combobox primitive and exported from the combobox file; (b) the same three exports repeated in registry/bases/{radix,base,aria}/ui/combobox.tsx and consumed by blocks/preview/cards/assign-issue.tsx; (c) registry/styles/style-*.css, eight theme files each carrying a `.cn-combobox-chip` / `.cn-combobox-chips` class — again combobox-scoped; (d) app/(app)/examples/tasks/data/tasks.json, where the word is 'microchip' inside lorem-ipsum task titles. There is no fifth kind of hit.",
+    "evidence-4-documentation": "`ls apps/v4/content/docs/components/{radix,base,aria}/` has no chip.mdx, no tag.mdx and no pill.mdx. The only docs page in which the string 'chip' appears is combobox.mdx, in all three bases. The only badge-family docs page is badge.mdx, which belongs to the already-built badge component.",
+    "evidence-5-registry-index": "`grep -c 'chip\\|pill' apps/v4/registry/new-york-v4/ui/_registry.ts` returns 0. The component is absent from shadcn's own machine-readable index, not merely from the filesystem.",
+    "evidence-6-lesson-11-the-files-are-readable-text": "`file apps/v4/registry/new-york-v4/ui/*.tsx` reports every one of the 63 files as text — none is misclassified as binary. This matters because docs/CARD-MATRIX.md's validation pass found a single NUL byte in skeleton/card.tsx that made the file binary and silently defeated EVERY grep against it, turning a working keyboard handler into an apparent a11y defect. An empty grep is not evidence of absence until the file is known to be text; here the whole directory has been checked, so the empty greps above are evidence.",
+    "corroboration-from-the-registry-itself": "docs/COMPONENTS.md line 111 already records this independently: `| tag / pill | — (badge) | ✓ tag, pill | ✓ chip family (assist/filter/input/suggestion) |`. The master component list, written in phase 1 from a separate pass over the three clones, puts a dash in shadcn's cell and names badge as what shadcn has instead. Two independent passes, one answer.",
+    "why-badge-is-not-substituted": "shadcn's badge.tsx is the obvious temptation and taking it would be a rule-1 retrofit — one design system's material draped over a component the other two define. It is also double-counting: badge is ALREADY BUILT as its own registry component with its own template, its own three columns, its own skeleton and its own behaviour gate. And the two are not the same thing by either system's own account. Salt's badge/usage.mdx draws the line three times ('To trigger an immediate action ... Instead, use Pill'; 'To communicate status through color ... Instead, use Pill'; 'To communicate read-only metadata ... use Tag'), and Salt's pill/usage.mdx draws it back the other way ('For labeling. Instead, use Tag') as does tag/usage.mdx ('To display counts, notifications ... Instead, use Badge'). A badge is inert, single-coloured and system-driven; a chip is interactive, selectable and user-driven. shadcn simply has no component on the second side of that line.",
+    "what-shadcn-users-actually-do": "Recorded so the absence is understood rather than merely stated. For the interactive case shadcn points at toggle / toggle-group (a different canonical row, excluded by the brief for the same structural reason); for the removable-token case it points at ComboboxChip inside a combobox; for the static label case it points at badge. Three different components covering what Salt covers with two and M3 with four. None of them is a chip."
+  },
+  "cells": {
+    "structure.element": {
+      "kind": "off",
+      "note": "no component, no element"
+    },
+    "structure.leading-icon": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see evidence 1-5"
+    },
+    "structure.avatar": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "structure.selection-check": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "structure.trailing": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE. The nearest thing in the clone is ComboboxChipRemove, a part of combobox — out of scope by the brief's tokenised-input exclusion and on the `input-group` COMPONENTS.md row"
+    },
+    "structure.state-layer": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — shadcn has no state-layer mechanism in any component (docs/foundations/state-layers.md)"
+    },
+    "structure.selection-scope": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "prop.interaction": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — there is no component to carry an interaction axis"
+    },
+    "prop.kind": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "prop.elevation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "prop.tag-variant": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "prop.bordered": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "prop.selected": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "prop.disabled": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "NO COMPONENT — and therefore no role, no aria-checked and no aria-pressed. This is a locked row, so the question must be answered rather than left silent: shadcn/ui ships no chip, no tag and no pill (six-part proof in this file's provenance), so there is nothing to give semantics to. Its neighbours answer differently and are on other rows: badge.tsx writes data-slot and data-variant and no ARIA at all (docs/BADGE-MATRIX.md finding 2), and toggle.tsx delegates aria-pressed to Radix.",
+      "source": "CONFIRMED ABSENCE. Evidence: (1) ls of ui/apps/v4/registry/new-york-v4/ui/ = 63 files, no chip/tag/pill; (2) find over the whole clone for *chip*/*pill*/*tag*.tsx = nothing; (3) every 'chip' string in apps/v4 is ComboboxChip*/.cn-combobox-chip* or the word 'microchip' in lorem-ipsum task data; (4) no chip.mdx/tag.mdx/pill.mdx in any of the three docs bases; (5) zero chip/pill hits in _registry.ts; (6) `file` reports every .tsx in the ui directory as text, so the empty greps are evidence and not a repeat of the NUL-byte blindness docs/CARD-MATRIX.md found. Corroborated independently by docs/COMPONENTS.md line 111, which already prints a dash in shadcn's cell on this row."
+    },
+    "behavior.tab-stop": {
+      "kind": "value",
+      "value": "NO COMPONENT — nothing to place in the tab order.",
+      "source": "CONFIRMED ABSENCE. Evidence: (1) ls of ui/apps/v4/registry/new-york-v4/ui/ = 63 files, no chip/tag/pill; (2) find over the whole clone for *chip*/*pill*/*tag*.tsx = nothing; (3) every 'chip' string in apps/v4 is ComboboxChip*/.cn-combobox-chip* or the word 'microchip' in lorem-ipsum task data; (4) no chip.mdx/tag.mdx/pill.mdx in any of the three docs bases; (5) zero chip/pill hits in _registry.ts; (6) `file` reports every .tsx in the ui directory as text, so the empty greps are evidence and not a repeat of the NUL-byte blindness docs/CARD-MATRIX.md found. Corroborated independently by docs/COMPONENTS.md line 111, which already prints a dash in shadcn's cell on this row."
+    },
+    "behavior.keyboard-activation": {
+      "kind": "value",
+      "value": "NO COMPONENT — no handler, no key contract, nothing to activate.",
+      "source": "CONFIRMED ABSENCE. Evidence: (1) ls of ui/apps/v4/registry/new-york-v4/ui/ = 63 files, no chip/tag/pill; (2) find over the whole clone for *chip*/*pill*/*tag*.tsx = nothing; (3) every 'chip' string in apps/v4 is ComboboxChip*/.cn-combobox-chip* or the word 'microchip' in lorem-ipsum task data; (4) no chip.mdx/tag.mdx/pill.mdx in any of the three docs bases; (5) zero chip/pill hits in _registry.ts; (6) `file` reports every .tsx in the ui directory as text, so the empty greps are evidence and not a repeat of the NUL-byte blindness docs/CARD-MATRIX.md found. Corroborated independently by docs/COMPONENTS.md line 111, which already prints a dash in shadcn's cell on this row."
+    },
+    "behavior.selection": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "behavior.delete-affordance": {
+      "kind": "value",
+      "value": "NO COMPONENT, so shadcn ABSTAINS from the a11y fork. Worth stating explicitly because the fork has only two answers in this registry rather than three: Salt says do-not-nest (the whole pill is the delete control, one tab stop) and M3's spec says nest (a trailing remove button, two tab stops). The nearest shadcn code, ComboboxChipRemove, IS a nested focusable — but it belongs to combobox, on the input-group COMPONENTS.md row, and is excluded by the brief's tokenised-input rule.",
+      "source": "CONFIRMED ABSENCE. Evidence: (1) ls of ui/apps/v4/registry/new-york-v4/ui/ = 63 files, no chip/tag/pill; (2) find over the whole clone for *chip*/*pill*/*tag*.tsx = nothing; (3) every 'chip' string in apps/v4 is ComboboxChip*/.cn-combobox-chip* or the word 'microchip' in lorem-ipsum task data; (4) no chip.mdx/tag.mdx/pill.mdx in any of the three docs bases; (5) zero chip/pill hits in _registry.ts; (6) `file` reports every .tsx in the ui directory as text, so the empty greps are evidence and not a repeat of the NUL-byte blindness docs/CARD-MATRIX.md found. Corroborated independently by docs/COMPONENTS.md line 111, which already prints a dash in shadcn's cell on this row."
+    },
+    "behavior.delete-keys": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — off in all three columns; see the matrix's finding on it"
+    },
+    "behavior.disabled-handling": {
+      "kind": "value",
+      "value": "NO COMPONENT — no disabled prop, no disabled selector, nothing to disable.",
+      "source": "CONFIRMED ABSENCE. Evidence: (1) ls of ui/apps/v4/registry/new-york-v4/ui/ = 63 files, no chip/tag/pill; (2) find over the whole clone for *chip*/*pill*/*tag*.tsx = nothing; (3) every 'chip' string in apps/v4 is ComboboxChip*/.cn-combobox-chip* or the word 'microchip' in lorem-ipsum task data; (4) no chip.mdx/tag.mdx/pill.mdx in any of the three docs bases; (5) zero chip/pill hits in _registry.ts; (6) `file` reports every .tsx in the ui directory as text, so the empty greps are evidence and not a repeat of the NUL-byte blindness docs/CARD-MATRIX.md found. Corroborated independently by docs/COMPONENTS.md line 111, which already prints a dash in shadcn's cell on this row."
+    },
+    "behavior.pressed-flag": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "behavior.group-navigation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "slot.label": {
+      "kind": "value",
+      "value": "NO COMPONENT — there is no label slot because there is no chip to put one in.",
+      "source": "CONFIRMED ABSENCE. Evidence: (1) ls of ui/apps/v4/registry/new-york-v4/ui/ = 63 files, no chip/tag/pill; (2) find over the whole clone for *chip*/*pill*/*tag*.tsx = nothing; (3) every 'chip' string in apps/v4 is ComboboxChip*/.cn-combobox-chip* or the word 'microchip' in lorem-ipsum task data; (4) no chip.mdx/tag.mdx/pill.mdx in any of the three docs bases; (5) zero chip/pill hits in _registry.ts; (6) `file` reports every .tsx in the ui directory as text, so the empty greps are evidence and not a repeat of the NUL-byte blindness docs/CARD-MATRIX.md found. Corroborated independently by docs/COMPONENTS.md line 111, which already prints a dash in shadcn's cell on this row."
+    },
+    "slot.leading": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "slot.trailing": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "slot.composes": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "state.rest": {
+      "kind": "value",
+      "value": "NO COMPONENT — there is no resting appearance to describe. Every style row below is off for the same single reason, and each carries the same citation rather than being left blank, because CLAUDE.md law 3 makes a silent gap a failing build.",
+      "source": "CONFIRMED ABSENCE. Evidence: (1) ls of ui/apps/v4/registry/new-york-v4/ui/ = 63 files, no chip/tag/pill; (2) find over the whole clone for *chip*/*pill*/*tag*.tsx = nothing; (3) every 'chip' string in apps/v4 is ComboboxChip*/.cn-combobox-chip* or the word 'microchip' in lorem-ipsum task data; (4) no chip.mdx/tag.mdx/pill.mdx in any of the three docs bases; (5) zero chip/pill hits in _registry.ts; (6) `file` reports every .tsx in the ui directory as text, so the empty greps are evidence and not a repeat of the NUL-byte blindness docs/CARD-MATRIX.md found. Corroborated independently by docs/COMPONENTS.md line 111, which already prints a dash in shadcn's cell on this row."
+    },
+    "state.hover": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "state.focus": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "state.pressed": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "state.selected": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "state.disabled": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE"
+    },
+    "style.chip.background": {
+      "kind": "off"
+    },
+    "style.chip.color": {
+      "kind": "off"
+    },
+    "style.chip.font": {
+      "kind": "off"
+    },
+    "style.chip.letter-spacing": {
+      "kind": "off"
+    },
+    "style.chip.shape": {
+      "kind": "off"
+    },
+    "style.chip.height": {
+      "kind": "off"
+    },
+    "style.chip.padding": {
+      "kind": "off"
+    },
+    "style.chip.padding@with-leading": {
+      "kind": "off"
+    },
+    "style.chip.padding@with-trailing": {
+      "kind": "off"
+    },
+    "style.chip.gap": {
+      "kind": "off"
+    },
+    "style.chip.border-width": {
+      "kind": "off"
+    },
+    "style.chip.border-color": {
+      "kind": "off"
+    },
+    "style.chip.overflow": {
+      "kind": "off"
+    },
+    "style.chip.white-space": {
+      "kind": "off"
+    },
+    "style.chip.cursor": {
+      "kind": "off"
+    },
+    "style.chip.transition": {
+      "kind": "off"
+    },
+    "style.chip.elevation": {
+      "kind": "off"
+    },
+    "style.chip.elevation@hover": {
+      "kind": "off"
+    },
+    "style.chip.hover": {
+      "kind": "off"
+    },
+    "style.chip.focus": {
+      "kind": "off"
+    },
+    "style.chip.pressed": {
+      "kind": "off"
+    },
+    "style.chip.selected": {
+      "kind": "off"
+    },
+    "style.chip.disabled": {
+      "kind": "off"
+    },
+    "style.chip.elevation@elevated": {
+      "kind": "off"
+    },
+    "style.chip.kind@suggestion": {
+      "kind": "off"
+    },
+    "style.chip.kind@filter": {
+      "kind": "off"
+    },
+    "style.chip.kind@input": {
+      "kind": "off"
+    },
+    "style.chip.tag-variant@secondary": {
+      "kind": "off"
+    },
+    "style.chip.bordered": {
+      "kind": "off"
+    },
+    "style.chip.tag-rest": {
+      "kind": "off"
+    },
+    "style.leading.box": {
+      "kind": "off"
+    },
+    "style.leading.color": {
+      "kind": "off"
+    },
+    "style.leading.color@selected": {
+      "kind": "off"
+    },
+    "style.avatar.box": {
+      "kind": "off"
+    },
+    "style.trailing.box": {
+      "kind": "off"
+    },
+    "style.trailing.color": {
+      "kind": "off"
+    },
+    "style.check.box": {
+      "kind": "off"
+    },
+    "style.state-layer.color": {
+      "kind": "off"
+    },
+    "style.state-layer.opacity@hover": {
+      "kind": "off"
+    },
+    "style.state-layer.opacity@focus": {
+      "kind": "off"
+    },
+    "style.state-layer.opacity@pressed": {
+      "kind": "off"
+    },
+    "style.group.box": {
+      "kind": "off"
+    }
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "system": "salt",
+  "component": "button",
+  "fontFaces": [
+    {
+      "family": "Open Sans",
+      "weight": "600",
+      "file": "fonts/open-sans-600.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "action-bg": "rgb(114, 119, 125)",
+      "action-fg": "rgb(255, 255, 255)",
+      "action-bg-hover": "linear-gradient(rgba(0,0,0,0.15),rgba(0,0,0,0.15)) rgb(114, 119, 125)",
+      "action-bg-active": "rgb(211, 213, 216)",
+      "action-border": "rgb(114, 119, 125)",
+      "action-border-hover": "rgba(0,0,0,0.3)",
+      "action-fg-hover": "rgb(255, 255, 255)",
+      "action-fg-active": "rgb(0, 0, 0)",
+      "secondary-bg": "transparent",
+      "secondary-bg-hover": "rgb(230, 233, 235)",
+      "secondary-bg-active": "rgb(211, 213, 216)",
+      "secondary-border": "rgb(114, 119, 125)",
+      "secondary-fg": "rgb(0, 0, 0)",
+      "focus": "rgb(0, 69, 126)",
+      "border-width": "1px"
+    },
+    "dark": {
+      "action-bg-active": "rgb(58, 63, 68)",
+      "action-border-hover": "rgba(255,255,255,0.3)",
+      "action-fg-active": "rgb(255, 255, 255)",
+      "secondary-bg-hover": "rgb(41, 46, 51)",
+      "secondary-bg-active": "rgb(58, 63, 68)",
+      "secondary-fg": "rgb(255, 255, 255)",
+      "focus": "rgb(154, 189, 245)"
+    },
+    "byDensity": {
+      "high": {
+        "control-size": "20px",
+        "inset": "4px",
+        "gap": "4px",
+        "icon-size": "10px",
+        "corner-weak": "2px",
+        "type-action": "600 11px/14px 'Open Sans', sans-serif"
+      },
+      "medium": {
+        "control-size": "28px",
+        "inset": "8px",
+        "gap": "4px",
+        "icon-size": "12px",
+        "corner-weak": "4px",
+        "type-action": "600 12px/16px 'Open Sans', sans-serif"
+      },
+      "low": {
+        "control-size": "36px",
+        "inset": "12px",
+        "gap": "4px",
+        "icon-size": "14px",
+        "corner-weak": "6px",
+        "type-action": "600 14px/18px 'Open Sans', sans-serif"
+      },
+      "touch": {
+        "control-size": "44px",
+        "inset": "16px",
+        "gap": "4px",
+        "icon-size": "16px",
+        "corner-weak": "8px",
+        "type-action": "600 16px/20px 'Open Sans', sans-serif"
+      }
+    }
+  },
+  "modeInvariant": [
+    "action-bg",
+    "action-fg",
+    "action-border",
+    "secondary-bg",
+    "secondary-border",
+    "action-fg-hover",
+    "action-bg-hover",
+    "border-width"
+  ],
+  "provenance": {
+    "action-bg": "core/src/button/Button.css .saltButton-neutral.saltButton-solid --button-background -> --salt-actionable-bold-background -> palette-neutral -> gray-500 #72777D",
+    "action-fg": "--button-text-color -> actionable-bold-foreground -> palette-foreground-primary-alt -> white (both modes)",
+    "action-bg-hover": "actionable-bold-background-hover: linear-gradient(alpha-dark-low, alpha-dark-low) over palette-neutral — a darkening overlay, not a flat color swap",
+    "action-bg-active": "actionable-bold-background-active -> palette-neutral-weaker -> gray-200 #D3D5D8",
+    "action-border": "actionable-bold-borderColor -> palette-neutral -> gray-500",
+    "action-border-hover": "actionable-bold-borderColor-hover -> palette-alpha-contrast-medium (light: black-Na scale)",
+    "action-fg-active": "actionable-bold-foreground-active -> palette-foreground-primary -> black light / white dark",
+    "secondary-bg-hover": "actionable-background-hover (bordered/neutral) -> palette-neutral-weakest -> gray-100 #E6E9EB",
+    "secondary-bg-active": "actionable-background-active -> palette-neutral-weaker -> gray-200",
+    "secondary-border": "actionable-borderColor -> palette-neutral -> gray-500",
+    "secondary-fg": "actionable-foreground -> palette-foreground-primary -> black light / white dark",
+    "focus": "characteristics/focused.css focused-outlineColor -> accent-stronger, same slot as calendar",
+    "byDensity": "foundations/size.css size-base (control-size), spacing.css spacing-100 (inset), spacing-50 (gap, --salt-spacing-50, density-invariant per Button.css line 11 'gap: var(--salt-spacing-50)')"
+  },
+  "cells": {
+    "prop.tone": {
+      "kind": "value",
+      "value": [
+        "neutral",
+        "accent",
+        "negative",
+        "positive",
+        "caution"
+      ],
+      "source": "Button.css: .saltButton-{neutral,accented,negative,positive,caution} — 5 sentiment classes"
+    },
+    "prop.emphasis": {
+      "kind": "value",
+      "value": [
+        "solid",
+        "bordered",
+        "transparent",
+        "loading"
+      ],
+      "source": "Button.css: .saltButton-{solid,bordered,transparent,loading}"
+    },
+    "prop.size": {
+      "kind": "off",
+      "note": "no size prop — height comes entirely from density (control-size), Salt has no per-instance size axis"
+    },
+    "prop.icon-only": {
+      "kind": "off",
+      "note": "not a declared variant; icon-only buttons compose via aria-label + sr-only text (`.saltButton-sr-only` is a CLASS, not a token — Button.css:352, applied via withBaseName('sr-only') on a span with role=status at Button.tsx:197), not a size/shape switch. CORRECTED by the tier-1 citation lint: this note previously wrote that class with a custom-property prefix, asserting a design token that exists nowhere in salt-ds' theme CSS. The wrong form is deliberately not reproduced here — a correction note that quotes the bad string re-trips the very lint that caught it."
+    },
+    "behavior.loading": {
+      "kind": "value",
+      "value": "loading",
+      "source": ".saltButton-{tone}-loading: cursor progress, bg/fg collapse to the tone's base color, spinner overlay via .saltButton-spinner"
+    },
+    "style.root.height": {
+      "kind": "alias",
+      "slot": "control-size",
+      "source": "Button.css height: var(--saltButton-height, var(--salt-size-base))"
+    },
+    "style.root.padding": {
+      "kind": "value",
+      "value": "calc(var(--inset) - var(--border-width))",
+      "source": "Button.css padding: 0 var(--saltButton-padding, calc(spacing-100 - borderWidth))"
+    },
+    "style.root.gap": {
+      "kind": "alias",
+      "slot": "gap",
+      "source": "Button.css gap: var(--salt-spacing-50)"
+    },
+    "style.root.shape": {
+      "kind": "value",
+      "value": "var(--corner-weak, 0)",
+      "source": "Button.css border-radius: var(--saltButton-borderRadius, var(--salt-palette-corner-weak, 0)) — same rounded-edition pin as Calendar"
+    },
+    "style.root.border-width": {
+      "kind": "value",
+      "value": "1px",
+      "source": "Button.css --button-borderWidth: var(--salt-size-fixed-100) = 1px"
+    },
+    "style.root.font": {
+      "kind": "alias",
+      "slot": "type-action",
+      "source": "Button.css font-family action-fontFamily (Open Sans default edition), fontWeight action-fontWeight (semiBold=600), fontSize/lineHeight from --salt-text-* (same body ramp as Calendar's type-body, density-scoped)"
+    },
+    "style.root.text-transform": {
+      "kind": "value",
+      "value": {
+        "text-transform": "uppercase",
+        "letter-spacing": "0.6px"
+      },
+      "source": "characteristics/text.css text-action-textTransform: uppercase, -letterSpacing: 0.6px"
+    },
+    "style.root.background": {
+      "kind": "alias",
+      "slot": "action-bg"
+    },
+    "style.root.color": {
+      "kind": "alias",
+      "slot": "action-fg"
+    },
+    "style.root.border-color": {
+      "kind": "alias",
+      "slot": "action-border"
+    },
+    "style.root.background@hover": {
+      "kind": "alias",
+      "slot": "action-bg-hover"
+    },
+    "style.root.background@active": {
+      "kind": "alias",
+      "slot": "action-bg-active"
+    },
+    "style.root.opacity@disabled": {
+      "kind": "value",
+      "value": {
+        "opacity": "0.4"
+      },
+      "source": "Button.css :disabled { opacity: 0.4 }"
+    },
+    "style.root.focus": {
+      "kind": "value",
+      "value": {
+        "outline-style": "dotted",
+        "outline-width": "2px",
+        "outline-color": "var(--focus)",
+        "outline-offset": "1px"
+      },
+      "source": "focused.css outlineStyle=dotted, outlineWidth=size-fixed-200=2px, same mechanism as Calendar's focus ring"
+    },
+    "style.root.elevation": {
+      "kind": "off",
+      "note": "Salt buttons carry no shadow — flat by design"
+    },
+    "style.root.elevation@hover": {
+      "kind": "off"
+    },
+    "style.root.background@secondary": {
+      "kind": "value",
+      "value": {
+        "background": "var(--secondary-bg)",
+        "color": "var(--secondary-fg)",
+        "border-color": "var(--secondary-border)"
+      },
+      "source": "actionable-background/foreground/borderColor (bordered/neutral, no -bold suffix)"
+    },
+    "style.icon.size": {
+      "kind": "alias",
+      "slot": "icon-size",
+      "source": "Icon.css --icon-base-size: var(--salt-size-icon), density-scaled, matches Sizes foundations page"
+    }
+  }
+}

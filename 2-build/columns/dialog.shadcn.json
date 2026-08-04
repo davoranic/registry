@@ -1,0 +1,171 @@
+{
+  "system": "shadcn",
+  "component": "dialog",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "surface": "oklch(1 0 0)",
+      "fg": "oklch(0% 0 0)",
+      "fg-secondary": "oklch(0.556 0 0)",
+      "border-base": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "scrim-bg": "color-mix(in oklab, #000 50%, transparent)",
+      "shadow-lg": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      "radius-panel": "0.625rem",
+      "radius-close": "0.125rem",
+      "type-title": "600 1.125rem/1 ui-sans-serif, system-ui, sans-serif",
+      "type-body": "400 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif"
+    },
+    "dark": {
+      "surface": "oklch(0.145 0 0)",
+      "fg": "oklch(0.985 0 0)",
+      "fg-secondary": "oklch(0.708 0 0)",
+      "border-base": "oklch(1 0 0 / 10%)",
+      "ring": "oklch(0.556 0 0)"
+    }
+  },
+  "modeInvariant": [
+    "scrim-bg",
+    "shadow-lg"
+  ],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/dialog.tsx — ten exported parts (Dialog, DialogTrigger, DialogPortal, DialogClose, DialogOverlay, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription) over radix-ui's Dialog. Every STYLE value below comes from this file. primitives/packages/react/dialog/src/dialog.tsx was read for BEHAVIOR ONLY (modal default, FocusScope trapped+loop, hideOthers, RemoveScroll, DismissableLayer dismiss rules, the onCloseAutoFocus focus-return, titlePresent/descriptionPresent aria wiring) and never for a style cell. Cross-checked but NOT canonical: apps/v4/registry/bases/radix/ui/dialog.tsx, a `cn-dialog-*` class-token variant of the same element whose values live in a separate stylesheet — the same treatment input.shadcn.json gave the bases/radix input. Examples: examples/{dialog-demo,dialog-close-button}.tsx. Docs: content/docs/components/radix/dialog.mdx (its section list — Composition, Custom Close Button, No Close Button, Sticky Footer, Scrollable Content, RTL — read to confirm which behaviours shadcn documents at all).",
+    "alert-dialog-scope": "apps/v4/registry/new-york-v4/ui/alert-dialog.tsx was read only to fix the scope boundary and is EXCLUDED: it is a separate canonical row in docs/COMPONENTS.md, it has a `size?: \"default\" | \"sm\"` prop this Dialog does not, a media slot, centred-then-left-aligned header grid rules, dedicated Action/Cancel parts, and no close X. See docs/DIALOG-MATRIX.md scope note.",
+    "surface": "DialogContent class `bg-background` -> --background (globals.css:101 light / :144 dark). Also the ring-offset colour on the close button (`ring-offset-background`).",
+    "fg": "DialogContent sets NO text-colour class, so its children inherit the ambient --foreground (globals.css:102 / :145). Recorded as an ambient inheritance, exactly as input.shadcn.json and select.shadcn.json record theirs — but note that here it IS declared on the panel by the bg-background/foreground pairing, which is why style.panel.color is on for shadcn and off for the other two.",
+    "fg-secondary": "DialogDescription class `text-muted-foreground` -> --muted-foreground (globals.css:112 / :155). The only de-emphasised text role in the file.",
+    "border-base": "DialogContent's bare `border` utility with no colour class -> --border (globals.css:117 / :160). The 1px width is Tailwind's undeclared default (docs/foundations/border-style.md).",
+    "ring": "close button `focus:ring-2 focus:ring-ring focus:ring-offset-2` -> --ring (globals.css:119 / :162).",
+    "scrim-bg": "DialogOverlay class `bg-black/50`. Tailwind v4 compiles an alpha modifier on an opaque colour to color-mix(in oklab, <color> 50%, transparent); --color-black is #000. Mode-invariant: there is no dark: variant on the overlay. Contrast Salt, whose light-mode scrim is WHITE at 65%.",
+    "shadow-lg": "DialogContent class `shadow-lg`. [R] — Tailwind's documented default two-layer value; the package is not vendored in this clone, the same unvendored-package caveat select.shadcn.json's shadow-md carries. docs/foundations/elevation.md records that shadcn has no elevation foundation at all.",
+    "radius-panel": "DialogContent `rounded-lg` -> --radius-lg: var(--radius) (globals.css:52) -> --radius: 0.625rem (globals.css:100) = 10px. NOTE this is the FULL radius, where shadcn's own input/select trigger use --radius-md (x0.8 = 8px) — a dialog is rounder than the controls inside it.",
+    "radius-close": "close button `rounded-xs`. [R] AND FLAGGED: globals.css defines --radius-sm through --radius-4xl but NOT --radius-xs, so this single utility falls through to Tailwind's own default theme value (0.125rem = 2px) instead of shadcn's --radius scale. Recorded as a gap in shadcn's own token coverage rather than silently mapped onto --radius-sm.",
+    "type-title": "DialogTitle class `text-lg leading-none font-semibold` = 600 1.125rem with line-height 1 — `leading-none` overrides text-lg's paired 1.75rem line-height. Family read as the generic Tailwind sans stack per the button/input/select/tooltip precedent (no font-family utility anywhere in dialog.tsx).",
+    "type-body": "DialogDescription class `text-sm` = 0.875rem/1.25rem. A FLAT text-sm, so INPUT-MATRIX.md finding 9's missing-@media gap does not bite this row.",
+    "media-gap": "DECLARED @media GAP, four utilities. dialog.tsx carries sm: variants at Tailwind's 640px breakpoint: DialogContent `sm:max-w-lg` (below 640px only max-w-[calc(100%-2rem)] applies), DialogHeader `text-center sm:text-left`, DialogFooter `flex-col-reverse ... sm:flex-row sm:justify-end`. This generator emits flat rules with no at-rule channel (INPUT-MATRIX.md finding 9), so the >=640px desktop form is carried in the cells — max-width 32rem, left-aligned header text, a right-aligned action ROW — and the <640px form is recorded here: max-width calc(100% - 2rem), centred header text, and a REVERSED column of actions (primary action on top).",
+    "no-max-height": "CONFIRMED ABSENCE: there is no max-h utility of any kind on DialogContent, and no overflow handling anywhere in dialog.tsx. A shadcn dialog with long content grows past the viewport; the docs' 'Scrollable Content' section solves it per instance, not in the component. Salt caps height per size and adds two nested scroll containers.",
+    "no-status-no-size": "CONFIRMED ABSENCE: dialog.tsx has no status/tone axis and no size prop. Its SIBLING alert-dialog.tsx does have `size?: \"default\" | \"sm\"` — recorded so a future reader does not import it across.",
+    "close-button-focus-pseudo": "the close button's ring rules use `focus:`, not `focus-visible:` — unlike the trigger rings on shadcn's own input.tsx and select.tsx. The skeleton applies them on :focus-visible, so a mouse click does not leave a ring; the divergence is declared in the template's style.close-button.focus note rather than hidden.",
+    "animation-defaults": "DialogOverlay: data-[state=open]:animate-in fade-in-0 (+ the closing mirror). DialogContent: data-[state=open]:animate-in fade-in-0 zoom-in-95 (+ mirror) with `duration-200`. The utility lists and the 200ms duration ARE sourced [S]; the easing is tw-animate-css / Tailwind default (ease-out) and that package is not vendored in this clone, so easing is [R] — the same caveat TOOLTIP-MATRIX.md and select.shadcn.json record. The keyframes dialog-fade-in/-out and dialog-zoom-in/-out are appended to page/chrome.css.",
+    "transition-defaults": "close button `transition-opacity` — the property is sourced [S]; 150ms / cubic-bezier(0.4,0,0.2,1) are Tailwind's defaults and Tailwind is not vendored, so [R]."
+  },
+  "cells": {
+    "structure.scrim": { "kind": "value", "value": true, "source": "dialog.tsx DialogOverlay, rendered unconditionally inside DialogContent's DialogPortal" },
+    "structure.header-decoration": { "kind": "value", "value": "none", "source": "CONFIRMED ABSENCE — DialogHeader is `flex flex-col gap-2 text-center sm:text-left` and nothing else; there is no accent bar, icon slot or status glyph anywhere in dialog.tsx" },
+    "structure.preheader": { "kind": "off", "note": "no equivalent slot" },
+    "structure.header-actions": { "kind": "off", "note": "no header-level action region; the close X is positioned against the CONTENT, not the header" },
+    "structure.close-button": { "kind": "value", "value": "default", "source": "dialog.tsx DialogContent({ showCloseButton = true }) renders a DialogPrimitive.Close with an XIcon unless switched off" },
+    "structure.content-scroller": { "kind": "off", "note": "CONFIRMED ABSENCE — children are direct grid items of DialogContent; no scroll container, no overflow detection, no scroll dividers" },
+    "structure.actions": { "kind": "value", "value": true, "source": "dialog.tsx DialogFooter" },
+    "structure.description": { "kind": "value", "value": true, "source": "dialog.tsx DialogDescription (Radix Description, rendered as a <p>)" },
+
+    "behavior.aria-modal": { "kind": "value", "value": false, "source": "CONFIRMED ABSENCE, and deliberate: primitives/packages/react/dialog/src/dialog.tsx sets role=\"dialog\" but never aria-modal, with the source comment 'aria-hide everything except the content (better supported equivalent to setting aria-modal)'" },
+    "behavior.background-suppression": { "kind": "value", "value": "aria-hidden", "source": "primitives dialog.tsx DialogContentModal: `const content = contentRef.current; if (content) return hideOthers(content)` — the aria-hidden package, which sets aria-hidden=\"true\" on every sibling. Pointer suppression is separate (disableOutsidePointerEvents on DismissableLayer)." },
+    "behavior.focus-trap": { "kind": "value", "value": true, "source": "primitives dialog.tsx DialogContentImpl wraps the layer in <FocusScope asChild loop trapped={trapFocus}>; DialogContentModal passes trapFocus={context.open}" },
+    "behavior.initial-focus": { "kind": "value", "value": "first-tabbable", "source": "FocusScope's onMountAutoFocus default; Radix exposes onOpenAutoFocus as an escape hatch but no index prop, so there is no Salt-style initialFocus ordinal" },
+    "behavior.focus-return": { "kind": "value", "value": true, "source": "primitives dialog.tsx DialogContentModal onCloseAutoFocus: `event.preventDefault(); context.triggerRef.current?.focus()` — an EXPLICIT restore, not a library default" },
+    "behavior.dismiss-escape": { "kind": "value", "value": true, "source": "DismissableLayer's onEscapeKeyDown -> onDismiss -> context.onOpenChange(false)" },
+    "behavior.dismiss-outside": { "kind": "value", "value": true, "source": "DismissableLayer pointerdown-outside -> onDismiss. Two guards in DialogContentModal: right-click and ctrl+left-click are prevented (`if (isRightClick) event.preventDefault()`), and onFocusOutside is prevented so a focusout while trapped cannot dismiss." },
+    "behavior.scroll-lock": { "kind": "value", "value": true, "source": "primitives dialog.tsx wraps the modal overlay in <RemoveScroll> (react-remove-scroll)" },
+    "behavior.described-by": { "kind": "value", "value": true, "source": "primitives dialog.tsx: aria-describedby={context.descriptionPresent ? concatAriaDescribedby(ariaDescribedby, context.descriptionId) : ariaDescribedby} — wired only when a Description is actually mounted. The one system of the three that does this." },
+    "behavior.exit-animation": { "kind": "value", "value": true, "source": "Radix Presence keeps the content mounted while data-state=\"closed\" plays data-[state=closed]:animate-out fade-out-0 zoom-out-95 at duration-200" },
+    "behavior.scroll-region-focusable": { "kind": "off", "note": "no scroll region exists, so there is nothing to make focusable" },
+
+    "prop.size": { "kind": "off", "note": "CONFIRMED ABSENCE on Dialog. Its sibling alert-dialog.tsx DOES take size?: \"default\" | \"sm\" (data-[size=sm]:max-w-xs) — one of the structural reasons alert-dialog is a separate canonical row." },
+    "prop.status": { "kind": "off", "note": "no status/tone axis of any kind" },
+    "prop.disable-dismiss": { "kind": "off", "note": "no prop; a consumer prevents onPointerDownOutside per instance instead" },
+    "prop.disable-scrim": { "kind": "off", "note": "DialogOverlay is rendered unconditionally by DialogContent — removing it is a source edit, not an instance toggle. Same class of expressibility gap as shadcn's always-on tooltip arrow." },
+    "prop.disable-accent": { "kind": "off", "note": "no accent decoration to disable" },
+    "prop.show-close-button": { "kind": "value", "value": true, "source": "dialog.tsx has TWO props of this name: DialogContent's showCloseButton defaults to TRUE (renders the corner X), DialogFooter's defaults to FALSE (renders a composed <Button variant=\"outline\">Close</Button>)" },
+
+    "slot.description": { "kind": "value", "value": true },
+    "slot.actions": { "kind": "value", "value": true },
+    "slot.preheader": { "kind": "off" },
+    "slot.header-actions": { "kind": "off" },
+
+    "state.content-overflow": { "kind": "off", "note": "no overflow detection anywhere in dialog.tsx" },
+    "state.status": { "kind": "off" },
+    "state.close-button-interaction": { "kind": "value", "value": true, "source": "dialog.tsx close button: opacity-70 at rest, hover:opacity-100, focus:ring-2 focus:ring-offset-2, data-[state=open]:bg-accent, disabled:pointer-events-none" },
+
+    "style.scrim.background": { "kind": "alias", "slot": "scrim-bg" },
+    "style.scrim.z-index": { "kind": "value", "value": "50", "source": "dialog.tsx DialogOverlay z-50 — a bare Tailwind stacking index, not a declared token" },
+    "style.scrim.animation": { "kind": "value", "value": "dialog-fade-in 200ms ease-out", "note": "utility list and 200ms sourced; easing [R], tw-animate-css not vendered in this clone", "source": "dialog.tsx DialogOverlay data-[state=open]:animate-in data-[state=open]:fade-in-0" },
+
+    "style.panel.background": { "kind": "alias", "slot": "surface", "source": "dialog.tsx DialogContent bg-background" },
+    "style.panel.color": { "kind": "alias", "slot": "fg", "note": "ambient --foreground; DialogContent sets no text-colour class of its own" },
+    "style.panel.border": {
+      "kind": "value",
+      "value": { "border-width": "1px", "border-style": "solid", "border-color": "var(--border-base)" },
+      "source": "dialog.tsx DialogContent bare `border` -> --border; the 1px is Tailwind's undeclared default"
+    },
+    "style.panel.shape": { "kind": "alias", "slot": "radius-panel", "source": "dialog.tsx rounded-lg = --radius-lg = --radius = 0.625rem" },
+    "style.panel.shadow": { "kind": "alias", "slot": "shadow-lg", "source": "dialog.tsx shadow-lg; [R] value, see the shadow-lg provenance entry" },
+    "style.panel.padding": { "kind": "value", "value": "24px", "source": "dialog.tsx DialogContent p-6" },
+    "style.panel.gap": { "kind": "value", "value": "16px", "source": "dialog.tsx DialogContent gap-4 — the single rhythm between header, body and footer, since it is a grid" },
+    "style.panel.width": { "kind": "value", "value": "100%", "source": "dialog.tsx DialogContent w-full" },
+    "style.panel.min-width": { "kind": "off", "note": "no min-w utility" },
+    "style.panel.max-width": { "kind": "value", "value": "32rem", "source": "dialog.tsx sm:max-w-lg = 32rem at >=640px; below that only max-w-[calc(100%-2rem)] applies — see the media-gap provenance entry" },
+    "style.panel.max-height": { "kind": "off", "note": "CONFIRMED ABSENCE — no max-h utility at all; a long shadcn dialog grows past the viewport and its docs solve it per instance" },
+    "style.panel.overflow": { "kind": "off", "note": "no overflow utility" },
+    "style.panel.z-index": { "kind": "value", "value": "50", "source": "dialog.tsx DialogContent z-50 — the SAME index as its own overlay; the panel wins on DOM order" },
+    "style.panel.outline": { "kind": "value", "value": "none", "source": "dialog.tsx DialogContent outline-none — Radix focuses the panel itself when nothing tabbable is inside" },
+    "style.panel.animation": { "kind": "value", "value": "dialog-zoom-in 200ms ease-out", "note": "the fade+0.95-scale pair and 200ms are sourced; easing [R]", "source": "dialog.tsx data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 + duration-200" },
+    "style.panel.animation@exit": { "kind": "value", "value": "dialog-zoom-out 200ms ease-out both", "source": "dialog.tsx data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95" },
+    "style.panel.size@small": { "kind": "off", "note": "no size axis on Dialog" },
+    "style.panel.size@medium": { "kind": "off" },
+    "style.panel.size@large": { "kind": "off" },
+
+    "style.header.padding": { "kind": "off", "note": "DialogHeader has no padding utility; the panel's p-6 supplies it" },
+    "style.header.gap": { "kind": "off", "note": "no decoration to gap from — DialogHeader's gap is a COLUMN gap, carried by style.header.text-gap" },
+    "style.header.text-gap": { "kind": "value", "value": "8px", "source": "dialog.tsx DialogHeader `flex flex-col gap-2` — the title-to-description step, and shadcn's only header gap" },
+    "style.header.text-offset": { "kind": "off", "note": "no optical offset; Salt's is a density formula with no shadcn equivalent" },
+
+    "style.accent-bar.box": { "kind": "off" },
+    "style.header-icon.size": { "kind": "off" },
+    "style.header-icon.color": { "kind": "off" },
+    "style.header-icon.offset": { "kind": "off" },
+
+    "style.title.font": { "kind": "alias", "slot": "type-title", "source": "dialog.tsx DialogTitle text-lg leading-none font-semibold" },
+    "style.title.color": { "kind": "off", "note": "CONFIRMED ABSENCE — DialogTitle has no text-colour class; it inherits the panel's ambient --foreground" },
+    "style.title.letter-spacing": { "kind": "off", "note": "no tracking utility" },
+
+    "style.preheader.font": { "kind": "off" },
+    "style.preheader.color": { "kind": "off" },
+
+    "style.description.font": { "kind": "alias", "slot": "type-body", "source": "dialog.tsx DialogDescription text-sm" },
+    "style.description.color": { "kind": "alias", "slot": "fg-secondary", "source": "dialog.tsx DialogDescription text-muted-foreground" },
+    "style.description.letter-spacing": { "kind": "off" },
+
+    "style.content.color": { "kind": "off", "note": "no content part" },
+    "style.content.box": { "kind": "off" },
+    "style.content.min-height": { "kind": "off" },
+    "style.content.padding@overflow": { "kind": "off" },
+    "style.content.scroll-divider": { "kind": "off" },
+    "style.content.scroll-divider@top": { "kind": "off" },
+    "style.content.scroll-divider@bottom": { "kind": "off" },
+
+    "style.actions.padding": { "kind": "off", "note": "DialogFooter has no padding; the panel's p-6 and gap-4 do the work" },
+    "style.actions.gap": { "kind": "value", "value": "8px", "source": "dialog.tsx DialogFooter gap-2" },
+
+    "style.close-button.position": { "kind": "value", "value": { "top": "16px", "right": "16px" }, "source": "dialog.tsx close button `absolute top-4 right-4` — a full 16px inset, where Salt pins its close flush at 0/0" },
+    "style.close-button.shape": { "kind": "alias", "slot": "radius-close", "source": "dialog.tsx rounded-xs; [R], see the radius-close provenance entry" },
+    "style.close-button.glyph-size": {
+      "kind": "value",
+      "value": { "width": "16px", "height": "16px", "flex-shrink": "0", "pointer-events": "none" },
+      "source": "dialog.tsx [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 [&_svg]:pointer-events-none. Density-invariant — shadcn has no density capability."
+    },
+    "style.close-button.opacity": { "kind": "value", "value": "0.7", "source": "dialog.tsx opacity-70" },
+    "style.close-button.opacity@hover": { "kind": "value", "value": "1", "source": "dialog.tsx hover:opacity-100" },
+    "style.close-button.focus": {
+      "kind": "value",
+      "value": { "outline": "none", "box-shadow": "0 0 0 2px var(--surface), 0 0 0 4px var(--ring)" },
+      "source": "dialog.tsx focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 ring-offset-background — a 2px ring sitting outside a 2px offset painted in the background colour, expressed here as the two-layer box-shadow Tailwind compiles it to"
+    },
+    "style.close-button.transition": { "kind": "value", "value": "opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)", "note": "property sourced; duration and easing [R] — Tailwind defaults, package not vendored", "source": "dialog.tsx transition-opacity" },
+
+    "style.panel.status@info": { "kind": "off", "note": "no status axis" },
+    "style.panel.status@error": { "kind": "off" },
+    "style.panel.status@warning": { "kind": "off" },
+    "style.panel.status@success": { "kind": "off" }
+  }
+}

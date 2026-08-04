@@ -1,0 +1,286 @@
+{
+  "system": "salt",
+  "component": "input",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "field-bg": "rgb(255, 255, 255)",
+      "field-bg-secondary": "rgb(245, 247, 248)",
+      "field-bg-tertiary": "rgb(250, 248, 242)",
+      "field-bg-disabled": "rgba(255, 255, 255, 0.4)",
+      "field-bg-secondary-disabled": "rgba(245, 247, 248, 0.4)",
+      "field-bg-tertiary-disabled": "rgba(250, 248, 242, 0.4)",
+      "field-bg-readonly": "transparent",
+      "fg": "rgb(0, 0, 0)",
+      "fg-disabled": "rgba(0, 0, 0, 0.4)",
+      "placeholder-fg": "rgb(76, 81, 87)",
+      "border": "rgb(114, 119, 125)",
+      "border-hover": "rgb(0, 120, 207)",
+      "border-active": "rgb(0, 69, 126)",
+      "border-readonly": "rgba(114, 119, 125, 0.1)",
+      "border-disabled": "rgba(114, 119, 125, 0.4)",
+      "status-error": "rgb(229, 33, 53)",
+      "status-warning": "rgb(199, 83, 0)",
+      "status-success": "rgb(0, 135, 93)",
+      "status-error-bg": "rgb(255, 236, 234)",
+      "status-warning-bg": "rgb(255, 236, 217)",
+      "status-success-bg": "rgb(234, 245, 242)",
+      "bg-current": "var(--field-bg)",
+      "bg-current-disabled": "var(--field-bg-disabled)",
+      "bg-current-readonly": "var(--field-bg-readonly)",
+      "border-current": "var(--border)",
+      "border-current-hover": "var(--border-hover)",
+      "border-current-active": "var(--border-active)",
+      "outline-current": "var(--border-active)"
+    },
+    "dark": {
+      "field-bg": "rgb(16, 24, 32)",
+      "field-bg-secondary": "rgb(26, 34, 41)",
+      "field-bg-tertiary": "rgb(38, 41, 43)",
+      "field-bg-disabled": "rgba(16, 24, 32, 0.4)",
+      "field-bg-secondary-disabled": "rgba(26, 34, 41, 0.4)",
+      "field-bg-tertiary-disabled": "rgba(38, 41, 43, 0.4)",
+      "fg": "rgb(255, 255, 255)",
+      "fg-disabled": "rgba(255, 255, 255, 0.4)",
+      "placeholder-fg": "rgb(177, 181, 185)",
+      "border-active": "rgb(154, 189, 245)",
+      "status-error-bg": "rgb(69, 0, 2)",
+      "status-warning-bg": "rgb(66, 32, 0)",
+      "status-success-bg": "rgb(0, 41, 21)"
+    },
+    "byDensity": {
+      "high": {
+        "control-height": "20px",
+        "field-padding": "0 4px",
+        "field-gap": "4px",
+        "corner-weak": "2px",
+        "type-body": "400 11px/14px 'Open Sans', sans-serif",
+        "adornment-size": "6px",
+        "adornment-button-height": "16px"
+      },
+      "medium": {
+        "control-height": "28px",
+        "field-padding": "0 8px",
+        "field-gap": "8px",
+        "corner-weak": "4px",
+        "type-body": "400 12px/16px 'Open Sans', sans-serif",
+        "adornment-size": "8px",
+        "adornment-button-height": "20px"
+      },
+      "low": {
+        "control-height": "36px",
+        "field-padding": "0 12px",
+        "field-gap": "12px",
+        "corner-weak": "6px",
+        "type-body": "400 14px/18px 'Open Sans', sans-serif",
+        "adornment-size": "10px",
+        "adornment-button-height": "24px"
+      },
+      "touch": {
+        "control-height": "44px",
+        "field-padding": "0 16px",
+        "field-gap": "16px",
+        "corner-weak": "8px",
+        "type-body": "400 16px/20px 'Open Sans', sans-serif",
+        "adornment-size": "12px",
+        "adornment-button-height": "28px"
+      }
+    }
+  },
+  "modeInvariant": [
+    "border",
+    "border-hover",
+    "border-readonly",
+    "border-disabled",
+    "status-error",
+    "status-warning",
+    "status-success",
+    "field-bg-readonly"
+  ],
+  "provenance": {
+    "accent-pin": "Salt's editable-borderColor-hover/-active resolve through palette-accent*, which carries a data-accent axis (blue default, teal alternate — next/palette/accent.css). This column pins BLUE, Salt's default, the same scope trim button.salt.json made; only calendar.salt.json models byAccent so far. Recorded, not modelled.",
+    "field-bg": "Input.css background: var(--saltInput-background, var(--input-background)); .saltInput-primary { --input-background: var(--salt-editable-primary-background) } -> next/characteristics/editable.css -> palette-background-primary -> next/palette/background.css: color-background-snow light / color-background-jet dark -> next/foundations/color.css snow-rgb 255,255,255 / jet-rgb 16,24,32",
+    "field-bg-secondary / field-bg-tertiary": ".saltInput-secondary / .saltInput-tertiary { --input-background: var(--salt-editable-{secondary,tertiary}-background) } -> editable.css -> palette-background-{secondary,tertiary} -> marble 245,247,248 / limestone 250,248,242 light; granite 26,34,41 / leather 38,41,43 dark",
+    "field-bg-*-disabled": "editable.css editable-{primary,secondary,tertiary}-background-disabled -> palette-background-{...}-disabled -> next/foundations/alpha.css background-{snow,marble,limestone,jet,granite,leather}-40a = rgba(<same rgb>, 0.4)",
+    "field-bg-readonly": "editable.css --salt-editable-background-readonly: var(--salt-color-transparent) -> foundations/color.css: transparent. Salt's read-only input has NO background of its own — it dissolves into whatever is behind it.",
+    "fg / fg-disabled": "Input.css color: var(--saltInput-color, var(--salt-content-primary-foreground)) and --saltInput-color-disabled fallback var(--salt-content-primary-foreground-disabled) -> next/characteristics/content.css -> palette-foreground-primary(-disabled) -> foundations/color.css black/white + next/foundations/alpha.css black-40a/white-40a",
+    "placeholder-fg": ".saltInput-input::placeholder { color: var(--salt-content-secondary-foreground); font-weight: var(--salt-text-fontWeight-small) } -> content.css -> palette-foreground-secondary -> gray-700 (76,81,87) light / gray-300 (177,181,185) dark. The WEIGHT token resolves through next/characteristics/text.css --salt-text-fontWeight-small -> typography fontWeight-light = 300.",
+    "border": ".saltInput-{variant} { --input-borderColor: var(--salt-editable-borderColor) } -> next/characteristics/editable.css -> palette-neutral -> next/palette/neutral.css: color-gray-500 in BOTH light and dark blocks -> gray-500-rgb 114,119,125. Mode-invariant by Salt's own definition, not by our assumption.",
+    "border-hover": "editable-borderColor-hover -> palette-accent -> color-blue-500 in BOTH light and dark accent blocks -> blue-500-rgb 0,120,207. Mode-invariant.",
+    "border-active": "editable-borderColor-active -> palette-accent-stronger -> blue-700 (0,69,126) light / blue-300 (154,189,245) dark. ALSO the value of --salt-focused-outlineColor (next/characteristics/focused.css), which is why style.root.focus aliases the same stop through the outline-current indirection.",
+    "border-readonly / border-disabled": "editable-borderColor-readonly -> palette-neutral-readonly -> gray-500-10a; editable-borderColor-disabled -> palette-neutral-disabled -> gray-500-40a (next/foundations/alpha.css). Both identical in light and dark.",
+    "status-*": "Input.css .saltInput-{error,warning,success} { --input-borderColor: var(--salt-status-{s}-borderColor) } -> next/characteristics/status.css -> palette-{negative,warning,positive} -> red-500 229,33,53 / orange-500 199,83,0 / green-500 0,135,93. All mode-invariant (the 500 stop is identical in both blocks), matching alert.salt.json's already-extracted values exactly. The SAME palette-{role} token is what StatusAdornment.css's --statusAdornment-color resolves to (via status-{s}-foreground-decorative), which is why style.status-adornment.color aliases border-current rather than getting its own slot.",
+    "status-*-bg": ".saltInput-{s} { --input-background: var(--salt-status-{s}-background) } -> status.css -> palette-{role}-weakest -> the 100 stop light / 900 stop dark: red 255,236,234 / 69,0,2; orange 255,236,217 / 66,32,0; green 234,245,242 / 0,41,21",
+    "byDensity.control-height": "Input.css height/min-height: var(--saltInput-height, var(--salt-size-base)) -> foundations/size.css: 20/28/36/44px (docs/foundations/sizes.md control-height row)",
+    "byDensity.field-padding": "Input.css padding-left/padding-right: var(--salt-spacing-100); there is NO vertical padding declaration at all — height alone sets the vertical rhythm. spacing-100 = 4/8/12/16px (docs/foundations/spacing.md unit row)",
+    "byDensity.field-gap": "one token, three uses: .saltInput-startAdornmentContainer padding-right, .saltInput-endAdornmentContainer padding-left, both containers' column-gap, and .saltStatusAdornment padding-left — all var(--salt-spacing-100)",
+    "byDensity.corner-weak": "Input.css border-radius: var(--salt-palette-corner-weak, 0) -> next/palette/corner.css [data-corner=\"rounded\"] -> curve-100 -> foundations/curve.css 2/4/6/8px. Same rounded-edition pin as button/tooltip (docs/foundations/shape.md).",
+    "byDensity.type-body": "Input.css font-family var(--salt-text-fontFamily) (Open Sans), font-size var(--salt-text-fontSize), line-height var(--salt-text-lineHeight) -> next/characteristics/text.css body block, density-scaled (docs/foundations/typography.md). NOTE: Input.css does NOT declare font-weight; the 400 in this shorthand is the ambient --salt-text-fontWeight (typography fontWeight-regular), recorded rather than invented.",
+    "byDensity.adornment-size": "StatusAdornment.css height/min-height: var(--salt-size-adornment) -> foundations/size.css 6/8/10/12px (docs/foundations/sizes.md adornment row). Checked against TOOLTIP-MATRIX.md's frozen-token lesson: already a density token in source, not a literal.",
+    "byDensity.adornment-button-height": "DECLARED COMPOSITION. Input.css .saltInput-{start,end}AdornmentContainer > .saltButton { --saltButton-height: calc(var(--salt-size-base) - var(--salt-spacing-100)) } = 20-4 / 28-8 / 36-12 / 44-16 = 16/20/24/28px. Salt also sets --saltButton-padding: calc(spacing-50 - button-borderWidth) and --saltButton-borderRadius: palette-corner-weaker on those buttons; both belong to the button component's own matrix, not duplicated here.",
+    "border-width-literals": "1px = --salt-size-fixed-100, 2px = --salt-size-fixed-200 (foundations/size.css). Kept as literals deliberately: the fixed scale is density-INVARIANT by design (docs/foundations/sizes.md: 'fixed scale ... 1px-9px, density-invariant, all 5 densities identical'), so these are not frozen snapshots of a scaling token.",
+    "min-width-literal": "Input.css min-width: var(--saltInput-minWidth, 4em) — a hardcoded default with an override point. Kept as a literal: it is em-relative, so it already tracks the density-driven font size (unlike a bare px literal, which is the case TOOLTIP-MATRIX.md's lesson was about).",
+    "focus-outline": "Input.css outline: var(--saltInput-outline, var(--salt-focused-outlineWidth) var(--salt-focused-outlineStyle) var(--input-outlineColor)) -> next/characteristics/focused.css: outlineWidth = size-fixed-200 = 2px, outlineStyle = borderStyle-dotted = dotted (foundations/borderStyle.css), outlineColor = palette-accent-stronger, reassigned to the status colour by .saltInput-{status}",
+    "cursors": "foundations/cursor.css: --salt-cursor-text: text (rest and focused), --salt-cursor-disabled: not-allowed, --salt-cursor-readonly: text. Note cursor-readonly resolves to the SAME value as cursor-text, so Salt's read-only cursor is a tokenised distinction with no visual consequence — recorded, not given a row.",
+    "no-shadow-no-motion": "Input.css contains no box-shadow, no transition and no animation rule anywhere — confirmed absences by full-file read, not unfound values.",
+    "form-field-context": "Input.tsx useFormFieldProps(): isDisabled = disabled || formFieldDisabled; isReadOnly = readOnlyProp || formFieldReadOnly; validationStatus = formFieldValidationStatus ?? validationStatusProp (context WINS over the instance prop, unlike the two OR-ed booleans). a11yProps supply aria-labelledby/aria-describedby, merged with inputProps' own via clsx. FormFieldContext.ts / useFormFieldProps.ts.",
+    "validation-enum": "InputProps.validationStatus?: FormFieldValidationStatus -> FormFieldContext.ts: `interface FormFieldValidationStatuses extends Omit<ValidationStatuses,'info'>` -> status-indicator/ValidationStatus.ts ValidationStatuses = {error,warning,success,info}. So Input's enum is error|warning|success — info is deliberately excluded, even though Salt's Banner and Tooltip both accept it."
+  },
+  "cells": {
+    "structure.root-wrapper": {
+      "kind": "value",
+      "value": "wrapper",
+      "source": "Input.tsx renders <div class=\"saltInput\"> containing the adornment containers, <input class=\"saltInput-input\">, the StatusAdornment and <div class=\"saltInput-activationIndicator\">"
+    },
+    "structure.indicator": {
+      "kind": "value",
+      "value": ["underline", "box"],
+      "note": "ordered with the real default first. Input.tsx: `bordered = false` — so Salt's out-of-the-box input is an UNDERLINE (.saltInput-activationIndicator, always rendered), and the full box border is the opt-in .saltInput-bordered. Input.css lines 27-53 (box) vs 55-94 (indicator).",
+      "source": "Input.tsx bordered?: boolean, default false; Input.css .saltInput-bordered / .saltInput-activationIndicator"
+    },
+    "structure.start-adornment": { "kind": "value", "value": true, "source": "Input.tsx startAdornment prop -> .saltInput-startAdornmentContainer" },
+    "structure.end-adornment": { "kind": "value", "value": true, "source": "Input.tsx endAdornment prop -> .saltInput-endAdornmentContainer" },
+    "structure.status-adornment": { "kind": "value", "value": true, "source": "Input.tsx: {!isDisabled && validationStatus && <StatusAdornment status={validationStatus} />} — inserted by the component itself, note the explicit suppression while disabled" },
+
+    "behavior.status-inheritance": { "kind": "value", "value": true, "source": "Input.tsx useFormFieldProps() — see the form-field-context provenance entry for the exact (non-uniform) precedence rules" },
+    "behavior.empty-readonly-marker": { "kind": "value", "value": "—", "source": "Input.tsx emptyReadOnlyMarker = \"—\"; isEmptyReadOnlyValue() treats null/undefined/''/[] as empty and substitutes the marker for the value" },
+
+    "prop.variant": { "kind": "value", "value": ["primary", "secondary", "tertiary"], "source": "Input.tsx variant?: \"primary\" | \"secondary\" | \"tertiary\", default \"primary\"" },
+    "prop.validation-status": { "kind": "value", "value": ["error", "warning", "success"], "note": "info is NOT in this enum — see the validation-enum provenance entry", "source": "Input.tsx validationStatus?: FormFieldValidationStatus" },
+    "prop.text-align": { "kind": "value", "value": ["left", "center", "right"], "source": "Input.tsx textAlign = \"left\", written as an inline --input-textAlign custom property that .saltInput-input's text-align reads" },
+    "prop.disabled": { "kind": "value", "value": [true, false], "source": "Input.tsx disabled (also OR-ed with form-field context)" },
+    "prop.read-only": { "kind": "value", "value": [true, false], "source": "Input.tsx readOnly (also OR-ed with form-field context); .saltInput-readOnly has its own background, border colour and cursor" },
+
+    "slot.start-adornment": { "kind": "value", "value": true },
+    "slot.end-adornment": { "kind": "value", "value": true },
+    "state.read-only": { "kind": "value", "value": true },
+
+    "style.root.background": { "kind": "alias", "slot": "bg-current" },
+    "style.root.background@box": { "kind": "off", "note": "`bordered` changes the border and nothing else — the background is untouched. A real non-variation, confirmed by reading .saltInput-bordered (Input.css 27-53): it declares border only." },
+    "style.root.color": { "kind": "alias", "slot": "fg" },
+    "style.root.font": { "kind": "alias", "slot": "type-body" },
+    "style.root.letter-spacing": { "kind": "value", "value": "0", "source": "Input.css letter-spacing: var(--salt-text-letterSpacing) -> next/characteristics/text.css: 0" },
+    "style.root.height": { "kind": "alias", "slot": "control-height" },
+    "style.root.min-width": { "kind": "value", "value": "4em", "source": "Input.css min-width: var(--saltInput-minWidth, 4em)" },
+    "style.root.padding": { "kind": "alias", "slot": "field-padding" },
+    "style.root.gap": { "kind": "alias", "slot": "field-gap" },
+    "style.root.shape": { "kind": "alias", "slot": "corner-weak" },
+    "style.root.shape@box": { "kind": "off", "note": "corner radius is independent of `bordered` — one border-radius declaration on .saltInput serves both" },
+    "style.root.cursor": { "kind": "value", "value": "text", "source": "Input.css .saltInput:hover { cursor: var(--salt-cursor-text) } and .saltInput-focused { cursor: var(--salt-cursor-text) }" },
+    "style.root.shadow": { "kind": "off", "note": "no box-shadow anywhere in Input.css — a confirmed absence" },
+    "style.root.transition": { "kind": "off", "note": "no transition and no animation rule anywhere in Input.css — the same total absence TOOLTIP-MATRIX.md found on Salt's tooltip" },
+
+    "style.control.placeholder": {
+      "kind": "value",
+      "value": { "color": "var(--placeholder-fg)", "font-weight": "300" },
+      "source": "Input.css .saltInput-input::placeholder { color: var(--salt-content-secondary-foreground); font-weight: var(--salt-text-fontWeight-small) }",
+      "note": "DECLARED RENDERING APPROXIMATION: weight 300 (fontWeight-light) is source-true but this repo self-hosts Open Sans at 400/600 only, so the browser resolves 300 to the 400 face. The sourced value is kept; the shortfall is declared rather than silently rounded."
+    },
+    "style.control.caret-color": { "kind": "off", "note": "no caret-color declaration in Input.css — the platform default applies" },
+
+    "style.root.border@box": {
+      "kind": "value",
+      "value": { "border-width": "1px", "border-style": "solid", "border-color": "var(--border-current)" },
+      "source": "Input.css .saltInput-bordered.saltInput { border: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) var(--input-borderColor) }"
+    },
+    "style.indicator.border@underline": {
+      "kind": "value",
+      "value": { "border-bottom-width": "1px", "border-bottom-style": "solid", "border-bottom-color": "var(--border-current)" },
+      "source": "Input.css .saltInput-activationIndicator { border-bottom: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) var(--input-borderColor) } — the SAME indirection the box border reads, so one status reassignment recolours both"
+    },
+    "style.root.border@box-hover": {
+      "kind": "value",
+      "value": { "border-color": "var(--border-current-hover)" },
+      "source": "Input.css .saltInput-bordered.saltInput:hover { border-color: var(--input-borderColor-hover) }"
+    },
+    "style.indicator.border@underline-hover": {
+      "kind": "value",
+      "value": { "border-bottom-color": "var(--border-current-hover)" },
+      "source": "Input.css .saltInput:hover .saltInput-activationIndicator { border-bottom-color: var(--input-borderColor-hover) }"
+    },
+    "style.root.border@box-focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--border-current-active)" },
+      "source": "Input.css .saltInput-bordered.saltInput-focused { border-color: var(--input-borderColor-active) } — recolour only, width unchanged"
+    },
+    "style.indicator.border@underline-focus": {
+      "kind": "value",
+      "value": { "border-bottom-width": "2px", "border-bottom-color": "var(--border-current-active)" },
+      "source": "Input.css .saltInput-focused .saltInput-activationIndicator { border-bottom: var(--salt-size-fixed-200) var(--salt-borderStyle-solid) var(--input-borderColor-active) } — 1px -> 2px, the same thickening M3's filled field does with the same numbers"
+    },
+    "style.indicator.border@box-focus": {
+      "kind": "value",
+      "value": { "border-bottom-width": "1px", "border-bottom-style": "solid", "border-bottom-color": "var(--border-current-active)" },
+      "source": "Input.css: .saltInput-bordered .saltInput-activationIndicator { border-bottom-width: 0 } EXCEPT .saltInput-bordered.saltInput-focused .saltInput-activationIndicator { border-bottom-width: var(--salt-size-fixed-100) } — the indicator returns at 1px on top of the box border when a bordered input is focused"
+    },
+    "style.root.focus": {
+      "kind": "value",
+      "value": { "outline": "2px dotted var(--outline-current)" },
+      "source": "Input.css .saltInput-focused { outline: var(--salt-focused-outlineWidth) var(--salt-focused-outlineStyle) var(--input-outlineColor) } -> 2px dotted, colour = accent-stronger or the status colour"
+    },
+
+    "style.root.background@readonly": { "kind": "alias", "slot": "bg-current-readonly", "source": "Input.css .saltInput.saltInput-readOnly { background: var(--input-background-readonly) }" },
+    "style.root.border-color@readonly": { "kind": "alias", "slot": "border-readonly", "source": "Input.css .saltInput-bordered.saltInput-readOnly { border-color: var(--salt-editable-borderColor-readonly) }" },
+    "style.indicator.border-color@readonly": { "kind": "alias", "slot": "border-readonly", "source": "Input.css .saltInput-readOnly .saltInput-activationIndicator { border-bottom-color: var(--salt-editable-borderColor-readonly) }" },
+
+    "style.root.background@disabled": { "kind": "alias", "slot": "bg-current-disabled", "source": "Input.css .saltInput.saltInput-disabled { background: var(--input-background-disabled) }" },
+    "style.root.color@disabled": { "kind": "alias", "slot": "fg-disabled", "source": "Input.css .saltInput.saltInput-disabled { color: var(--saltInput-color-disabled, var(--salt-content-primary-foreground-disabled)) }" },
+    "style.root.border-color@disabled": { "kind": "alias", "slot": "border-disabled", "source": "Input.css .saltInput-bordered.saltInput-disabled { border-color: var(--salt-editable-borderColor-disabled) }" },
+    "style.indicator.border-color@disabled": { "kind": "alias", "slot": "border-disabled", "source": "Input.css .saltInput-disabled .saltInput-activationIndicator { border-bottom-color: var(--salt-editable-borderColor-disabled) }" },
+    "style.control.disabled": { "kind": "value", "value": { "cursor": "not-allowed" }, "source": "Input.css .saltInput.saltInput-disabled { cursor: var(--salt-cursor-disabled) }" },
+
+    "style.adornment.size": { "kind": "alias", "slot": "adornment-button-height", "note": "DECLARED COMPOSITION — this is Salt sizing a composed Button, not an icon; see the byDensity.adornment-button-height provenance entry" },
+    "style.status-adornment.size": { "kind": "value", "value": { "height": "var(--adornment-size)", "width": "var(--adornment-size)" }, "source": "StatusAdornment.css height/min-height: var(--salt-size-adornment)" },
+    "style.status-adornment.color": { "kind": "alias", "slot": "border-current", "note": "aliased to the border indirection because in source they resolve to the identical value: --statusAdornment-color -> status-{s}-foreground-decorative -> palette-{role}, and --input-borderColor -> status-{s}-borderColor -> the same palette-{role}" },
+
+    "style.root.variant@secondary": {
+      "kind": "value",
+      "value": { "--bg-current": "var(--field-bg-secondary)", "--bg-current-disabled": "var(--field-bg-secondary-disabled)" },
+      "source": "Input.css .saltInput-secondary { --input-background: var(--salt-editable-secondary-background); --input-background-disabled: var(--salt-editable-secondary-background-disabled) }"
+    },
+    "style.root.variant@tertiary": {
+      "kind": "value",
+      "value": { "--bg-current": "var(--field-bg-tertiary)", "--bg-current-disabled": "var(--field-bg-tertiary-disabled)" },
+      "source": "Input.css .saltInput-tertiary { --input-background: var(--salt-editable-tertiary-background); --input-background-disabled: var(--salt-editable-tertiary-background-disabled) }"
+    },
+
+    "style.root.status@error": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-error)",
+        "--border-current-hover": "var(--status-error)",
+        "--border-current-active": "var(--status-error)",
+        "--outline-current": "var(--status-error)",
+        "--bg-current": "var(--status-error-bg)",
+        "--bg-current-readonly": "var(--status-error-bg)"
+      },
+      "source": "Input.css .saltInput-error { --input-background; --input-background-readonly; --input-borderColor; --input-borderColor-active; --input-borderColor-hover; --input-outlineColor } — six properties in one block, reproduced one-for-one"
+    },
+    "style.root.status@warning": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-warning)",
+        "--border-current-hover": "var(--status-warning)",
+        "--border-current-active": "var(--status-warning)",
+        "--outline-current": "var(--status-warning)",
+        "--bg-current": "var(--status-warning-bg)",
+        "--bg-current-readonly": "var(--status-warning-bg)"
+      },
+      "source": "Input.css .saltInput-warning"
+    },
+    "style.root.status@success": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-success)",
+        "--border-current-hover": "var(--status-success)",
+        "--border-current-active": "var(--status-success)",
+        "--outline-current": "var(--status-success)",
+        "--bg-current": "var(--status-success-bg)",
+        "--bg-current-readonly": "var(--status-success-bg)"
+      },
+      "source": "Input.css .saltInput-success"
+    }
+  }
+}

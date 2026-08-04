@@ -1,0 +1,143 @@
+{
+  "system": "m3",
+  "component": "tooltip",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "surface": "#322f35",
+      "on-surface": "#f5eff7"
+    },
+    "dark": {
+      "surface": "#e6e0e9",
+      "on-surface": "#322f35"
+    }
+  },
+  "provenance": {
+    "edition-pin": "tokens/versions/v0_192/_md-comp-plain-tooltip.scss. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own hand-authored wrappers @use versions/v0_192. This column previously read the `latest` file; the re-point is a VALUE NO-OP. A full normalized key/value diff of _md-comp-plain-tooltip.scss across the editions finds nine keys in both, all identical, with one difference of FORM only: `latest` emits supporting-text-type as a @mixin where v0.192 emits it as a composite `weight size/line-height font` value — this column models the discrete properties, not the composite, so the form change is invisible here. inverse-surface / inverse-on-surface resolve to the same palette refs in both editions (neutral20 / neutral95 light, neutral90 / neutral20 dark); versions/v0_192/_md-sys-color.scss carries the dark map inside values-dark() rather than in a separate _md-sys-color__dark.scss file, so the file-path citations below now name the v0.192 layout. corner-extra-small is 4px and body-small is 0.75rem/1rem/400 in both editions. The [R] padding/duration/easing cells are unaffected: they were never sourced from either edition.",
+    "surface": "_md-comp-plain-tooltip.scss (versions/v0_192) $container-color: md-sys-color.$inverse-surface -> versions/v0_192/_md-sys-color.scss values-light(): md-ref-palette.neutral20 #322f35; same file values-dark(): md-ref-palette.neutral90 #e6e0e9 (v0.192 keeps both schemes in ONE file — there is no _md-sys-color__dark.scss in this edition) — M3's own inverted-role token, built to flip surface tone relative to the ambient light/dark scheme",
+    "on-surface": "_md-comp-plain-tooltip.scss $supporting-text-color: md-sys-color.$inverse-on-surface -> light: neutral95 #f5eff7; dark: neutral20 #322f35",
+    "shape": "_md-comp-plain-tooltip.scss $container-shape: md-sys-shape.$corner-extra-small -> _md-sys-shape.scss: 4px",
+    "font": "_md-comp-plain-tooltip.scss $supporting-text-{font,size,line-height,weight,tracking}: md-sys-typescale.body-small -> _md-sys-typescale.scss: size 0.75rem, line-height 1rem, weight 400 (regular), tracking 0.025rem (tracking not modeled as a separate row, scope trim). Font family md.ref.typeface.plain resolves to Roboto per convention; the literal family string is not present in this tokens-only clone (docs/foundations/typography.md's own flag on this exact gap) — family cited as [R]",
+    "padding/height": "NOT in _md-comp-plain-tooltip.scss — the file defines only container-color/container-shape/supporting-text-* (9 tokens total, no layout tokens at all, contrast Salt/shadcn which are fully padding-tokenized). Value below (4px 8px) is m3.material.io's published plain-tooltip spec convention (24dp height, 8dp horizontal padding), not grepped from this clone — [R], not presented as sourced",
+    "duration/easing": "NOT in _md-comp-plain-tooltip.scss — no motion token for this component. Values below are cross-referenced from docs/foundations/motion.md's general M3 scale (duration-short2: 100ms per _md-sys-motion.scss; 'standard' easing cubic-bezier(0.2,0,0,1)) rather than fabricated outright — still [R], a component-specific value was never sourced",
+    "arrow/border/shadow/z-index/max-width/placement/status/icon": "confirmed absent — no matching token in _md-comp-plain-tooltip.scss (border/shadow/arrow), no shared z-index or placement scale in this tokens-only clone (docs/foundations/layers.md), no status/tone axis on tooltip in either plain or rich family"
+  },
+  "cells": {
+    "structure.arrow": {
+      "kind": "off",
+      "note": "confirmed absent from _md-comp-plain-tooltip.scss (and rich-tooltip's, for reference) — no arrow concept in M3's tooltip spec"
+    },
+    "structure.status-icon": {
+      "kind": "off",
+      "note": "no icon concept"
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "tooltip",
+      "note": "[R] — APG tooltip convention; material-web is tokens-only, no live component to grep"
+    },
+    "behavior.supplementary-announce": {
+      "kind": "off",
+      "note": "[R] — no documented equivalent"
+    },
+    "behavior.enter-delay": {
+      "kind": "value",
+      "value": 0,
+      "note": "[R] DECLARED ABSENCE — no delay convention in the tokens-only clone; registry default (0ms, matching shadcn's own zeroed default) applied, not fabricated as an M3-specific number"
+    },
+    "behavior.leave-delay": {
+      "kind": "value",
+      "value": 0,
+      "note": "[R] DECLARED ABSENCE, same as enter-delay"
+    },
+    "prop.status": {
+      "kind": "off",
+      "note": "no tone/status axis on either M3 tooltip family"
+    },
+    "prop.placement": {
+      "kind": "value",
+      "value": [
+        "top"
+      ],
+      "note": "[R] — m3.material.io's docked convention; no placement enum exists in this tokens-only clone"
+    },
+    "style.root.background": {
+      "kind": "alias",
+      "slot": "surface"
+    },
+    "style.root.color": {
+      "kind": "alias",
+      "slot": "on-surface"
+    },
+    "style.root.border": {
+      "kind": "off",
+      "note": "no outline/border token in _md-comp-plain-tooltip.scss"
+    },
+    "style.root.status@error": {
+      "kind": "off",
+      "note": "no status axis"
+    },
+    "style.root.shape": {
+      "kind": "value",
+      "value": "4px"
+    },
+    "style.root.padding": {
+      "kind": "value",
+      "value": "4px 8px",
+      "note": "[R] — not tokenized in this clone; m3.material.io spec convention, see provenance"
+    },
+    "style.root.font": {
+      "kind": "value",
+      "value": "400 0.75rem/1rem Roboto, sans-serif",
+      "note": "size/line-height/weight [S] from body-small; family \"Roboto\" is [R] (role-only in this clone, see provenance)"
+    },
+    "style.root.shadow": {
+      "kind": "off",
+      "note": "no container-elevation/container-shadow-color token on plain-tooltip (contrast rich-tooltip, which has both — out of scope)"
+    },
+    "style.root.max-width": {
+      "kind": "off",
+      "note": "no width/wrap token"
+    },
+    "style.root.z-index": {
+      "kind": "off",
+      "note": "no z-index token; platform-managed"
+    },
+    "style.root.duration": {
+      "kind": "value",
+      "value": "100ms",
+      "note": "[R] — no motion token on this component; borrowed from docs/foundations/motion.md's short2 tier (100ms) rather than fabricated"
+    },
+    "style.root.easing": {
+      "kind": "value",
+      "value": "cubic-bezier(0.2,0,0,1)",
+      "note": "[R] — docs/foundations/motion.md's M3 'standard' easing curve, same cross-reference logic as duration"
+    },
+    "style.arrow.size": {
+      "kind": "off"
+    },
+    "style.arrow.color": {
+      "kind": "off"
+    },
+    "style.icon.margin": {
+      "kind": "off",
+      "note": "no icon"
+    },
+    "style.root.status@info": {
+      "kind": "off",
+      "note": "no tone/status axis on tooltip in this system (see prop.status)"
+    },
+    "style.root.status@warning": {
+      "kind": "off",
+      "note": "no tone/status axis on tooltip in this system (see prop.status)"
+    },
+    "style.root.status@success": {
+      "kind": "off",
+      "note": "no tone/status axis on tooltip in this system (see prop.status)"
+    },
+    "structure.arrow-shape": {
+      "kind": "off",
+      "note": "no arrow at all in _md-comp-plain-tooltip.scss"
+    }
+  }
+}

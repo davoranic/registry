@@ -1,0 +1,235 @@
+{
+  "system": "salt",
+  "component": "tooltip",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "surface": "#FFFFFF",
+      "on-surface": "#000000",
+      "border": "rgba(0, 0, 0, 0.3)",
+      "shadow": "0 6px 10px 0 rgba(0,0,0,0.2)",
+      "status-info": "#0078CF",
+      "status-warning": "#C75300",
+      "status-success": "#00875D",
+      "status-error": "#E52135",
+      "status-active": "var(--border)"
+    },
+    "dark": {
+      "surface": "#101820",
+      "on-surface": "#FFFFFF",
+      "border": "rgba(255, 255, 255, 0.3)",
+      "shadow": "0 6px 10px 0 rgba(0,0,0,0.55)"
+    },
+    "byDensity": {
+      "high": {
+        "tooltip-padding": "2px 4px",
+        "tooltip-font": "400 11px/14px 'Open Sans', sans-serif",
+        "corner-weak": "2px",
+        "tooltip-icon-margin": "1px 3px 0 0",
+        "arrow-size": "10px"
+      },
+      "medium": {
+        "tooltip-padding": "5px 8px",
+        "tooltip-font": "400 12px/16px 'Open Sans', sans-serif",
+        "corner-weak": "4px",
+        "tooltip-icon-margin": "2px 6px 0 0",
+        "arrow-size": "12px"
+      },
+      "low": {
+        "tooltip-padding": "8px 12px",
+        "tooltip-font": "400 14px/18px 'Open Sans', sans-serif",
+        "corner-weak": "6px",
+        "tooltip-icon-margin": "2px 9px 0 0",
+        "arrow-size": "14px"
+      },
+      "touch": {
+        "tooltip-padding": "11px 16px",
+        "tooltip-font": "400 16px/20px 'Open Sans', sans-serif",
+        "corner-weak": "8px",
+        "tooltip-icon-margin": "2px 12px 0 0",
+        "arrow-size": "16px"
+      }
+    }
+  },
+  "modeInvariant": [
+    "status-info",
+    "status-warning",
+    "status-success",
+    "status-error"
+  ],
+  "provenance": {
+    "surface": "Tooltip.css --tooltip-background: var(--salt-container-primary-background) -> characteristics/container.css container-primary-background: var(--salt-palette-background-primary) -> next/palette/background.css: snow #FFFFFF light / jet #101820 dark",
+    "on-surface": "Tooltip.css color: var(--salt-content-primary-foreground) -> characteristics/content.css content-primary-foreground: var(--salt-palette-foreground-primary) -> next/palette/foreground.css: black light / white dark",
+    "border": "Tooltip.css --tooltip-status-borderColor (default path): var(--salt-container-primary-borderColor) -> characteristics/container.css: var(--salt-palette-alpha-contrast-medium) -> next/palette/alpha.css: black-30a light / white-30a dark (an alpha overlay, not a flat hex)",
+    "shadow": "Tooltip.css box-shadow: var(--saltTooltip-shadow, var(--salt-overlayable-shadow-popout)) -> characteristics/overlayable.css: var(--salt-shadow-mediumLow) -> theme/css/next/palette/shadow.css mediumLow stop (docs/foundations/elevation.md)",
+    "status-info/warning/success/error": "characteristics/status.css: status-{info,warning,success,error}-borderColor -> palette-{info,warning,positive,negative} base stops, all mode-invariant per docs/foundations/colors.md",
+    "byDensity.tooltip-padding": "Tooltip.css --tooltip-padding: calc(var(--salt-spacing-75) - var(--tooltip-borderWidth)) var(--salt-spacing-100); tooltip-borderWidth = --salt-size-fixed-100 = 1px (fixed, all densities) -> resolved per density from foundations/spacing.css spacing-100/spacing-75",
+    "byDensity.tooltip-font": "Tooltip.css font-family var(--salt-text-fontFamily) (Open Sans), font-weight var(--salt-text-fontWeight) (regular=400), font-size/line-height var(--salt-text-fontSize)/var(--salt-text-lineHeight) -> next/characteristics/text.css density blocks (docs/foundations/typography.md body row)",
+    "byDensity.corner-weak": "Tooltip.css border-radius: var(--saltTooltip-borderRadius, var(--salt-palette-corner-weak, 0)) -> rounded edition, curve-100, same token/edition pin as Button's style.root.shape",
+    "byDensity.tooltip-icon-margin": "Tooltip.css .saltTooltip-icon --saltIcon-margin: var(--tooltip-icon-marginTop) var(--salt-spacing-75) 0 0; --tooltip-icon-marginTop: calc((var(--salt-text-lineHeight) - max(var(--salt-size-icon), 12px)) / 2) -> resolved per density from foundations/size.css size-icon + text.css lineHeight",
+    "arrow": "TooltipBase.tsx FloatingArrow: strokeWidth=1, height=6, width=12, fill=var(--salt-container-primary-background) (= surface slot), stroke=var(--tooltip-status-borderColor) (= border slot, or status color when status is set)",
+    "border-width": "Tooltip.css --tooltip-borderWidth: var(--salt-size-fixed-100) = 1px, all densities (docs/foundations/border-style.md)",
+    "duration/easing": "Tooltip.css: no animation or transition rule exists anywhere in the file — confirmed absence, not an unfound value",
+    "z-index": "Tooltip.css --tooltip-zIndex: var(--salt-zIndex-flyover) -> foundations/zindex.css: 1500",
+    "max-width": "Tooltip.css --saltTooltip-maxWidth default fallback: 60ch (hardcoded literal, override point exists but ships this default)",
+    "role/delay": "Tooltip.tsx: placement default \"right\"; enterDelay default 300; leaveDelay default 0. useTooltip.ts: useRole(context,{role:\"tooltip\"})",
+    "supplementary-announce": "useAriaAnnounce.ts: on trigger mouseenter, reads refs.floating.current.innerText and calls announce() via the shared aria-announcer, respecting the same enterDelay"
+  },
+  "cells": {
+    "structure.arrow": {
+      "kind": "value",
+      "value": true,
+      "source": "TooltipBase.tsx: !hideArrow renders FloatingArrow by default"
+    },
+    "structure.status-icon": {
+      "kind": "value",
+      "value": true,
+      "source": "TooltipBase.tsx: !hideIcon && status renders StatusIndicator"
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "tooltip",
+      "source": "useTooltip.ts: useRole(context, { role: \"tooltip\" })"
+    },
+    "behavior.supplementary-announce": {
+      "kind": "value",
+      "value": true,
+      "source": "useAriaAnnounce.ts"
+    },
+    "behavior.enter-delay": {
+      "kind": "value",
+      "value": 300,
+      "source": "Tooltip.tsx: enterDelay = 300"
+    },
+    "behavior.leave-delay": {
+      "kind": "value",
+      "value": 0,
+      "source": "Tooltip.tsx: leaveDelay = 0"
+    },
+    "prop.status": {
+      "kind": "value",
+      "value": [
+        "info",
+        "warning",
+        "success",
+        "error"
+      ],
+      "source": "TooltipProps.status: FormFieldValidationStatus | ValidationStatus"
+    },
+    "prop.placement": {
+      "kind": "value",
+      "value": [
+        "right",
+        "top",
+        "bottom",
+        "left"
+      ],
+      "note": "ordered with the real default (\"right\") first; full floating-ui enum also includes -start/-end variants, not modeled (scope trim, see matrix)",
+      "source": "Tooltip.tsx: placement = \"right\""
+    },
+    "style.root.background": {
+      "kind": "alias",
+      "slot": "surface"
+    },
+    "style.root.color": {
+      "kind": "alias",
+      "slot": "on-surface"
+    },
+    "style.root.border": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--status-active)"
+      },
+      "source": "Tooltip.css border-width/style/color; border-color resolves through --tooltip-status-borderColor, modelled here as the status-active indirection slot"
+    },
+    "style.root.status@error": {
+      "kind": "value",
+      "value": {
+        "--status-active": "var(--status-error)"
+      },
+      "source": "Tooltip.css .saltTooltip-error { --tooltip-status-borderColor: var(--salt-status-error-borderColor) }"
+    },
+    "style.root.shape": {
+      "kind": "alias",
+      "slot": "corner-weak"
+    },
+    "style.root.padding": {
+      "kind": "alias",
+      "slot": "tooltip-padding"
+    },
+    "style.root.font": {
+      "kind": "alias",
+      "slot": "tooltip-font"
+    },
+    "style.root.shadow": {
+      "kind": "alias",
+      "slot": "shadow"
+    },
+    "style.root.max-width": {
+      "kind": "value",
+      "value": "60ch"
+    },
+    "style.root.z-index": {
+      "kind": "value",
+      "value": "1500"
+    },
+    "style.root.duration": {
+      "kind": "value",
+      "value": "0s",
+      "note": "no animation exists in source; 0s is an honest literal representing the real instant show/hide, not an inherited default"
+    },
+    "style.root.easing": {
+      "kind": "value",
+      "value": "linear",
+      "note": "inert given 0s duration; present only for schema completeness"
+    },
+    "style.arrow.size": {
+      "kind": "value",
+      "value": {
+        "width": "var(--arrow-size)"
+      },
+      "source": "DELIBERATE, SOURCE-BACKED DEVIATION from Tooltip's literal. Salt is internally inconsistent about this: TooltipBase.tsx hardcodes width={12} height={6} (density-invariant), but Salt's OWN sibling SliderTooltip.css sizes the same arrow off a density token (.saltSliderTooltip-arrow { width: var(--salt-size-icon); height: var(--salt-size-icon) }). --salt-size-icon is 10/12/14/16 by density (foundations/sizes.md), so the main Tooltip's hardcoded 12 IS size-icon's medium value baked in. Scaling by size-icon therefore reproduces Tooltip's own value at medium density exactly, and follows Salt's own density-aware arrow pattern elsewhere. Owner-directed (fidelity oracle, CLAUDE.md rule 5); recorded as a deviation rather than presented as a literal extraction."
+    },
+    "style.arrow.color": {
+      "kind": "value",
+      "value": {
+        "fill": "var(--surface)",
+        "stroke": "var(--status-active)",
+        "stroke-width": "1px"
+      },
+      "source": "FloatingArrow fill=\"var(--salt-container-primary-background)\" stroke=\"var(--tooltip-status-borderColor)\" strokeWidth={1}"
+    },
+    "style.icon.margin": {
+      "kind": "alias",
+      "slot": "tooltip-icon-margin"
+    },
+    "style.root.status@info": {
+      "kind": "value",
+      "value": {
+        "--status-active": "var(--status-info)"
+      },
+      "source": "Tooltip.css .saltTooltip-info { --tooltip-status-borderColor: var(--salt-status-info-borderColor) }"
+    },
+    "style.root.status@warning": {
+      "kind": "value",
+      "value": {
+        "--status-active": "var(--status-warning)"
+      },
+      "source": "Tooltip.css .saltTooltip-warning { --tooltip-status-borderColor: var(--salt-status-warning-borderColor) }"
+    },
+    "style.root.status@success": {
+      "kind": "value",
+      "value": {
+        "--status-active": "var(--status-success)"
+      },
+      "source": "Tooltip.css .saltTooltip-success { --tooltip-status-borderColor: var(--salt-status-success-borderColor) }"
+    },
+    "structure.arrow-shape": {
+      "kind": "value",
+      "value": "triangle",
+      "source": "TooltipBase.tsx:50-58 FloatingArrow width={12} height={6} strokeWidth={1}"
+    }
+  }
+}

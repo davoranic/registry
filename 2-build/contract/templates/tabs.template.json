@@ -1,0 +1,1018 @@
+{
+  "component": "tabs",
+  "openUiAnatomy": "no published Open UI tabs anatomy — union of salt-ds core Tabs + TabBar/TabList/Tab/TabTrigger/TabPanel/TabAction (NOT the legacy lab Tabstrip), shadcn Tabs (new-york-v4, Radix-based; NOT toggle-group), and M3 md.comp.primary-navigation-tab + md.comp.secondary-navigation-tab (NOT navigation-bar / navigation-rail). Tab icons, Salt's Badge and Salt's TabAction buttons are DECLARED COMPOSITIONS. Salt's overflow menu is modelled here as a PART — see docs/TABS-MATRIX.md for the rows that migrate if it is ever split out.",
+  "behavior": {
+    "pattern": "APG tabs pattern: a tablist of role=tab controls, one selected at a time, each pointing at a role=tabpanel through aria-controls, with a roving tabindex, arrow-key navigation, Home/End, and an optional wrap. The cross-system axes are: WHETHER FOCUS SELECTS (Salt is manual, Radix defaults to automatic), whether a disabled tab stays reachable by arrow keys (Salt yes, Radix no), whether an inactive panel is hidden or unmounted, whether the panel is always focusable or only when it has no focusable children, WHICH EDGE the active indicator sits on and BY WHAT MECHANISM it moves (a static per-tab rule, an opacity fade, or a measured slide), and whether the selected tab is also FILLED.",
+    "chassis": "skeleton/tabs.tsx — written from the template's part union (an optional tab bar with an optional full-width divider and inset, a tablist, tabs that are either a single button or a wrapper+trigger pair, an optional icon slot, an optional per-tab actions slot, an active indicator in one of three mechanisms, an optional overflow menu, and panels); inherits from no design system. Every behavior row below is implemented in that file and asserted by scripts/check-tabs-behavior.mjs, which exists because locked behavior rows have NO generator gate (docs/SELECT-MATRIX.md finding 16, and the two effects that passed that gate and never ran — docs/DIALOG-MATRIX.md's closing section)."
+  },
+  "skeletonParams": {
+    "tabBar": [true, false],
+    "tabShell": ["wrapper", "single"],
+    "activeIndicator": [true, false],
+    "indicatorMotion": ["static", "fade", "slide"],
+    "tabIcon": [true, false],
+    "tabActions": [true, false],
+    "tabBadge": [true, false],
+    "overflowMenu": [true, false],
+    "panel": [true, false],
+    "rovingTabindex": [true, false],
+    "arrowKeys": ["horizontal", "orientation"],
+    "homeEnd": [true, false],
+    "wrapNavigation": [true, false],
+    "activationMode": ["automatic", "manual"],
+    "disabledNavigation": ["reachable", "skipped"],
+    "pointerActivation": ["click", "mousedown"],
+    "panelFocusable": ["conditional", "always"],
+    "panelMounting": ["hidden", "unmount"],
+    "scrollIntoView": [true, false],
+    "appearance": ["contained", "plain"],
+    "emphasis": ["primary", "secondary"],
+    "orientation": ["horizontal", "vertical"],
+    "activeColor": ["primary", "secondary", "tertiary"],
+    "divider": [true, false],
+    "inset": [true, false],
+    "disabled": [true, false]
+  },
+  "base": {
+    "[data-slot=\"tabs\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "flex-direction": "column",
+      "min-width": "0"
+    },
+    "[data-slot=\"tabs\"][data-orientation=\"vertical\"]": {
+      "flex-direction": "row"
+    },
+    "[data-slot=\"tab-bar\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "flex-direction": "row",
+      "position": "relative",
+      "min-width": "0",
+      "max-width": "100%"
+    },
+    "[data-slot=\"tab-bar-strip\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "flex-direction": "row",
+      "flex": "1 1 auto",
+      "min-width": "0",
+      "max-width": "100%"
+    },
+    "[data-slot=\"tablist\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "flex-wrap": "nowrap",
+      "align-items": "center",
+      "justify-content": "flex-start",
+      "position": "relative",
+      "min-width": "0",
+      "max-width": "100%",
+      "width": "fit-content",
+      "flex": "0 1 auto"
+    },
+    "[data-slot=\"tab\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "appearance": "none",
+      "-webkit-appearance": "none",
+      "margin": "0",
+      "border": "none",
+      "background": "none",
+      "color": "inherit",
+      "font": "inherit",
+      "text-align": "left",
+      "white-space": "pre",
+      "max-width": "100%"
+    },
+    "[data-slot=\"tab-trigger\"]": {
+      "all": "unset",
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex": "1",
+      "overflow": "hidden",
+      "min-width": "0"
+    },
+    "[data-slot=\"tab-trigger\"]::before": {
+      "content": "\"\"",
+      "position": "absolute",
+      "inset": "0"
+    },
+    "[data-slot=\"tab-trigger\"]:focus-visible": {
+      "outline": "none"
+    },
+    "[data-slot=\"tab-label\"]": {
+      "overflow": "hidden",
+      "text-overflow": "ellipsis",
+      "white-space": "nowrap"
+    },
+    "[data-slot=\"tab-icon\"]": {
+      "display": "inline-flex",
+      "flex-shrink": "0",
+      "align-items": "center",
+      "justify-content": "center",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"tab-icon\"] svg": {
+      "display": "block",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"tab-actions\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"tabs-indicator\"]": {
+      "position": "absolute",
+      "pointer-events": "none",
+      "left": "0",
+      "right": "0",
+      "bottom": "0"
+    },
+    "[data-slot=\"tabs-indicator\"][data-motion=\"slide\"]": {
+      "right": "auto"
+    },
+    "[data-slot=\"tab-overflow-button\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "margin": "0",
+      "border": "none",
+      "background": "none",
+      "color": "inherit",
+      "font": "inherit",
+      "cursor": "pointer"
+    },
+    "[data-slot=\"tab-overflow-button\"] svg": {
+      "display": "block",
+      "width": "1em",
+      "height": "1em"
+    },
+    "[data-slot=\"tab-overflow-list\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "top": "100%",
+      "left": "0",
+      "display": "flex",
+      "flex-direction": "column",
+      "overflow-y": "auto"
+    },
+    "[data-slot=\"tab-overflow-list\"] [data-slot=\"tab\"]": {
+      "justify-content": "flex-start",
+      "width": "100%",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"tab-overflow-list\"] [data-slot=\"tab-trigger\"]": {
+      "justify-content": "flex-start"
+    },
+    "[data-slot=\"tab-overflow-list\"] [data-slot=\"tabs-indicator\"]": {
+      "display": "none"
+    },
+    "[data-slot=\"tab-panel\"]": {
+      "box-sizing": "border-box",
+      "min-width": "0"
+    },
+    "[data-slot=\"tab-panel\"][hidden]": {
+      "display": "none"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.tab-bar",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "tabBar",
+      "note": "A wrapper AROUND the tablist that can carry a full-width bottom rule and horizontal inset padding. Salt: a real exported component, TabBar, rendering an outer div plus an inner .saltTabBar-strip, with `divider` and `inset` boolean props (both default FALSE, although every site example passes them). shadcn: NONE — TabsList is the outermost list element and there is no bar wrapper anywhere in tabs.tsx. M3: the divider-height (1px) / divider-color (surface-variant) pair describes exactly this rule, so the part is on [S for the tokens, R for the element]; note both tokens arrive @deprecated in `latest` ('Use standalone divider component instead of nested tokens') and are ABSENT from v0.192."
+    },
+    {
+      "id": "structure.tab-shell",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "tabShell",
+      "note": "How many elements one tab is, and it is not cosmetic. Salt: `wrapper` — <Tab> is a role=\"presentation\" DIV that carries EVERY box style (border, padding, min-height, background, the ::after indicator, the focus outline) and <TabTrigger> is the role=\"tab\" BUTTON inside it, declared `all: unset; flex: 1` with a `::before { position:absolute; inset:0 }` so a press anywhere on the tab still activates it. The split exists so TabAction buttons can sit INSIDE the tab but OUTSIDE the button (nested interactive content in a button is invalid HTML) — Salt's own accessibility.mdx cites the W3C 'Tabs with Action Buttons' example and the aXe aria-required-children warning it triggers. shadcn/Radix: `single` — Primitive.button IS the tab. M3 [R]: single. The skeleton branches; both shells keep the box styles on [data-slot=\"tab\"] so no style row has to know which shell it is in."
+    },
+    {
+      "id": "structure.active-indicator",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "activeIndicator",
+      "note": "All three mark the selected tab with a rule on one edge. Salt: .saltTab::after, height --salt-size-indicator (2/3/4/5px by density), inset 1px past each side. shadcn: after:h-0.5 (2px) at bottom-[-5px], full bleed. M3: the active-indicator-* family — height 3px (primary) / 2px (secondary), colour md-sys-color.$primary. What differs is WHICH EDGE and BY WHAT MECHANISM — see structure.indicator-motion and style.indicator.edge@contained."
+    },
+    {
+      "id": "structure.indicator-motion",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "indicatorMotion",
+      "note": "THREE GENUINELY DIFFERENT MECHANISMS, modelled as an axis rather than collapsed into one underline with a colour delta (docs/TOOLTIP-MATRIX.md's arrow lesson, restated for tabs). `static` (Salt): a ::after pseudo-element on EVERY tab, painted only in the hover / focus-visible / selected states; Tab.css contains no transition or animation of any kind, so the mark jumps. `fade` (shadcn): also a per-tab ::after, but it is ALWAYS painted (bg-foreground) and hidden with `after:opacity-0`, then revealed by `group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100` under `after:transition-opacity` — it cross-fades in place. `slide` (M3) [R]: ONE indicator element in the strip that measures the selected tab and translates to it. The skeleton renders a per-tab span for static/fade and a single measured span for slide; the measured value is written INLINE ON THE INDICATOR, never through a theme-scoped custom property (docs/SELECT-MATRIX.md finding 14), and the effect that measures it lists the selection state in its dependency array (docs/DIALOG-MATRIX.md's closing correction)."
+    },
+    {
+      "id": "structure.tab-icon",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "tabIcon",
+      "note": "All three. Salt: any @salt-ds/icons glyph placed inside TabTrigger (site/src/examples/tabs/WithIcon.tsx); the box comes from Icon.css's `--icon-size: max(calc(var(--salt-size-icon) * 1), 12px)`, NOT from anything in Tab.css. shadcn: `[&_svg:not([class*='size-'])]:size-4` plus pointer-events-none and shrink-0. M3: with-icon-icon-size 24px, with its own inactive/active/hover/focus/pressed colour tokens. DECLARED COMPOSITION — the glyphs belong to a future icon component; the skeleton renders a neutral placeholder."
+    },
+    {
+      "id": "structure.tab-actions",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "tabActions",
+      "note": "Salt only, and it is the reason structure.tab-shell exists. TabAction renders a composed <Button appearance=\"transparent\" sentiment=\"neutral\"> INSIDE the Tab div but beside the TabTrigger button, with tabIndex={focused || selected ? undefined : -1} so it joins the tab stop only on the active tab, and registers its id back up so TabTrigger can publish `aria-actions` (feature-detected via `'ariaActions' in HTMLElement.prototype`) and an `aria-description` of '<n> actions available'. shadcn and M3 have no equivalent. DECLARED COMPOSITION for the button itself."
+    },
+    {
+      "id": "structure.tab-badge",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "tabBadge",
+      "note": "Salt only — site/src/examples/tabs/WithBadge.tsx composes <Badge value={n} aria-hidden/> inside the TabTrigger next to an aria-hidden label, with the count folded into the trigger's aria-label instead. DECLARED COMPOSITION to the future `badge` component (its own row in docs/COMPONENTS.md); the skeleton renders a neutral count pill and models no badge style cell. shadcn and M3 have no badge-in-tab convention in source."
+    },
+    {
+      "id": "structure.overflow-menu",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "overflowMenu",
+      "note": "Salt only. TabList runs a real measurement pass (useOverflow over per-tab widths recorded by useRenderedTabWidth/getIntrinsicMeasuredWidth, a hidden .saltTabList-measureContainer, and a portal render mode that MOVES each tab's display:contents host element between slots) and collapses the tabs that no longer fit into a floating list behind an OverflowIcon button. The button is `role=\"tab\" tabIndex={-1}` with aria-expanded/aria-controls; the popup is a second `role=\"tablist\" aria-orientation=\"vertical\"`. shadcn has NO overflow affordance — a shadcn TabsList simply grows. M3 has no overflow token. Modelled here as a PART; if a canonical `overflow-menu` component is ever split out, the rows that migrate are structure.overflow-menu, behavior.overflow-navigation, style.overflow-list.box, style.overflow-item.box and style.overflow-item.background@hover — nothing else moves."
+    },
+    {
+      "id": "structure.panel",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "panel",
+      "note": "All three: Salt TabPanel (role=tabpanel, aria-labelledby the tab id), shadcn TabsContent (Radix Content), M3 [R] — the tab token files describe the TAB ONLY and carry no panel token at all, which is itself worth recording: M3's `primary-navigation-tab` is a navigation control first and a panel switcher second."
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "role=\"tablist\" / role=\"tab\" / role=\"tabpanel\" in all three. Salt writes tablist on TabList's div, tab on the TabTrigger BUTTON (not on the Tab div, which is role=\"presentation\"), tabpanel on TabPanel. Radix writes tablist on the List, tab on Primitive.button, tabpanel on Content. M3 [R] per APG."
+    },
+    {
+      "id": "behavior.roving-tabindex",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "rovingTabindex",
+      "note": "All three: exactly one tab is in the page tab order. Salt computes it itself — TabTrigger's `isTabStop = !hidden && (focused || selected || active || fallbackTabStop)` where fallbackTabStop is `!hasSelectedTab && location === 'main' && order === 0`, i.e. the FIRST tab takes the stop when nothing is selected yet. Radix delegates to @radix-ui/react-roving-focus (RovingFocusGroup.Item active={isSelected}). M3 [R] per APG."
+    },
+    {
+      "id": "behavior.arrow-keys",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "arrowKeys",
+      "note": "A REAL divergence. Salt is `horizontal` and hard-coded: TabList's handleKeyDown has an actionMap of exactly { ArrowRight: getNext, ArrowLeft: getPrevious, Home: getFirst, End: getLast } — there is no Up/Down branch on the strip at all, and TabList always composes withBaseName('horizontal') with no vertical counterpart in TabList.css. Up/Down are claimed by the OVERFLOW menu instead (TabTrigger handles ArrowDown/ArrowUp/Home/End only when location === 'overflow'), which is why Salt's own accessibility.mdx documents Left/Right for the bar and Up/Down for the overflow list. shadcn is `orientation`: RovingFocusGroup receives context.orientation, so Left/Right when horizontal and Up/Down when vertical. M3 [R]: horizontal, per APG's horizontal tablist."
+    },
+    {
+      "id": "behavior.home-end",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "homeEnd",
+      "note": "All three. Salt: Home -> getFirst, End -> getLast in TabList's actionMap, documented in accessibility.mdx. shadcn: RovingFocusGroup's own Home/End handling. M3 [R] per APG."
+    },
+    {
+      "id": "behavior.wrap",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "wrapNavigation",
+      "note": "Both live systems wrap, by two different opt-ins. Salt: `useCollection({ targetWindow, wrap: true })` — the wrap is hard-coded true at the call site, and getNext/getPrevious do `(index + 1) % items.length`. shadcn: TabsList's own `loop = true` default, passed to RovingFocusGroup. M3 [R]: APG makes wrapping optional and recommends it; recorded as on with the reason stated."
+    },
+    {
+      "id": "behavior.activation-mode",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "activationMode",
+      "note": "THE headline behavioural divergence of this component, and it is invisible in a screenshot. Salt is MANUAL: TabList's arrow handler calls `nextItem.element?.focus({ preventScroll: true })` and nothing else, and TabTrigger's onFocus only records activeTab — selection happens in handleClick and in handleKeyDown's Enter/Space branch. Arrowing across a Salt tab bar changes NO panel. shadcn/Radix is AUTOMATIC BY DEFAULT: `activationMode = ActivationMode.Automatic` in Tabs, and TabsTrigger's onFocus does `if (!isSelected && !disabled && isAutomaticActivation) context.onValueChange(value)` — arrowing across a shadcn tab bar swaps the panel on every step. Radix exposes the prop, so shadcn's cell is a two-value list with the SOURCE DEFAULT FIRST. M3 [R]: automatic, per APG's recommendation for panels that are cheap to render; flagged, not grepped."
+    },
+    {
+      "id": "behavior.disabled-navigation",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "disabledNavigation",
+      "note": "SOURCED NON-CONVERGENCE, and the two answers are opposite. Salt keeps a disabled tab REACHABLE: Tab sets `aria-disabled` (not the native `disabled` attribute), TabTrigger still renders tabIndex 0/-1 by the same rule as any other tab, and useCollection's getNavigableItems filters ONLY on `location === 'hidden'` and the presence of an element — never on disabled. So arrow keys land on a disabled Salt tab; it just cannot be activated (onClick is undefined and handleKeyDown preventDefaults Enter/Space). shadcn SKIPS it: RovingFocusGroup.Item gets `focusable={!disabled}` and the button carries the real `disabled` attribute, so it is out of the roving order entirely. M3: OFF — there is no disabled token of any kind in either tab file, so no claim is made."
+    },
+    {
+      "id": "behavior.pointer-activation",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "pointerActivation",
+      "note": "Salt selects on CLICK (TabTrigger's handleClick). Radix selects on MOUSEDOWN, with a guard and a documented ordering fix: `if (!disabled && event.button === 0 && event.ctrlKey === false) { event.currentTarget.focus(); context.onValueChange(value) } else { event.preventDefault() }` — it focuses the trigger BEFORE changing the value, because the active tab's element can be removed from the DOM before its blur fires and focus would be lost to the document (radix-ui/primitives#3600). M3 [R]: click. Reproduced as two branches rather than normalised, because the ordering is load-bearing for shadcn."
+    },
+    {
+      "id": "behavior.controls",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Every tab points at its panel with aria-controls, by two different wirings. Salt uses a CONTEXT REGISTRY: TabPanel calls registerPanel(id, value) into a value->panelId Map held by Tabs, and TabTrigger reads it back with getPanelId(value) — so aria-controls is UNDEFINED until the panel mounts, and a Salt tab bar rendered without panels has no aria-controls at all. Radix DERIVES both ids from one baseId (`${baseId}-trigger-${value}` / `${baseId}-content-${value}`), so the attribute is always present whether or not a panel exists. M3 [R] per APG."
+    },
+    {
+      "id": "behavior.labelled-by",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Every panel is named by its tab. Salt: TabPanel reads getTabId(value) out of the same registry and sets aria-labelledby. Radix: makeTriggerId(baseId, value). M3 [R] per APG. The mirror image of behavior.controls, and it fails the same way in Salt if the tab is unmounted (an overflowed tab in portal render mode keeps its id, which is why Salt moves the tab's display:contents host rather than re-rendering it)."
+    },
+    {
+      "id": "behavior.panel-focusable",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "panelFocusable",
+      "note": "Salt is CONDITIONAL and measures: TabPanel runs `tabbable(element)` (the tabbable package) behind a rAF-debounced MutationObserver watching childList/subtree/attributes, and sets `tabIndex={hidden || hasFocusableChildren ? undefined : 0}` — a panel that contains its own controls is NOT a tab stop, an empty one is. shadcn/Radix is ALWAYS: Content hard-codes tabIndex={0} regardless of contents. M3 [R]: conditional, which is what APG actually prescribes ('if the tab panel does not contain any focusable elements, the panel itself should be focusable'). So the two live systems land on opposite sides of one spec sentence, exactly as they did for aria-modal on dialog."
+    },
+    {
+      "id": "behavior.panel-mounting",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "panelMounting",
+      "note": "Salt keeps every panel MOUNTED and hides it: TabPanel always renders and sets the `hidden` attribute plus `.saltTabPanel[hidden] { display: none }` — panel state, scroll position and uncontrolled inputs survive a tab change. Radix UNMOUNTS: `<Presence present={forceMount || isSelected}>` and `{present && children}`, so an inactive panel's subtree is destroyed unless the consumer opts into forceMount. M3 [R]: hidden. A real DOM branch in the skeleton, not a display toggle."
+    },
+    {
+      "id": "behavior.scroll-into-view",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "scrollIntoView",
+      "note": "Salt only: TabTrigger's handleFocus ends with `event.currentTarget.parentElement?.scrollIntoView({ block: 'nearest', inline: 'nearest' })` — note it scrolls the PARENT (the Tab div), not the button, so the tab's border and indicator come into view with it, and the TabList's arrow handler deliberately focuses with `{ preventScroll: true }` so this handler is the only thing that scrolls. shadcn and M3 have no such affordance; a Radix tab that overflows its list is simply not scrolled to."
+    },
+    {
+      "id": "behavior.overflow-navigation",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, and a DECLARED GAP. The real implementation is a @floating-ui/react popup (offset(1), a size() middleware writing `maxHeight: max(calc((size-base + spacing-100) * 5), availableHeight - spacing-100)` inline, flip(), shift({padding: 8})) plus useClick/useDismiss, a ResizeObserver that closes the menu the moment the strip is resized, a Shift+Tab branch that closes the menu and returns focus to the overflow button, and ArrowUp/ArrowDown/Home/End handled by the layout context instead of the strip. The skeleton reproduces the OBSERVABLE contract — a button that opens a vertical role=tablist, Up/Down/Home/End inside it, Escape and outside-press to close, selection commits and closes — with a plain absolutely-positioned list and no collision detection, flip or viewport clamp. Declared, not silently approximated."
+    },
+    {
+      "id": "prop.appearance",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "appearance",
+      "note": "Whether the SELECTED tab is a filled container or only an edge rule — a two-way axis two of the three systems have, under two different names, with the same default on both sides. Salt: TabListProps.appearance?: 'bordered' | 'transparent', default 'bordered' -> `contained` / `plain`. shadcn: tabsListVariants' variant?: 'default' | 'line', default 'default' -> `contained` / `plain`. M3: `plain` only — neither tab file has a selected container colour, and container-color (surface) belongs to the whole strip, so an M3 tab is never filled. Listed DEFAULT FIRST in both live columns, per the convention select.shadcn.json set: the skeleton and the harness both take value[0] as the resting state."
+    },
+    {
+      "id": "prop.emphasis",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "emphasis",
+      "note": "M3 only — the primary/secondary split, modelled as ONE canonical component with a variant axis exactly as button modelled filled/outlined/text and select modelled filled/outlined. The two token files diverge in five sourced places and nowhere else: active-indicator-height 3px vs 2px; active-indicator-shape `3px 3px 0px 0px` vs (absent in the token file, and supplied as `0` by material-web's own tokens/_md-comp-secondary-tab.scss `_add-missing-secondary-tokens()`); the ACTIVE label colour primary vs on-surface; the ACTIVE icon colour primary vs on-surface; and the active-state STATE LAYERS, which primary splits into an active set coloured `primary` and an inactive set coloured `on-surface` while secondary has one set coloured on-surface throughout. Secondary additionally declares container-shadow-color (md-sys-color.$shadow) which primary does not — and which material-web then lists under $unsupported-tokens. No source default is declared between the two; listed in the spec's own order."
+    },
+    {
+      "id": "prop.orientation",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "orientation",
+      "note": "shadcn only has a real two-value axis: Tabs takes orientation = 'horizontal' (default) and passes it to Radix, which drives the roving group's arrow keys, and the file carries five vertical style branches (`group-data-[orientation=vertical]/tabs:flex-col` on the root, `h-fit flex-col` on the list, `w-full justify-start` on the trigger, and an indicator that moves from `inset-x-0 bottom-[-5px] h-0.5` to `inset-y-0 -right-1 w-0.5`). Salt is horizontal-only: TabList hard-codes withBaseName('horizontal') and TabList.css has no vertical rule; the only vertical tablist in Salt is the OVERFLOW popup, which is a different element. M3 [R]: horizontal — there is no orientation token, and the primary/secondary tab families are the horizontal strip; M3's vertical answer is navigation-rail, a different component (out of scope). Listed default-first."
+    },
+    {
+      "id": "prop.active-color",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "activeColor",
+      "note": "Salt only: TabListProps.activeColor?: 'primary' | 'secondary' | 'tertiary', default 'primary'. It does not colour the indicator — it reassigns ONE custom property, `--saltTabList-activeColor`, which exactly one rule consumes: the selected tab's background under the bordered appearance. That is the source's own indirection (docs/INPUT-MATRIX.md finding 3's pattern) and it is reproduced rather than expanded into three copies of the background rule. Listed DEFAULT FIRST. shadcn and M3 have no equivalent."
+    },
+    {
+      "id": "prop.divider",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "divider",
+      "note": "Salt: TabBarProps.divider?: boolean, 'Styling variant with a bottom separator. Defaults to false' — every site example nevertheless passes it. M3: not a prop but a pair of tokens, divider-height 1px / divider-color surface-variant, so the rule is always on where it exists; NOTE both arrive @deprecated in `latest` ('Use standalone divider component instead of nested tokens') and are ABSENT from v0.192 entirely. shadcn: OFF — no rule under the list anywhere in tabs.tsx."
+    },
+    {
+      "id": "prop.inset",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "inset",
+      "note": "Salt only: TabBarProps.inset?: boolean, 'Styling variant with left and right padding. Defaults to false' -> padding-left/right var(--salt-spacing-300) = 12/24/36/48px by density. It pads the BAR, so the divider still runs full width beneath the inset tabs — which is the whole point of having the bar be a separate element. shadcn and M3 have no equivalent."
+    },
+    {
+      "id": "prop.disabled",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "disabled",
+      "note": "Salt: TabProps.disabled?: boolean, expressed as aria-disabled (see behavior.disabled-navigation). shadcn: Radix TabsTrigger's `disabled = false`, the native attribute. M3: OFF — CONFIRMED ABSENCE. Neither _md-comp-primary-navigation-tab.scss nor _md-comp-secondary-navigation-tab.scss contains a single disabled-* token in either edition, unusual for an M3 component family and recorded rather than filled in from the 0.38 convention."
+    },
+    {
+      "id": "slot.tab-label",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in all three. Salt's is the TabTrigger's children; shadcn's the Trigger's children; M3's the with-label-text-* / label-text-* families, which are tokens with no element."
+    },
+    {
+      "id": "slot.tab-icon",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned in all three. DECLARED COMPOSITION to a future icon component."
+    },
+    {
+      "id": "slot.tab-actions",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, consumer-owned. DECLARED COMPOSITION — TabAction IS a <Button appearance=\"transparent\" sentiment=\"neutral\">."
+    },
+    {
+      "id": "slot.panel-content",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in all three; no system styles the panel's contents."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION, same pattern as CALENDAR-MATRIX.md's nav buttons: (a) an ICON set — Salt's @salt-ds/icons glyphs and its semantic-icon-provider OverflowIcon, shadcn's lucide glyphs, M3's with-icon glyph; (b) `badge`, its own canonical row, composed inside a Salt tab; (c) `button`, for Salt's TabAction and its overflow trigger, both literally <Button appearance=\"transparent\">; (d) the FLOATING ENGINE behind Salt's overflow popup (see behavior.overflow-navigation); (e) `divider`, which M3's own deprecation comment says should replace the nested divider tokens used here. None is imported by this skeleton; all render as neutral placeholders."
+    },
+    {
+      "id": "state.selected",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "the primary state in all three, and the three do three different things with it. Salt: the ::after gains the accent colour, and under the bordered appearance the tab ALSO gains a container background and left/right borders — but its label colour and weight do not change at all. shadcn: the label goes from text-foreground/60 to text-foreground, and under the default variant the tab gains bg-background + shadow-sm. M3: the label and icon recolour (to primary or on-surface, per emphasis) and the indicator appears."
+    },
+    {
+      "id": "state.hover",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "All three, by three mechanisms. Salt hovers the INDICATOR, not the label: `.saltTab:hover::after { background: var(--salt-navigable-indicator-hover) }` -> palette-neutral, a GREY preview of where the accent mark will land — and the label colour never moves. shadcn hovers the LABEL only (`hover:text-foreground`), with no background at all in either variant. M3 draws a state layer (on-surface @ 8%) and recolours the label to on-surface."
+    },
+    {
+      "id": "state.focus-visible",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "All three, and all three put the ring in a different place. Salt: a 2px dotted accent-stronger outline on the TAB DIV (.saltTab-focusVisible), with TabTrigger.css explicitly killing the button's own (`:focus-visible { outline: none }`) — plus the same grey indicator preview hover gets. And the focus-visible flag is Salt's own, not the pseudo-class: Tab tracks wasMouseDown and only sets it when `event.target.getAttribute('role') === 'tab'`. shadcn: a 3px ring-ring/50 box-shadow, a border-ring recolour AND a 1px outline-ring — three layers. M3 (in `latest` only): focus-indicator-thickness 3px, focus-indicator-color secondary, focus-indicator-outline-offset -3px, i.e. an INSET ring."
+    },
+    {
+      "id": "state.disabled",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: cursor not-allowed, colour content-primary-foreground-disabled (40% black/white), and the hover/focus indicator preview is explicitly cancelled (`.saltTab-disabled:hover::after { background: none }`). shadcn: opacity 0.5 + pointer-events-none. M3: nothing — no disabled token exists."
+    },
+    {
+      "id": "state.pressed",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "M3 only, as a real token family (pressed-state-layer-color/-opacity, pressed-label-text-color, pressed-icon-color) — and note the oddity on primary: inactive-pressed-state-layer-color is `primary` while inactive-hover and inactive-focus are both `on-surface`, so an unselected M3 primary tab flashes the accent under the finger. Salt's main strip has no :active rule at all (only the OVERFLOW list does); shadcn has none."
+    },
+    {
+      "id": "state.overflowing",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only — the measured state behind structure.overflow-menu, with a `data-ismeasuring` attribute on the tablist during the measurement pass and a `:has([data-overflowbutton])` rule that reserves space for the button by capping every tab's max-width at `calc(100% - spacing-100 - size-base)`. Note the @supports guard around that rule in source."
+    },
+    {
+      "id": "style.tab-bar.divider",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-bar\"][data-divider]",
+      "cellIsDeclarations": true,
+      "note": "Salt: TabBar.css .saltTabBar-divider::before { inset: auto 0 0 0; height: var(--salt-size-fixed-100); border-bottom: var(--salt-size-fixed-100) solid var(--salt-separable-secondary-borderColor) } — a 1px rule on the FIXED size scale (density-invariant by design, docs/foundations/sizes.md) in alpha-contrast-medium, which is 30% black/white, a STRONGER divider than the tertiary 20% Salt's dialog and select use. M3: divider-height 1px, divider-color surface-variant — a solid opaque tone rather than an alpha, and @deprecated in `latest`/absent in v0.192. shadcn: OFF."
+    },
+    {
+      "id": "style.tab-bar.inset",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-bar\"][data-inset]",
+      "declarations": { "padding-inline": "$" },
+      "note": "Salt only: padding-left/right var(--salt-spacing-300) = 12/24/36/48px."
+    },
+    {
+      "id": "style.tablist.background",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"]",
+      "declarations": { "background": "$" },
+      "note": "Salt: `transparent`, DECLARED not merely absent — TabList.css writes `background: transparent` explicitly. shadcn: bg-muted, i.e. the tab strip is a grey TRAY that the selected tab sits in as a white pill. M3: container-color -> md-sys-color.$surface, the page surface itself. Three different ideas of what a tab strip is."
+    },
+    {
+      "id": "style.tablist.background@plain",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-appearance=\"plain\"]",
+      "declarations": { "background": "$" },
+      "note": "shadcn only: the line variant is `bg-transparent`, i.e. the tray disappears. Salt is already transparent in both appearances so the row is off; M3 has no contained appearance to differ from."
+    },
+    {
+      "id": "style.tablist.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"]",
+      "declarations": { "color": "$" },
+      "note": "shadcn only: `text-muted-foreground` on the LIST, which every trigger then overrides with text-foreground/60 — a base that is only visible on non-trigger children. Salt and M3 declare colour on the tab, not the list."
+    },
+    {
+      "id": "style.tablist.min-height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"]",
+      "cellIsDeclarations": true,
+      "note": "MIN-HEIGHT OR HEIGHT — the property itself differs, which is why this is a declarations cell. Salt: MIN-height calc(var(--salt-size-base) + var(--salt-spacing-100)) = 24/36/48/60px — the same expression its own select OPTION uses, so a Salt tab is exactly as tall as a Salt dropdown row. shadcn: h-9 = a real, definite HEIGHT of 36px, and it has to stay a height because the trigger's own `h-[calc(100%-1px)]` resolves against it — carrying it as min-height would leave the percentage indefinite and the pill would shrink to its text. M3: MIN-height container-height 48px — and note the sibling token primary alone carries, with-icon-and-label-text-container-height 64px, for the stacked icon+label layout."
+    },
+    {
+      "id": "style.tablist.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt: var(--salt-spacing-100) = 4/8/12/16px, so Salt tabs never touch. shadcn: OFF in the default variant — the pills are flush inside the tray. M3: OFF — no gap token; M3 tabs are flush and equal-width."
+    },
+    {
+      "id": "style.tablist.gap@plain",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-appearance=\"plain\"]",
+      "declarations": { "gap": "$" },
+      "note": "shadcn only: the line variant adds gap-1 = 4px. Salt's gap does not change with appearance; M3 has no such axis."
+    },
+    {
+      "id": "style.tablist.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"]",
+      "declarations": { "padding": "$" },
+      "note": "shadcn only: `p-[3px]` — an arbitrary-value 3px, not a scale step, which exists so the selected pill's rounded corner clears the tray's own. Salt and M3 give the strip no padding."
+    },
+    {
+      "id": "style.tablist.shape",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "shadcn only: rounded-lg -> --radius-lg -> --radius = 0.625rem = 10px, the FULL radius — the same stop its dialog panel uses and a step above the --radius-md its own trigger takes. Salt and M3 have square strips (M3's container-shape is corner-none, declared and zero)."
+    },
+    {
+      "id": "style.tablist.shape@plain",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-appearance=\"plain\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "shadcn only: `data-[variant=line]:rounded-none` — with no tray there is nothing to round."
+    },
+    {
+      "id": "style.tablist.orientation@vertical",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tabs\"][data-orientation=\"vertical\"] [data-slot=\"tablist\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: `group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col`. Salt has no vertical mode; M3's vertical answer is a different component."
+    },
+    {
+      "id": "style.tab.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "font": "$" },
+      "note": "Salt: the plain BODY ramp at regular weight — Tab.css sets font-weight: var(--salt-text-fontWeight) (400), font-family openSans, font-size/line-height 11/14 - 12/16 - 14/18 - 16/20 by density. Salt is the only one of the three that does NOT bold its tabs. shadcn: text-sm font-medium = 500 0.875rem/1.25rem. M3: title-small = Roboto weight-medium 500, 0.875rem/1.25rem — identical numbers to shadcn, reached through a named typescale role rather than two utilities."
+    },
+    {
+      "id": "style.tab.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "letter-spacing": "$" },
+      "note": "Salt: 0 (--salt-text-letterSpacing, declared on .saltTab itself). M3: title-small-tracking 0.00625rem — and NOTE material-web's own tokens/_md-comp-{primary,secondary}-tab.scss list `label-text-tracking` and `label-text-type` under $unsupported-tokens, so the shipped library drops it. This column takes the generated token's value and records the disownment, the same resolution SELECT-MATRIX.md finding 6 and DIALOG-MATRIX.md finding 8 reached. shadcn: off, no tracking utility."
+    },
+    {
+      "id": "style.tab.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "color": "$" },
+      "note": "The resting label colour, and the three systems disagree about how loud an UNSELECTED tab should be. Salt: content-primary-foreground — FULL-STRENGTH black/white, no de-emphasis at all. shadcn: text-foreground/60, i.e. 60% of the foreground in light mode, and `dark:text-muted-foreground` in dark — a light/dark asymmetry in the mechanism, not just the value. M3: on-surface-variant, a genuinely different colour role."
+    },
+    {
+      "id": "style.tab.height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: min-height calc(size-base + spacing-100), the same expression as the strip, so the tab fills it. shadcn: `h-[calc(100%-1px)]` — a real HEIGHT tied to the tray, one pixel short of it, so the pill never touches the tray's edge. M3: min-height container-height 48px."
+    },
+    {
+      "id": "style.tab.min-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "min-width": "$" },
+      "note": "Salt only: `min-width: 4em` — a bare em literal with no override variable, the same floor its own Dropdown declares (SELECT-MATRIX.md recorded it there). Em-relative, so it already tracks the density-driven font size and is not a frozen density snapshot. shadcn sizes tabs by flex:1 instead; M3 has no min-width token (m3.material.io's published 90px minimum is spec, not token, and is not claimed here)."
+    },
+    {
+      "id": "style.tab.flex",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "flex": "$" },
+      "note": "shadcn only: `flex-1` on the trigger, so shadcn tabs divide the tray equally and a two-tab list is two half-width pills. Salt is `flex-shrink: 0` and content-sized (in base); M3 has no token, and its tabs are equal-width by spec but with nothing to source that from."
+    },
+    {
+      "id": "style.tab.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt: var(--salt-spacing-50) var(--salt-spacing-100) = 2/4 - 4/8 - 6/12 - 8/16 px by density. shadcn: py-1 px-2 = 4px 8px — the identical numbers to Salt at medium density, by coincidence of scale rather than by shared source. M3: [R] `0 16px` — CONFIRMED ABSENCE of any spacing token in either tab file in either edition; the 16px is m3.material.io's published tab label inset, flagged on the cell exactly as TOOLTIP-MATRIX.md flagged M3's plain-tooltip padding, with no token name invented for it."
+    },
+    {
+      "id": "style.tab.gap",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"], [data-slot=\"tab-trigger\"]",
+      "declarations": { "gap": "$" },
+      "note": "The icon-to-label step. Salt declares var(--salt-spacing-100) on BOTH .saltTab and .saltTabTrigger — one token, two declarations, because the wrapper shell means content can sit at either level; the selector here reproduces that. shadcn: gap-1.5 = 6px, an odd half-step. M3: [R] 8px, same declared borrow as the padding."
+    },
+    {
+      "id": "style.tab.shape",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "shadcn only: rounded-md -> --radius-md -> --radius * 0.8 = 0.5rem = 8px, a smaller stop than the tray's 10px so the pill nests. Salt tabs are square (no radius rule in Tab.css). M3: container-shape -> corner-none = 0px, declared and zero, which is not the same as absent."
+    },
+    {
+      "id": "style.tab.border",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "cellIsDeclarations": true,
+      "note": "Both live systems reserve a transparent border so the box does not jump when the selected state adds one — the same reserve trick Salt's dialog uses for its scroll dividers. Salt reserves only the SIDES: `border: none; border-left: 1px solid transparent; border-right: 1px solid transparent` (size-fixed-100, density-invariant). shadcn reserves all four: `border border-transparent`. M3: OFF, no border token."
+    },
+    {
+      "id": "style.tab.overflow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "overflow": "$" },
+      "note": "Salt only: `overflow: hidden` on .saltTab. Worth stating because it interacts with the indicator: Tab.css positions the ::after at left/right -1px to cover the reserved side borders, and this rule then clips exactly that 1px back off — reproduced as source has it rather than 'corrected'. shadcn must NOT have it, because its indicator sits at bottom: -5px, outside the tab."
+    },
+    {
+      "id": "style.tab.cursor",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "cursor": "$" },
+      "note": "Salt only: var(--salt-cursor-hover) -> pointer. shadcn and M3 leave the platform default, which for a <button> is the arrow."
+    },
+    {
+      "id": "style.tab.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]",
+      "declarations": { "transition": "$" },
+      "note": "shadcn only: `transition-all`, i.e. every animatable property, with Tailwind's default 150ms / cubic-bezier(0.4,0,0.2,1) [R] since Tailwind is not vendored in this clone — the same caveat select.shadcn.json and dialog.shadcn.json record. Salt: CONFIRMED ABSENCE — Tab.css, TabList.css, TabTrigger.css and TabBar.css contain no transition or animation rule of any kind. M3: no motion token on either tab file."
+    },
+    {
+      "id": "style.tab.orientation@vertical",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tabs\"][data-orientation=\"vertical\"] [data-slot=\"tab\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: `group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start`."
+    },
+    {
+      "id": "style.tab.color@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]:where(:not([data-disabled])):hover",
+      "declarations": { "color": "$" },
+      "note": "shadcn: hover:text-foreground (and dark:hover:text-foreground) — the label goes to full strength. M3: hover-label-text-color -> on-surface, the same move by a different name. Salt: OFF — CONFIRMED ABSENCE. Tab.css's only :hover rule targets the ::after; a hovered Salt tab's LABEL does not change, because it was already full-strength black. The :where() guard adds no specificity so the selected and focus rows can still win on order."
+    },
+    {
+      "id": "style.tab.color@selected",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"][data-state=\"active\"]",
+      "declarations": { "color": "$" },
+      "note": "shadcn: data-[state=active]:text-foreground. M3: with-label-text-active-label-text-color -> primary (primary emphasis; the secondary emphasis row below reassigns it to on-surface). Salt: OFF — CONFIRMED ABSENCE, and it is the finding of this section. `.saltTab-selected` in Tab.css sets a background, two border colours and the ::after fill; it does not touch `color` and it does not touch `font-weight`. A Salt tab's text is identical selected and unselected."
+    },
+    {
+      "id": "style.tab.selected-fill@contained",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-appearance=\"contained\"] [data-slot=\"tab\"][data-state=\"active\"]",
+      "cellIsDeclarations": true,
+      "note": "The other half of prop.appearance: under the CONTAINED appearance the selected tab becomes a filled container. Salt: `background: var(--saltTabList-activeColor)` (the one property prop.active-color reassigns) PLUS left and right borders recoloured from transparent to separable-secondary-borderColor, so the tab reads as a card joined to the panel. shadcn: `bg-background` + `shadow-sm`, with a dark-mode-only pair (`dark:border-input dark:bg-input/30`) that this column pushes into the slots block rather than smuggling into the cell — the same light/dark asymmetry SELECT-MATRIX.md finding 2 had to handle. M3: OFF, it has no contained appearance."
+    },
+    {
+      "id": "style.tab.state-layer@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]:where(:not([data-disabled])):hover",
+      "cellIsDeclarations": true,
+      "note": "M3 only: hover-state-layer-color -> on-surface at hover-state-layer-opacity 0.08. Drawn as `background-image: linear-gradient(<layer>, <layer>)` so it composites OVER any background-color rather than replacing it — the mechanism select.m3.json established. Salt and shadcn have no hover background on a tab at all."
+    },
+    {
+      "id": "style.tab.state-layer@focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"][data-focus-visible]",
+      "cellIsDeclarations": true,
+      "note": "M3 only: focus-state-layer-color -> on-surface at focus-state-layer-opacity, which in `versions/latest` is 0.1 (see the edition note — v0.192 has 0.12, and docs/foundations/state-layers.md quotes the v0.192 pair without saying which edition it read). NOTE material-web's own hand-authored tab files list focus-state-layer-color and -opacity under $unsupported-tokens; the generated token's value is taken here and the disownment recorded."
+    },
+    {
+      "id": "style.tab.state-layer@selected-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"][data-state=\"active\"]:where(:not([data-disabled])):hover",
+      "cellIsDeclarations": true,
+      "note": "M3 only, and it is the sharpest primary/secondary divergence after the indicator: active-hover-state-layer-color is `primary` on the primary tab and `on-surface` on the secondary tab, both at 0.08. Expressed through the --layer-active indirection so prop.emphasis reassigns one property instead of duplicating the rule."
+    },
+    {
+      "id": "style.tab.focus",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"][data-focus-visible]",
+      "cellIsDeclarations": true,
+      "note": "Three rings, three mechanisms. Salt: `outline: var(--salt-focused-outline)` = 2px dotted palette-accent-stronger, on the TAB DIV — and TabTrigger.css sets `:focus-visible { outline: none }` on the button so the ring is never drawn twice. shadcn: THREE layers at once — `focus-visible:border-ring` recolours the reserved border, `focus-visible:ring-[3px] focus-visible:ring-ring/50` is a 3px translucent box-shadow, and `focus-visible:outline-1 focus-visible:outline-ring` adds a solid 1px outline on top. M3 (`latest` only): focus-indicator-thickness 3px solid focus-indicator-color secondary at focus-indicator-outline-offset -3px, i.e. an INSET ring — the whole family is absent from v0.192, which is one of the two reasons for the edition pin."
+    },
+    {
+      "id": "style.tab.disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"][data-disabled]",
+      "cellIsDeclarations": true,
+      "note": "Salt: cursor not-allowed plus content-primary-foreground-disabled (black/white at 40%) — a colour change, and note Salt does NOT set pointer-events: none, because a disabled Salt tab is still arrow-reachable. shadcn: `disabled:pointer-events-none disabled:opacity-50` — one blanket dim, and it does remove the tab from the pointer entirely. M3: OFF, no disabled token."
+    },
+    {
+      "id": "style.tab.active-color@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-active-color=\"secondary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. TabList.css `.saltTabList-activeColorSecondary { --saltTabList-activeColor: var(--salt-container-secondary-background) }` -> marble / granite. The source's own single-property indirection, reproduced rather than expanded (docs/INPUT-MATRIX.md finding 3)."
+    },
+    {
+      "id": "style.tab.active-color@tertiary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-active-color=\"tertiary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — container-tertiary-background -> limestone / leather."
+    },
+    {
+      "id": "style.tab.emphasis@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-emphasis=\"secondary\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only. One rule reassigning the three properties the primary/secondary split actually moves on the TAB: the active label colour (primary -> on-surface), the active icon colour (primary -> on-surface) and the active-state state-layer colour (primary -> on-surface). The indicator half of the split is style.indicator.emphasis@secondary."
+    },
+    {
+      "id": "style.indicator.size",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"tabs-indicator\"]",
+      "declarations": { "height": "$" },
+      "note": "Salt: var(--salt-size-indicator) = 2/3/4/5px by density — FROZEN-TOKEN CHECK: size-indicator is on the DENSITY scale (foundations/size.css), not the fixed scale, so Salt's mark really does thicken as the theme loosens, and snapshotting the medium 3px would have been wrong at three of four densities. shadcn: h-0.5 = 2px, density-invariant. M3: active-indicator-height 3px on primary, 2px on secondary (the emphasis row reassigns it) — so M3's primary indicator and Salt's medium-density indicator are the same 3px by two unrelated routes."
+    },
+    {
+      "id": "style.indicator.edge",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"tabs-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Where the mark sits, horizontally and vertically. Salt: `left: -1px; right: -1px; bottom: 0` — the negative inset covers the reserved 1px side borders (and is then clipped back by style.tab.overflow, faithfully). shadcn: `left: 0; right: 0; bottom: -5px` — the mark sits five pixels BELOW the tab, outside its box, so it aligns with the bottom of the tray rather than the bottom of the pill. M3: flush, `left: 0; right: 0; bottom: 0`. Note this is the BOTTOM edge for all three by default; Salt's contained appearance moves it to the top, which is the next row."
+    },
+    {
+      "id": "style.indicator.edge@contained",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-appearance=\"contained\"] [data-slot=\"tabs-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "SALT ONLY, and it is a structural surprise worth stating plainly: Salt's DEFAULT appearance puts the active mark on the TOP edge of the tab, not the bottom. Tab.css is explicit — `.saltTabList-bordered .saltTab::after { top: 0 }` against `.saltTabList-transparent .saltTab::after { bottom: 0 }`. So a default Salt tab set is a row of top-marked cards joined to the panel below, and the familiar underline only appears in the transparent appearance. shadcn's contained (default) variant keeps its indicator at the bottom and simply hides it; M3 has no contained appearance."
+    },
+    {
+      "id": "style.indicator.shape",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tabs-indicator\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "M3 only: active-indicator-shape `3px 3px 0px 0px` on the primary tab — the mark's TOP corners are rounded to its own height, which only makes sense because the mark sits at the bottom of the tab and reads as a rising tab-shaped stub. The secondary tab has NO such token in the generated file; material-web's own tokens/_md-comp-secondary-tab.scss supplies `'active-indicator-shape': 0` in _add-missing-secondary-tokens(), which the emphasis row carries. Salt and shadcn draw square marks."
+    },
+    {
+      "id": "style.indicator.rest",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"tabs-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "How the mark is hidden when the tab is not selected, and the two mechanisms are why structure.indicator-motion is an axis. Salt: `background: transparent` — the ::after has no background rule at all until a state adds one, so there is nothing to transition and the mark appears instantly. shadcn: the mark is ALWAYS painted `bg-foreground` and hidden with `opacity: 0`, which is what makes `after:transition-opacity` possible. M3 [R]: the single sliding indicator is painted only while a tab is selected, so its rest state is transparent."
+    },
+    {
+      "id": "style.indicator.background@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"]:where(:not([data-disabled])):hover [data-slot=\"tabs-indicator\"]",
+      "declarations": { "background": "$" },
+      "note": "SALT ONLY, and no other system has anything like it: `.saltTab:hover::after { background: var(--salt-navigable-indicator-hover) }` -> palette-neutral = gray-500, mode-invariant. Hovering a Salt tab draws a GREY ghost of the mark exactly where the blue one would land — a preview, not a highlight. shadcn moves the label colour instead; M3 draws a state layer. Explicitly cancelled on disabled tabs in source (`.saltTab-disabled:hover::after { background: none }`), which the :where(:not([data-disabled])) guard reproduces without adding specificity."
+    },
+    {
+      "id": "style.indicator.background@focus-visible",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"][data-focus-visible]:where(:not([data-disabled])) [data-slot=\"tabs-indicator\"]",
+      "declarations": { "background": "$" },
+      "note": "Salt only — the same grey preview, on the same rule in source (`.saltTab:hover::after, .saltTab-focusVisible::after`). Because Salt's arrow keys move focus WITHOUT selecting (behavior.activation-mode = manual), this preview is the entire visual feedback of arrowing across a Salt tab bar, which is why it cannot be dropped."
+    },
+    {
+      "id": "style.indicator.selected",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"tab\"][data-state=\"active\"] [data-slot=\"tabs-indicator\"], [data-slot=\"tabs-indicator\"][data-motion=\"slide\"]",
+      "cellIsDeclarations": true,
+      "note": "The mark, painted. Salt: var(--salt-navigable-accent-indicator-active) -> palette-accent -> blue-500, mode-invariant. shadcn: `opacity: 1` — the colour was already there, only the opacity moves; that is the fade mechanism. M3: active-indicator-color -> md-sys-color.$primary. The second selector branch carries the `slide` mechanism, where the indicator is a single element outside any tab and is therefore never a descendant of [data-state=active]."
+    },
+    {
+      "id": "style.indicator.selected@contained",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-appearance=\"contained\"] [data-slot=\"tab\"][data-state=\"active\"] [data-slot=\"tabs-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only, and it must come AFTER style.indicator.selected to win on order: shadcn reveals the underline ONLY in the line variant (`group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100`), so in the default variant the selected pill has a fully-formed but invisible indicator underneath it. Restating opacity: 0 here reproduces that rather than leaving the base row to leak. Salt's contained appearance shows its mark (on the top edge); M3 has no contained appearance."
+    },
+    {
+      "id": "style.indicator.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tabs-indicator\"]",
+      "declarations": { "transition": "$" },
+      "note": "Salt: OFF — CONFIRMED ABSENCE, no transition anywhere in the tabs CSS. shadcn: `after:transition-opacity`, Tailwind's default 150ms cubic-bezier(0.4,0,0.2,1) [R] (not vendored). M3 [R]: the sliding indicator's transform, borrowed from docs/foundations/motion.md's medium2 (300ms) + standard easing cubic-bezier(0.2,0,0,1) as a principled placeholder — no motion token exists on either tab file, and the borrow is flagged rather than presented as sourced."
+    },
+    {
+      "id": "style.indicator.emphasis@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tablist\"][data-emphasis=\"secondary\"] [data-slot=\"tabs-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only: the indicator half of prop.emphasis — height 3px -> 2px and shape `3px 3px 0 0` -> 0. The height is a real generated token; the shape is material-web's own _add-missing-secondary-tokens() filling a gap the generated file leaves, recorded as such."
+    },
+    {
+      "id": "style.indicator.orientation@vertical",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tabs\"][data-orientation=\"vertical\"] [data-slot=\"tabs-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: the mark rotates from a bottom rule to a right rule — `inset-y-0 -right-1 w-0.5` = top/bottom 0, right -4px, width 2px, height auto. Note the offset changes too (-5px horizontally, -4px vertically); reproduced as source has it."
+    },
+    {
+      "id": "style.tab-icon.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-icon\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: NOTHING in Tab.css sizes the glyph — it comes from Icon.css's `--icon-size: max(calc(var(--salt-size-icon) * 1), 12px)`, so 12/12/14/16px by density with a 12px FLOOR (source comment: 'Icons should never be smaller than 12px for readability'). The high-density value is a live clamp, not a frozen literal — the same finding SELECT-MATRIX.md finding 9 recorded for the chevron, re-verified here rather than assumed. shadcn: `[&_svg:not([class*='size-'])]:size-4` = 16px, density-invariant. M3: with-icon-icon-size 24px, identical in both editions and both emphases, and the largest of the three by half again."
+    },
+    {
+      "id": "style.tab-icon.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-icon\"]",
+      "declarations": { "color": "$" },
+      "note": "OFF in every column, and that is the finding rather than a gap. Salt applies no .saltIcon-primary/-secondary class in a tab, so the glyph is currentColor. shadcn applies no colour utility to the svg for the same reason. M3 DOES declare a full parallel icon-colour family (with-icon-{active,inactive}-{,hover,focus,pressed}-icon-color) — eight tokens on primary, five on secondary — but every one of them resolves to the SAME role as the label colour in the same state (on-surface-variant inactive, primary/on-surface active, on-surface hovered), so a currentColor glyph is not an approximation, it is the identical output. Recorded here so a future reader does not add thirteen duplicate rows."
+    },
+    {
+      "id": "style.panel.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-panel\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `height: 100%; width: 100%` — TabPanel.css is three rules and this is the whole of the first one. shadcn: `flex-1`, because the root is a flex column and the panel is meant to take the remaining space. M3: OFF — there is no panel token at all in either tab file (see structure.panel)."
+    },
+    {
+      "id": "style.panel.outline",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-panel\"]",
+      "declarations": { "outline": "$" },
+      "note": "shadcn only: `outline-none` on TabsContent — which, given Radix hard-codes tabIndex={0} on every panel (behavior.panel-focusable = always), means a shadcn panel is focusable and shows NO focus ring. Salt does the exact opposite: it makes the panel focusable only when it has to, and then draws a ring on it. Two systems, one attribute, opposite conclusions."
+    },
+    {
+      "id": "style.panel.focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-panel\"]:focus-visible",
+      "declarations": { "outline": "$" },
+      "note": "Salt only: `.saltTabPanel:focus-visible { outline: var(--salt-focused-outline) }` = 2px dotted accent-stronger, the same ring the tab gets. shadcn suppresses it (previous row); M3 has no panel."
+    },
+    {
+      "id": "style.overflow-list.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-overflow-list\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. TabOverflowList.css: background container-primary-background; border 1px solid selectable-borderColor-selected -> palette-accent, i.e. the list is framed in BLUE, the same accent frame SELECT-MATRIX.md finding 5 found on Salt's option list; border-radius var(--salt-palette-corner, 0) -> curve-150 = 3/6/9/12px; box-shadow overlayable-shadow-popout -> shadow-mediumLow; z-index zIndex-flyover 1500; max-height calc((size-base + spacing-100) * 5), the five-row floor from source's size() middleware (the availableHeight half needs a positioning engine and is a declared gap). The inner container's gap is spacing-fixed-100 = 1px, density-invariant by design."
+    },
+    {
+      "id": "style.overflow-item.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-overflow-list\"] [data-slot=\"tab\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only — the overflow list RESTYLES the very same Tab element: `.saltTabOverflowList-list .saltTab` re-declares background selectable-background (transparent), min-height calc(size-base + spacing-100), padding-left/right spacing-100, justify-content flex-start (left-aligned, unlike the centred strip), and `::after { display: none }` — the indicator is switched off entirely inside the menu, which is why the skeleton's base does the same."
+    },
+    {
+      "id": "style.overflow-item.background@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tab-overflow-list\"] [data-slot=\"tab\"]:where(:not([data-disabled])):hover",
+      "declarations": { "background": "$" },
+      "note": "Salt only: selectable-background-hover -> palette-accent-weakest -> blue-100 / blue-900 — the ordinary Salt list-hover, i.e. a tab inside the overflow menu behaves like an Option, not like a tab. Values reused verbatim from select.salt.json rather than re-derived."
+    }
+  ]
+}

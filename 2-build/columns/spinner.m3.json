@@ -1,0 +1,98 @@
+{
+  "system": "m3",
+  "component": "spinner",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "action": "#6750a4"
+    },
+    "dark": {
+      "action": "#d0bcff"
+    }
+  },
+  "provenance": {
+    "edition-pin": "tokens/versions/v0_192/_md-comp-circular-progress-indicator.scss. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192 — tokens/_md-comp-circular-progress.scss literally reads `@use 'versions/v0_192/md-comp-circular-progress-indicator'`. THE PIN IS LOAD-BEARING AND LOSSY HERE, and every loss is declared on its own cell below rather than dropped. This column previously read the merged `latest` md.comp.progress-indicator family plus versions/latest/sass/_md-comp-progress-indicator-circular.scss. NEITHER FILE EXISTS IN v0.192. What v0.192 ships instead is the PRE-MERGE singular set, and it is TEN tokens, not the merged family's thirty: active-indicator-color, active-indicator-shape, active-indicator-width, size, and the four four-color-active-indicator-* entries. There is NO track family in it at all — no track-color, no track-thickness, no track-active-indicator-space — and no thick/wave variants. The consequence for the consumer is a plain single-arc spinner with no background ring, which is what material-web's shipped circular progress actually renders.",
+    "action": "versions/v0_192/_md-comp-circular-progress-indicator.scss 'active-indicator-color' -> md-sys-color.primary -> versions/v0_192/_md-sys-color.scss values-light() primary40 / values-dark() primary80 -> _md-ref-palette.scss primary40 #6750a4 / primary80 #d0bcff. UNCHANGED BY THE PIN: the merged latest family resolves active-indicator-color to md-sys-color.primary too, and the primary40/primary80 palette entries are byte-identical in both editions. Same slot Button/Calendar already use.",
+    "track-slot-removed": "The slot `x-m3-secondary-container` (#e8def8 / #4a4458) was REMOVED from this column by the v0.192 pin, and this entry is its headstone rather than a silent deletion. It existed only to carry the merged latest family's `track-color` -> md-sys-color.secondary-container. v0.192's circular set has no track token of any kind, so nothing in this column references the slot any more; leaving it defined would have published a phantom custom property with no source behind it. The secondary-container ROLE is unaffected and still resolves identically in both editions (secondary90 #e8def8 / secondary30 #4a4458) — it is the circular progress indicator that stopped citing it, not the colour that moved.",
+    "size/thickness": "versions/v0_192/_md-comp-circular-progress-indicator.scss: 'size' 48px, 'active-indicator-width' 4px. THE SIZE CHANGED: latest's _md-comp-progress-indicator-circular.scss says $size: 40px, v0.192 says 48px. 48px is not an outlier — it is what latest calls $with-wave-size, i.e. M3 shrank the plain circular indicator to 40px when it introduced the wave variants at the old 48px diameter. The stroke width did not move (4px in both).",
+    "structure/behavior": "material-web is a tokens-only clone (CLAUDE.md) — no live M3 spinner component exists to grep. role/label/repeat-announce/duration/easing below are [R] research notes (m3.material.io progress-indicator docs / APG progressbar convention), not grepped from code, and are flagged as such rather than presented as [S]. structure.track is NO LONGER token-sourced under this pin — see its cell."
+  },
+  "cells": {
+    "structure.track": {
+      "kind": "off",
+      "note": "DECLARED GAP, not a silent drop. In `latest` this row was ON, sourced from the merged md.comp.progress-indicator family's track-color/track-thickness plus _md-comp-progress-indicator-circular.scss's $track-thickness and $track-active-indicator-space — those tokens are what proved the component has a background ring. THE PINNED EDITION HAS NO TRACK AT ALL: versions/v0_192/_md-comp-circular-progress-indicator.scss defines exactly ten keys (active-indicator-color, active-indicator-shape, active-indicator-width, size, four-color-active-indicator-{one,two,three,four}-color) and not one of them mentions a track. WHAT THE CONSUMER LOSES: the static secondary-container ring behind the moving arc. The M3 spinner now renders as a lone arc on nothing, matching what material-web's own tokens/_md-comp-circular-progress.scss can express — its $supported-tokens list has no track entry either, so the shipped library never rendered the ring regardless of edition."
+    },
+    "structure.gradient-trail": {
+      "kind": "off"
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "progressbar",
+      "note": "[R] — APG progressbar convention for indeterminate meters (aria-valuenow omitted); not grepped from a live M3 component, this clone is tokens-only. Edition-independent."
+    },
+    "behavior.label": {
+      "kind": "value",
+      "value": "Loading",
+      "note": "[R] — m3.material.io convention, no clone source. Edition-independent."
+    },
+    "behavior.repeat-announce": {
+      "kind": "off",
+      "note": "[R] — no source to confirm either way; treated as off (Salt's mechanism is not a documented M3 pattern)"
+    },
+    "prop.size": {
+      "kind": "value",
+      "value": [
+        "baseline"
+      ],
+      "note": "SINGLE-VALUED, AND UNDER THE v0.192 PIN THAT IS NOW A CONFIRMED ABSENCE RATHER THAN A SCOPE DECISION. Previously this cell noted that a thick variant existed in latest's _md-comp-progress-indicator-circular.scss ($thick-size 52px, $thick-active-indicator-thickness 8px) and was declared out of scope. versions/v0_192/_md-comp-circular-progress-indicator.scss has no thick-* token and no size axis of any kind — one diameter, 48px, full stop."
+    },
+    "style.root.size": {
+      "kind": "value",
+      "value": "48px",
+      "source": "versions/v0_192/_md-comp-circular-progress-indicator.scss 'size': 48px. VALUE CHANGED BY THE PIN: latest's _md-comp-progress-indicator-circular.scss $size was 40px."
+    },
+    "style.arc.stroke-width": {
+      "kind": "value",
+      "value": "4px",
+      "source": "versions/v0_192/_md-comp-circular-progress-indicator.scss 'active-indicator-width': 4px. Unchanged by the pin — latest's $active-indicator-thickness is also 4px, only the token NAME differs (width -> thickness)."
+    },
+    "style.arc.radius": {
+      "kind": "value",
+      "value": "22px",
+      "note": "Derived, and RE-DERIVED for the new diameter: r = (size - active-indicator-width) / 2 = (48 - 4) / 2 = 22px, where it was (40 - 4) / 2 = 18px under the latest pin. The stroke is centred on the path, so half of it falls outside the radius and half inside; 22px keeps the 4px stroke exactly inside a 48px box. (Retained warning from the progress build: M3's active indicator and its track share ONE circle — track-active-indicator-space is an ANGULAR gap along the circumference, never a radial inset. There is no track here any more, so the question is moot, but the trap is recorded so nobody re-invents the radial reading.)"
+    },
+    "style.track.thickness": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was 4px, sourced from latest's _md-comp-progress-indicator-circular.scss $track-thickness. versions/v0_192/_md-comp-circular-progress-indicator.scss defines no track-thickness token. Consumer loses the ring's stroke weight along with the ring itself (structure.track)."
+    },
+    "style.track.radius": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was 18px, derived as (40px size - 4px track-thickness) / 2 from latest's tokens. With no track-thickness and no track in the pinned edition there is nothing to derive from. Consumer loses the ring's geometry."
+    },
+    "style.track.color": {
+      "kind": "off",
+      "note": "DECLARED GAP, and the only one here that costs a colour. Was an alias to slot x-m3-secondary-container (#e8def8 light / #4a4458 dark), sourced from latest's merged md.comp.progress-indicator $track-color -> md-sys-color.secondary-container. versions/v0_192/_md-comp-circular-progress-indicator.scss has no track-color token, so under this pin M3 states no opinion about what sits behind the arc. Consumer loses the tinted background ring; the slot that carried it has been removed from this column (see the track-slot-removed provenance entry)."
+    },
+    "style.arc.color": {
+      "kind": "alias",
+      "slot": "action"
+    },
+    "style.gradient-trail": {
+      "kind": "off"
+    },
+    "style.root.duration": {
+      "kind": "value",
+      "value": "1s",
+      "note": "DECLARED ABSENCE, not fabricated: no animation-duration token anywhere in the tokens-only clone in EITHER edition; the registry default (matching shadcn's own unsourced Tailwind default) applies and is labeled here rather than left silently blank"
+    },
+    "style.root.easing": {
+      "kind": "value",
+      "value": "linear",
+      "note": "[R] — matches the simplified fixed-partial-arc rotate mechanism this matrix uses for shadcn/M3 (see SPINNER-MATRIX.md); M3's real indeterminate motion is a growing/shrinking arc on an emphasized easing curve, out of scope for this CSS-only pass"
+    },
+    "style.track.gap": {
+      "kind": "off",
+      "note": "DECLARED GAP, upgraded from a declared non-render. Under the latest pin this cell recorded a REAL sourced value ($track-active-indicator-space 4px) that the SVG chassis could not express as an arc-length gap. Under the v0.192 pin the value is gone too: versions/v0_192/_md-comp-circular-progress-indicator.scss has no track-active-indicator-space token. So the cell is now off for two independent reasons — no source, and no mechanism — and neither is a silent fallback. Note this row has no counterpart in spinner.template.json; it is carried here as documentation."
+    }
+  }
+}

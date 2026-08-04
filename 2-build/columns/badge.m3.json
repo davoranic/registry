@@ -1,0 +1,95 @@
+{
+  "system": "m3",
+  "component": "badge",
+  "fontFaces": [
+    { "family": "Roboto", "weight": "500", "file": "fonts/roboto-500.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "pill-bg": "#b3261e",
+      "pill-fg": "#fff",
+      "pill-radius": "9999px",
+      "label-size": "16px",
+      "dot-size": "6px",
+      "label-tracking": "0.03125rem",
+      "type-label": "500 0.6875rem/1rem Roboto, sans-serif"
+    },
+    "dark": {
+      "pill-bg": "#f2b8b5",
+      "pill-fg": "#601410"
+    }
+  },
+  "provenance": {
+    "canonical-source": "tokens/versions/v0_192/_md-comp-badge.scss — ONE file, thirteen tokens, describing BOTH forms of the component: the unprefixed `size`/`shape`/`color` (the dot) and the `large-*` family (the labelled container plus its label typescale). tokens/versions/latest/sass/_md-comp-badge.scss read for the edition diff. tokens/_md-comp-badge.scss (material-web's own hand-authored wrapper) read for what the shipped library supports. Resolution through versions/v0_192/{_md-sys-color.scss (values-light() and values-dark() in ONE file — v0.192 has no separate _md-sys-color__dark.scss),_md-ref-palette.scss,_md-sys-typescale.scss,_md-ref-typeface.scss,_md-sys-shape.scss}. Also read, for the anchoring scope note: _md-comp-navigation-bar.scss, _md-comp-navigation-rail.scss, _md-comp-navigation-drawer.scss in both editions.",
+    "edition-pin": "versions/v0_192. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192 — and tokens/_md-comp-badge.scss does exactly that. The registry-wide split that this column flagged nine times is now CLOSED, downward, to v0.192. NO DECLARED GAP AND NO VALUE CHANGE FOLLOWS FOR BADGE: a full mechanical key/value diff of _md-comp-badge.scss across the two editions finds ZERO divergences of any kind — same thirteen keys, same values, same dependency resolution. The only difference is one of FORM: `latest` emits large-label-text-type as a @mixin where v0.192 emits it as a composite value, and this column models the discrete properties, so the form change is invisible. The palette and typescale resolutions this column depends on (error40/error80, error100/error20, corner-full, label-small) are byte-identical in both editions. Unlike card, chip and tabs — which lose their only focus indicator to this pin — badge loses nothing, because it never had a focus-indicator, state-layer or elevation family in EITHER edition. The library's one substantive act, dropping large-label-text-tracking and large-label-text-type via $_unsupported-tokens, happens in the edition-independent WRAPPER and applies whichever edition is pinned.",
+    "edition-diff-outside-the-badge-file": "One real edition difference exists, and it is on the HOSTS rather than on the badge. In `latest`, _md-comp-navigation-bar.scss and _md-comp-navigation-rail.scss each carry a `badge.*` / `large-badge.*` family — $badge-shape: 3px, $badge-size: 6px, $badge-color: error, $large-badge-shape: 8px, $large-badge-size: 16px, $large-badge-color: error, plus a large-badge-label-* set — every member marked `@deprecated` with the comment `Badge values were refactored out into their own token set. Replace usage with the equivalent md.comp.badge.* tokens.` In v0_192 those files contain the string 'badge' ZERO times. So `latest` is the edition in which M3 records the refactor, and it records something the badge's own file does not: the pre-refactor SHAPES were 3px and 8px, not corner-full. The badge became a full pill when it became its own component. Recorded as a finding; it changes no modelled cell, because _md-comp-badge.scss is authoritative for the component and says corner-full.",
+    "pill-bg": "`color` (dot) and `large-color` (labelled) BOTH -> md-sys-color.$error -> md-ref-palette.$error40 #b3261e light / $error80 #f2b8b5 dark. One value serves both forms, which is why one slot does. An M3 badge is RED by definition — there is no second colour token anywhere in the file, and no variant, tone or emphasis axis.",
+    "pill-fg": "`large-label-text-color` -> md-sys-color.$on-error -> md-ref-palette.$error100 #fff light / $error20 #601410 dark. Declared only on the LARGE form; the dot has no label, so emitting it on both is harmless.",
+    "pill-radius": "`shape` and `large-shape` BOTH -> md-sys-shape.$corner-full = 9999px, identical in both editions and both forms. Matches docs/foundations/shape.md's pill/full row.",
+    "label-size / dot-size": "`large-size: 16px` and `size: 6px`, both hardcoded literals in the token file (guarded by $exclude-hardcoded-values in v0_192, emitted as plain sass vars in latest). Density-invariant because M3 has no density capability at all (docs/foundations/density.md). Sixteen pixels against six is the whole dot/label axis: it is a shape fork, not a size variant of one shape.",
+    "type-label": "`large-label-text-{weight,size,line-height,font}` -> md-sys-typescale.$label-small-{weight,size,line-height,font} = md-ref-typeface.$weight-medium (500) / 0.6875rem / 1rem / md-ref-typeface.$plain. $plain is the literal `Roboto` (versions/v0_192/_md-ref-typeface.scss carries it inside values(); versions/latest/sass/_md-ref-typeface.scss:21 as a plain var — same value in both editions) — the amended docs/foundations/typography.md is correct that M3 carries the family as a literal, so this cell is [S] and not [R]. label-small is the SMALLEST role in the M3 typescale; docs/foundations/typography.md's caption/notation row already notes that M3 has no distinct caption role and that label-small covers it.",
+    "label-tracking": "`large-label-text-tracking` -> md-sys-typescale.$label-small-tracking = 0.03125rem. RECORDED WITH ITS DISOWNMENT: material-web's own tokens/_md-comp-badge.scss declares `$_unsupported-tokens: ('large-label-text-tracking', 'large-label-text-type')` and map.remove()s them, so the shipped library drops exactly this token and the composite type token beside it. The generated token file and the shipped library are two different sources and they disagree — docs/SELECT-MATRIX.md finding 6, DIALOG-MATRIX.md finding 8, TABS-MATRIX.md finding 11 and CARD-MATRIX.md finding 3, now for the fifth time. This column takes the generated value and states the disownment; note that here the disowned set is TWO tokens out of thirteen, against card's near-total disownment.",
+    "no-padding-no-gap-no-motion-no-state": "CONFIRMED ABSENCE, and it is the largest in this column. _md-comp-badge.scss contains no padding, gap, margin, width, min-width, height beyond the two size literals, no motion token, no elevation, no outline, no state-layer family, no focus-indicator family, no hover/pressed/dragged/disabled family, and no icon token — in EITHER edition. Contrast the card files, which carry four state families and a focus indicator, and the tab files, which carry both. NOTHING WAS BORROWED to fill the padding gap: card.m3.json had to declare one 16px borrow from m3.material.io and this column declares none, because a 16px fixed box with no padding is a coherent reading of what the tokens actually say. The visible consequence — a label wider than 16px has nothing to breathe into — is real and is left visible in the harness.",
+    "tokens-only-clone": "material-web is a tokens-only clone (`find . -maxdepth 2 -type d` returns only tokens/), so there is no badge element to grep: every structure and behavior row in this column is [R] and every style cell is [S].",
+    "anchoring-lives-on-the-host": "M3 badges do anchor — but not from this file. The placement geometry sits on the host (navigation bar / rail), and even there it is now deprecated in favour of md.comp.badge.* (see edition-diff-outside-the-badge-file). _md-comp-badge.scss itself is placement-agnostic: it describes a container, a shape, a colour and a label typescale and nothing about where any of it goes. structure.anchoring is therefore OFF for a STRUCTURAL reason, not because the value could not be found.",
+    "navigation-drawer-is-a-different-badge": "_md-comp-navigation-drawer.scss carries a `large-badge-label-*` family that is NOT deprecated and does NOT point at md.comp.badge.*: its colour is $on-surface-variant and its type is label-LARGE, i.e. a drawer's trailing count is plain ambient text with no error container at all. Recorded as a scope boundary: that is the drawer's own slot, not this component."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "single", "note": "[R] — no element exists in a tokens-only clone. The token file describes a container and a label and no positioning context, so a single element is the reading with the least invented structure" },
+    "structure.label-format": { "kind": "value", "value": "children", "note": "[R] — large-label-text-* describes the TYPE of a label and says nothing about where the string comes from; no value/max/format token exists" },
+    "structure.dot": { "kind": "value", "value": true, "source": "the unprefixed `size: 6px` / `shape: corner-full` / `color: error` family, against the parallel `large-*` family. Two forms, one file, [S]" },
+    "structure.anchoring": { "kind": "off", "note": "OFF for a structural reason — see the anchoring-lives-on-the-host provenance entry. The badge's own token set carries no placement token; the deprecated host families that did are on navigation-bar / navigation-rail" },
+    "structure.icon": { "kind": "off", "note": "CONFIRMED ABSENCE — no icon token in either edition" },
+
+    "prop.content": { "kind": "value", "value": ["dot", "label"], "source": "the two token families. DOT IS value[0] because the UNPREFIXED family is the base reading and `large-*` is the qualified one — the same convention card.m3.json used in taking the unqualified enabled state as its base. No source names one as primary" },
+    "prop.placement": { "kind": "value", "value": ["inline"], "note": "single-valued: no placement token in this file" },
+    "prop.variant": { "kind": "off", "note": "CONFIRMED ABSENCE — `color` and `large-color` both resolve to $error and there is no second value. An M3 badge has exactly one colour" },
+    "prop.interaction": { "kind": "value", "value": ["static"], "note": "single-valued confirmed absence, and unusually well evidenced for a tokens-only clone: no state-layer, focus-indicator, hover, pressed, dragged or disabled family exists, where the card and tab files carry several each" },
+    "prop.max": { "kind": "off", "note": "no value prop and no truncation token" },
+
+    "behavior.role": { "kind": "value", "value": "[R] none", "note": "no element to grep, and no token implies one — the absence of any focus or state family is the available evidence that an M3 badge is decoration rather than a control" },
+    "behavior.dot-detection": { "kind": "value", "value": "[R] two token families, selection mechanism unsourced", "note": "the two forms are unambiguous; how a consumer picks between them is not in the clone" },
+    "behavior.anchor-detection": { "kind": "off", "note": "no anchored form in this token set" },
+    "behavior.value-clamping": { "kind": "off", "note": "CONFIRMED ABSENCE — no value, max or truncation token" },
+    "behavior.activation": { "kind": "value", "value": "[R] none", "note": "no handler can be grepped, and no interaction token exists to imply one" },
+    "behavior.live-region": { "kind": "off", "note": "CONFIRMED ABSENCE — no ARIA of any kind is expressible in a token file, and no live-region convention is documented in the clone" },
+
+    "slot.label": { "kind": "value", "value": "[R] arbitrary text; large-label-text-* describes only its type", "note": "the only sub-part M3's badge grammar names at all" },
+    "slot.host": { "kind": "off" },
+    "slot.icon": { "kind": "off" },
+
+    "state.rest": { "kind": "value", "value": "error fill with on-error label, INVERTING by mode", "note": "#b3261e with #fff light, #f2b8b5 with #601410 dark" },
+    "state.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — no hover token, and no state-layer family to build one from" },
+    "state.focus": { "kind": "off", "note": "CONFIRMED ABSENCE — and pointedly so: _md-comp-badge.scss has no focus-indicator family, where _md-comp-{elevated,filled,outlined}-card.scss and _md-comp-{primary,secondary}-navigation-tab.scss all gained one in `latest`. The badge did not, in either edition" },
+
+    "style.badge.background": { "kind": "alias", "slot": "pill-bg", "note": "`color` / `large-color`, the same value for both forms" },
+    "style.badge.color": { "kind": "alias", "slot": "pill-fg", "note": "`large-label-text-color`; the dot form has no label, so the declaration is inert there" },
+    "style.badge.font": { "kind": "alias", "slot": "type-label", "note": "`large-label-text-{weight,size,line-height,font}` = label-small. Declared on the pill for both forms; inert on the dot" },
+    "style.badge.letter-spacing": { "kind": "alias", "slot": "label-tracking", "note": "`large-label-text-tracking`. The ONE row in this component that material-web's own wrapper disowns" },
+    "style.badge.shape": { "kind": "alias", "slot": "pill-radius", "note": "`shape` and `large-shape`, both corner-full, both editions" },
+    "style.badge.size": { "kind": "value", "value": { "height": "var(--label-size)", "min-width": "var(--label-size)" }, "source": "`large-size: 16px`; min-width equal to the height so a single digit renders as a circle" },
+    "style.badge.padding": { "kind": "off", "note": "CONFIRMED ABSENCE — no spacing token of any kind in either edition. NO NUMBER WAS BORROWED (contrast card.m3.json's one declared 16px borrow); the consequence, that a label wider than 16px has no room, is left visible" },
+    "style.badge.gap": { "kind": "off" },
+    "style.badge.border-width": { "kind": "off", "note": "CONFIRMED ABSENCE — no outline or border token" },
+    "style.badge.border-color": { "kind": "off" },
+    "style.badge.overflow": { "kind": "off" },
+    "style.badge.white-space": { "kind": "off", "note": "no token; the other two systems both declare nowrap" },
+    "style.badge.z-index": { "kind": "off", "note": "M3 has no shared z-index scale (docs/foundations/layers.md)" },
+    "style.badge.margin": { "kind": "off" },
+    "style.badge.font-smoothing": { "kind": "off" },
+    "style.badge.transition": { "kind": "off", "note": "CONFIRMED ABSENCE — no motion token" },
+    "style.badge.hover": { "kind": "off" },
+    "style.badge.focus": { "kind": "off" },
+    "style.badge.dot": { "kind": "value", "value": { "height": "var(--dot-size)", "min-width": "var(--dot-size)" }, "source": "`size: 6px`, with the same corner-full shape. Six pixels against the labelled form's sixteen" },
+    "style.badge.anchor": { "kind": "off" },
+    "style.badge.anchor@dot": { "kind": "off" },
+
+    "style.badge.variant@secondary": { "kind": "off" },
+    "style.badge.variant@destructive": { "kind": "off" },
+    "style.badge.variant@outline": { "kind": "off" },
+    "style.badge.variant@ghost": { "kind": "off" },
+    "style.badge.variant@link": { "kind": "off" },
+
+    "style.icon.box": { "kind": "off" }
+  }
+}

@@ -1,0 +1,602 @@
+{
+  "system": "m3",
+  "component": "select",
+  "fontFaces": [
+    {
+      "family": "Roboto",
+      "weight": "400",
+      "file": "fonts/roboto-400.woff2"
+    },
+    {
+      "family": "Roboto",
+      "weight": "500",
+      "file": "fonts/roboto-500.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "trigger-bg": "#e6e0e9",
+      "trigger-bg-hover": "color-mix(in oklab, #1d1b20 8%, #e6e0e9)",
+      "trigger-bg-disabled": "color-mix(in oklab, #1d1b20 4%, transparent)",
+      "fg": "#1d1b20",
+      "fg-disabled": "color-mix(in oklab, #1d1b20 38%, transparent)",
+      "fg-secondary": "#49454f",
+      "indicator": "#49454f",
+      "indicator-hover-color": "#1d1b20",
+      "indicator-focus-color": "#6750a4",
+      "indicator-disabled": "color-mix(in oklab, #1d1b20 38%, transparent)",
+      "outline": "#79747e",
+      "outline-hover-color": "#1d1b20",
+      "outline-focus-color": "#6750a4",
+      "outline-disabled": "color-mix(in oklab, #1d1b20 12%, transparent)",
+      "status-error": "#b3261e",
+      "status-error-hover": "#410e0b",
+      "popup-bg": "#f3edf7",
+      "popup-fg": "#1d1b20",
+      "popup-shadow": "0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15)",
+      "option-bg-selected": "#e6e0e9",
+      "option-layer-hover": "color-mix(in oklab, #1d1b20 8%, transparent)",
+      "option-layer-focus": "color-mix(in oklab, #1d1b20 12%, transparent)",
+      "separator-color": "#e7e0ec",
+      "type-body": "400 1rem/1.5rem 'Roboto', sans-serif",
+      "type-option": "500 0.875rem/1.25rem 'Roboto', sans-serif",
+      "bg-current": "var(--trigger-bg)",
+      "bg-current-hover": "var(--trigger-bg-hover)",
+      "bg-current-disabled": "var(--trigger-bg-disabled)",
+      "border-current": "var(--outline)",
+      "border-current-hover": "var(--outline-hover-color)",
+      "border-current-active": "var(--outline-focus-color)",
+      "indicator-current": "var(--indicator)",
+      "indicator-current-hover": "var(--indicator-hover-color)",
+      "indicator-current-active": "var(--indicator-focus-color)",
+      "select-trigger-width": "0px"
+    },
+    "dark": {
+      "trigger-bg": "#36343b",
+      "trigger-bg-hover": "color-mix(in oklab, #e6e0e9 8%, #36343b)",
+      "trigger-bg-disabled": "color-mix(in oklab, #e6e0e9 4%, transparent)",
+      "fg": "#e6e0e9",
+      "fg-disabled": "color-mix(in oklab, #e6e0e9 38%, transparent)",
+      "fg-secondary": "#cac4d0",
+      "indicator": "#cac4d0",
+      "indicator-hover-color": "#e6e0e9",
+      "indicator-focus-color": "#d0bcff",
+      "indicator-disabled": "color-mix(in oklab, #e6e0e9 38%, transparent)",
+      "outline": "#938f99",
+      "outline-hover-color": "#e6e0e9",
+      "outline-focus-color": "#d0bcff",
+      "outline-disabled": "color-mix(in oklab, #e6e0e9 12%, transparent)",
+      "status-error": "#f2b8b5",
+      "status-error-hover": "#f9dedc",
+      "popup-bg": "#211f26",
+      "popup-fg": "#e6e0e9",
+      "option-bg-selected": "#36343b",
+      "option-layer-hover": "color-mix(in oklab, #e6e0e9 8%, transparent)",
+      "option-layer-focus": "color-mix(in oklab, #e6e0e9 12%, transparent)",
+      "separator-color": "#49454f"
+    }
+  },
+  "modeInvariant": [
+    "type-body",
+    "type-option",
+    "popup-shadow"
+  ],
+  "provenance": {
+    "edition-pin": "material-web is a TOKENS-ONLY clone (CLAUDE.md) — there is no live M3 select component to grep for structure or behavior, so every structure/behavior claim here is [R] and every style value is [S] from a token file. PINNED TO tokens/versions/v0_192. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192 — and tokens/_md-comp-{filled,outlined}-select.scss, tokens/_md-comp-menu.scss, tokens/_md-comp-list.scss and tokens/_md-comp-list-item.scss all do exactly that, which matters more here than for any other component because this column borrows from all four. A full mechanical key/value diff of both select files across the two editions (filled 103 vs 107 entries, outlined 101 vs 105) finds ZERO value divergences among the shared keys. `latest` adds text-field-container-height (56px), text-field-caret-color, text-field-error-focus-caret-color and menu-container-surface-tint-layer-color — all four @deprecated on arrival — and expresses the four composite `-type` entries as @mixins. WHAT CHANGES VALUE IN THE SELECT FILES: outlined text-field-focus-outline-width is a hardcoded 2px in versions/v0_192 and md-sys-state-focus-indicator.$thickness = 3px in latest (and that file does not exist in v0.192). THIS COLUMN NOW USES 2px — see style.trigger.border@box-focus, and note the consequence: the outlined variant thickens to 2px on focus while the FILLED variant still thickens to 3px, because filled's 3px comes from a library override in the edition-independent tokens/_md-comp-filled-select.scss, not from the generated token. The two variants now disagree where they used to match. WHAT IS LOST: text-field-container-height 56px (style.trigger.min-height is a declared gap). THE BIGGEST CONSEQUENCE IS NOT IN THE SELECT FILES AT ALL — IT IS IN THE MENU BORROW. versions/v0_192/_md-comp-menu.scss has EIGHT keys (container-color/-elevation/-shadow-color/-shape and four list-item-selected-* entries) against latest's forty-nine. Every list-item interaction token this column borrowed from `latest`'s menu file — hover/focus state layers, disabled label opacity — is gone from the pinned edition's menu. THEY ARE RE-POINTED, NOT DROPPED, to versions/v0_192/_md-comp-list.scss, which carries the identical family under the same names and is what the hand-authored tokens/_md-comp-list-item.scss wrapper actually consumes. Two of those values move: the focus state layer 0.10 -> 0.12 (md-sys-state), and the disabled label opacity 0.38 -> 0.3 (v0.192's list says 0.3 where latest's menu says 0.38). One is lost outright: list-item-between-space 12px is latest-only, so style.option.gap is a declared gap. FINALLY, ONE VALUE MOVES THROUGH THE COLOUR SYSTEM: on-error-container, one of exactly four sys-color roles that differ between the editions — v0.192 says error10 (#410e0b) light where latest says error30 (#8c1d18). That moves status-error-hover.",
+    "filled-and-outlined-are-one-component": "The two files share their vocabulary almost line for line — identical text-field-input-text-*, label-text-*, supporting-text-*, error-*, disabled-*, hover-state-layer-* families and an identical menu-* family. They differ in exactly two mechanisms: filled has an active indicator (bottom-only rule), outlined has an outline. That is the structure.indicator axis.",
+    "outlined-select-IS-filled — the finding that contradicts input": "_md-comp-outlined-text-field.scss has NO container-color token at all, which is why input's style.root.background@box carries `transparent` for M3. _md-comp-outlined-SELECT.scss DOES have one: `$text-field-container-color: md-sys-color.$surface-container-highest` (confirmed present and identical in versions/v0_192/_md-comp-outlined-select.scss, the pinned edition, and in versions/latest/sass at line 100). So an M3 outlined SELECT has the same container fill as a filled one, and the filled/outlined axis for select moves only the edge mechanism and the corner shape. Direct grep, both editions, both files. style.trigger.background@box is therefore OFF for M3 — the opposite of input.",
+    "the menu tokens are declared and then disowned": "Both select token files carry a menu-* family (md.comp.{filled,outlined}-select.menu.container.*, .menu.divider.*, .menu.list-item.*) — twenty-one keys in versions/v0_192, and material-web's own hand-authored tokens/_md-comp-{filled,outlined}-select.scss then list EVERY one of them under $unsupported-tokens, i.e. the shipped library composes the standalone md-menu component instead of styling the popup from the select's own set. Both readings are used here: the select's own values win where it has them (notably menu-list-item-selected-container-color), and the gaps are filled by a DECLARED CROSS-FILE BORROW. THE BORROW'S SOURCE CHANGED WITH THE v0.192 PIN, and this is the largest re-point in this column. It used to come from versions/latest/sass/_md-comp-menu.scss, which carries a full forty-nine-key set including list-item-{hover,focus,pressed,disabled}-state-layer-* and the list-item label typescale. versions/v0_192/_md-comp-menu.scss has EIGHT keys and none of that. The equivalent family in the pinned edition lives in versions/v0_192/_md-comp-list.scss — list-item-hover-state-layer-{color,opacity}, list-item-focus-state-layer-{color,opacity}, list-item-pressed-state-layer-{color,opacity}, list-item-disabled-label-text-opacity, list-item-leading-space, list-item-trailing-space — under the SAME names, resolving to the same on-surface role, and it is what the hand-authored tokens/_md-comp-list-item.scss wrapper actually consumes (`@use 'versions/v0_192/md-comp-list'`). So the borrow now goes select -> list rather than select -> menu, which is arguably the more honest chain anyway. Two values move with it (focus layer 0.10 -> 0.12, disabled label opacity 0.38 -> 0.3) and one is lost (list-item-between-space).",
+    "trigger-bg": "text-field-container-color -> md-sys-color.$surface-container-highest -> md-ref-palette.$neutral90 #e6e0e9 light / $neutral22 #36343b dark. Same value in BOTH variant files (see above).",
+    "trigger-bg-hover": "text-field-hover-state-layer-color -> on-surface, at text-field-hover-state-layer-opacity -> md-sys-state.$hover-state-layer-opacity = 0.08, composited over the container colour. M3's select trigger genuinely reacts to the pointer with a state layer AND an outline/indicator recolour; the input matrix modelled only the recolour, so this is a row input left on the table.",
+    "trigger-bg-disabled": "filled: text-field-disabled-container-color -> on-surface at text-field-disabled-container-opacity 0.04. The OUTLINED file has neither token, which style.trigger.background@box-disabled restates.",
+    "fg / fg-disabled": "text-field-input-text-color -> on-surface -> neutral10 #1d1b20 / neutral90 #e6e0e9; text-field-disabled-input-text-color -> on-surface at text-field-disabled-input-text-opacity 0.38.",
+    "fg-secondary": "TWO consumers: text-field-label-text-color and text-field-trailing-icon-color, both -> on-surface-variant -> neutral-variant30 #49454f / neutral-variant80 #cac4d0.",
+    "indicator / -hover / -focus / -disabled": "filled only: text-field-active-indicator-color -> on-surface-variant; hover-active-indicator-color -> on-surface; focus-active-indicator-color -> primary (primary40 #6750a4 / primary80 #d0bcff); disabled-active-indicator-color -> on-surface at 0.38. Note the REST role (on-surface-variant) differs from the outlined variant's rest role (outline) — two mechanisms, two colour roles.",
+    "outline / -hover / -focus / -disabled": "outlined only: text-field-outline-color -> md-sys-color.outline -> neutral-variant50 #79747e / neutral-variant60 #938f99; hover-outline-color -> on-surface; focus-outline-color -> primary; disabled-outline-color -> on-surface at disabled-outline-opacity 0.12.",
+    "indicator and outline widths": "filled: text-field-active-indicator-height 1px, hover 1px, focus **3px**. The versioned token says 2px in BOTH editions, but material-web's hand-authored tokens/_md-comp-filled-select.scss overrides it in _get-override-tokens() to 3px with the comment `TODO(b/259455114): remove when focus tokens update to 3px`. That override is in the EDITION-INDEPENDENT wrapper, so it survives the pin untouched and filled still focuses at 3px. outlined: text-field-outline-width 1px, hover 1px, disabled 1px, focus **2px** — VALUE CHANGED BY THE PIN, versions/v0_192/_md-comp-outlined-select.scss hardcodes 'text-field-focus-outline-width': 2px where latest binds it to md-sys-state-focus-indicator.$thickness = 3px. THE TWO VARIANTS NO LONGER AGREE: an M3 filled select thickens to 3px on focus and an M3 outlined select to 2px, where under the latest pin both were 3px. The 2px also now matches input.m3.json's outlined text field exactly, which it did not before.",
+    "no-caret": "text-field-caret-color and text-field-error-focus-caret-color exist in `latest` ONLY, and arrive there annotated '@deprecated Removed caret related tokens from Select variants as these components don't support entering free text.' versions/v0_192/_md-comp-{filled,outlined}-select.scss do not carry them at all. STRONGER UNDER THIS PIN, not weaker: M3 tokenises the caret on its text field (present in BOTH editions — see input.m3.json's style.control.caret-color) and simply never tokenised it on its select. A sourced absence, not an unfound value.",
+    "no-placeholder": "direct grep: neither select file has any placeholder token, where both text-field files have input-text-placeholder-color. An M3 select shows a floating LABEL (text-field-label-text-color -> on-surface-variant) rather than placeholder text, and the label belongs to the separate field wrapper. style.value.placeholder is therefore a sourced OFF.",
+    "status-error / status-error-hover": "text-field-error-{active-indicator,outline,focus-*}-color -> md-sys-color.error -> error40 #b3261e / error80 #f2b8b5, identical in both editions. text-field-error-hover-{active-indicator,outline}-color -> md-sys-color.on-error-container -> versions/v0_192/_md-sys-color.scss values-light() error10 = #410e0b / values-dark() error90 = #f9dedc. LIGHT VALUE CHANGED BY THE PIN, through the colour system rather than through the select files: on-error-container is one of exactly four sys-color roles that differ between the editions (v0.192 error10, latest error30 = #8c1d18; the others are on-primary-container, on-secondary-container and on-tertiary-container, all light-mode-only, all the same 10-vs-30 shift). input.m3.json's identical slot moves the same way. M3 remains the only system whose hover colour in the error state is a different role from its rest colour, and the gap between the two is now wider.",
+    "no-warning-no-success": "direct grep of both select files: no warning-* and no success-* token exists. The same coverage gap recorded for button, alert and input.",
+    "shape": "filled: text-field-container-shape -> md-sys-shape.$corner-extra-small-top = `4px 4px 0px 0px`; outlined: -> $corner-extra-small = 4px. menu-container-shape -> $corner-extra-small = 4px for both.",
+    "height": "DECLARED GAP UNDER THE v0.192 PIN. text-field-container-height 56px is present ONLY in `latest`, and even there it arrives '@deprecated. Removing fixed height token due to conflicts with text fields variants requiring dynamic height.' versions/v0_192/_md-comp-{filled,outlined}-select.scss have no height token — grep returns nothing. style.trigger.min-height is therefore off. Impact is minimal for the same reason input.m3.json records: 56px was internally consistent with 16 + 24 + 16, all of which survive the pin.",
+    "padding-and-gap (trigger)": "DECLARED CROSS-COMPONENT BORROW. Neither select token file — versioned or hand-authored — carries ANY spacing token. The 16px leading/trailing/top/bottom-space and the 16px content-space come from tokens/_md-comp-filled-field.scss / _md-comp-outlined-field.scss, the same files input.m3.json borrowed. The borrow is legitimate because the select file's own tokens are literally prefixed `text-field-*` and material-web's md-filled-select composes md-filled-field; it is recorded as a borrow rather than presented as a select token.",
+    "popup-bg": "menu-container-color -> md-sys-color.$surface-container -> neutral94 #f3edf7 / neutral12 #211f26. NOTE this is a LOWER surface tone than the trigger's surface-container-highest, so an M3 select popup is lighter than the control that opened it — the inverse of Salt, where popup and trigger share one background value.",
+    "popup-shadow": "[R]. menu-container-elevation -> md-sys-elevation.$level2 = 3 (a dp HEIGHT, not a shadow string — docs/foundations/elevation.md) and menu-container-shadow-color -> md-sys-color.$shadow -> neutral0 #000. The two-layer CSS is M3's published level-2 shadow, derived the same way button.m3.json derived its level-1 hover shadow rather than being invented. Mode-invariant because M3's shadow role is #000 in both schemes.",
+    "popup-padding": "DECLARED CROSS-FILE BORROW: top-space / bottom-space = 8px from the hand-authored tokens/_md-comp-menu.scss $new-tokens block. There is no horizontal menu padding token — the list item's own leading/trailing space does that job.",
+    "option-*": "menu-list-item-container-height 48px, menu-list-item-label-text-* -> label-large (0.875rem/1.25rem, weight-medium 500, tracking 0.00625rem), menu-list-item-selected-container-color -> surface-container-highest — all four from the SELECT's own file, present and identical in versions/v0_192. The interaction states are the cross-file borrow, RE-POINTED BY THE PIN from versions/latest/sass/_md-comp-menu.scss to versions/v0_192/_md-comp-list.scss (see the-menu-tokens-declared-and-disowned): list-item-hover-state-layer-{color,opacity} -> on-surface / md-sys-state.hover-state-layer-opacity 0.08 (UNCHANGED), list-item-focus-state-layer-{color,opacity} -> on-surface / md-sys-state.focus-state-layer-opacity 0.12 (CHANGED, was 0.10 under latest), list-item-disabled-label-text-opacity 0.3 (CHANGED, was 0.38 — latest's menu says 0.38, v0.192's list says 0.3, and tokens/_md-comp-list-item.scss re-exports exactly this value as its `disabled-opacity` $new-token). Spacing: top/bottom-space 12px from tokens/_md-comp-list-item.scss's $new-tokens (hand-authored, edition-independent, unaffected); leading/trailing-space 16px from versions/v0_192/_md-comp-list.scss (present and 16px in both editions). list-item-between-space 12px is LATEST-ONLY and has no v0.192 equivalent — style.option.gap is a declared gap.",
+    "selected-container-color conflict, resolved toward the select": "the STANDALONE _md-comp-menu.scss sets list-item-selected-container-color -> secondary-container, but both select files set menu-list-item-selected-container-color -> surface-container-highest. Where the two disagree, the select's own value is used — and the disagreement is itself a finding, since it means an M3 select's chosen row is a neutral surface tone, not a tinted one.",
+    "state-layers-as-background-image": "M3 state layers are OVERLAYS, not replacements — a hovered selected item shows the 8% layer ON TOP of the selected container colour. This column expresses the option's hover/focus layers as `background-image: linear-gradient(<layer>, <layer>)` so they composite over style.option.selected's background-color instead of overriding it. The trigger's hover layer, which has no competing background, is expressed as a plain colour mix.",
+    "separator-color": "menu-divider-color -> md-sys-color.$surface-variant -> neutral-variant90 #e7e0ec light / neutral-variant30 #49454f dark; menu-divider-height 1px. The select file carries no divider inset token (_md-comp-list.scss's 16px divider-leading/trailing-space belongs to the standalone list), so the rule runs full width.",
+    "no-group-concept": "direct grep: no group, group-label, subheader or overline token exists in either select file or in _md-comp-menu.scss. M3's only intra-list division is the divider.",
+    "typography": "trigger: text-field-input-text-* -> body-large (1rem/1.5rem, weight-regular 400, tracking 0.03125rem). Option: menu-list-item-label-text-* -> label-large (0.875rem/1.25rem, weight-MEDIUM 500, tracking 0.00625rem). Two different roles AND two different weights on one component — M3 is the only system whose list does not typographically match its control. Roboto is self-hosted per this pipeline's standing M3 precedent; the tokens-only clone never spells out the literal family string for the `plain` role (docs/foundations/typography.md flags it)."
+  },
+  "cells": {
+    "structure.indicator": {
+      "kind": "value",
+      "value": [
+        "underline",
+        "box"
+      ],
+      "note": "underline = filled-select (text-field-active-indicator-*), box = outlined-select (text-field-outline-*). One canonical component with an emphasis axis. Ordered with `underline` first because filled is M3's default-emphasis select.",
+      "source": "_md-comp-filled-select.scss text-field-active-indicator-color/-height vs _md-comp-outlined-select.scss text-field-outline-color/-width"
+    },
+    "structure.start-adornment": {
+      "kind": "value",
+      "value": true,
+      "source": "text-field-leading-icon-size 24px + text-field-leading-icon-color -> on-surface-variant (both files)"
+    },
+    "structure.status-adornment": {
+      "kind": "off",
+      "note": "M3 RECOLOURS a trailing icon on error (text-field-error-trailing-icon-color) but never inserts one — the glyph is always consumer-supplied. The same precise distinction input.m3.json recorded."
+    },
+    "structure.toggle-icon": {
+      "kind": "value",
+      "value": "static",
+      "note": "[R] — a trailing-icon size/colour token pair exists but there is no live component to say whether the glyph swaps on open. Recorded as static, flagged; Salt is the only system confirmed to swap.",
+      "source": "text-field-trailing-icon-size 24px, text-field-trailing-icon-color -> on-surface-variant"
+    },
+    "structure.option-group": {
+      "kind": "off",
+      "note": "no group, group-label, subheader or overline token in either select file, in versions/v0_192/_md-comp-menu.scss (eight keys) or in versions/v0_192/_md-comp-list.scss — a confirmed absence, re-verified against the pinned edition. latest's list file adds an overline family (list-item-disabled-overline-*, list-item-selected-overline-color), which is still not a group."
+    },
+    "structure.separator": {
+      "kind": "value",
+      "value": true,
+      "source": "menu-divider-height 1px + menu-divider-color -> surface-variant"
+    },
+    "structure.selected-marker": {
+      "kind": "value",
+      "value": "fill",
+      "source": "menu-list-item-selected-container-color -> surface-container-highest. There is no checkmark or trailing-indicator token for the selected state anywhere in the select or menu families."
+    },
+    "structure.popup-anchor": {
+      "kind": "value",
+      "value": "below",
+      "note": "[R] — no live component and no anchoring token; recorded as \"below\" per M3's published exposed-dropdown-menu convention, flagged rather than presented as sourced"
+    },
+    "behavior.pointer-activates-option": {
+      "kind": "value",
+      "value": false,
+      "note": "[R], but token-backed: the list-item family keeps HOVER and FOCUS as separate states with different opacities — versions/v0_192/_md-comp-list.scss list-item-hover-state-layer-opacity -> 0.08 and list-item-focus-state-layer-opacity -> 0.12. Modelling a pointer hover as focus would make the 8% layer unreachable, which is precisely the dead-value bug ALERT-MATRIX.md finding 10 was about. THE GAP WIDENED WITH THE v0.192 PIN: the two opacities were 0.08 and 0.10 under latest's menu file and are 0.08 and 0.12 now, so the argument is stronger, not weaker."
+    },
+    "behavior.status-inheritance": {
+      "kind": "off",
+      "note": "[R] — no context mechanism exists in a tokens-only clone"
+    },
+    "behavior.empty-readonly-marker": {
+      "kind": "off",
+      "note": "no equivalent concept"
+    },
+    "behavior.readonly-suppresses-popup": {
+      "kind": "off",
+      "note": "no read-only token in either select file"
+    },
+    "behavior.multiselect": {
+      "kind": "off",
+      "note": "no multi-select vocabulary in the select or menu token families"
+    },
+    "prop.size": {
+      "kind": "off",
+      "note": "one container-height token, no size axis"
+    },
+    "prop.variant": {
+      "kind": "off",
+      "note": "M3's only variant axis IS filled-vs-outlined, already modelled as structure.indicator; recording it twice would invent a second axis M3 does not have"
+    },
+    "prop.validation-status": {
+      "kind": "value",
+      "value": [
+        "error"
+      ],
+      "note": "the error-* token family only — direct grep of both files finds no warning-* and no success-*",
+      "source": "_md-comp-{filled,outlined}-select.scss text-field-error-* family"
+    },
+    "prop.disabled": {
+      "kind": "value",
+      "value": [
+        true,
+        false
+      ],
+      "source": "disabled-* opacity family: container 0.04 (filled only), outline 0.12 (outlined only), active-indicator 0.38 (filled only), input-text 0.38, label-text 0.38, leading/trailing icon 0.38"
+    },
+    "prop.read-only": {
+      "kind": "off",
+      "note": "no read-only token"
+    },
+    "slot.start-adornment": {
+      "kind": "value",
+      "value": true
+    },
+    "slot.group-label": {
+      "kind": "off"
+    },
+    "state.read-only": {
+      "kind": "off"
+    },
+    "style.trigger.background": {
+      "kind": "alias",
+      "slot": "bg-current",
+      "note": "the SAME container colour for both variants — see the outlined-select-IS-filled provenance entry"
+    },
+    "style.trigger.background@box": {
+      "kind": "off",
+      "note": "CONFIRMED, and the opposite of input's answer: _md-comp-outlined-select.scss DOES carry text-field-container-color -> surface-container-highest, identical to filled, in both editions. There is nothing for this row to change."
+    },
+    "style.trigger.color": {
+      "kind": "alias",
+      "slot": "fg",
+      "source": "text-field-input-text-color -> on-surface"
+    },
+    "style.trigger.font": {
+      "kind": "alias",
+      "slot": "type-body",
+      "source": "text-field-input-text-font/-size/-weight/-line-height -> body-large"
+    },
+    "style.trigger.letter-spacing": {
+      "kind": "value",
+      "value": "0.03125rem",
+      "source": "text-field-input-text-tracking -> body-large-tracking"
+    },
+    "style.trigger.width": {
+      "kind": "value",
+      "value": "100%",
+      "note": "[R] — no width token; a container-relative select is M3's published layout for an exposed dropdown menu, and it matches the harness's Salt column so the two are comparable. Flagged."
+    },
+    "style.trigger.min-height": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was 56px, sourced from text-field-container-height in versions/latest/sass/_md-comp-{filled,outlined}-select.scss — a token that arrives there already @deprecated ('Removing fixed height token due to conflicts with text fields variants requiring dynamic height.'). versions/v0_192 has no height token in either select file. WHAT THE CONSUMER LOSES: an explicit minimum trigger height. In practice little: the tokens that produced the number survive the pin — 16px top-space + 24px body-large line-height + 16px bottom-space = 56px — so the trigger's natural content height lands on the same figure. input.m3.json's style.root.height is a declared gap for exactly the same reason. See provenance.height."
+    },
+    "style.trigger.min-height@sm": {
+      "kind": "off",
+      "note": "no size axis"
+    },
+    "style.trigger.min-width": {
+      "kind": "off",
+      "note": "no width token"
+    },
+    "style.trigger.padding": {
+      "kind": "value",
+      "value": "16px",
+      "source": "top/bottom/leading/trailing-space, tokens/_md-comp-{filled,outlined}-field.scss — a DECLARED CROSS-COMPONENT BORROW, since neither select file carries any spacing token"
+    },
+    "style.trigger.gap": {
+      "kind": "value",
+      "value": "16px",
+      "source": "content-space, tokens/_md-comp-{filled,outlined}-field.scss — same borrow"
+    },
+    "style.trigger.shape": {
+      "kind": "value",
+      "value": "4px 4px 0 0",
+      "source": "filled text-field-container-shape -> md-sys-shape corner-extra-small-top"
+    },
+    "style.trigger.shape@box": {
+      "kind": "value",
+      "value": "4px",
+      "source": "outlined text-field-container-shape -> corner-extra-small, all four corners"
+    },
+    "style.trigger.cursor": {
+      "kind": "off",
+      "note": "no cursor token"
+    },
+    "style.trigger.shadow": {
+      "kind": "off",
+      "note": "no elevation token on the select's text-field half (its menu half has one — see style.popup.shadow)"
+    },
+    "style.trigger.transition": {
+      "kind": "off",
+      "note": "no motion token in either select file"
+    },
+    "style.trigger.border@box": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--border-current)"
+      },
+      "source": "outlined: text-field-outline-width 1px, text-field-outline-color -> md-sys-color.outline"
+    },
+    "style.indicator.border@underline": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "var(--indicator-current)"
+      },
+      "source": "filled: text-field-active-indicator-height 1px, text-field-active-indicator-color -> on-surface-variant (a different sys-color role from outlined's `outline`)"
+    },
+    "style.trigger.background@hover": {
+      "kind": "alias",
+      "slot": "bg-current-hover",
+      "source": "text-field-hover-state-layer-color -> on-surface at text-field-hover-state-layer-opacity 0.08, composited over the container colour"
+    },
+    "style.trigger.border@box-hover": {
+      "kind": "value",
+      "value": {
+        "border-color": "var(--border-current-hover)"
+      },
+      "source": "outlined: text-field-hover-outline-color -> on-surface; hover-outline-width stays 1px"
+    },
+    "style.indicator.border@underline-hover": {
+      "kind": "value",
+      "value": {
+        "border-bottom-color": "var(--indicator-current-hover)"
+      },
+      "source": "filled: text-field-hover-active-indicator-color -> on-surface; hover-active-indicator-height stays 1px"
+    },
+    "style.trigger.border@box-focus": {
+      "kind": "value",
+      "value": {
+        "border-width": "2px",
+        "border-color": "var(--border-current-active)"
+      },
+      "source": "versions/v0_192/_md-comp-outlined-select.scss 'text-field-focus-outline-width': 2px (hardcoded literal) and 'text-field-focus-outline-color' -> md-sys-color.primary. VALUE CHANGED BY THE PIN: latest binds the width to md-sys-state-focus-indicator.$thickness = 3px, and that file does not exist in v0.192. NOTE the asymmetry this creates and that the previous pin hid: style.indicator.border@underline-focus (the FILLED variant) is still 3px, because its 3px comes from a library override in the edition-independent tokens/_md-comp-filled-select.scss rather than from a generated token. The two select variants now thicken by different amounts on focus."
+    },
+    "style.indicator.border@underline-focus": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "3px",
+        "border-bottom-color": "var(--indicator-current-active)"
+      },
+      "source": "filled: text-field-focus-active-indicator-height — 2px in the generated token in BOTH editions, overridden to 3px by tokens/_md-comp-filled-select.scss's _get-override-tokens() with the comment `TODO(b/259455114): remove when focus tokens update to 3px`; text-field-focus-active-indicator-color -> primary. UNAFFECTED BY THE v0.192 PIN because the override lives in the hand-authored, edition-independent wrapper. So M3's filled select still thickens further on focus than M3's filled text field (2px) — and, newly under this pin, further than M3's own OUTLINED select (2px, see style.trigger.border@box-focus)."
+    },
+    "style.indicator.border@box-focus": {
+      "kind": "off",
+      "note": "an outlined M3 select has no activation indicator at all"
+    },
+    "style.trigger.focus": {
+      "kind": "off",
+      "note": "no separate focus ring or overlay — focus is expressed entirely by the indicator/outline thickening and recolouring above"
+    },
+    "style.trigger.background@readonly": {
+      "kind": "off",
+      "note": "no read-only token"
+    },
+    "style.trigger.border-color@readonly": {
+      "kind": "off"
+    },
+    "style.indicator.border-color@readonly": {
+      "kind": "off"
+    },
+    "style.trigger.background@disabled": {
+      "kind": "alias",
+      "slot": "bg-current-disabled",
+      "source": "filled: text-field-disabled-container-color -> on-surface at text-field-disabled-container-opacity 0.04"
+    },
+    "style.trigger.background@box-disabled": {
+      "kind": "value",
+      "value": "var(--trigger-bg)",
+      "note": "a precision row, and it points the OPPOSITE way from input's equivalent. _md-comp-outlined-select.scss has a container-color but NO disabled-container-color and NO disabled-container-opacity, so a disabled outlined select keeps its enabled fill. Restating the enabled value here stops the shared (filled-only) 4% rule above silently repainting it — the same 'silence is the enemy' shape as ALERT-MATRIX.md finding 9's explicit border-width: 0."
+    },
+    "style.trigger.color@disabled": {
+      "kind": "alias",
+      "slot": "fg-disabled",
+      "source": "text-field-disabled-input-text-color -> on-surface at 0.38"
+    },
+    "style.trigger.border-color@disabled": {
+      "kind": "alias",
+      "slot": "outline-disabled",
+      "source": "outlined: text-field-disabled-outline-color -> on-surface at disabled-outline-opacity 0.12"
+    },
+    "style.indicator.border-color@disabled": {
+      "kind": "alias",
+      "slot": "indicator-disabled",
+      "source": "filled: text-field-disabled-active-indicator-color -> on-surface at disabled-active-indicator-opacity 0.38 — three times the outline's 12%"
+    },
+    "style.trigger.disabled": {
+      "kind": "off",
+      "note": "no cursor or pointer-events token; M3's disabled treatment is entirely the per-element opacities already applied in the colour rows"
+    },
+    "style.value.placeholder": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE, and a real difference from M3's own text field: neither select file has any placeholder token, where both text-field files have input-text-placeholder-color. An M3 select shows a floating label instead, and the label belongs to the separate field wrapper."
+    },
+    "style.toggle-icon.size": {
+      "kind": "value",
+      "value": {
+        "width": "24px",
+        "height": "24px"
+      },
+      "source": "text-field-trailing-icon-size 24px"
+    },
+    "style.toggle-icon.color": {
+      "kind": "value",
+      "value": {
+        "color": "var(--fg-secondary)"
+      },
+      "source": "text-field-trailing-icon-color -> on-surface-variant"
+    },
+    "style.adornment.size": {
+      "kind": "value",
+      "value": "24px",
+      "source": "text-field-leading-icon-size 24px"
+    },
+    "style.status-adornment.size": {
+      "kind": "off"
+    },
+    "style.status-adornment.color": {
+      "kind": "off"
+    },
+    "style.popup.background": {
+      "kind": "alias",
+      "slot": "popup-bg",
+      "source": "menu-container-color -> surface-container — a LOWER surface tone than the trigger's surface-container-highest"
+    },
+    "style.popup.color": {
+      "kind": "alias",
+      "slot": "popup-fg",
+      "source": "menu-list-item-label-text-color -> on-surface; modelled once on the popup with the option inheriting"
+    },
+    "style.popup.border": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no outline or border token anywhere in the menu family; an M3 menu is elevation-only, where Salt frames its list in accent and shadcn frames its in a neutral border"
+    },
+    "style.popup.shape": {
+      "kind": "value",
+      "value": "4px",
+      "source": "menu-container-shape -> corner-extra-small"
+    },
+    "style.popup.shadow": {
+      "kind": "alias",
+      "slot": "popup-shadow",
+      "note": "[R] CSS derived from menu-container-elevation -> level2 (3dp) + menu-container-shadow-color -> shadow (#000); M3 ships a dp height, not a shadow string"
+    },
+    "style.popup.padding": {
+      "kind": "value",
+      "value": "8px 0",
+      "source": "top-space / bottom-space = 8px, tokens/_md-comp-menu.scss $new-tokens — a DECLARED CROSS-FILE BORROW; there is no horizontal menu padding token. UNAFFECTED BY THE v0.192 PIN: this is the hand-authored wrapper, which @use's versions/v0_192/md-comp-menu and adds these two spaces itself, so it is edition-independent and the pin does not move it."
+    },
+    "style.popup.gap": {
+      "kind": "off",
+      "note": "no gap token — M3's list items stack flush"
+    },
+    "style.popup.min-width": {
+      "kind": "alias",
+      "slot": "select-trigger-width",
+      "note": "[R] - no width token exists in either edition of the select token files. m3.material.io's exposed dropdown menu shows the menu matching the text field's width, and the previous build's content-width popup rendered 173px narrower than its own trigger, which is wrong against that published behaviour. Recorded [R] on the same standard this column already uses for structure.popup-anchor, not presented as a sourced token."
+    },
+    "style.popup.max-height": {
+      "kind": "off",
+      "note": "no height token on the menu"
+    },
+    "style.popup.z-index": {
+      "kind": "off",
+      "note": "no z-index token; platform-managed"
+    },
+    "style.popup.animation": {
+      "kind": "off",
+      "note": "no motion token in the select or menu token files"
+    },
+    "style.option.background": {
+      "kind": "value",
+      "value": "transparent",
+      "source": "tokens/_md-comp-menu-item.scss explicitly sets container-color to `transparent`, with the comment that menu items inherit their parent menu's colour so a selected background can sit on top"
+    },
+    "style.option.color": {
+      "kind": "off",
+      "note": "menu-list-item-label-text-color is the same on-surface role the popup already carries; no separate value"
+    },
+    "style.option.font": {
+      "kind": "alias",
+      "slot": "type-option",
+      "source": "menu-list-item-label-text-* -> label-large: 0.875rem/1.25rem at weight-MEDIUM 500 — a different role AND a heavier weight than the trigger's body-large 400"
+    },
+    "style.option.letter-spacing": {
+      "kind": "value",
+      "value": "0.00625rem",
+      "source": "menu-list-item-label-text-tracking -> label-large-tracking (the trigger's is body-large-tracking 0.03125rem — a different value on the same component)"
+    },
+    "style.option.min-height": {
+      "kind": "value",
+      "value": "48px",
+      "source": "menu-list-item-container-height 48px (the standalone _md-comp-list.scss says 56px for a list item; the menu family says 48px and the select's own file agrees with menu)"
+    },
+    "style.option.padding": {
+      "kind": "value",
+      "value": "12px 16px",
+      "source": "DECLARED CROSS-FILE BORROW: 12px vertical from tokens/_md-comp-list-item.scss's $new-tokens top-space/bottom-space (hand-authored and edition-independent — that wrapper @use's versions/v0_192/md-comp-list, so under this pin the borrow and the pin agree on an edition); 16px horizontal from versions/v0_192/_md-comp-list.scss 'list-item-leading-space' / 'list-item-trailing-space', both 16px and identical in both editions. The select's own file carries no list-item spacing. NOTE latest additionally has list-item-top-space/-bottom-space at 10px, which v0.192 does not — the 12px used here comes from the wrapper, not from either generated file, so the pin does not move it."
+    },
+    "style.option.gap": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was 12px, sourced from list-item-between-space in versions/latest/sass/_md-comp-list.scss. versions/v0_192/_md-comp-list.scss contains the string 'between' ZERO times — the token is a `latest` addition. WHAT THE CONSUMER LOSES: the sourced spacing between an option's leading icon / selected marker and its label. The horizontal padding survives (leading-space / trailing-space 16px, present in both editions — see style.option.padding); only the internal gap is unsourced. Left off rather than back-filled with the 12px, because a borrowed number would be indistinguishable from a sourced one in the render."
+    },
+    "style.option.shape": {
+      "kind": "off",
+      "note": "no per-item shape token in the menu family (the standalone list has list-item-selected-container-shape, but that belongs to the separate `list` component and its selected colour disagrees with the select's too)"
+    },
+    "style.option.cursor": {
+      "kind": "off",
+      "note": "no cursor token"
+    },
+    "style.option.background@hover": {
+      "kind": "value",
+      "value": {
+        "background-image": "linear-gradient(var(--option-layer-hover), var(--option-layer-hover))"
+      },
+      "source": "versions/v0_192/_md-comp-list.scss 'list-item-hover-state-layer-color' -> md-sys-color.on-surface at 'list-item-hover-state-layer-opacity' -> md-sys-state.hover-state-layer-opacity = 0.08 — a DECLARED CROSS-FILE BORROW, since the select's own menu-list-item-* family names height, label and selected colour but no interaction state. SOURCE RE-POINTED BY THE v0.192 PIN (was versions/latest/sass/_md-comp-menu.scss, whose forty-nine-key set shrinks to eight in v0.192); VALUE UNCHANGED, because hover is 0.08 in both editions and the list file resolves it to the same on-surface role under the same token name. See provenance.the-menu-tokens-declared-and-disowned.",
+      "note": "expressed as a background-IMAGE so the layer composites OVER a selected option's background-colour instead of replacing it, which is how an M3 state layer actually works"
+    },
+    "style.option.active": {
+      "kind": "value",
+      "value": {
+        "background-image": "linear-gradient(var(--option-layer-focus), var(--option-layer-focus))"
+      },
+      "source": "versions/v0_192/_md-comp-list.scss 'list-item-focus-state-layer-color' -> md-sys-color.on-surface at 'list-item-focus-state-layer-opacity' -> md-sys-state.focus-state-layer-opacity = 0.12. SOURCE RE-POINTED AND VALUE CHANGED BY THE v0.192 PIN: was versions/latest/sass/_md-comp-menu.scss at 0.10. Now FOUR points heavier than the hover layer rather than two, which makes behavior.pointer-activates-option = false an even sharper distinction for M3. docs/foundations/state-layers.md tabulates 0.12, so the foundations page and this cell now agree."
+    },
+    "style.option.focus-visible": {
+      "kind": "off",
+      "note": "Doubly off under the v0.192 pin. versions/latest/sass/_md-comp-menu.scss has focus-indicator-color/-thickness/-outline-offset tokens, but (a) they belong to the standalone menu component and neither select file references them, and (b) they do not exist in versions/v0_192/_md-comp-menu.scss at all, which has eight keys and no focus family — nor does the md-sys-state-focus-indicator.scss they resolve through. The option's focus affordance is its state layer (style.option.active), which is what M3 actually specifies here."
+    },
+    "style.option.disabled": {
+      "kind": "value",
+      "value": {
+        "opacity": "0.3"
+      },
+      "source": "versions/v0_192/_md-comp-list.scss 'list-item-disabled-label-text-opacity': 0.3 — a cross-file borrow; the select's own file has no option-disabled token at all. SOURCE RE-POINTED AND VALUE CHANGED BY THE v0.192 PIN: was 0.38, from versions/latest/sass/_md-comp-menu.scss's list-item-disabled-label-text-opacity. This is a genuine edition divergence inside the list family itself (v0.192 says 0.3, latest says 0.38), not a role change, and it makes M3's disabled option slightly MORE legible than its 0.38 disabled trigger text — an internal inconsistency that belongs to M3, not to this registry. material-web's tokens/_md-comp-list-item.scss re-exports exactly this value as its `disabled-opacity` $new-token, so 0.3 is what the shipped library uses."
+    },
+    "style.option.selected": {
+      "kind": "value",
+      "value": {
+        "background-color": "var(--option-bg-selected)"
+      },
+      "source": "menu-list-item-selected-container-color -> md-sys-color.surface-container-highest, from the SELECT's own file, present and identical in versions/v0_192. NOTE the standalone menu says secondary-container for the same token in BOTH editions (versions/v0_192/_md-comp-menu.scss 'list-item-selected-container-color' -> secondary-container is one of that file's eight keys); the select's own file overrides it to a neutral surface tone, and the select's value is the one used. Unaffected by the pin."
+    },
+    "style.selected-marker.box": {
+      "kind": "off",
+      "note": "no marker glyph — see structure.selected-marker"
+    },
+    "style.group-label.font": {
+      "kind": "off",
+      "note": "no group concept"
+    },
+    "style.group-label.color": {
+      "kind": "off"
+    },
+    "style.group-label.padding": {
+      "kind": "off"
+    },
+    "style.group-label.background": {
+      "kind": "off"
+    },
+    "style.group.border-top": {
+      "kind": "off",
+      "note": "no group concept; M3 divides with the divider element instead"
+    },
+    "style.separator": {
+      "kind": "value",
+      "value": {
+        "height": "1px",
+        "background-color": "var(--separator-color)"
+      },
+      "source": "menu-divider-height 1px + menu-divider-color -> surface-variant. Full width: the select file carries no divider inset token (_md-comp-list.scss's 16px divider-leading/trailing-space belongs to the standalone list)."
+    },
+    "style.trigger.variant@secondary": {
+      "kind": "off",
+      "note": "no such axis — see prop.variant"
+    },
+    "style.trigger.variant@tertiary": {
+      "kind": "off",
+      "note": "no such axis — see prop.variant"
+    },
+    "style.trigger.status@error": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-error)",
+        "--border-current-hover": "var(--status-error-hover)",
+        "--border-current-active": "var(--status-error)",
+        "--indicator-current": "var(--status-error)",
+        "--indicator-current-hover": "var(--status-error-hover)",
+        "--indicator-current-active": "var(--status-error)"
+      },
+      "source": "text-field-error-outline-color / -hover-outline-color / -focus-outline-color; text-field-error-active-indicator-color / -hover-active-indicator-color / -focus-active-indicator-color. The hover entries resolve to on-error-container, NOT error. No caret entry, because the select's caret tokens are @deprecated-and-removed."
+    },
+    "style.trigger.status@warning": {
+      "kind": "off",
+      "note": "no warning-* token exists in either select file — confirmed by direct grep"
+    },
+    "style.trigger.status@success": {
+      "kind": "off",
+      "note": "no success-* token exists in either select file — confirmed by direct grep"
+    }
+  }
+}

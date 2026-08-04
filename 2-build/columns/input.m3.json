@@ -1,0 +1,371 @@
+{
+  "system": "m3",
+  "component": "input",
+  "fontFaces": [
+    {
+      "family": "Roboto",
+      "weight": "400",
+      "file": "fonts/roboto-400.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "filled-bg": "#e6e0e9",
+      "fg": "#1d1b20",
+      "placeholder-fg": "#49454f",
+      "indicator": "#49454f",
+      "indicator-hover-color": "#1d1b20",
+      "indicator-focus-color": "#6750a4",
+      "outline": "#79747e",
+      "outline-hover-color": "#1d1b20",
+      "outline-focus-color": "#6750a4",
+      "caret": "#6750a4",
+      "status-error": "#b3261e",
+      "status-error-hover": "#410e0b",
+      "bg-disabled": "color-mix(in oklab, #1d1b20 4%, transparent)",
+      "fg-disabled": "color-mix(in oklab, #1d1b20 38%, transparent)",
+      "outline-disabled": "color-mix(in oklab, #1d1b20 12%, transparent)",
+      "indicator-disabled": "color-mix(in oklab, #1d1b20 38%, transparent)",
+      "type-body": "400 1rem/1.5rem 'Roboto', sans-serif",
+      "bg-current": "var(--filled-bg)",
+      "border-current": "var(--outline)",
+      "border-current-hover": "var(--outline-hover-color)",
+      "border-current-active": "var(--outline-focus-color)",
+      "indicator-current": "var(--indicator)",
+      "indicator-current-hover": "var(--indicator-hover-color)",
+      "indicator-current-active": "var(--indicator-focus-color)",
+      "caret-current": "var(--caret)"
+    },
+    "dark": {
+      "filled-bg": "#36343b",
+      "fg": "#e6e0e9",
+      "placeholder-fg": "#cac4d0",
+      "indicator": "#cac4d0",
+      "indicator-hover-color": "#e6e0e9",
+      "indicator-focus-color": "#d0bcff",
+      "outline": "#938f99",
+      "outline-hover-color": "#e6e0e9",
+      "outline-focus-color": "#d0bcff",
+      "caret": "#d0bcff",
+      "status-error": "#f2b8b5",
+      "status-error-hover": "#f9dedc",
+      "bg-disabled": "color-mix(in oklab, #e6e0e9 4%, transparent)",
+      "fg-disabled": "color-mix(in oklab, #e6e0e9 38%, transparent)",
+      "outline-disabled": "color-mix(in oklab, #e6e0e9 12%, transparent)",
+      "indicator-disabled": "color-mix(in oklab, #e6e0e9 38%, transparent)"
+    }
+  },
+  "modeInvariant": [
+    "type-body"
+  ],
+  "provenance": {
+    "edition-pin": "material-web is a TOKENS-ONLY clone (CLAUDE.md) — there is no live M3 text-field component to grep for structure or behavior, so every structure/behavior claim in this column is [R] and every style value below is [S] from a token file. PINNED TO tokens/versions/v0_192. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192 — and for this component that is doubly true, since the hand-authored tokens/_md-comp-filled-field.scss and tokens/_md-comp-outlined-field.scss this column already borrows its spacing from are themselves built on v0.192 (see padding-and-gap). The four-components-deep inconsistency this entry used to flag is now CLOSED, downward. A full mechanical diff of both text-field files across the two editions (filled 87 vs 89 entries, outlined 80 vs 84) shows exactly ONE substantive value divergence among the shared keys, and two latest-only additions that matter here. WHAT CHANGES VALUE: outlined focus-outline-width is a hardcoded 2px in versions/v0_192/_md-comp-outlined-text-field.scss and md-sys-state-focus-indicator.$thickness = 3px in latest. THIS COLUMN NOW USES 2px — see style.root.border@box-focus. WHAT IS LOST: (1) container-height 56px, which exists in `latest` only (and arrives there already @deprecated) — style.root.height is a declared gap, see its cell and the height entry; (2) latest's error-focus-indicator-outline-color, focus-indicator-outline-color and focus-indicator-outline-thickness on the outlined file and focus-active-indicator-thickness on the filled file, none of which was modelled here (style.root.focus was already a sourced OFF — see no-focus-ring). Everything else differs only by the map-vs-$var file format and by latest expressing the composite `-type` entries as @mixins. WHAT CHANGES THROUGH THE COLOUR SYSTEM RATHER THAN THROUGH THESE FILES: on-error-container, one of exactly four sys-color roles that DIFFER between the editions — versions/v0_192 resolves it to error10 (#410e0b) in light mode where versions/latest/sass resolves it to error30 (#8c1d18). That moves status-error-hover. See its provenance entry.",
+    "filled-and-outlined-are-one-component": "_md-comp-filled-text-field.scss and _md-comp-outlined-text-field.scss share their token vocabulary almost line for line (identical input-text-*, label-text-*, supporting-text-*, error-*, disabled-* families, identical body-large/body-small typescale bindings). They differ in exactly two mechanisms: filled has container-color + an active indicator (bottom-only rule), outlined has NO container-color token at all and a full outline. That is the structure.indicator axis, handled the same way button's filled/outlined/text family was.",
+    "filled-bg": "_md-comp-filled-text-field.scss 'container-color' -> md-sys-color.$surface-container-highest -> versions/v0_192/_md-sys-color.scss values-light() md-ref-palette.neutral90 = #e6e0e9; values-dark() neutral22 = #36343b (both resolved directly from versions/v0_192/_md-ref-palette.scss, which is value-identical to latest's on every shared key — v0.192 keeps light and dark in ONE file and has no _md-sys-color__dark.scss)",
+    "outlined-has-no-container-color": "direct grep of _md-comp-outlined-text-field.scss for container-color returns nothing — an outlined text field is transparent. Confirmed absence, not an unfound token; this is style.root.background@box.",
+    "fg": "input-text-color -> on-surface -> neutral10 #1d1b20 / neutral90 #e6e0e9 (matches docs/foundations/colors.md's already-resolved on-surface row)",
+    "placeholder-fg": "input-text-placeholder-color -> on-surface-variant -> neutral-variant30 #49454f / neutral-variant80 #cac4d0",
+    "indicator / indicator-hover-color / indicator-focus-color": "filled: active-indicator-color -> on-surface-variant; hover-active-indicator-color -> on-surface; focus-active-indicator-color -> primary (primary40 #6750a4 / primary80 #d0bcff). Note the rest role (on-surface-variant) differs from the outlined variant's rest role (outline) — two different mechanisms, two different colour roles.",
+    "outline / outline-hover-color / outline-focus-color": "outlined: outline-color -> md-sys-color.outline -> neutral-variant50 #79747e / neutral-variant60 #938f99; hover-outline-color -> on-surface; focus-outline-color -> primary",
+    "indicator and outline widths": "filled: active-indicator-height 1px, hover-active-indicator-height 1px, focus-active-indicator-height 2px — all three identical in both editions. outlined: outline-width 1px, hover-outline-width 1px, focus-outline-width 2px. THE FOCUS OUTLINE WIDTH CHANGED WITH THE PIN: versions/v0_192/_md-comp-outlined-text-field.scss hardcodes 'focus-outline-width': 2px, where versions/latest/sass binds it to md-sys-state-focus-indicator.$thickness = 3px (and that file does not exist in v0.192 at all). This column now uses 2px. A pleasing side effect: the filled variant's focus-active-indicator-height is 2px too, so under this pin BOTH mechanisms thicken to exactly 2px on focus where latest had them at 2px and 3px respectively. Salt's activation indicator does the identical 1px -> 2px focus thickening — an independent convergence, recorded in INPUT-MATRIX.md, and now an exact one.",
+    "caret": "caret-color -> primary; error-focus-caret-color -> error. M3 is the only one of the three systems that tokenises the text cursor's colour at all.",
+    "status-error / status-error-hover": "error-active-indicator-color / error-outline-color / error-focus-*-color -> md-sys-color.error -> error40 #b3261e light / error80 #f2b8b5 dark, identical in both editions. error-hover-active-indicator-color / error-hover-outline-color -> md-sys-color.on-error-container -> versions/v0_192/_md-sys-color.scss values-light() error10 = #410e0b / values-dark() error90 = #f9dedc. LIGHT VALUE CHANGED BY THE PIN, and NOT because the text-field files changed — because the COLOUR SYSTEM did. on-error-container is one of exactly four sys-color roles that differ between the editions: v0.192 says error10 in light mode, latest says error30 (#8c1d18). The other three are on-primary-container, on-secondary-container and on-tertiary-container, all light-mode-only, all the same 10-vs-30 shift; dark mode is identical for all four. THIS CONTRADICTS THE WORKING ASSUMPTION THAT M3 COLOUR IS EDITION-STABLE and is flagged for the owner. The finding this entry carries is unchanged and if anything louder: M3 is the only system whose HOVER colour in the error state is a different role from its rest colour, and under this pin the two are further apart than ever (#b3261e against #410e0b).",
+    "no-warning-no-success": "direct grep of both text-field files: no warning-* and no success-* token exists in either. M3's entire validation axis on this component is the error-* family — the same coverage gap already recorded for shadcn's aria-invalid boolean, arrived at independently.",
+    "disabled-opacities": "M3 is the most granular disabled treatment matrixed so far: FOUR different opacities over the enabled colours, all layered on md-sys-color.on-surface — disabled-container-opacity 0.04, disabled-outline-opacity 0.12, disabled-active-indicator-opacity 0.38, disabled-input-text-opacity 0.38 (also disabled-label-text/-supporting-text/-leading-icon/-trailing-icon, all 0.38, belonging to the field wrapper or to composed icons, not modelled here). Expressed as color-mix(in oklab, <on-surface> N%, transparent), the same expression form button/alert used for M3 state layers.",
+    "shape": "filled: container-shape -> md-sys-shape.$corner-extra-small-top = `4px 4px 0px 0px` — rounded on the TOP ONLY, so the activation indicator sits on a square bottom edge. outlined: container-shape -> $corner-extra-small = 4px on all four corners. This asymmetry is the filled variant's signature and is why style.root.shape carries a four-value radius.",
+    "height": "DECLARED GAP UNDER THE v0.192 PIN. container-height 56px is present ONLY in the `latest` edition, and even there it arrives already annotated '@deprecated. Removing fixed height token due to conflicts with text fields variants requiring dynamic height (multi-line, text area).' versions/v0_192/_md-comp-{filled,outlined}-text-field.scss have no height token of any kind — grep for container-height returns nothing in either. style.root.height is therefore switched off; see its cell. THE PRACTICAL IMPACT IS NIL, which is why this is a gap worth stating rather than one worth fearing: 56px was itself internally consistent with tokens that DO survive the pin — 16px top-space + 24px body-large line-height + 16px bottom-space = 56 — so the field's natural content height reproduces the number without asserting a token that the pinned edition does not have.",
+    "padding-and-gap": "DECLARED BORROW — AND NO LONGER A CROSS-EDITION ONE. Under the v0.192 pin the borrow and the pin finally agree on an edition. leading-space / trailing-space / top-space / bottom-space = 16px and content-space = 16px exist in NEITHER edition's text-field file. They live one layer up, in the library's hand-authored tokens/_md-comp-filled-field.scss and tokens/_md-comp-outlined-field.scss (which are themselves built on versions/v0_192, i.e. exactly the edition this column now pins). The borrow was always safe because the two editions agree on every value these files consume; under this pin it is not even a borrow across editions any more, only across the generated/hand-authored boundary. Note also that docs/COMPONENTS.md lists filled-field/outlined-field on the INPUT row, not the field row, so these are in scope here.",
+    "type-body": "input-text-font/-size/-weight/-line-height -> md-sys-typescale body-large: font = md-ref-typeface.$plain, size 1rem, line-height 1.5rem, weight = weight-regular (400). Roboto is self-hosted per this pipeline's standing M3 precedent (calendar/button/alert) — this tokens-only clone never spells out the literal family string for the `plain` role (docs/foundations/typography.md flags it).",
+    "letter-spacing": "input-text-tracking -> body-large-tracking = 0.03125rem. Modelled as its own row because the CSS `font` shorthand does not carry letter-spacing.",
+    "no-focus-ring": "M3's focus is expressed entirely by the indicator/outline thickening and recolouring — there is no separate ring or outline overlay. STRONGER UNDER THE v0.192 PIN, not weaker: the focus-indicator-outline-color / -thickness tokens that `latest` carries (already annotated '@deprecated. Deprecating - instead use focus outline tokens') do not exist in versions/v0_192 at all, and neither does the _md-sys-state-focus-indicator.scss they resolve through. So style.root.focus is off for two independent reasons — absent from the pinned edition, and deprecated where it does exist. Note this is the one M3 component that does NOT re-point to tokens/_md-comp-focus-ring.scss the way card, chip and tabs do: a text field's focus affordance is its own outline, not a separate ring, and M3 says so in both editions.",
+    "no-readonly-no-textalign-no-variant-prop": "no read-only token, no text-align token, and no background-intensity variant beyond filled/outlined in either text-field file — all confirmed by direct grep.",
+    "icons": "leading-icon-size and trailing-icon-size = 24px, leading-icon-color / trailing-icon-color -> on-surface-variant, error-trailing-icon-color -> error. NOTE what this does and does not say: M3 RECOLOURS a trailing icon in the error state but never INSERTS one — the glyph is always consumer-supplied content, which is why structure.status-adornment is off for M3 and on for Salt. The icons' own colours belong to a future registry icon component (DECLARED COMPOSITION); only the box size is modelled here."
+  },
+  "cells": {
+    "structure.root-wrapper": {
+      "kind": "value",
+      "value": "wrapper",
+      "note": "[R] — no live component; a container element is implied by the field token family (leading/trailing content spaces, an activation indicator, a container colour), all of which need somewhere to live beside the text"
+    },
+    "structure.indicator": {
+      "kind": "value",
+      "value": [
+        "underline",
+        "box"
+      ],
+      "note": "underline = filled-text-field (active indicator), box = outlined-text-field (outline). One canonical component with an emphasis axis, not two components — see the filled-and-outlined-are-one-component provenance entry. Ordered with `underline` first because filled is M3's default-emphasis text field.",
+      "source": "_md-comp-filled-text-field.scss active-indicator-* vs _md-comp-outlined-text-field.scss outline-*"
+    },
+    "structure.start-adornment": {
+      "kind": "value",
+      "value": true,
+      "source": "leading-icon-size 24px, leading-icon-color, with-leading-content-leading-space"
+    },
+    "structure.end-adornment": {
+      "kind": "value",
+      "value": true,
+      "source": "trailing-icon-size 24px, trailing-icon-color, error-trailing-icon-color, with-trailing-content-trailing-space"
+    },
+    "structure.status-adornment": {
+      "kind": "off",
+      "note": "M3 recolours a trailing icon on error (error-trailing-icon-color) but never inserts one — the glyph is always consumer-supplied. A precise distinction, not a gap; see the icons provenance entry."
+    },
+    "behavior.status-inheritance": {
+      "kind": "off",
+      "note": "[R] — no context mechanism exists in a tokens-only clone"
+    },
+    "behavior.empty-readonly-marker": {
+      "kind": "off",
+      "note": "no equivalent concept"
+    },
+    "prop.variant": {
+      "kind": "off",
+      "note": "M3's only variant axis IS filled-vs-outlined, already modelled as structure.indicator. Recording it here as well would invent a second axis M3 does not have and would let two harness toggles contradict each other."
+    },
+    "prop.validation-status": {
+      "kind": "value",
+      "value": [
+        "error"
+      ],
+      "note": "the error-* token family only — direct grep of both files finds no warning-* and no success-* token",
+      "source": "_md-comp-{filled,outlined}-text-field.scss error-* family"
+    },
+    "prop.text-align": {
+      "kind": "off",
+      "note": "no text-align token in either file"
+    },
+    "prop.disabled": {
+      "kind": "value",
+      "value": [
+        true,
+        false
+      ],
+      "source": "disabled-* opacity family (container 0.04, outline 0.12, active-indicator 0.38, input-text 0.38)"
+    },
+    "prop.read-only": {
+      "kind": "off",
+      "note": "no read-only token in either text-field file"
+    },
+    "slot.start-adornment": {
+      "kind": "value",
+      "value": true
+    },
+    "slot.end-adornment": {
+      "kind": "value",
+      "value": true
+    },
+    "state.read-only": {
+      "kind": "off"
+    },
+    "style.root.background": {
+      "kind": "alias",
+      "slot": "bg-current",
+      "note": "the filled variant's container-color"
+    },
+    "style.root.background@box": {
+      "kind": "value",
+      "value": "transparent",
+      "source": "_md-comp-outlined-text-field.scss has NO container-color token at all — a confirmed absence, and the outlined variant's defining difference"
+    },
+    "style.root.color": {
+      "kind": "alias",
+      "slot": "fg"
+    },
+    "style.root.font": {
+      "kind": "alias",
+      "slot": "type-body"
+    },
+    "style.root.letter-spacing": {
+      "kind": "value",
+      "value": "0.03125rem",
+      "source": "input-text-tracking -> body-large-tracking"
+    },
+    "style.root.height": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was 56px, sourced from container-height in versions/latest/sass/_md-comp-{filled,outlined}-text-field.scss — a token that arrives there already @deprecated ('Removing fixed height token due to conflicts with text fields variants requiring dynamic height (multi-line, text area).'). versions/v0_192 has NO height token in either text-field file; grep for container-height returns nothing. WHAT THE CONSUMER LOSES: an explicit fixed height. In practice nothing: the tokens that produced the number all survive the pin — 16px top-space + 24px body-large line-height + 16px bottom-space = 56px — so the field's natural content height lands on the same figure without this column asserting a token the pinned edition does not have. See provenance.height."
+    },
+    "style.root.min-width": {
+      "kind": "off",
+      "note": "no width token in either file"
+    },
+    "style.root.padding": {
+      "kind": "value",
+      "value": "16px",
+      "source": "top/bottom/leading/trailing-space, tokens/_md-comp-{filled,outlined}-field.scss — a declared cross-edition borrow"
+    },
+    "style.root.gap": {
+      "kind": "value",
+      "value": "16px",
+      "source": "content-space, tokens/_md-comp-{filled,outlined}-field.scss"
+    },
+    "style.root.shape": {
+      "kind": "value",
+      "value": "4px 4px 0 0",
+      "source": "filled container-shape -> md-sys-shape corner-extra-small-top = `4px 4px 0px 0px`"
+    },
+    "style.root.shape@box": {
+      "kind": "value",
+      "value": "4px",
+      "source": "outlined container-shape -> corner-extra-small = 4px, all four corners"
+    },
+    "style.root.cursor": {
+      "kind": "off",
+      "note": "no cursor token"
+    },
+    "style.root.shadow": {
+      "kind": "off",
+      "note": "no elevation/shadow token in either text-field file"
+    },
+    "style.root.transition": {
+      "kind": "off",
+      "note": "no motion token in either text-field file"
+    },
+    "style.control.placeholder": {
+      "kind": "value",
+      "value": {
+        "color": "var(--placeholder-fg)"
+      },
+      "source": "input-text-placeholder-color -> on-surface-variant; colour only, no weight change"
+    },
+    "style.control.caret-color": {
+      "kind": "alias",
+      "slot": "caret-current",
+      "source": "caret-color -> primary; reassigned to error by style.root.status@error"
+    },
+    "style.root.border@box": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--border-current)"
+      },
+      "source": "outlined: outline-width 1px, outline-color -> md-sys-color.outline"
+    },
+    "style.indicator.border@underline": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "var(--indicator-current)"
+      },
+      "source": "filled: active-indicator-height 1px, active-indicator-color -> on-surface-variant (a DIFFERENT sys-color role from the outlined variant's outline)"
+    },
+    "style.root.border@box-hover": {
+      "kind": "value",
+      "value": {
+        "border-color": "var(--border-current-hover)"
+      },
+      "source": "outlined: hover-outline-color -> on-surface; hover-outline-width stays 1px"
+    },
+    "style.indicator.border@underline-hover": {
+      "kind": "value",
+      "value": {
+        "border-bottom-color": "var(--indicator-current-hover)"
+      },
+      "source": "filled: hover-active-indicator-color -> on-surface; hover-active-indicator-height stays 1px"
+    },
+    "style.root.border@box-focus": {
+      "kind": "value",
+      "value": {
+        "border-width": "2px",
+        "border-color": "var(--border-current-active)"
+      },
+      "source": "versions/v0_192/_md-comp-outlined-text-field.scss 'focus-outline-width': 2px (hardcoded literal) and 'focus-outline-color' -> md-sys-color.primary. VALUE CHANGED BY THE PIN: latest binds focus-outline-width to md-sys-state-focus-indicator.$thickness = 3px, and that file does not exist in v0.192. The outlined variant's focus stroke now thickens 1px -> 2px, matching the filled variant's focus-active-indicator-height (2px, identical in both editions) exactly."
+    },
+    "style.indicator.border@underline-focus": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "2px",
+        "border-bottom-color": "var(--indicator-current-active)"
+      },
+      "source": "filled: focus-active-indicator-height 2px, focus-active-indicator-color -> primary"
+    },
+    "style.indicator.border@box-focus": {
+      "kind": "off",
+      "note": "an outlined M3 field has no activation indicator at all"
+    },
+    "style.root.focus": {
+      "kind": "off",
+      "note": "no separate focus ring or overlay — focus is expressed entirely by the indicator/outline thickening and recolouring above. The focus-indicator-outline-* tokens exist but are explicitly @deprecated in favour of the focus outline tokens; see the no-focus-ring provenance entry."
+    },
+    "style.root.background@readonly": {
+      "kind": "off",
+      "note": "no read-only token"
+    },
+    "style.root.border-color@readonly": {
+      "kind": "off"
+    },
+    "style.indicator.border-color@readonly": {
+      "kind": "off"
+    },
+    "style.root.background@disabled": {
+      "kind": "alias",
+      "slot": "bg-disabled",
+      "source": "filled: disabled-container-color -> on-surface at disabled-container-opacity 0.04"
+    },
+    "style.root.background@box-disabled": {
+      "kind": "value",
+      "value": "transparent",
+      "note": "disabled-container-opacity is a FILLED-only token; the outlined variant has no container colour to fade, so it stays transparent when disabled. Without this row the shared disabled-background rule would tint it, inventing a value source does not have."
+    },
+    "style.root.color@disabled": {
+      "kind": "alias",
+      "slot": "fg-disabled",
+      "source": "disabled-input-text-color -> on-surface at disabled-input-text-opacity 0.38"
+    },
+    "style.root.border-color@disabled": {
+      "kind": "alias",
+      "slot": "outline-disabled",
+      "source": "outlined: disabled-outline-color -> on-surface at disabled-outline-opacity 0.12"
+    },
+    "style.indicator.border-color@disabled": {
+      "kind": "alias",
+      "slot": "indicator-disabled",
+      "source": "filled: disabled-active-indicator-color -> on-surface at disabled-active-indicator-opacity 0.38 — three times the outline's 12%"
+    },
+    "style.control.disabled": {
+      "kind": "off",
+      "note": "no cursor or pointer-events token; M3's disabled treatment is entirely the per-element opacities already applied in the colour rows above"
+    },
+    "style.adornment.size": {
+      "kind": "value",
+      "value": "24px",
+      "source": "leading-icon-size / trailing-icon-size"
+    },
+    "style.status-adornment.size": {
+      "kind": "off"
+    },
+    "style.status-adornment.color": {
+      "kind": "off"
+    },
+    "style.root.variant@secondary": {
+      "kind": "off",
+      "note": "no such axis — see prop.variant"
+    },
+    "style.root.variant@tertiary": {
+      "kind": "off",
+      "note": "no such axis — see prop.variant"
+    },
+    "style.root.status@error": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-error)",
+        "--border-current-hover": "var(--status-error-hover)",
+        "--border-current-active": "var(--status-error)",
+        "--indicator-current": "var(--status-error)",
+        "--indicator-current-hover": "var(--status-error-hover)",
+        "--indicator-current-active": "var(--status-error)",
+        "--caret-current": "var(--status-error)"
+      },
+      "source": "error-outline-color / error-hover-outline-color / error-focus-outline-color; error-active-indicator-color / error-hover-active-indicator-color / error-focus-active-indicator-color; error-focus-caret-color. The hover entries resolve to on-error-container, NOT error — M3 is the only system whose hover colour in the error state is a different role from its rest colour."
+    },
+    "style.root.status@warning": {
+      "kind": "off",
+      "note": "no warning-* token exists in either text-field file — confirmed by direct grep"
+    },
+    "style.root.status@success": {
+      "kind": "off",
+      "note": "no success-* token exists in either text-field file — confirmed by direct grep"
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "system": "m3",
+  "component": "dialog",
+  "fontFaces": [
+    { "family": "Roboto", "weight": "400", "file": "fonts/roboto-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "surface": "#ece6f0",
+      "fg": "#1d1b20",
+      "fg-secondary": "#49454f",
+      "icon-color": "#625b71",
+      "scrim-bg": "color-mix(in srgb, #000 32%, transparent)",
+      "shadow-level3": "0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15)",
+      "radius-panel": "28px",
+      "type-title": "400 1.5rem/2rem Roboto, sans-serif",
+      "type-body": "400 0.875rem/1.25rem Roboto, sans-serif"
+    },
+    "dark": {
+      "surface": "#2b2930",
+      "fg": "#e6e0e9",
+      "fg-secondary": "#cac4d0",
+      "icon-color": "#ccc2dc"
+    }
+  },
+  "modeInvariant": [
+    "scrim-bg",
+    "shadow-level3"
+  ],
+  "provenance": {
+    "edition-pin": "tokens/versions/v0_192/_md-comp-dialog.scss and .../_md-comp-scrim.scss. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192 — tokens/_md-comp-dialog.scss does exactly that. The registry-wide split this column flagged is now CLOSED, downward, to v0.192. NO DECLARED GAP AND NO VALUE CHANGE FOLLOWS FOR DIALOG. A full mechanical key/value diff of _md-comp-dialog.scss across the two editions finds ZERO value divergences among the shared keys. `latest` adds only two things, and BOTH arrive @deprecated: the with-divider-divider-{height,color} pair ('Depcrecating all divider tokens nested across components. Please use the standalone divider component token') and the whole subhead-* family ('Tokens deprecated to align taxonomy with full-screen dialogs. Please use md.comp.dialog.headline.… instead'). _md-comp-scrim.scss is byte-for-byte identical in value across editions (container-color: md-sys-color.$scrim, container-opacity: 0.32). Every latest-only key is therefore either already declared off in this column (see divider-declared-off) or unmodelled, so re-pointing to v0.192 costs this column nothing. _md-comp-scrim.scss is byte-for-byte identical in value across editions. The colour, typescale, shape and elevation resolutions this column depends on (surface-container-high, on-surface, on-surface-variant, secondary, scrim, headline-small, body-medium, corner-extra-large, level3) are all value-identical between the editions — re-verified by a full role-map diff of _md-sys-color.scss, which found divergence ONLY in the four light-mode on-*-container roles, none of which this column uses. NOTE the file layout differs: v0.192 keeps values-light() and values-dark() in ONE _md-sys-color.scss and has no _md-sys-color__dark.scss.",
+    "tokens-only-clone": "material-web is a TOKENS-ONLY clone in this checkout — there is no dialog/ directory, no component source. Every structure and behavior cell below is therefore [R], derived from the APG dialog-modal pattern and m3.material.io's published basic-dialog spec, and is flagged as such rather than presented as grepped. Every STYLE cell that has a token IS [S]; the style cells with no token (padding, gaps, min/max width, motion) are [R] and named here individually.",
+    "material-web-disowns-elevation": "tokens/_md-comp-dialog.scss (material-web's own hand-authored wrapper over versions/v0_192/md-comp-dialog) lists `container-elevation` under $unsupported-tokens with the comment 'Unused without a shadow color', and lists the entire action-* family there too with 'currently ignoring tokens for action-*-label-text and action-*-state-layer since actions are spec'd as standard text buttons'. This column takes the GENERATED token's value for elevation and records the disownment — the same resolution SELECT-MATRIX.md finding 6 reached for the menu tokens the select file declares and material-web then disowns.",
+    "surface": "container-color -> md-sys-color.$surface-container-high -> md-ref-palette.$neutral92 #ece6f0 light / $neutral17 #2b2930 dark. NOTE this is a HIGHER surface tone than the select popup's surface-container (#f3edf7) and the select trigger's surface-container-highest — M3 raises the tone with the elevation.",
+    "fg": "headline-color -> md-sys-color.$on-surface -> neutral10 #1d1b20 / neutral90 #e6e0e9.",
+    "fg-secondary": "supporting-text-color -> md-sys-color.$on-surface-variant -> neutral-variant30 #49454f / neutral-variant80 #cac4d0.",
+    "icon-color": "with-icon-icon-color -> md-sys-color.$secondary -> secondary40 #625b71 / secondary80 #ccc2dc. The ONLY appearance of the secondary role anywhere in an M3 dialog.",
+    "scrim-bg": "_md-comp-scrim.scss: container-color -> md-sys-color.$scrim -> md-ref-palette.$neutral0 = #000 (identical in values-light() and values-dark() of versions/v0_192/_md-sys-color.scss), container-opacity 0.32. Expressed as a color-mix so the two tokens stay visible in the value. THE LIGHTEST OF THE THREE SCRIMS: 32%, against shadcn's 50% black and Salt's 65% WHITE.",
+    "shadow-level3": "[R] CSS derived from container-elevation -> md-sys-elevation.$level3 = 6 (a dp HEIGHT, not a shadow string — docs/foundations/elevation.md) plus md-sys-color.$shadow -> neutral0 #000. This is M3's published level-3 two-layer shadow, derived exactly the way button.m3.json derived its level-1 and select.m3.json its level-2, rather than invented. Mode-invariant because M3's shadow role is #000 in both schemes. See the material-web-disowns-elevation note.",
+    "radius-panel": "container-shape -> md-sys-shape.$corner-extra-large = 28px. The roundest surface this registry has extracted so far — compare the select popup's corner-extra-small (4px).",
+    "type-title": "headline-* -> md-sys-typescale.$headline-small-{font,size,weight,line-height} = md-ref-typeface.$brand / 1.5rem / $weight-regular 400 / 2rem. SOURCE CORRECTION: docs/foundations/typography.md flags M3's family name as unresolvable in this clone, but tokens/versions/v0_192/_md-ref-typeface.scss carries `brand: Roboto` and `plain: Roboto` as literals inside its values() map (versions/latest/sass/_md-ref-typeface.scss carries the identical values as plain sass vars). The family is therefore [S], not [R] — flagged for the owner rather than edited into the foundations page from this component's build.",
+    "type-body": "supporting-text-* -> md-sys-typescale.$body-medium-{font,size,weight,line-height} = $plain (Roboto) / 0.875rem / 400 / 1.25rem.",
+    "tracking": "headline-small-tracking = 0rem (declared and zero, which is not the same as absent); body-medium-tracking = 0.015625rem.",
+    "no-spacing-tokens": "CONFIRMED ABSENCE: _md-comp-dialog.scss contains no padding, gap, width, height or z-index token in EITHER edition — the file is colours, type, shape, elevation, one icon size and one (deprecated) divider pair. The layout numbers in this column (panel padding 24px, panel gap 16px, header gap 16px, header text-gap 16px, min-width 280px, max-width 560px, actions padding-top 24px, actions gap 8px) are [R], taken from m3.material.io's published basic-dialog spec, and are flagged individually on their cells — the same treatment TOOLTIP-MATRIX.md gave M3's plain-tooltip padding rather than fabricating token names for them.",
+    "no-motion-token": "CONFIRMED ABSENCE: no duration/easing token in _md-comp-dialog.scss. style.panel.animation borrows docs/foundations/motion.md's medium2 (300ms) + standard easing cubic-bezier(0.2,0,0,1) as a principled placeholder, flagged [R] — the same borrow TOOLTIP-MATRIX.md made from short2. No EXIT motion is claimed at all (style.panel.animation@exit is off), because inventing a second borrowed curve would be fabrication rather than derivation.",
+    "no-close-token": "CONFIRMED ABSENCE: there is no close/dismiss affordance token anywhere in _md-comp-dialog.scss. A basic M3 dialog is dismissed by its action buttons or by tapping the scrim. The close-in-the-header pattern belongs to _md-comp-full-screen-dialog.scss (header-icon-size 24px, header-action-* label and state-layer tokens) — a different component, out of scope.",
+    "full-screen-dialog-scope": "_md-comp-full-screen-dialog.scss (present in BOTH editions) was read only to fix the scope boundary and is EXCLUDED: it is a materially different token family — container-color surface (not surface-container-high), container-elevation level0 (not level3), container-shape corner-NONE (not corner-extra-large), a title-large headline (not headline-small), a 56px header-container-height, and an on-scroll elevation change. docs/COMPONENTS.md places it on the separate alert-dialog row.",
+    "divider-declared-off": "with-divider-divider-height (1px) and with-divider-divider-color (md-sys-color.$outline) exist in `latest` only, and both arrive @deprecated pointing at the standalone md.comp.divider component. UNDER THE v0.192 PIN THEY DO NOT EXIST AT ALL — versions/v0_192/_md-comp-dialog.scss has 35 keys and no divider pair — so this cell's OFF is now doubly sourced: absent from the pinned edition, and deprecated where it does exist. They describe a STATIC divider in a with-divider dialog variant, not Salt's scroll-conditional dividers, so they are declared off here rather than mapped onto style.content.scroll-divider — mapping them would have manufactured a false cross-system parallel."
+  },
+  "cells": {
+    "structure.scrim": { "kind": "value", "value": true, "source": "tokens/versions/latest/sass/_md-comp-scrim.scss — its OWN token file, and its own canonical row in docs/COMPONENTS.md" },
+    "structure.header-decoration": { "kind": "value", "value": "icon", "source": "with-icon-icon-size 24px + with-icon-icon-color -> secondary; M3's dialog decoration is an optional glyph above the headline, not a bar" },
+    "structure.preheader": { "kind": "off", "note": "no equivalent token. The deprecated subhead-* family is a RENAMED headline, not a second line above it ('Tokens deprecated to align taxonomy with full-screen dialogs. Please use md.comp.dialog.headline.… instead')." },
+    "structure.header-actions": { "kind": "off", "note": "header-action-* tokens exist only in _md-comp-full-screen-dialog.scss, which is out of scope" },
+    "structure.close-button": { "kind": "value", "value": "none", "source": "CONFIRMED ABSENCE — no close/dismiss token in _md-comp-dialog.scss in either edition" },
+    "structure.content-scroller": { "kind": "off", "note": "no content or scroll token" },
+    "structure.actions": { "kind": "value", "value": true, "source": "the action-* token family (action-label-text-*, action-{hover,focus,pressed}-state-layer-*) — declared in the generated file and then listed under $unsupported-tokens by material-web's own wrapper because 'actions are spec'd as standard text buttons'" },
+    "structure.description": { "kind": "value", "value": true, "source": "the supporting-text-* token family" },
+
+    "behavior.aria-modal": { "kind": "value", "value": true, "note": "[R] — tokens-only clone, no component to grep. APG's dialog (modal) pattern specifies aria-modal=\"true\" on the dialog element." },
+    "behavior.background-suppression": { "kind": "value", "value": "aria-hidden", "note": "[R] — APG's own note that aria-modal support is uneven and that hiding background content is the reliable fallback. Recorded as the same mechanism shadcn chose, not as Salt's inert." },
+    "behavior.focus-trap": { "kind": "value", "value": true, "note": "[R] — APG dialog-modal: Tab and Shift+Tab cycle within the dialog." },
+    "behavior.initial-focus": { "kind": "value", "value": "first-tabbable", "note": "[R] — APG: focus moves to the first focusable element unless the author specifies otherwise. No M3 API exists to specify an ordinal, so the Salt-style `configurable` value is not claimed." },
+    "behavior.focus-return": { "kind": "value", "value": true, "note": "[R] — APG: focus returns to the element that invoked the dialog." },
+    "behavior.dismiss-escape": { "kind": "value", "value": true, "note": "[R] — APG dialog-modal keyboard interaction." },
+    "behavior.dismiss-outside": { "kind": "value", "value": true, "note": "[R] — m3.material.io states a basic dialog is dismissed by tapping the scrim. Recorded as [R] because there is no component in this clone to confirm it." },
+    "behavior.scroll-lock": { "kind": "value", "value": true, "note": "[R] — implied by the modal pattern; no token or code to grep." },
+    "behavior.described-by": { "kind": "value", "value": true, "note": "[R] — APG associates the supporting text with the dialog via aria-describedby. Note this puts M3 with shadcn and against Salt, which wires no describedby at all." },
+    "behavior.exit-animation": { "kind": "off", "note": "no motion token of any kind in _md-comp-dialog.scss, so no exit is claimed. Declared absence, not an assumed zero." },
+    "behavior.scroll-region-focusable": { "kind": "off", "note": "no scroll region concept in the token file" },
+
+    "prop.size": { "kind": "off", "note": "no size token; M3 sizes a basic dialog by its min/max width alone" },
+    "prop.status": { "kind": "off", "note": "no status/error token anywhere in _md-comp-dialog.scss — unusual for M3, which tokenises error states heavily on its text fields and selects" },
+    "prop.disable-dismiss": { "kind": "off" },
+    "prop.disable-scrim": { "kind": "off", "note": "the scrim is a separate component/token set, not a dialog flag" },
+    "prop.disable-accent": { "kind": "off" },
+    "prop.show-close-button": { "kind": "off" },
+
+    "slot.description": { "kind": "value", "value": true },
+    "slot.actions": { "kind": "value", "value": true },
+    "slot.preheader": { "kind": "off" },
+    "slot.header-actions": { "kind": "off" },
+
+    "state.content-overflow": { "kind": "off" },
+    "state.status": { "kind": "off" },
+    "state.close-button-interaction": { "kind": "off", "note": "no close button to have states" },
+
+    "style.scrim.background": { "kind": "alias", "slot": "scrim-bg" },
+    "style.scrim.z-index": { "kind": "off", "note": "no z-index token; docs/foundations/layers.md records that only Salt has a shared stacking scale" },
+    "style.scrim.animation": { "kind": "off", "note": "no motion token" },
+
+    "style.panel.background": { "kind": "alias", "slot": "surface" },
+    "style.panel.color": { "kind": "off", "note": "no panel-level text token — M3 colours the headline (on-surface) and supporting text (on-surface-variant) individually" },
+    "style.panel.border": { "kind": "off", "note": "CONFIRMED ABSENCE — no outline/border token; an M3 dialog is elevation-only, exactly as its menu is (SELECT-MATRIX.md finding 5)" },
+    "style.panel.shape": { "kind": "alias", "slot": "radius-panel" },
+    "style.panel.shadow": { "kind": "alias", "slot": "shadow-level3", "note": "[R] CSS derived from container-elevation level3 (6dp) + shadow #000; see the shadow-level3 and material-web-disowns-elevation provenance entries" },
+    "style.panel.padding": { "kind": "value", "value": "24px", "note": "[R] — no spacing token exists in either edition; m3.material.io's basic-dialog spec, 24dp all round" },
+    "style.panel.gap": { "kind": "value", "value": "16px", "note": "[R] — spec's headline-to-supporting-text step, applied as the panel rhythm since M3 has no per-part spacing token" },
+    "style.panel.width": { "kind": "value", "value": "100%", "note": "[R] — no width token; the panel fills up to its max-width" },
+    "style.panel.min-width": { "kind": "value", "value": "280px", "note": "[R] — m3.material.io basic-dialog spec. The only system of the three that declares a floor." },
+    "style.panel.max-width": { "kind": "value", "value": "560px", "note": "[R] — m3.material.io basic-dialog spec. Wider than shadcn's 32rem/512px." },
+    "style.panel.max-height": { "kind": "off", "note": "no height token" },
+    "style.panel.overflow": { "kind": "off", "note": "no overflow token" },
+    "style.panel.z-index": { "kind": "off", "note": "no z-index token" },
+    "style.panel.outline": { "kind": "off" },
+    "style.panel.animation": { "kind": "value", "value": "dialog-fade-in 300ms cubic-bezier(0.2, 0, 0, 1)", "note": "[R] — no motion token in _md-comp-dialog.scss; borrowed from docs/foundations/motion.md's medium2 (300ms) + standard easing, a principled placeholder rather than a fabrication. The same treatment TOOLTIP-MATRIX.md gave M3's tooltip entrance." },
+    "style.panel.animation@exit": { "kind": "off", "note": "no exit claimed — see the no-motion-token provenance entry" },
+    "style.panel.size@small": { "kind": "off" },
+    "style.panel.size@medium": { "kind": "off" },
+    "style.panel.size@large": { "kind": "off" },
+
+    "style.header.padding": { "kind": "off", "note": "no header token; the panel's 24px covers it" },
+    "style.header.gap": { "kind": "value", "value": "16px", "note": "[R] — spec's icon-to-headline step" },
+    "style.header.text-gap": { "kind": "value", "value": "16px", "note": "[R] — spec's headline-to-supporting-text step. Twice shadcn's 8px and four times Salt's 4px at medium: M3 gives a dialog's title far more air than either." },
+    "style.header.text-offset": { "kind": "off" },
+
+    "style.accent-bar.box": { "kind": "off", "note": "no accent-bar concept" },
+    "style.header-icon.size": { "kind": "value", "value": { "width": "24px", "height": "24px" }, "source": "with-icon-icon-size: 24px, a hardcoded literal in both editions and density-invariant (M3 has no density capability)" },
+    "style.header-icon.color": { "kind": "alias", "slot": "icon-color", "source": "with-icon-icon-color -> md-sys-color.$secondary" },
+    "style.header-icon.offset": { "kind": "off", "note": "no optical offset token" },
+
+    "style.title.font": { "kind": "alias", "slot": "type-title" },
+    "style.title.color": { "kind": "alias", "slot": "fg", "source": "headline-color -> on-surface. The ONLY system of the three that tokenises the dialog title's colour." },
+    "style.title.letter-spacing": { "kind": "value", "value": "0rem", "source": "headline-small-tracking = 0rem — declared and zero, not absent" },
+
+    "style.preheader.font": { "kind": "off" },
+    "style.preheader.color": { "kind": "off" },
+
+    "style.description.font": { "kind": "alias", "slot": "type-body" },
+    "style.description.color": { "kind": "alias", "slot": "fg-secondary" },
+    "style.description.letter-spacing": { "kind": "value", "value": "0.015625rem", "source": "body-medium-tracking" },
+
+    "style.content.color": { "kind": "off" },
+    "style.content.box": { "kind": "off" },
+    "style.content.min-height": { "kind": "off" },
+    "style.content.padding@overflow": { "kind": "off" },
+    "style.content.scroll-divider": { "kind": "off", "note": "the with-divider-divider-* pair is a STATIC divider variant, deprecated in favour of the standalone divider component, and is not Salt's scroll-conditional rule — see the divider-declared-off provenance entry" },
+    "style.content.scroll-divider@top": { "kind": "off" },
+    "style.content.scroll-divider@bottom": { "kind": "off" },
+
+    "style.actions.padding": { "kind": "value", "value": "24px 0 0", "note": "[R] — spec's supporting-text-to-actions step; no token exists" },
+    "style.actions.gap": { "kind": "value", "value": "8px", "note": "[R] — spec's between-actions step; no token exists" },
+
+    "style.close-button.position": { "kind": "off", "note": "no close button" },
+    "style.close-button.shape": { "kind": "off" },
+    "style.close-button.glyph-size": { "kind": "off" },
+    "style.close-button.opacity": { "kind": "off" },
+    "style.close-button.opacity@hover": { "kind": "off" },
+    "style.close-button.focus": { "kind": "off" },
+    "style.close-button.transition": { "kind": "off" },
+
+    "style.panel.status@info": { "kind": "off", "note": "no status axis" },
+    "style.panel.status@error": { "kind": "off" },
+    "style.panel.status@warning": { "kind": "off" },
+    "style.panel.status@success": { "kind": "off" }
+  }
+}

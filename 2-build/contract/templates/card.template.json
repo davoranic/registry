@@ -1,0 +1,1012 @@
+{
+  "component": "card",
+  "openUiAnatomy": "no published Open UI card anatomy \u2014 union of shadcn's Card/CardHeader/CardTitle/CardDescription/CardAction/CardContent/CardFooter, salt-ds's Card/CardHeader/CardContent/CardFooter plus its two clickable siblings InteractableCard (+InteractableCardGroup) and LinkCard, and M3's three card token families (elevated / filled / outlined), which describe a CONTAINER ONLY \u2014 no header, no title, no content, no footer token exists in any of them.",
+  "behavior": {
+    "pattern": "A visually distinct surface grouping related content. The cross-system axes are: (1) BY WHAT MECHANISM the surface is distinguished from the page \u2014 a shadow (M3 elevated, Salt, shadcn), a fill (M3 filled, Salt's tone ladder), or a stroke (M3 outlined, Salt, shadcn) \u2014 three different answers, not one surface with a colour delta; (2) whether the card is INERT, a single CONTROL, or a LINK, which decides role, tab stop, which keys activate it, and whether it may legally contain its own focusable children; (3) whether the card DETECTS its own sections and moves its padding into them; (4) whether interaction changes elevation, fill, outline, or nothing.",
+    "chassis": "skeleton/card.tsx \u2014 written from the template's part union (surface, optional media, optional header carrying title / description / action, optional content, optional footer, an optional accent bar, an optional state layer, an optional card icon, and an optional selection group); inherits from no design system. Every behavior row below is implemented in that file and asserted by scripts/check-card-behavior.mjs, which exists because locked behavior rows have NO generator gate (docs/SELECT-MATRIX.md finding 16, and the two dialog effects that passed that gate and never ran \u2014 docs/DIALOG-MATRIX.md's closing section)."
+  },
+  "skeletonParams": {
+    "media": [
+      true,
+      false
+    ],
+    "header": [
+      true,
+      false
+    ],
+    "title": [
+      true,
+      false
+    ],
+    "description": [
+      true,
+      false
+    ],
+    "action": [
+      true,
+      false
+    ],
+    "content": [
+      true,
+      false
+    ],
+    "footer": [
+      true,
+      false
+    ],
+    "accent": [
+      true,
+      false
+    ],
+    "stateLayer": [
+      true,
+      false
+    ],
+    "cardIcon": [
+      true,
+      false
+    ],
+    "group": [
+      true,
+      false
+    ],
+    "sectioning": [
+      "detected",
+      "always",
+      "never"
+    ],
+    "groupNavigation": [
+      true,
+      false
+    ],
+    "selection": [
+      true,
+      false
+    ],
+    "interaction": [
+      "static",
+      "button",
+      "link"
+    ],
+    "variant": [
+      "elevated",
+      "filled",
+      "outlined"
+    ],
+    "containerTone": [
+      "primary",
+      "secondary",
+      "tertiary",
+      "ghost"
+    ],
+    "accentPlacement": [
+      "bottom",
+      "top",
+      "left",
+      "right"
+    ],
+    "selectionMode": [
+      "single",
+      "multi"
+    ],
+    "disabled": [
+      true,
+      false
+    ],
+    "hoverable": [
+      true,
+      false
+    ]
+  },
+  "base": {
+    "[data-slot=\"card\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "flex",
+      "flex-direction": "column",
+      "min-width": "0",
+      "margin": "0",
+      "border-style": "solid",
+      "border-width": "0",
+      "border-color": "transparent",
+      "background": "none",
+      "color": "inherit",
+      "font": "inherit",
+      "text-align": "start",
+      "text-decoration": "none",
+      "appearance": "none",
+      "-webkit-appearance": "none"
+    },
+    "[data-slot=\"card-media\"]": {
+      "display": "block",
+      "position": "relative",
+      "flex-shrink": "0",
+      "min-width": "0"
+    },
+    "[data-slot=\"card-media\"] > *": {
+      "display": "block",
+      "width": "100%",
+      "height": "auto"
+    },
+    "[data-slot=\"card-header\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "grid",
+      "grid-template-columns": "1fr",
+      "grid-auto-rows": "min-content",
+      "align-items": "start",
+      "flex-shrink": "0",
+      "min-width": "0"
+    },
+    "[data-slot=\"card-header\"][data-has-action]": {
+      "grid-template-columns": "1fr auto"
+    },
+    "[data-slot=\"card-title\"]": {
+      "grid-column": "1",
+      "min-width": "0"
+    },
+    "[data-slot=\"card-description\"]": {
+      "grid-column": "1",
+      "min-width": "0"
+    },
+    "[data-slot=\"card-action\"]": {
+      "grid-column": "2",
+      "grid-row": "1 / span 2",
+      "align-self": "start",
+      "justify-self": "end"
+    },
+    "[data-slot=\"card-content\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "min-width": "0"
+    },
+    "[data-slot=\"card-footer\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "flex",
+      "align-items": "center",
+      "flex-shrink": "0",
+      "min-width": "0"
+    },
+    "[data-slot=\"card-accent\"]": {
+      "position": "absolute",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"card-state-layer\"]": {
+      "position": "absolute",
+      "inset": "0",
+      "z-index": "0",
+      "pointer-events": "none",
+      "border-radius": "inherit"
+    },
+    "[data-slot=\"card-icon\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"card-icon\"] svg": {
+      "display": "block",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"card-group\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "flex-direction": "row",
+      "flex-wrap": "wrap",
+      "align-items": "stretch"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.media",
+      "piece": "structure",
+      "policy": "default",
+      "channel": "config",
+      "param": "media",
+      "note": "ON in every column, and the reason is a THREE-WAY CONFIRMED ABSENCE recorded rather than a part discovered: no system gives leading media its own class, part or token. Salt's card.stories.tsx `DefaultWithImage` puts a bare <img aria-hidden alt=\"\" src=\u2026> as a direct child of <Card> and relies on the card's own `overflow: hidden` to clip its corners \u2014 there is no rule for it in Card.css. shadcn's card.tsx exports seven parts and none of them is media; its blocks place bare <img> children. M3 has no image token in any of the three card files in either edition (contrast _md-comp-banners-rich.scss, which DOES have image.size/image.shape \u2014 so M3 tokenises banner media and deliberately does not tokenise card media). The chassis renders a [data-slot=\"card-media\"] wrapper so the harness has a stable hook; style.media.box is deliberately OFF in all three columns to document the absence."
+    },
+    {
+      "id": "structure.header",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "header",
+      "note": "Salt: CardHeader, a real exported component with its own CSS file (padding + flex-shrink). shadcn: CardHeader, a real part and by far the most structured of the three \u2014 a CSS grid with auto-rows, an @container name, a conditional second column when a CardAction is present, and a `[.border-b]:pb-6` opt-in divider hook. M3: OFF \u2014 no header token exists in _md-comp-{elevated,filled,outlined}-card.scss in either edition."
+    },
+    {
+      "id": "structure.title",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "title",
+      "note": "shadcn only. CardTitle is a real part. Salt is OFF and it is the ALERT finding repeating exactly: Salt ships no title subcomponent for Card either \u2014 every story puts an <H3> inside CardHeader by convention, so the headline is content formatting, not structure. M3 is OFF: no headline/title token in any card file."
+    },
+    {
+      "id": "structure.description",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "description",
+      "note": "shadcn only \u2014 CardDescription, the one part in the whole component that carries a type size of its own. Salt: OFF; its stories use <Text color=\"secondary\"> inside CardHeader. M3: OFF, no supporting-text token (contrast _md-comp-dialog.scss, which has one)."
+    },
+    {
+      "id": "structure.action",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "action",
+      "note": "shadcn only \u2014 CardAction, and it is genuinely structural, not decorative: it is positioned into `col-start-2 row-span-2 row-start-1` of the header grid, and its mere presence rewires the header to `grid-cols-[1fr_auto]` via `has-data-[slot=card-action]`. Salt is OFF as a PART but not as a capability: its HeaderWithAction story composes a FlexLayout + a transparent Button inside CardHeader, i.e. the same affordance with no dedicated element \u2014 the same distinction ALERT-MATRIX.md drew for its actions row. M3: OFF."
+    },
+    {
+      "id": "structure.content",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "content",
+      "note": "Salt: CardContent. shadcn: CardContent. M3: OFF \u2014 no content token. Note that neither live system styles what is INSIDE the content; both only pad it."
+    },
+    {
+      "id": "structure.footer",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "footer",
+      "note": "Salt: CardFooter \u2014 a flex row with align-items:center and its own gap. shadcn: CardFooter \u2014 a flex row with align-items:center and NO gap. M3: OFF, no footer/actions token (contrast _md-comp-dialog.scss's action-* family)."
+    },
+    {
+      "id": "structure.accent",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "accent",
+      "note": "Salt only, and it is one of two Salt-only parts here. `.saltCard-accent::after` is an absolutely-positioned bar in the accent colour, placed on one of four edges by the `accent` prop and deliberately overhanging the card's own 1px border by -1px on both axes (width: calc(100% + size-fixed-200)). It is OFF unless `accent` is passed \u2014 see prop.accent-placement, where the source code and two source doc comments disagree about whether there is a default. shadcn and M3: confirmed absences, no accent/stripe/leading-bar token of any kind."
+    },
+    {
+      "id": "structure.state-layer",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "stateLayer",
+      "note": "M3 only. All three card token files declare a full {hover,focus,pressed,dragged}-state-layer-{color,opacity} family over `on-surface`. Salt distinguishes its interaction states with elevation and border colour and has no overlay; shadcn's card has no interaction state at all. Recorded as a real part rather than approximated as a background delta, because a state layer composites OVER whatever fill the variant supplies \u2014 which is the entire point of it existing on three variants with three different container colours."
+    },
+    {
+      "id": "structure.card-icon",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "cardIcon",
+      "note": "M3 only, and it is the ONLY sub-part any M3 card token file describes: `icon-size: 24px` and `icon-color: md-sys-color.$primary`, present in all three variants and both editions. Note the colour \u2014 PRIMARY, not on-surface \u2014 so an M3 card glyph is the one element on the surface that is deliberately not the text colour. Salt and shadcn have no card-level icon token; any glyph in their cards is ordinary consumer content. material-web lists both tokens under $unsupported-tokens (see the m3 column's provenance)."
+    },
+    {
+      "id": "structure.group",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "group",
+      "note": "Salt only \u2014 InteractableCardGroup, a real exported component (a flex row/wrap with a spacing-200 gap) that changes what its children ARE: inside it an InteractableCard stops being role=button and becomes role=radio (single-select, the default) or role=checkbox (multi-select). Modelled here as a PART, the same treatment TABS-MATRIX.md gave Salt's overflow menu. If docs/COMPONENTS.md ever grows a `card-group` / `selection-group` row, these rows migrate wholesale: structure.group, prop.selection-mode, behavior.group-navigation, behavior.selection, style.group.box. Nothing else moves \u2014 the card's own role and tab stop stay here, because they are a property of the card's membership, not of the group."
+    },
+    {
+      "id": "structure.sectioning",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "sectioning",
+      "note": "The single biggest layout divergence, and it is structural. Salt = \"detected\": Card.tsx calls hasCardSection(children), which walks Children.toArray and tests `child.type === CardHeader|CardContent|CardFooter`; when true the card drops its own padding to 0 and becomes a flex column, and the padding moves INTO the sections \u2014 plus a `@supports selector(:has(*))` copy of the same rule keyed off `:has(> .saltCardHeader, \u2026)` so the CSS reaches the same conclusion without the JS. shadcn = \"always\": there is no detection; the card unconditionally carries `py-6 gap-6` and every section unconditionally carries `px-6`, so a shadcn card NEVER has horizontal padding of its own and bare children get none. M3 = \"never\": there are no sections at all, so the card is one padded box. The chassis reproduces the detection with the props it is given (header/content/footer nodes) rather than sniffing children types, which is the same observable rule expressed in a props-based API \u2014 declared in docs/CARD-MATRIX.md, not smoothed."
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "The a11y fork, and all three answers differ. Salt: `Card` sets NO role (a plain div, never announced as anything); `LinkCard` renders a real <a href>, so the role is the platform's; `InteractableCard` computes `role = group ? (group.multiSelect ? \"checkbox\" : \"radio\") : \"button\"` and writes aria-checked only for the radio/checkbox readings. shadcn: NO role, ever \u2014 card.tsx writes only data-slot, and there is no interactive card in the component at all. M3: [R] \u2014 material-web is a tokens-only clone with no card element; the state-layer and focus-indicator families say an M3 card CAN be a control, and APG makes that control a button."
+    },
+    {
+      "id": "behavior.tab-stop",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt's tabIndex is a four-branch computation and it is worth stating in full, because it is the only roving-tabindex implementation in the registry that is NOT keyed to focus: standalone -> `disabled ? -1 : 0`; in a MULTI-select group -> 0 on every card (checkbox semantics, Tab walks the set); in a SINGLE-select group -> `selected ? 0 : -1`, with a fallback of 0 on the FIRST card when the group has no value yet (radio semantics, Tab enters once). Disabled always wins with -1. shadcn: no tab stop \u2014 the card is not focusable. M3: [R]."
+    },
+    {
+      "id": "behavior.keyboard-activation",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt's useInteractableCard binds keydown for Enter AND Space, preventDefaults both, and calls onClick from the KEYDOWN \u2014 so an interactable card fires on key-down, not key-up. LinkCard binds nothing: it is a native anchor, so Enter navigates and SPACE DOES NOT ACTIVATE IT AT ALL \u2014 a real, sourced divergence inside one design system, and the reason interaction is modelled as three values rather than a boolean. Salt's own accessibility.mdx states both halves explicitly. shadcn: nothing. M3: [R], Enter+Space per APG's button pattern."
+    },
+    {
+      "id": "behavior.pointer-activation",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt InteractableCard: onClick, guarded \u2014 useInteractableCard passes `onClick: !disabled ? handleClick : undefined`, so a disabled card has no handler at all rather than a handler that returns early. In a group the click ALSO calls group.select() and flips local selected state. LinkCard: no handler; the anchor navigates. shadcn: none. M3: [R]. No system commits on mousedown, so there is no repeat of the tabs pointer-order split."
+    },
+    {
+      "id": "behavior.active-flag",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt tracks a JS `active` boolean in useInteractableCard, with a deliberately odd guard: a `setTimeout(\u2026, 0)` that clears `active` unless a key is still down, whose own comments say it exists to stop the visual state flickering when Enter produces both a key event and a click, and to fix Firefox's failure to enter :active on Space. The class `.saltInteractableCard-active` is applied only when role === \"button\". The chassis writes `data-active` from the same flag for every column, because a `:active` pseudo-class cannot survive a keyboard activation \u2014 a DECLARED CHASSIS MECHANISM (docs/CARD-MATRIX.md declared approximation 3), sourced [S] for Salt and [R] for M3's pressed layer trigger."
+    },
+    {
+      "id": "behavior.disabled-handling",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt writes aria-disabled (NOT the native attribute as an authoritative signal \u2014 the native one is also spread but a div ignores it semantically), sets tabIndex -1, withholds the click handler entirely, and then does something no other component in this registry does: `.saltInteractableCard-disabled div { pointer-events: none }` \u2014 it disables its NESTED DIVS rather than itself, so the card can still be hovered (to show the not-allowed cursor) while nothing inside it can be clicked. Salt's group additionally propagates `disabled` down through context, and its element query filters disabled cards OUT of the arrow-key ring. shadcn: no disabled anything. M3: disabled tokens exist ([S]) but material-web disowns them; the DOM handling is [R]."
+    },
+    {
+      "id": "behavior.nested-interactive",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "THE GENUINE A11Y FORK, stated per system because it is the question the brief asks. Salt gives THREE answers in one design system: a plain `Card` is a CONTAINER \u2014 its usage doc says it \"can contain any UI element, including actionable components\"; a `LinkCard` is ONE CONTROL and its usage doc explicitly says it \"shouldn't contain actionable components (like buttons or links), as the card itself is the interactive element\"; an `InteractableCard` is ONE CONTROL that is nevertheless allowed to embed them \"for visual affordance\", which is why it needs `pointer-events: none` on its nested divs when disabled. shadcn gives ONE answer: the card is always a container, never a control. M3 gives none \u2014 no element exists to ask. The chassis therefore refuses to guess: the interaction value decides whether the surface takes a role and a tab stop, and the harness renders a focusable control inside a link card so the conflict is visible rather than described."
+    },
+    {
+      "id": "behavior.group-navigation",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "groupNavigation",
+      "note": "Salt only. InteractableCardGroup's handleKeyDown: Space always selects the card under focus; and in SINGLE-select mode only, ArrowDown/ArrowRight advance and ArrowUp/ArrowLeft retreat with wrap-around modular arithmetic \u2014 and each arrow SELECTS AND THEN FOCUSES, in that order. There is no manual mode: a single-select Salt card group behaves exactly like a radio group, which is the opposite conclusion to the one Salt's own TabList reaches for arrow keys (TABS-MATRIX.md finding 2). In MULTI-select mode there is no arrow handling at all \u2014 Tab walks the set, Space toggles, checkbox semantics. The ring is built from a `querySelectorAll` over the group, so it is a live DOM query, not a React child walk. shadcn and M3: OFF."
+    },
+    {
+      "id": "behavior.selection",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "selection",
+      "note": "Salt only. The group owns a controlled/uncontrolled `value` (a string, or a string array under multiSelect) through useControlled; each card reads `group.isSelected(value)` and mirrors it into aria-checked; multi-select toggles membership in the array while single-select replaces the value and fires onChange only when it actually changed. shadcn and M3: OFF \u2014 neither has any concept of a selected card."
+    },
+    {
+      "id": "prop.variant",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "variant",
+      "note": "M3 ONLY, and this is the row lesson 6 is about. elevated / filled / outlined are THREE MECHANISMS for the one job of separating a surface from the page \u2014 a level-1 shadow over surface-container-low, a flat fill of surface-container-highest, and a 1px outline-variant stroke over plain surface with no shadow at all. They are three separate generated token files, exactly as filled/outlined text-field and filled/outlined select were, and they are modelled as one component with a variant axis for the same reason. NO SOURCE DEFAULT EXISTS: material-web ships three peer elements and neither the token files nor its wrappers name one as primary, so the list is in the spec's own published order (elevated, filled, outlined) and the absence is recorded rather than a default invented \u2014 the same treatment TABS-MATRIX.md gave M3's emphasis axis. Salt and shadcn are OFF; Salt's own multi-value axis is a container TONE ladder, which is a different question and gets its own row."
+    },
+    {
+      "id": "prop.container-tone",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "containerTone",
+      "note": "Salt ONLY, and deliberately NOT merged with prop.variant. Salt's `variant` prop is primary | secondary | tertiary | ghost, default \"primary\" [S] \u2014 and a direct read of Card.css shows every one of the four rules sets exactly TWO properties, `background` and `border-color`, with the border-color IDENTICAL in all four (container-{tone}-borderColor all resolve to palette-alpha-contrast-medium). So Salt's axis moves exactly one visible property: which of four background tones the surface is. That is a tone ladder, not a mechanism choice, and collapsing it into M3's elevated/filled/outlined would have been the tooltip-arrow mistake with new labels. Listed DEFAULT-FIRST (primary), because the skeleton and the harness both take value[0] as the resting state. Note the asymmetry recorded in the salt column: `ghost` exists on Card only \u2014 InteractableCard and LinkCard each declare three values, not four. shadcn and M3: OFF."
+    },
+    {
+      "id": "prop.accent-placement",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "accentPlacement",
+      "note": "Salt only: \"bottom\" | \"top\" | \"left\" | \"right\". THE CODE HAS NO DEFAULT \u2014 Card.tsx destructures `accent` with no fallback and applies the accent classes only `if (accent)`, so an unadorned Salt card has no accent at all. Two source comments claim otherwise: Card.css says `/* Styles applied to Card if accent=\"bottom\" (default) */` and InteractableCard.tsx's JSDoc says `Accent border position: defaults to \"bottom\"`. The docs and the code disagree; the code wins (CLAUDE.md rule 4), and the list is nevertheless ordered bottom-first because that is the value the docs and every story reach for, and because value[0] is what the harness shows when the accent is switched on. shadcn and M3: OFF."
+    },
+    {
+      "id": "prop.interaction",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "interaction",
+      "note": "The behaviour axis the brief asks for, and it is three-valued in Salt because Salt ships three components: \"static\" (Card \u2014 no role, no tab stop, a container that may hold its own focusable children), \"button\" (InteractableCard \u2014 role=button standalone or radio/checkbox in a group, Enter AND Space), \"link\" (LinkCard \u2014 a real <a href>, Enter only, no Space, and its own docs forbid focusable children inside it). Listed SOURCE-DEFAULT-FIRST: `Card` is the unqualified export and the one the docs open with, so \"static\" is value[0]; a button-first list would have made every Salt card in the harness focusable against source. shadcn is single-valued [\"static\"] \u2014 a confirmed absence, card.tsx has no interactive variant and no sibling file provides one. M3 is [\"static\", \"button\"]: every style cell \"button\" drives is [S] (the hover/focus/pressed state layers, the hover elevation lift, the focus indicator), but the ROLE and the keyboard contract are [R], because material-web is a tokens-only clone AND lists the whole interactive family under $unsupported-tokens with the comment `TODO(b/307362112): Add interactive card tokens`. Static is first there too, since every interaction token is state-qualified and the unqualified enabled state is the base reading."
+    },
+    {
+      "id": "prop.selection-mode",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "selectionMode",
+      "note": "Salt only, and it belongs to the GROUP, not the card: InteractableCardGroup's `multiSelect?: boolean`, default false [S], so \"single\" is the source default and is listed first. It is a two-for-one axis \u2014 it changes the group's own role (radiogroup vs group), each card's role (radio vs checkbox), the tab-stop regime (roving vs all-zero), whether arrow keys navigate at all, and whether the value is a string or an array. shadcn and M3: OFF."
+    },
+    {
+      "id": "prop.disabled",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "disabled",
+      "note": "A CAPABILITY list, not an ordered default: `false` is the base rendering in every column and the skeleton reads the per-instance prop, never value[0]. Salt: on, and note it is on TWICE with different meanings \u2014 Card's own `disabled` prop is marked **Deprecated: Use the InteractableCard component instead** and dims the BORDER and the TEXT, while InteractableCard's live `disabled` dims the WHOLE CARD to 40% opacity and removes the shadow. This column takes the live one and records the deprecated one. shadcn: OFF \u2014 confirmed absence, card.tsx has no disabled prop, class or attribute. M3: on \u2014 disabled-container-opacity 0.38 (elevated, filled) / disabled-outline-opacity 0.12 + disabled-outline-color (outlined), all disowned by material-web."
+    },
+    {
+      "id": "prop.hoverable",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "hoverable",
+      "note": "Salt only, and a genuinely unusual prop: `hoverable?: boolean` (default false) gives a NON-interactive Card the hover elevation and accent border of an interactive one, without giving it a role, a tab stop or a click handler. It is a purely decorative affordance, and Salt's own AccentVariations story sets it. A capability list, not an ordered default. shadcn and M3: OFF \u2014 in both, hover styling exists (or does not) as a property of being interactive, never as a separate opt-in."
+    },
+    {
+      "id": "slot.media",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "consumer-owned. DECLARED COMPOSITION to nothing in particular \u2014 every system accepts an arbitrary element here and none styles it (see structure.media). The chassis renders whatever it is given inside a wrapper and sizes it to 100% width, which is chassis layout, not a sourced rule."
+    },
+    {
+      "id": "slot.title",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned headline text where the system has a title part. Salt has none: DECLARED COMPOSITION to `text` (its stories put an <H3> \u2014 a composed Text \u2014 inside CardHeader), the same relationship DIALOG-MATRIX.md declared for its H2."
+    },
+    {
+      "id": "slot.description",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned. Salt: DECLARED COMPOSITION to `text` (<Text color=\"secondary\">). shadcn: a real part. M3: nothing."
+    },
+    {
+      "id": "slot.content",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned body content. All three accept arbitrary children and NONE of them styles what is inside \u2014 no system declares a font, a colour or a spacing rule for card content beyond the container's own padding."
+    },
+    {
+      "id": "slot.action",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned. DECLARED COMPOSITION to `button` (already built): shadcn's own card-demo puts <Button variant=\"link\"> in CardAction; Salt's HeaderWithAction story puts <Button appearance=\"transparent\" sentiment=\"neutral\"> with a CloseIcon in the same position with no dedicated part."
+    },
+    {
+      "id": "slot.footer",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned. DECLARED COMPOSITION to `button` and to `link`: Salt's stories put <Button> or <Link> in CardFooter; shadcn's card-demo puts two <Button>s there. Neither footer styles its children beyond the flex row (and Salt's gap)."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION, same pattern as CALENDAR-MATRIX.md's nav buttons and TABS-MATRIX.md's tab actions: (a) `button` \u2014 the header action and the footer actions in both live systems; (b) `link` \u2014 Salt's LinkCard IS a link, and docs/COMPONENTS.md line 28 places link-card on the `link` row, not the card row (see the scope note); (c) an ICON SET \u2014 Salt's CloseIcon in its header-action story and M3's own card `icon-color`/`icon-size` pair; (d) `text` \u2014 Salt's H3/Text, which supply the only typography a Salt card has; (e) `checkbox` / `radio-button`, whose exact ARIA an InteractableCardGroup adopts (Salt's own usage doc says an interactable card \"serves as a toggle button, button, radio button, radio button group, checkbox or checkbox group\"). All render as neutral placeholders."
+    },
+    {
+      "id": "state.rest",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: 1px alpha-contrast-medium border + shadow-lower + the tone's background; the accent bar if asked for. shadcn: 1px --border + shadow-sm + --card, which in LIGHT mode is the exact same colour as the page background (both oklch(1 0 0)) \u2014 so a resting shadcn card is separated from the page by its border and shadow only, and gains a tonal separation only in dark mode. M3: one of three mechanisms, per prop.variant."
+    },
+    {
+      "id": "state.hover",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: shadow-lower -> shadow-low AND the border recoloured to the accent \u2014 but only when the card is interactable, is a link, or opts in with `hoverable`, and only inside `@media (hover: hover)` (see declared approximation 2). shadcn: NOTHING \u2014 confirmed absence, card.tsx has no hover class. M3: a state layer at on-surface 8% AND an elevation lift (level1->2 elevated, level0->1 filled, level0->1 outlined) \u2014 but the outline colour does NOT change on the outlined variant (hover-outline-color and outline-color both resolve to outline-variant)."
+    },
+    {
+      "id": "state.focus",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: :focus-visible draws the 2px dotted accent-stronger outline at offset 0 AND raises the shadow to the hover level \u2014 and on a LinkCard it also reassigns --linkCard-accent-color from sentiment-accent-background to selectable-foreground-hover, which is a NO-OP because both resolve to palette-accent (see CARD-MATRIX.md finding 6). shadcn: nothing, the card never takes focus. M3: a 3px solid `secondary` indicator at outline-offset +2px \u2014 OUTSET, where the tab's identical family is inset at -3px \u2014 plus a focus state layer at 10%; `latest` only."
+    },
+    {
+      "id": "state.pressed",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: the shadow drops BACK to the rest level and the border stays accent \u2014 pressing a Salt card pushes it down, it does not lift further. M3: the same idea by a different route \u2014 pressed-container-elevation returns to each variant's resting level (1/0/0) from the hovered level (2/1/1) \u2014 plus a 10% pressed state layer. shadcn: nothing. Two systems, two mechanisms, one shared conclusion, which is worth recording because it is the only interaction state where Salt and M3 agree in direction."
+    },
+    {
+      "id": "state.selected",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, and its rule is literally the same declaration block as :active \u2014 `.saltInteractableCard-selected, .saltInteractableCard:active, .saltInteractableCard-active` share one body. So a selected Salt card and a pressed Salt card are visually identical: accent border, resting shadow. shadcn and M3 have no selected state at all."
+    },
+    {
+      "id": "state.disabled",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: 40% opacity on the whole card, shadow removed, outline removed, not-allowed cursor, and pointer-events killed on nested divs \u2014 and the hover/focus/active rules are each re-stated in the disabled selector so none of them can win. shadcn: nothing. M3: 38% (elevated/filled, via disabled-container-opacity) \u2014 a near-identical number to Salt's 0.4 by a different mechanism, since M3 specifies it as the CONTAINER's opacity while Salt applies it to the element."
+    },
+    {
+      "id": "style.surface.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "At each column's default: Salt variant=\"primary\", shadcn its only configuration, M3 the elevated card. Every column reads an indirection slot that the tone / variant rows reassign, so no property is duplicated per axis value."
+    },
+    {
+      "id": "style.surface.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "shadcn is the ONLY system that colours its card's text: `text-card-foreground`, which resolves to exactly the same value as --foreground in both modes, i.e. it pins the ambient colour rather than changing it. Salt is OFF \u2014 Card.css declares no `color` outside the disabled rule, so a Salt card inherits. M3 is OFF \u2014 no on-surface text token exists in any card file, only an icon colour."
+    },
+    {
+      "id": "style.surface.font",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "font": "$"
+      },
+      "note": "OFF IN ALL THREE COLUMNS, and that is the row's whole purpose \u2014 see CARD-MATRIX.md finding 1. Card is the first component in this registry with no typography of any kind in any system: Salt's Card.css declares no font-family, size, weight or line-height; shadcn's Card sets no text size (only CardDescription does); M3's card files carry no typescale token at all. Retained deliberately as documentation, the same way TABS-MATRIX.md retained style.tab-icon.color."
+    },
+    {
+      "id": "style.surface.border-width",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "border-width": "$"
+      },
+      "note": "Salt: size-fixed-100 = 1px, on the FIXED scale, so density-invariant by design (docs/foundations/sizes.md) \u2014 checked in both directions per lesson 7, along with size-fixed-200 (the accent's 2px overhang) which is likewise fixed, and size-bar (the accent's thickness) which is NOT and really moves 2/4/6/8. shadcn: bare `border` = 1px, an undeclared Tailwind default (docs/foundations/border-style.md). M3: reads an indirection slot which is 0 on elevated and filled and 1px (outline-width) on outlined \u2014 the mechanism axis expressed as a width."
+    },
+    {
+      "id": "style.surface.border-color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "border-color": "$"
+      },
+      "note": "Salt: alpha-contrast-medium \u2014 rgba(0,0,0,0.3) / rgba(255,255,255,0.3), and IDENTICAL across all four tones, which is why the tone rows move only the background. shadcn: --border. M3: an indirection that is transparent on elevated and filled and outline-variant on outlined."
+    },
+    {
+      "id": "style.surface.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "Salt: palette-corner -> curve-150 -> 3/6/9/12px, the UNSUFFIXED stop, the same one its dialog uses. shadcn: `rounded-xl` -> --radius-xl -> 0.625rem x 1.4 = 14px, the ROUNDEST surface shadcn has in this registry (its dialog uses rounded-lg = 10px, its controls --radius-md = 8px). M3: corner-medium = 12px \u2014 and note M3 goes the other way, its dialog is corner-extra-large = 28px while its card is medium."
+    },
+    {
+      "id": "style.surface.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: spacing-200 -> 8/16/24/32px, applied through the source's own `--card-padding` indirection (declared on .saltCard and consumed on .saltCard, i.e. declared and used on the same element \u2014 no lesson-2 hazard). shadcn: `py-6` with NO horizontal padding \u2014 24px 0, which is why every shadcn section carries px-6 of its own and why bare children of a shadcn card sit flush to the border. M3: 16px [R] \u2014 DECLARED BORROW from m3.material.io's published card spec, because none of the three card token files carries a single spacing token in either edition. Flagged on the cell; no token name invented."
+    },
+    {
+      "id": "style.surface.padding@sectioned",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-sectioned]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt only: `.saltCard.saltCard-sectioned { padding: 0 }` plus the identical `:has()` rule \u2014 the card hands its padding to its sections. shadcn is OFF because its padding-block SURVIVES sectioning (py-6 is unconditional), which is precisely the difference between \"detected\" and \"always\". M3 is OFF because it has no sections."
+    },
+    {
+      "id": "style.surface.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "gap": "$"
+      },
+      "note": "shadcn: `gap-6` = 24px between every direct child of the card. Salt: OFF, and it is a real non-variation with a visible consequence \u2014 Salt spaces its sections with per-section padding and a `padding-top: 0` on any section that follows another, so a Salt card's sections BUTT TOGETHER with zero gap while a shadcn card's are 24px apart. M3: OFF, no sections and no gap token."
+    },
+    {
+      "id": "style.surface.overflow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "overflow": "$"
+      },
+      "note": "Salt: `hidden`, on all three of its card components. It has two visible consequences and both are reproduced as source has them: consumer media is clipped to the card's corner radius, and the accent bar's own -1px/-1px overhang is clipped straight back off \u2014 the same self-cancelling pair TABS-MATRIX.md found on Salt's tab indicator. shadcn: OFF, confirmed absence, so a shadcn card does NOT clip an image to its 14px corners. M3: OFF, no token."
+    },
+    {
+      "id": "style.surface.elevation",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "box-shadow": "$"
+      },
+      "note": "Salt: overlayable-shadow -> shadow-lower, the second-lightest stop, and it is unconditional \u2014 even a static Salt card is lifted. shadcn: `shadow-sm`, [R] value (Tailwind not vendored), mode-invariant. M3: an indirection that is level1 on elevated and level0 (i.e. none) on filled and outlined \u2014 the mechanism axis expressed as a shadow."
+    },
+    {
+      "id": "style.surface.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]",
+      "declarations": {
+        "transition": "$"
+      },
+      "note": "Salt: `box-shadow var(--salt-duration-instant) ease-in-out` \u2014 and duration-instant is 0ms (foundations/duration.css), so Salt declares a shadow transition and then gives it no duration. Reproduced exactly, name and all, the same way DIALOG-MATRIX.md finding 7 reproduced the body of a keyframe whose name promised a transform it did not contain. Note that .saltCard-interactable then sets `transition: none` outright. shadcn and M3: OFF, no transition utility and no motion token."
+    },
+    {
+      "id": "style.surface.focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-focus-visible]:where(:not([data-disabled]))",
+      "cellIsDeclarations": true,
+      "note": "Emitted BEFORE the hover / pressed rows deliberately, matching the order of Salt's own InteractableCard.css (:focus-visible, then @media hover, then :active/-selected, then -disabled): at equal specificity a hovered-and-focused card should show the HOVERED elevation, which is what both Salt and M3 intend. Salt: `outline: var(--salt-focused-outline)` (2px dotted accent-stronger) at outlineOffset 0, PLUS the hover shadow and the pointer cursor \u2014 Salt's focus ring is accompanied by a lift, which no other component in this registry does. shadcn: OFF, and it is a confirmed absence with a structural cause: the card is never focusable. M3: the focus-indicator family, 3px solid `secondary` at outline-offset +2px \u2014 the OUTER offset, where the tab used the inner one \u2014 and `latest` only, which is the load-bearing half of this component's edition pin."
+    },
+    {
+      "id": "style.surface.elevation@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"]:where([data-interactive], [data-hoverable]):where(:not([data-disabled])):hover",
+      "cellIsDeclarations": true,
+      "note": "Salt: shadow-low + the accent border + the pointer cursor, from `@media (hover: hover) { .saltCard-hoverable:hover, .saltInteractableCard:hover, .saltLinkCard:hover }`. shadcn: OFF, confirmed absence. M3: the hovered elevation for the active variant. The selector unions the two ways a card can be hover-responsive (interactive, or Salt's decorative `hoverable` opt-in) and excludes disabled with :where so the disabled row below still wins on order \u2014 the generalized-selector pattern button.template.json established, never one system's own vocabulary."
+    },
+    {
+      "id": "style.surface.pressed",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-interactive]:where(:not([data-disabled])):active, [data-slot=\"card\"][data-interactive][data-active]:where(:not([data-disabled]))",
+      "cellIsDeclarations": true,
+      "note": "The selector is a union of the CSS pseudo-class and the chassis's `data-active` flag, because a keyboard activation never produces :active \u2014 Salt's own CSS makes the same union (`.saltInteractableCard:active, .saltInteractableCard-active`) for exactly that reason, so for Salt this is [S]; for M3 the trigger is the declared chassis mechanism (declared approximation 3) while the values are [S]."
+    },
+    {
+      "id": "style.surface.selected",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-state=\"selected\"]:where(:not([data-disabled]))",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Its source shares one declaration block with :active, so the two states are indistinguishable by sight \u2014 recorded as a finding rather than differentiated. shadcn and M3: OFF."
+    },
+    {
+      "id": "style.surface.disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-disabled]",
+      "cellIsDeclarations": true,
+      "note": "Placed AFTER the hover / pressed / focus rows deliberately: it has the same specificity as the hover rule, so it wins on document order, which is exactly how Salt's own file is arranged. Salt: 40% opacity, no shadow, no outline, not-allowed cursor. shadcn: OFF. M3: 38% (disabled-container-opacity). The outlined variant's disabled tokens are a DIFFERENT mechanism (disabled-outline-color `outline` at disabled-outline-opacity 0.12, with no container-opacity token at all) and are declared, not modelled \u2014 see CARD-MATRIX.md declared approximation 4."
+    },
+    {
+      "id": "style.surface.pointer-events@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-disabled] [data-slot=\"card-content\"], [data-slot=\"card\"][data-disabled] [data-slot=\"card-footer\"], [data-slot=\"card\"][data-disabled] [data-slot=\"card-header\"]",
+      "declarations": {
+        "pointer-events": "$"
+      },
+      "note": "Salt only, and it is the oddest rule in the component: `.saltInteractableCard-disabled div { pointer-events: none }` disables the card's DESCENDANT DIVS rather than the card itself, so a disabled Salt card can still be hovered (and therefore still shows its not-allowed cursor) while nothing embedded in it can be clicked. Reproduced against this chassis's three section slots rather than a bare `div` descendant selector, which would also have hit the state layer and the accent. shadcn and M3: OFF."
+    },
+    {
+      "id": "style.surface.variant@filled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-variant=\"filled\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only. Reassigns the indirection slots the base rows consume \u2014 the same one-property-per-axis-value pattern alert.template.json used for tone and dialog.template.json for status. filled trades elevated's level-1 shadow for the highest surface tone (surface-container-highest) and no shadow at all: a different MECHANISM, expressed as a different set of slot values rather than as a colour delta."
+    },
+    {
+      "id": "style.surface.variant@outlined",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-variant=\"outlined\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only. The third mechanism: plain `surface` (no tonal lift), no shadow, and a 1px outline-variant stroke. Also the only variant with outline state tokens \u2014 and the hovered and pressed outline colours are IDENTICAL to the resting one (all three resolve to outline-variant); only focus changes it, to on-surface."
+    },
+    {
+      "id": "style.surface.tone@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-tone=\"secondary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Reassigns the single --surface-bg indirection, because a direct read of Card.css shows the tone rules move nothing else. marble / granite."
+    },
+    {
+      "id": "style.surface.tone@tertiary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-tone=\"tertiary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only \u2014 limestone / leather."
+    },
+    {
+      "id": "style.surface.tone@ghost",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-tone=\"ghost\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, and the one tone that is not a solid: container-ghost-background -> palette-alpha-medium -> 30% WHITE in light mode and 30% BLACK in dark mode, i.e. it inverts, exactly as DIALOG-MATRIX.md finding 1 found Salt's scrim inverting. A ghost card is a translucent wash over whatever is behind it, not a fourth opaque tone. Note also that `ghost` exists on Card ONLY \u2014 InteractableCard and LinkCard each declare three variants."
+    },
+    {
+      "id": "style.state-layer.rest",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-state-layer\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only \u2014 the layer is painted in on-surface and held at opacity 0, so every interaction row below only has to move the opacity. Salt and shadcn have no state layer and the part itself is switched off in those columns."
+    },
+    {
+      "id": "style.state-layer.opacity@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-interactive]:where(:not([data-disabled])):hover [data-slot=\"card-state-layer\"]",
+      "declarations": {
+        "opacity": "$"
+      },
+      "note": "M3: md-sys-state hover-state-layer-opacity = 0.08, identical in both editions."
+    },
+    {
+      "id": "style.state-layer.opacity@focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-focus-visible]:where(:not([data-disabled])) [data-slot=\"card-state-layer\"]",
+      "declarations": {
+        "opacity": "$"
+      },
+      "note": "M3: focus-state-layer-opacity = 0.1 in versions/latest/sass/_md-sys-state.scss and 0.12 in versions/v0_192 \u2014 edition-dependent, and docs/foundations/state-layers.md tabulates the v0.192 numbers without naming an edition (see CARD-MATRIX.md finding 11; reported, not edited)."
+    },
+    {
+      "id": "style.state-layer.opacity@pressed",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-interactive]:where(:not([data-disabled])):active [data-slot=\"card-state-layer\"], [data-slot=\"card\"][data-interactive][data-active]:where(:not([data-disabled])) [data-slot=\"card-state-layer\"]",
+      "declarations": {
+        "opacity": "$"
+      },
+      "note": "M3: pressed-state-layer-opacity = 0.1 (latest) / 0.12 (v0.192). Same edition note as focus."
+    },
+    {
+      "id": "style.accent.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-accent\"]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "Salt only. sentiment-accent-background -> palette-accent -> blue-500 rgb(0,120,207), mode-invariant. Reproduced through the source's own `--card-accent-color` indirection so the focus recolour below has one property to reassign (lesson 5)."
+    },
+    {
+      "id": "style.accent.placement@bottom",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-accent-placement=\"bottom\"] [data-slot=\"card-accent\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Geometry per source: the bar is size-bar tall (2/4/6/8 by DENSITY \u2014 verified on the density scale, not frozen) and overhangs the card's 1px border by -size-fixed-100 on both sides, with width calc(100% + size-fixed-200). The card's own overflow:hidden then clips the overhang back off; reproduced as source has it."
+    },
+    {
+      "id": "style.accent.placement@top",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-accent-placement=\"top\"] [data-slot=\"card-accent\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only \u2014 see @bottom."
+    },
+    {
+      "id": "style.accent.placement@left",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-accent-placement=\"left\"] [data-slot=\"card-accent\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only \u2014 the vertical pair swap the axes: size-bar wide, calc(100% + size-fixed-200) tall."
+    },
+    {
+      "id": "style.accent.placement@right",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-accent-placement=\"right\"] [data-slot=\"card-accent\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only \u2014 see @left."
+    },
+    {
+      "id": "style.accent.color@focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-interaction=\"link\"][data-focus-visible] [data-slot=\"card-accent\"]",
+      "declarations": {
+        "background-color": "$"
+      },
+      "note": "Salt LinkCard only: `.saltLinkCard:focus-visible { --linkCard-accent-color: var(--salt-selectable-foreground-hover) }`. Reproduced faithfully AND flagged as a NO-OP: selectable-foreground-hover and sentiment-accent-background both resolve to palette-accent, so the declared recolour changes nothing at either accent. CARD-MATRIX.md finding 6. shadcn and M3: OFF."
+    },
+    {
+      "id": "style.media.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-media\"]",
+      "cellIsDeclarations": true,
+      "note": "OFF IN ALL THREE COLUMNS, retained as documentation of structure.media's three-way absence. No system declares a rule for card media; Salt's clipping comes from the CARD's overflow:hidden, not from anything on the image."
+    },
+    {
+      "id": "style.header.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-header\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: spacing-200 uniform (8/16/24/32) \u2014 the padding the card gave up when it detected sections. shadcn: `px-6` only, 0 24px, because the card keeps its own py-6. M3: OFF, no header."
+    },
+    {
+      "id": "style.header.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-header\"]",
+      "declarations": {
+        "gap": "$"
+      },
+      "note": "shadcn: `gap-2` = 8px between the title and the description rows of the header grid. Salt: OFF \u2014 CardHeader.css declares padding and flex-shrink and nothing else; its stories supply the internal rhythm with a StackLayout, i.e. consumer-owned. M3: OFF."
+    },
+    {
+      "id": "style.title.type",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-title\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only, and it is NOT a font shorthand because there is no size to put in one: CardTitle is `leading-none font-semibold` \u2014 weight 600 and line-height exactly 1, with NO font-size, so a shadcn card title is the same size as its surrounding text and is distinguished by weight and leading alone. (Its own dialog title, by contrast, carries text-lg.) Salt: OFF, no title part. M3: OFF, no token."
+    },
+    {
+      "id": "style.description.type",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-description\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: `text-sm` = 0.875rem/1.25rem \u2014 the ONLY type size anywhere in the whole component, in any of the three systems. Salt and M3: OFF."
+    },
+    {
+      "id": "style.description.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-description\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "shadcn only: --muted-foreground. Salt: OFF (its stories pass color=\"secondary\" to a composed Text \u2014 consumer-owned, not a card rule). M3: OFF."
+    },
+    {
+      "id": "style.content.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-content\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: spacing-200 uniform. shadcn: px-6 only. M3: OFF."
+    },
+    {
+      "id": "style.content.padding@adjacent",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-header\"] + [data-slot=\"card-content\"], [data-slot=\"card-content\"] + [data-slot=\"card-content\"]",
+      "declarations": {
+        "padding-top": "$"
+      },
+      "note": "Salt only, and this is the mechanism that produces its zero inter-section gap: any CardContent that follows a CardHeader or another CardContent loses its top padding, so the two sections' insets collapse into one continuous 16px frame instead of adding up to 32px. Salt states the rule twice \u2014 once under the JS-detected .saltCard-sectioned class and once inside `@supports selector(:has(*))` \u2014 for all three card kinds. shadcn: OFF, it uses a real gap instead. M3: OFF."
+    },
+    {
+      "id": "style.content.stretch",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-sectioned] [data-slot=\"card-content\"]",
+      "declarations": {
+        "flex": "$"
+      },
+      "note": "Salt only: `flex: 1 1 auto` on the content of a sectioned card, so a row of Salt cards with unequal body lengths still aligns its footers (its own EqualHeightSections story is exactly that demonstration). shadcn: OFF \u2014 CardContent has no flex utility, so a taller sibling does not stretch it. M3: OFF. Kept as a row rather than in `base` precisely because it is NOT invariant."
+    },
+    {
+      "id": "style.footer.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-footer\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: spacing-200 uniform. shadcn: px-6 only, and its `[.border-t]:pt-6` opt-in divider hook is declared out of the chassis (CARD-MATRIX.md declared approximation 5) because the border is applied by the consumer, not by the component. M3: OFF."
+    },
+    {
+      "id": "style.footer.padding@adjacent",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-header\"] + [data-slot=\"card-footer\"], [data-slot=\"card-content\"] + [data-slot=\"card-footer\"]",
+      "declarations": {
+        "padding-top": "$"
+      },
+      "note": "Salt only \u2014 the footer half of the same collapse. Note the source lists exactly two predecessors (header, content) and NOT footer-after-footer, unlike the content rule which does cover content-after-content."
+    },
+    {
+      "id": "style.footer.stretch",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card\"][data-sectioned] [data-slot=\"card-footer\"]",
+      "declarations": {
+        "margin-top": "$"
+      },
+      "note": "Salt only: `margin-top: auto` pins the footer to the bottom of a sectioned card. shadcn: OFF \u2014 deliberately, because giving shadcn's footer an auto margin would change where it sits in a card with an explicit height, and no source rule asks for that. M3: OFF."
+    },
+    {
+      "id": "style.footer.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-footer\"]",
+      "declarations": {
+        "gap": "$"
+      },
+      "note": "Salt: spacing-100 -> 4/8/12/16px between footer children. shadcn: OFF \u2014 CardFooter is `flex items-center px-6` with NO gap, a confirmed absence; its own card-demo has to add `flex-col gap-2` per instance to space two buttons. M3: OFF."
+    },
+    {
+      "id": "style.card-icon.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-icon\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only: icon-size 24px, density-invariant (M3 has no density capability at all \u2014 docs/foundations/density.md). Salt and shadcn: OFF, no card-level icon token."
+    },
+    {
+      "id": "style.card-icon.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-icon\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "M3 only: icon-color -> md-sys-color.$primary. This is the INVERSE of TABS-MATRIX.md finding 9 \u2014 there, thirteen M3 icon-colour tokens all duplicated the label colour so a currentColor glyph was exact; here the single card icon token deliberately does NOT match any text role, so a currentColor glyph would be wrong and the row is real."
+    },
+    {
+      "id": "style.group.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"card-group\"]",
+      "declarations": {
+        "gap": "$"
+      },
+      "note": "Salt only: InteractableCardGroup.css is four declarations, of which three (flex, row, wrap) are chassis layout in `base` and one is themed \u2014 gap: spacing-200, the same 8/16/24/32 ladder as the card's own padding. shadcn and M3: OFF, no group exists."
+    }
+  ]
+}
