@@ -1,0 +1,103 @@
+{
+  "system": "m3",
+  "component": "radio-group",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "primary": "#6750a4",
+      "on-surface": "#1d1b20",
+      "on-surface-variant": "#49454f"
+    },
+    "dark": {
+      "primary": "#d0bcff",
+      "on-surface": "#e6e0e9",
+      "on-surface-variant": "#cac4d0"
+    }
+  },
+  "provenance": {
+    "canonical-source": "radio/internal/radio.ts (the real Lit component, 197 lines — render(), handleClick/handleKeydown, ElementInternals role/ariaChecked wiring, form-association mixins), radio/internal/single-selection-controller.ts (root-node-scoped selection sharing + arrow-key roving, 246 lines, read in full), radio/internal/_radio.scss (the shipped styles source, read in full), radio/radio.ts (the <md-radio> registration), radio/radio_test.ts (spot-checked for the ElementInternals role/ariaChecked proof). labs/behaviors/validators/radio-validator.ts (the group-aware required/checked validator). Tokens: tokens/versions/v0_192/_md-comp-radio-button.scss (the pinned edition — NOTE the token FILE is named radio-button, not radio; the component directory and custom element are `radio`/`md-radio`, a naming mismatch confirmed by grep, not assumed) and tokens/versions/latest/sass/_md-comp-radio-button.scss (edition diff only, see edition-pin). Colour/state resolution through tokens/versions/v0_192/{_md-sys-color.scss,_md-sys-state.scss}.",
+    "not-tokens-only-and-real-behaviour": "Confirming, not assuming, the same finding checkbox.m3.json and switch.m3.json both already recorded for this clone: radio/internal/radio.ts is real, full Lit component source, not a tokens fragment.",
+    "edition-pin": "v0.192, per the owner's registry-wide decision. UNLIKE switch's own wholesale-redesign edition delta, radio's is a PLAIN FORMAT CHANGE ONLY: `latest`'s _md-comp-radio-button.scss replaces v0.192's `values()` function with a flat file of individually-annotated `$variable` declarations, but every VALUE is byte-identical between editions — diffed directly, confirmed line by line, no token gains or drops of any kind. Flagged as a genuinely SMALL delta specifically because switch's own note in this pipeline trained the expectation of a large one; this component does not have one.",
+    "no-native-input-first-divergence-from-own-pattern": "structure.native-input is OFF for this column — a first, in this pipeline, for M3: checkbox.m3.json and switch.m3.json BOTH confirmed a real native <input> in M3's own shadow DOM; radio.ts has NONE anywhere, grepped directly across the whole radio/ directory (`file` run on every .ts file first, per CLAUDE.md's grep-then-file rule). Role and checked state are set purely through `mixinElementInternals`'s ElementInternals object: `this[internals].role = 'radio'` (constructor) and `this[internals].ariaChecked = String(this.checked)` (updated()) — the FIRST component in this whole registry whose M3 column uses ElementInternals for role assignment rather than either a native element or an explicit HTML attribute.",
+    "primary/on-surface/on-surface-variant": "md-sys-color.values-light()/values-dark(), v0.192 — the SAME hex pairs every M3 column in this pipeline resolves (#6750a4/#d0bcff primary, #1d1b20/#e6e0e9 on-surface, #49454f/#cac4d0 on-surface-variant). Re-derived here for a self-contained column, not borrowed.",
+    "icon-container-tokens": "icon-size: 20px, hardcoded literal, both editions (the whole `:host` — width/height both equal this) — the SAME container-is-the-icon-size shape checkbox's 18px container/18px icon pair already showed, but even more literal here since there is no separate container box at all, only the icon's own bounding box.",
+    "no-border-no-background-on-container": "CONFIRMED, re-checked specifically because every prior M3 column in this pipeline (checkbox, switch) DID draw a container-level border/background: `internal/_radio.scss`'s `.container` rule sets ONLY `display:flex; height:100%; place-content:center; place-items:center; width:100%` — no `border`, no `background`, no `border-radius` anywhere in the whole file. The visible ring a user sees is entirely the icon SVG's own `<circle class=\"outer\">` with a masked-out centre (`<mask><rect fill=white/><circle fill=black/></mask>`), not a bordered/filled container the way Salt's and shadcn's own items are.",
+    "dual-circle-geometry": "radio.ts render(): `<svg class=\"icon\" viewBox=\"0 0 20 20\"><mask id=...><rect width=\"100%\" height=\"100%\" fill=\"white\"/><circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"black\"/></mask><circle class=\"outer circle\" cx=\"10\" cy=\"10\" r=\"10\" mask=\"url(#...)\"/><circle class=\"inner circle\" cx=\"10\" cy=\"10\" r=\"5\"/></svg>` — geometry (cx/cy/r) is fixed SVG markup, not a themed CSS row; ONLY `fill` (both circles, inherited from the parent `.icon`'s own `fill` property), `opacity`, and `transform` (the inner circle only) are CSS-driven. `.outer.circle { transition: fill 50ms linear }`, `.inner.circle { opacity: 0; transition: opacity 50ms linear }` at rest.",
+    "checked-animation": "`.checked .inner.circle { animation: inner-circle-grow 300ms easing-emphasized-decelerate; opacity: 1 }`, `@keyframes inner-circle-grow { from { transform: scale(0) } to { transform: scale(1) } }` — a real, CSS-driven grow-in, the geometry given a live row per CHECKBOX-MATRIX finding 11's lesson (a declared structure strategy must be given real CSS, not left invisible).",
+    "colour-tokens-are-interaction-invariant-by-magnitude-not-existence": "UNLIKE switch's track (whose hover/focus/pressed tokens literally EQUAL the rest token, a true no-op), radio's icon DOES recolour on hover/focus/pressed — but the THREE values are numerically IDENTICAL to each other (unselected-hover-icon-color = unselected-focus-icon-color = unselected-pressed-icon-color = on-surface; selected-hover/-focus/-pressed-icon-color all = primary) — re-verified directly against the token file specifically because switch's own finding trained the expectation of a true no-op, and this is a DIFFERENT shape: a real change from rest, but no differentiation AMONG the three interaction states themselves.",
+    "disabled-opacities-selection-invariant": "disabled-selected-icon-opacity: 0.38; disabled-unselected-icon-opacity: 0.38 — IDENTICAL, and disabled-selected-icon-color: on-surface; disabled-unselected-icon-color: on-surface — ALSO IDENTICAL. Re-checked specifically because switch's own disabled-selected-handle-opacity: 1 asymmetry trained the expectation of one here too; there genuinely is none for radio — a real CONTRAST, not a repeat, confirmed by reading both entries side by side.",
+    "state-layer-and-cursor": "state-layer-size: 40px (md-ripple, centred on the 20px icon). hover-state-layer-opacity 0.08 / focus-state-layer-opacity 0.12 / pressed-state-layer-opacity 0.12, the SAME edition-dependent trio every prior M3 column has flagged, unchanged for this component between editions. `:host { cursor: pointer }` PLUS an EXPLICIT `:host([disabled]) { cursor: default }` — the first M3 column in this pipeline to write a disabled-cursor override at all; checkbox's and switch's own M3 columns left `pointer` in place even when disabled.",
+    "no-group-no-radiogroup-role": "CONFIRMED ABSENCE, grepped directly across radio.ts, internal/radio.ts, internal/single-selection-controller.ts, and _radio.scss: no `radiogroup` string anywhere, no fieldset, no wrapping custom element of any kind. Selection sharing is entirely a SingleSelectionController side effect, scoped to the connected root node via `querySelectorAll('[name=\"...\"]')`.",
+    "arrow-key-controller": "SingleSelectionController.handleKeyDown (internal/single-selection-controller.ts): listens for ArrowUp/Down/Left/Right, is RTL-aware (`getComputedStyle(this.host).direction === 'rtl'`), skips disabled siblings, unchecks+blurs every other sibling, checks+focuses the target, and dispatches a real `change` event — its own doc comment: 'Handles arrow key events... Using the arrow keys will select and check the next or previous sibling with the host's name attribute', and the class's own top-level doc comment states the design intent directly: 'provides root node-scoped single selection for elements, similar to native <input type=\"radio\"> selection'.",
+    "radio-specific-validator": "radio.ts: `override [createValidator]() { return new RadioValidator(() => this.selectionController.controls) }` — RadioValidator (labs/behaviors/validators/radio-validator.ts) loops EVERY sibling sharing the host's name to compute whether ANY is required and whether ANY is checked, a genuinely different, group-aware validator from CheckboxValidator (which checkbox's and switch's own M3 columns both reused verbatim for a single element's own state).",
+    "required-is-group-scoped": "Radio class's own `required` property doc comment, quoted directly: 'Whether or not the radio is required. If any radio is required in a group, all radios are implicitly required.' — a real, sourced, group-wide effect from a per-item boolean, computed by RadioValidator's own loop.",
+    "no-warning-no-error-family": "CONFIRMED ABSENCE, grepped directly: neither edition of _md-comp-radio-button.scss contains the string 'error' or 'warning' anywhere — radio has NO validation tone in M3 at all, the second sighting of this exact finding (switch.m3.json was the first)."
+  },
+  "cells": {
+    "structure.group": { "kind": "value", "value": "name-scoped", "source": "see no-group-no-radiogroup-role; selection sharing via SingleSelectionController querying the root node for shared [name]" },
+    "structure.shell": { "kind": "value", "value": "unwrapped", "source": "radio.ts render() has no label anywhere in the shadow DOM" },
+    "structure.native-input": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-native-input-first-divergence-from-own-pattern" },
+    "structure.dot": { "kind": "value", "value": "dual-circle", "source": "see dual-circle-geometry" },
+
+    "behavior.role": { "kind": "value", "value": "explicit, via ElementInternals — this[internals].role = 'radio' set in JS, not a rendered attribute", "source": "radio.ts constructor" },
+    "behavior.group-role": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-group-no-radiogroup-role" },
+    "behavior.keyboard-select": { "kind": "value", "value": "Space (native listener) calls this.click() — no Enter, unlike switch's own M3 column", "source": "radio.ts handleKeydown: if (event.key !== ' ' || event.defaultPrevented) return; this.click()" },
+    "behavior.arrow-navigation": { "kind": "value", "value": "explicit, RTL-aware JS — SingleSelectionController.handleKeyDown moves focus AND selection among same-name, non-disabled siblings", "source": "see arrow-key-controller" },
+    "behavior.selection-model": { "kind": "value", "value": "each radio owns its OWN independent checked boolean; becoming checked imperatively unchecks every other same-name sibling", "source": "Radio.checked setter calls this.selectionController.handleCheckedChange(), which calls uncheckSiblings()" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native ?disabled, PLUS transitions explicitly suppressed around the disabled boundary, PLUS disabled siblings are skipped by arrow-key navigation", "source": "_radio.scss :host([disabled]) .circle { animation-duration: 0s; transition-duration: 0s }; single-selection-controller.ts skips hasAttribute('disabled') siblings" },
+    "behavior.readonly": { "kind": "off", "note": "CONFIRMED ABSENCE — no readonly-* token in either edition, no readOnly property in radio.ts" },
+    "behavior.label-click-target": { "kind": "value", "value": "the dot itself, PLUS an explicit redirect from any ancestor <label> click a consumer supplies", "source": "radio.ts handleClick: if (isActivationClick(event)) { this.focus() }" },
+    "behavior.form-participation": { "kind": "value", "value": "a full form-associated custom element delegating validity to a radio-SPECIFIC, group-aware validator", "source": "see radio-specific-validator" },
+    "behavior.validation": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-warning-no-error-family" },
+
+    "prop.selection-shape": { "kind": "value", "value": "item-checked", "source": "@property({type:Boolean}) checked (getter/setter pair); @property() value = 'on', used ONLY for form submission, never cross-item comparison" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) disabled, inherited LitElement convention (mixinFocusable)" },
+    "prop.group-disabled": { "kind": "off", "note": "CONFIRMED ABSENCE — no group entity exists to hold a group-level prop, see structure.group" },
+    "prop.read-only": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "prop.group-read-only": { "kind": "off", "note": "CONFIRMED ABSENCE — no group entity" },
+    "prop.required": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) required = false — see required-is-group-scoped" },
+    "prop.validation": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-warning-no-error-family" },
+
+    "slot.label": { "kind": "off", "note": "CONFIRMED ABSENCE — no label text owned; always external, see behavior.label-click-target" },
+    "slot.composes": { "kind": "value", "value": true, "note": "an external, consumer-authored <label> (behavior.label-click-target); checkbox/switch are the explicitly separate canonical rows" },
+
+    "state.rest": { "kind": "value", "value": "no container styling of any kind — the visible ring is the dot's own outer masked circle at on-surface-variant", "note": "see no-border-no-background-on-container" },
+    "state.checked": { "kind": "value", "value": "the outer ring's fill moves on-surface-variant -> primary AND the inner circle animates in (opacity 0->1, 300ms scale-grow)", "note": "see checked-animation" },
+    "state.hover": { "kind": "value", "value": "the icon's fill recolours (unselected: on-surface); the item container shows nothing, having no drawable surface of its own", "note": "the most extreme version yet of the 'feedback lives on the glyph, not the container' finding switch's own track already showed" },
+    "state.focus": { "kind": "value", "value": "the icon recolours to the SAME value as hover, plus a 12%-opacity state layer and a separate 44x44 md-focus-ring not reproduced here", "note": "see colour-tokens-are-interaction-invariant-by-magnitude-not-existence" },
+    "state.pressed": { "kind": "value", "value": "the icon recolours to the SAME value as hover/focus (M3 does not differentiate icon colour among the three interaction states), plus a 12%-opacity ripple", "note": "see colour-tokens-are-interaction-invariant-by-magnitude-not-existence" },
+    "state.disabled": { "kind": "value", "value": "0.38 opacity on the icon only, IDENTICAL for both selected and unselected — a real contrast to switch's own asymmetric finding", "note": "see disabled-opacities-selection-invariant" },
+    "state.readonly": { "kind": "off", "note": "no readonly concept" },
+
+    "style.group.gap": { "kind": "off", "note": "no group element to apply a gap to — see structure.group" },
+    "style.item.gap": { "kind": "off", "note": "no owned label to put a gap before — see slot.composes" },
+    "style.item.size": { "kind": "value", "value": { "width": "20px", "height": "20px" }, "source": "icon-size: 20px, hardcoded literal, both editions — see icon-container-tokens" },
+    "style.item.shape": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-border-no-background-on-container; the item draws no shape-bearing box at all" },
+    "style.item.border-width": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-border-no-background-on-container; the ring is a masked filled circle, not a stroked border" },
+    "style.item.rest": { "kind": "off", "note": "see no-border-no-background-on-container; every visible pixel at rest comes from style.dot.fill instead" },
+    "style.item.checked": { "kind": "off", "note": "the item draws nothing; everything M3 changes on check happens on the dot — see style.dot.fill@checked / style.dot.inner-grow@checked" },
+    "style.item.hover": { "kind": "off", "note": "the item draws nothing; M3's real hover feedback lives on style.dot.hover" },
+    "style.item.focus": { "kind": "off", "note": "the item draws nothing; M3's real focus feedback lives on style.dot.hover (reused) plus the separate, not-reproduced md-focus-ring" },
+    "style.item.pressed": { "kind": "off", "note": "the item draws nothing; M3's real pressed feedback lives on style.dot.hover (reused)" },
+    "style.item.disabled": { "kind": "off", "note": "M3's disabled dimming happens on the icon (style.dot.disabled), never the item container" },
+    "style.item.readonly": { "kind": "off", "note": "no readonly concept" },
+    "style.item.validation": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-warning-no-error-family" },
+    "style.item.validation@warning": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.item.transition": { "kind": "off", "note": "the item draws nothing to transition; M3's own fill/opacity transitions live on the dot's two circles instead — see style.dot.inner-grow@checked" },
+
+    "style.dot.size": { "kind": "off", "note": "the dot's two <circle>s are sized entirely by fixed SVG attributes in markup (r=10 / r=5 inside a 20x20 viewBox), not a themed CSS row — see icon-container-tokens" },
+    "style.dot.fill": { "kind": "value", "value": "var(--on-surface-variant)", "source": "unselected-icon-color: on-surface-variant, the REST baseline shared by both circles via the parent .icon element's own fill property" },
+    "style.dot.fill@checked": { "kind": "value", "value": "var(--primary)", "source": "selected-icon-color: primary, overriding the unselected baseline the instant .checked applies" },
+    "style.dot.hover": { "kind": "value", "value": "var(--on-surface)", "source": "hover-icon-color (unselected): on-surface — REUSED for focus and pressed too, see colour-tokens-are-interaction-invariant-by-magnitude-not-existence; the selected-hover/-focus/-pressed variant (primary) is recorded here in provenance but not separately expressed, the same declared approximation switch's own style.thumb.hover row already made" },
+    "style.dot.disabled": { "kind": "value", "value": { "fill": "var(--on-surface)", "opacity": "0.38" }, "source": "disabled-unselected-icon-color: on-surface, disabled-unselected-icon-opacity: 0.38 — IDENTICAL for the selected case too, see disabled-opacities-selection-invariant, so this one cell covers both" },
+    "style.dot.inner-grow@checked": {
+      "kind": "value",
+      "value": { "animation": "inner-circle-grow 300ms cubic-bezier(0.3, 0, 0, 1)", "opacity": "1" },
+      "source": "see checked-animation — easing-emphasized-decelerate resolves to cubic-bezier(0.3, 0, 0, 1) per tokens/versions/v0_192/_md-sys-motion.scss, the same curve family checkbox.m3.json's own style.box.transition row already cited"
+    },
+
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": ":host { cursor: pointer } PLUS :host([disabled]) { cursor: default } — see state-layer-and-cursor" },
+    "style.root.font": { "kind": "off", "note": "no owned label text" },
+    "style.state-layer": { "kind": "value", "value": { "size": "40px" }, "note": "documented, not rendered as its own element — see state-layer-and-cursor" }
+  }
+}

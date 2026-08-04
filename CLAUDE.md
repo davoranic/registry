@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **16 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **17 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -104,7 +104,7 @@ loop.
   → `3-source/salt-ds`, `material-components/material-web` →
   `3-source/material-web`. Folder names must match exactly — provenance
   strings across every matrix doc cite paths inside them.
-- 63 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
+- 62 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
 
 ### Method notes that cost real time to learn
 
@@ -213,6 +213,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `dialog` | [`DIALOG-MATRIX.md`](DIALOG-MATRIX.md) | 97 | 73 | 47 | 38 | ✓ |
 | `input` | [`INPUT-MATRIX.md`](INPUT-MATRIX.md) | 64 | 50 | 20 | 32 | — |
 | `progress` | [`PROGRESS-MATRIX.md`](PROGRESS-MATRIX.md) | 51 | 40 | 23 | 24 | ✓ |
+| `radio-group` | [`RADIO-GROUP-MATRIX.md`](RADIO-GROUP-MATRIX.md) | 54 | 45 | 34 | 28 | ✓ |
 | `select` | [`SELECT-MATRIX.md`](SELECT-MATRIX.md) | 113 | 84 | 53 | 51 | — |
 | `spinner` | [`SPINNER-MATRIX.md`](SPINNER-MATRIX.md) | 20 | 12 | 8 | 9 | — |
 | `switch` | [`SWITCH-MATRIX.md`](SWITCH-MATRIX.md) | 53 | 41 | 30 | 38 | ✓ |
@@ -407,24 +408,35 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `switch` (component 15, row 16/79), following checkbox.
-Not yet committed — see the note at the end of this section.
+Last action: built `radio-group` (component 16, row 17/79), following
+switch. Committed and pushed to `claude/next-component-7e5dex` (`40a793a`
+was switch; radio-group's commit follows this edit). `switch` itself
+(component 15) is ALSO now committed — the "not yet committed" note that
+used to live here is stale; check `git log` if in doubt rather than
+trusting stale prose.
 
-Switch is the first component in this pipeline built with checkbox's two
-findings (10/11, the dead-sibling-selector bug and the never-implemented
-mark geometry) fed into the build prompt AS explicit lessons, and it worked:
-every conditional selector was anchored at `switch-root` via `:has()` from
-the first draft, verified by orchestrator review with live
-`getComputedStyle`/`getBoundingClientRect` (SWITCH-MATRIX.md finding 11's
-closure) to actually move/resize/recolour in all three columns — no dead
-selector found this time. One coarse-measure `check-anatomy.mjs` convergence
-(`salt=m3` identical part-SET, 4/4 rows populated in both) was investigated
-and explained rather than left flagged — see finding 12: the two disagree on
-almost everything else about those four parts, so it's not a retrofit.
+radio-group is the strongest verification pass yet AND the one that proves
+verification has more than one dimension. A headless browser was available
+this time (unlike switch), so the building session itself ran
+`getComputedStyle`/`getBoundingClientRect` live and found one real defect
+(M3's inner dot missing a baseline `opacity:0` — fixed, see finding 1) —
+but that pass checked STATE CHANGES, not LAYOUT, and missed a second real
+defect: 12 `style.item.*` rows targeted the label-wrapping ROOT
+(`radio-item`) instead of the actual circular element (`radio-dot`),
+matching Salt's own `RadioButtonIcon` vs `.saltRadioButton` split. Harmless
+for shadcn/M3 (no owned label to squeeze), but for Salt it force-sized the
+whole label+dot region to a 14px box, crushing the label text against the
+dot with zero gap (the internal gap row didn't exist either). Found on a
+SECOND orchestrator review pass, fixed by retargeting all 12 rows to
+`radio-dot` and adding the missing `style.item.gap` row — see
+RADIO-GROUP-MATRIX.md finding 8 for the full account and the lesson: a
+selector matching its intended element (finding 7's check) is not the same
+guarantee as that element being the RIGHT one (finding 8's check) — verify
+both state AND layout, not just one.
 
-Everything regenerates clean; all five gates green; conformance 70/71 (same
-one pre-existing `tabs` failure as before switch was added — see Known-open
-work; switch itself introduced zero new failures).
+Everything regenerates clean; all four automated gates green; conformance
+89/89 minus the one pre-existing, unrelated `tabs` failure (unchanged by
+this build — see Known-open work).
 
 **Standing priority order — still true, still not done, all deferred by
 explicit owner choice on 2026-08-04 ("keep going, track gaps in a running
@@ -435,8 +447,16 @@ list" over stopping to clear the queue):**
 3. Backfill 250 uncited slots (select 73, input 42, badge, card).
 4. Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure.
 5. Fix the fonts/ path bug across every `build-<name>-check.mjs`.
-6. **Continue components** — 63 canonical rows remain, order per
+6. **Continue components** — 62 canonical rows remain, order per
    `1-intro/content/04-component-map.md`: rows with real cross-system character first.
+
+**New standing lesson for the next component's build prompt, alongside
+checkbox's two:** before finalizing a template, ask not just "does this
+selector match something" (`:has()` solves that) but "does it match the
+right something" — when a shared wrapper conflates two real, separately-
+sized/styled elements from source (a label root vs. a visual box), give
+them separate `data-slot`s from the first draft, the way checkbox's
+root/box/icon three-tier split already did it correctly.
 
 **If resuming mid-session:** switch's files are written and gate-clean but
 not yet `git commit`ed as of this edit — check `git status` before assuming

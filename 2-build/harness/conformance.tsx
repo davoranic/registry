@@ -37,6 +37,7 @@ import { Tabs } from "../skeleton/tabs"
 import { Card } from "../skeleton/card"
 import { Checkbox, CheckboxGroup, type CheckboxConfig } from "../skeleton/checkbox"
 import { Switch } from "../skeleton/switch"
+import { RadioGroup, RadioItem } from "../skeleton/radio-group"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -44,6 +45,7 @@ import tabsCfg from "../out/gen/tabs-config.json"
 import cardCfg from "../out/gen/card-config.json"
 import checkboxCfg from "../out/gen/checkbox-config.json"
 import switchCfg from "../out/gen/switch-config.json"
+import radioGroupCfg from "../out/gen/radio-group-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -565,6 +567,148 @@ async function checkSwitch(host: HTMLElement, system: string) {
   }
 }
 
+// ------------------------------------------------------------------ radio-group
+
+async function checkRadioGroup(host: HTMLElement, system: string) {
+  const cfg = (radioGroupCfg as Record<string, any>)[system]
+
+  // 1 — behavior.selection-model: mount a live three-item group with "b"
+  // selected, then click "c" — a real user interaction — and watch the
+  // GROUP resolve so "b" deselects and "c" selects. Testing the actual
+  // TRANSITION (CLAUDE.md method notes), not two independent static mounts,
+  // and the thing this component's own behaviour gate cannot prove: that
+  // clicking an unselected item's real DOM node actually clears its
+  // sibling, not merely that the code compiling that mechanism exists.
+  const mount1 = document.createElement("div")
+  mount1.setAttribute("data-theme", system)
+  host.appendChild(mount1)
+  const root1 = createRoot(mount1)
+  function TransitionHarness() {
+    const [value, setValue] = React.useState("b")
+    return (
+      <RadioGroup config={cfg} value={value} onValueChange={setValue} aria-label="transition">
+        <RadioItem config={cfg} value="a" aria-label="a" />
+        <RadioItem config={cfg} value="b" aria-label="b" />
+        <RadioItem config={cfg} value="c" aria-label="c" />
+      </RadioGroup>
+    )
+  }
+  root1.render(<TransitionHarness />)
+  await settle()
+  const inputs1 = [...mount1.querySelectorAll('[data-slot="radio-input"]')] as HTMLInputElement[]
+  record("radio-group", "structure.native-input", system, inputs1.length === 3, `${inputs1.length} inputs rendered`)
+  if (inputs1.length === 3) {
+    const [a, b, c] = inputs1
+    const sameName = a.name && a.name === b.name && b.name === c.name
+    record("radio-group", "behavior.arrow-navigation", system, Boolean(sameName), `all three siblings share name="${a.name}" — the native arrow-key roving prerequisite (Space/Arrow trusted-event synthesis is not available headless, so this asserts the mechanism's precondition, not the keypress itself)`)
+    const beforeB = b.checked
+    const beforeC = c.checked
+    c.click()
+    await settle()
+    record(
+      "radio-group",
+      "behavior.selection-model",
+      system,
+      beforeB === true && beforeC === false && b.checked === false && c.checked === true,
+      `before: b.checked=${beforeB}, c.checked=${beforeC}; after clicking c: b.checked=${b.checked}, c.checked=${c.checked}`,
+    )
+  }
+  root1.unmount()
+  mount1.remove()
+
+  // 2 — behavior.disabled-handling: a group-level `disabled` must reach an
+  // UNMODIFIED child through context, the same OR-merge checkbox's own
+  // group assertion checks. shadcn's group-level forwarding is [R]
+  // (declared, not independently confirmable) but this chassis implements
+  // the observable capability regardless, so the assertion runs for all
+  // three columns rather than being skipped.
+  const mount2 = document.createElement("div")
+  mount2.setAttribute("data-theme", system)
+  host.appendChild(mount2)
+  const root2 = createRoot(mount2)
+  root2.render(
+    <RadioGroup config={cfg} value="a" disabled aria-label="group-disabled">
+      <RadioItem config={cfg} value="a" aria-label="group-child" />
+    </RadioGroup>,
+  )
+  await settle()
+  const groupChildInput = mount2.querySelector('[data-slot="radio-input"]') as HTMLInputElement | null
+  record(
+    "radio-group",
+    "behavior.disabled-handling",
+    system,
+    groupChildInput?.disabled === true,
+    "group disabled must reach an unmodified child — child.disabled=" + groupChildInput?.disabled,
+  )
+  root2.unmount()
+  mount2.remove()
+
+  // 3 — behavior.readonly: Salt ONLY. A read-only group's child must not
+  // resolve a click into a new selection, mirroring checkbox's/switch's own
+  // readOnly assertion shape.
+  if (Array.isArray(cfg.readOnly) && cfg.readOnly.includes(true)) {
+    const mount3 = document.createElement("div")
+    mount3.setAttribute("data-theme", system)
+    host.appendChild(mount3)
+    const root3 = createRoot(mount3)
+    function ReadOnlyHarness() {
+      const [value, setValue] = React.useState("a")
+      return (
+        <RadioGroup config={cfg} value={value} onValueChange={setValue} readOnly aria-label="readonly">
+          <RadioItem config={cfg} value="a" aria-label="a" />
+          <RadioItem config={cfg} value="b" aria-label="b" />
+        </RadioGroup>
+      )
+    }
+    root3.render(<ReadOnlyHarness />)
+    await settle()
+    const inputs3 = [...mount3.querySelectorAll('[data-slot="radio-input"]')] as HTMLInputElement[]
+    if (inputs3.length === 2) {
+      inputs3[1].click()
+      await settle()
+      record(
+        "radio-group",
+        "behavior.readonly",
+        system,
+        inputs3[1].checked === false,
+        "a read-only group's unselected item must not become selected on click — b.checked=" + inputs3[1].checked,
+      )
+    }
+    root3.unmount()
+    mount3.remove()
+  } else {
+    record("radio-group", "behavior.readonly", system, true, "no readOnly capability in this column (confirmed absence) — nothing to assert")
+  }
+
+  // 4 — structure.group: the group wrapper carries role="radiogroup" for
+  // Salt/shadcn, and GENUINELY OMITS it for M3 (structure.group=
+  // "name-scoped") — asserting the negative case is as load-bearing as the
+  // positive one, since a silently-added default role would misrepresent a
+  // real, sourced absence.
+  const mount4 = document.createElement("div")
+  mount4.setAttribute("data-theme", system)
+  host.appendChild(mount4)
+  const root4 = createRoot(mount4)
+  root4.render(
+    <RadioGroup config={cfg} value="a" aria-label="group-role">
+      <RadioItem config={cfg} value="a" aria-label="only" />
+    </RadioGroup>,
+  )
+  await settle()
+  const groupEl = mount4.querySelector('[data-slot="radio-group"]')
+  const hasRole = groupEl?.getAttribute("role") === "radiogroup"
+  const expectRole = cfg.groupShape !== "name-scoped"
+  record(
+    "radio-group",
+    "behavior.group-role",
+    system,
+    hasRole === expectRole,
+    `groupShape=${cfg.groupShape}; expected role="radiogroup"=${expectRole}; actual role=${groupEl?.getAttribute("role")}`,
+  )
+  root4.unmount()
+  mount4.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -579,6 +723,7 @@ async function run() {
     try { await checkCard(host, s) } catch (e) { record("card", "(threw)", s, false, String(e)) }
     try { await checkCheckbox(host, s) } catch (e) { record("checkbox", "(threw)", s, false, String(e)) }
     try { await checkSwitch(host, s) } catch (e) { record("switch", "(threw)", s, false, String(e)) }
+    try { await checkRadioGroup(host, s) } catch (e) { record("radio-group", "(threw)", s, false, String(e)) }
   }
   host.remove()
 

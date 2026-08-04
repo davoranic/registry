@@ -1,0 +1,155 @@
+{
+  "system": "salt",
+  "component": "radio-group",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "neutral": "rgb(114, 119, 125)",
+      "neutral-fg": "rgb(95, 100, 106)",
+      "accent": "rgb(0, 120, 207)",
+      "box-bg": "rgb(255, 255, 255)",
+      "text-fg": "rgb(0, 0, 0)",
+      "error": "rgb(229, 33, 53)",
+      "warning": "rgb(199, 83, 0)",
+      "focus-outline": "rgb(0, 69, 126)",
+      "type-fontFamily": "'Open Sans', sans-serif",
+      "type-fontWeight": "400"
+    },
+    "dark": {
+      "neutral-fg": "rgb(145, 149, 154)",
+      "box-bg": "rgb(16, 24, 32)",
+      "text-fg": "rgb(255, 255, 255)",
+      "focus-outline": "rgb(154, 189, 245)"
+    },
+    "byDensity": {
+      "high":   { "item-size": "12px", "group-gap": "4px",  "item-gap": "4px",  "type-fontSize": "11px", "type-lineHeight": "14px" },
+      "medium": { "item-size": "14px", "group-gap": "8px",  "item-gap": "8px",  "type-fontSize": "12px", "type-lineHeight": "16px" },
+      "low":    { "item-size": "16px", "group-gap": "12px", "item-gap": "12px", "type-fontSize": "14px", "type-lineHeight": "18px" },
+      "touch":  { "item-size": "18px", "group-gap": "16px", "item-gap": "16px", "type-fontSize": "16px", "type-lineHeight": "20px" }
+    }
+  },
+  "modeInvariant": ["neutral", "accent", "error", "warning", "type-fontFamily", "type-fontWeight"],
+  "provenance": {
+    "canonical-source": "packages/core/src/radio-button/{RadioButton.tsx,RadioButton.css,RadioButtonIcon.tsx,RadioButtonIcon.css,RadioButtonGroup.tsx,RadioButtonGroup.css,internal/useRadioGroup.ts,internal/RadioGroupContext.tsx,index.ts} — the whole component family, seven files, read in full. site/docs/components/radio-button/{index,usage,accessibility,examples}.mdx. Resolution through packages/theme/css/next/characteristics/{selectable,focused}.css, next/palette/{neutral,accent,negative,warning,background}.css, next/foundations/color.css, packages/theme/css/foundations/{size,spacing,cursor,borderStyle,zindex}.css.",
+    "not-tokens-only-and-real-behaviour": "The whole component, including the group construct and its context-sharing mechanism, is real cloned source — not inferred. useRadioGroup.ts and RadioGroupContext.tsx together confirm the exact selection mechanism this column cites in behavior.selection-model.",
+    "neutral": "RadioButtonIcon.css `border-color: var(--salt-selectable-borderColor)` -> next/characteristics/selectable.css -> `var(--salt-palette-neutral)` -> next/palette/neutral.css, IDENTICAL under both [data-mode] blocks -> foundations/color.css --salt-color-gray-500-rgb: 114, 119, 125. MODE-INVARIANT, the SAME token checkbox.salt.json and switch.salt.json both already resolved.",
+    "neutral-fg": "RadioButtonIcon.css resting `color: var(--salt-selectable-foreground)` -> selectable.css -> `var(--salt-palette-neutral-strong)`, NOT mode-invariant: gray-600 rgb(95,100,106) light, gray-400 rgb(145,149,154) dark — identical values to checkbox's/switch's own neutral-fg slot.",
+    "accent": "RadioButtonIcon.css `.saltRadioButtonIcon-checked { border-color: var(--salt-selectable-borderColor-selected); color: var(--salt-selectable-foreground-selected) }` -> selectable.css, BOTH -> `var(--salt-palette-accent)` -> next/palette/accent.css, blue-500 rgb(0,120,207), IDENTICAL in both mode blocks. MODE-INVARIANT. The `-hover` variant resolves to the SAME slot (`.saltRadioButton:hover .saltRadioButtonIcon { border-color: selectable-borderColor-hover }`, which is the SAME token value as -selected) — the identical hover-equals-selected coincidence checkbox's and switch's own accent provenance already recorded.",
+    "box-bg": "RadioButtonIcon.css `background: var(--salt-container-primary-background)` -> next/characteristics/container.css -> next/palette/background.css, background-snow (light, rgb 255,255,255) / background-jet (dark, rgb 16,24,32) — the SAME slot and values checkbox's/switch's own box-bg already resolved. THE FILL NEVER CHANGES ON CHECK — the identical 'fill never changes' pattern (see style.item.checked).",
+    "text-fg": "RadioButton.css has no explicit `.saltRadioButton` colour rule of its own beyond `color: var(--salt-content-primary-foreground)` on `.saltRadioButton-readOnly`, which resolves through next/characteristics/content.css -> next/palette/foreground.css, black rgb(0,0,0) light / white rgb(255,255,255) dark — the SAME slot checkbox's/switch's own root font/readonly rows already used.",
+    "error": "RadioButtonIcon.css `.saltRadioButtonIcon-error { color: var(--salt-status-error-foreground-decorative); border-color: var(--salt-status-error-borderColor) }` -> next/characteristics/status.css -> `var(--salt-palette-negative)` -> color.css --salt-color-red-500-rgb: 229, 33, 53. MODE-INVARIANT, same value checkbox.salt.json already used.",
+    "warning": "RadioButtonIcon.css `.saltRadioButtonIcon-warning { color: var(--salt-status-warning-foreground-decorative); border-color: var(--salt-status-warning-borderColor) }` -> status.css -> `var(--salt-palette-warning)` -> color.css --salt-color-orange-500-rgb: 199, 83, 0. MODE-INVARIANT, same value checkbox.salt.json already used.",
+    "focus-outline": "RadioButton.css `.saltRadioButton-input:focus-visible + .saltRadioButtonIcon { outline: var(--saltRadioButton-outline, var(--salt-focused-outline)); outline-offset: var(--salt-spacing-fixed-100) }` -> next/characteristics/focused.css: `--salt-focused-outline: 2px dotted var(--salt-focused-outlineColor)`, `--salt-focused-outlineColor: var(--salt-palette-accent-stronger)` -> blue-700 rgb(0,69,126) light / blue-300 rgb(154,189,245) dark — the SAME slot checkbox's own focus-outline already resolved; outline-offset resolves to `--salt-spacing-fixed-100` = 1px, the SAME offset mechanism checkbox's box used (NOT switch's zero-offset `--salt-focused-outlineOffset` token — a real, sourced small divergence between components, not a copy-paste identical rule).",
+    "byDensity.item-size": "RadioButtonIcon.css `--radioButton-size: var(--salt-size-selectable); width/height/min-width/min-height: var(--radioButton-size)` -> foundations/size.css, DENSITY scale: high 12px / medium 14px / low 16px / touch 18px — the SAME token checkbox's box and switch's thumb both cite.",
+    "byDensity.group-gap": "RadioButtonGroup.css `.saltRadioButtonGroup-vertical { gap: var(--salt-spacing-100) }` (the default/vertical direction; `-horizontal` uses `--salt-spacing-200` instead, not modelled as its own row — see the matrix doc's scope note on the direction axis) -> foundations/spacing.css, DENSITY scale: 4/8/12/16px.",
+    "byDensity.item-gap": "ADDED DURING ORCHESTRATOR REVIEW — RadioButton.css `.saltRadioButton { gap: var(--salt-spacing-100) }`, the gap between the icon and the label text WITHIN one item, distinct from RadioButtonGroup's OWN gap BETWEEN items even though both happen to cite the identical token -> foundations/spacing.css, DENSITY scale: 4/8/12/16px.",
+    "byDensity.type-fontSize/type-lineHeight": "RadioButton.css `.saltRadioButton { font-size: var(--salt-text-fontSize); line-height: var(--salt-text-lineHeight); font-family: var(--salt-text-fontFamily); font-weight: var(--salt-text-fontWeight) }` -> next/characteristics/text.css, the BODY role, DENSITY scale 11/14 . 12/16 . 14/18 . 16/20px — identical to checkbox's/switch's own root.font resolution, REGULAR (400).",
+    "shape-is-a-literal-not-a-density-token": "RadioButtonIcon.css `border-radius: 50%` — a PLAIN LITERAL, unlike checkbox's box (`corner-weaker`) or switch's thumb (`corner-weaker`) — a radio glyph is always a perfect circle regardless of density, so there is no `corner-*`/`curve-*` token involved at all, confirmed by reading the whole file for any `border-radius` reference beyond this one line.",
+    "border-width-fixed": "RadioButtonIcon.css `border: var(--salt-size-fixed-100) ...` -> foundations/size.css --salt-size-fixed-100: 1px, FIXED (density-invariant) scale, the same convention checkbox's/switch's own border-width rows used.",
+    "no-pressed-state": "CONFIRMED ABSENCE, checked directly: neither RadioButton.css nor RadioButtonIcon.css nor RadioButtonGroup.css contains any `:active` selector.",
+    "no-transition": "CONFIRMED ABSENCE: none of the three .css files declares a `transition` property anywhere.",
+    "no-touch-target": "CONFIRMED ABSENCE: no separate touch-target/hit-area element or token exists anywhere in this component family — the item's own visible box IS its hit area.",
+    "no-arrow-key-js": "CONFIRMED ABSENCE, checked directly: RadioButton.tsx and RadioButtonGroup.tsx bind no keydown handler of any kind — accessibility.mdx's documented arrow-key behaviour is entirely native browser semantics for same-name sibling `<input type=\"radio\">` elements.",
+    "readonly-caveat": "RadioButtonProps.readOnly's own JSDoc, quoted directly: 'Setting a standalone radio button as read-only is not accessible. The whole radio button group should be set as read-only instead.'",
+    "required-implicit": "@salt-ds/core's own RadioButtonGroup usage.mdx PropsTable references shared documentation for `required` reachable only through `inputProps.required` on RadioButtonProps, the same indirect shape checkbox's and switch's own Salt columns already used.",
+    "selection-comparison": "RadioButton.tsx: `const radioGroupChecked = checkedProp ?? (radioGroup && value ? radioGroup.value === value : checkedProp)` — a GROUP-held string `value` compared against each item's own `value` prop, the exact mechanism behavior.selection-model cites.",
+    "three-way-disabled-merge": "RadioButton.tsx: `const disabled = radioGroup?.disabled || formFieldDisabled || disabledProp` — group, ancestor form-field, and own prop, all three merged with OR."
+  },
+  "cells": {
+    "structure.group": { "kind": "value", "value": "fieldset-radiogroup", "source": "RadioButtonGroup.tsx returns <fieldset role=\"radiogroup\" aria-readonly={readOnly} ...>, providing RadioGroupContext to children" },
+    "structure.shell": { "kind": "value", "value": "label-wrap", "source": "RadioButton.tsx returns <label className=saltRadioButton>{input}{RadioButtonIcon}{label}</label> — one real <label>, matching Checkbox.tsx's own shape exactly" },
+    "structure.native-input": { "kind": "value", "value": true, "source": "RadioButton.tsx <input type=\"radio\" className={withBaseName(\"input\")} ... /> — a real native input, opacity:0, position:absolute (RadioButton.css)" },
+    "structure.dot": { "kind": "value", "value": "conditional-glyph", "source": "RadioButtonIcon.tsx: {checked && !readOnly && <solid filled-circle svg>} {checked && readOnly && <lighter donut-ring svg>} — the identical readOnly-glyph-swap mechanism CheckboxIcon.tsx/Switch's icon already used" },
+
+    "behavior.role": { "kind": "value", "value": "implicit — role=radio from the native <input type=\"radio\">, no explicit role attribute anywhere", "source": "RadioButton.tsx — no role prop written; the native input type supplies it for free, the same free-role mechanism checkbox's own column used" },
+    "behavior.group-role": { "kind": "value", "value": "explicit role=\"radiogroup\" on the <fieldset>, plus aria-readonly reflecting the group's own readOnly", "source": "RadioButtonGroup.tsx <fieldset role=\"radiogroup\" aria-readonly={readOnly} ...>" },
+    "behavior.keyboard-select": { "kind": "value", "value": "Space activates the focused radio if not already checked (native); no keydown override", "source": "accessibility.mdx: \"If the focused radio button isn't checked, Space changes the state to checked\"; no onKeyDown in RadioButton.tsx" },
+    "behavior.arrow-navigation": { "kind": "value", "value": "native — Up/Down/Left/Right move focus AND selection between same-name sibling inputs, entirely free from the browser", "source": "accessibility.mdx: \"This action moves focus between the available radio button options, and simultaneously selects an option\"; see no-arrow-key-js" },
+    "behavior.selection-model": { "kind": "value", "value": "a GROUP-held string value compared against each item's own value prop, shared via RadioGroupContext", "source": "see selection-comparison" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native disabled on the input, a THREE-WAY merge of group/form-field/own prop, plus a blanket opacity class on the whole label", "source": "see three-way-disabled-merge; RadioButton.css .saltRadioButton-disabled { opacity: 0.4 }" },
+    "behavior.readonly": { "kind": "value", "value": "implemented in JS at BOTH item and group level and merged, NOT relying on the (spec-inert) native readonly attribute; own JSDoc recommends group-level readOnly over item-level", "source": "RadioButton.tsx handleChange: `if (readOnly) return`; see readonly-caveat" },
+    "behavior.label-click-target": { "kind": "value", "value": "the WHOLE label — dot and text both toggle it", "source": "native <label> semantics, since structure.shell=label-wrap" },
+    "behavior.form-participation": { "kind": "value", "value": "native — the input IS the real form control", "source": "a real <input type=\"radio\" name=... value=... checked=.../>, no custom validity machinery needed" },
+    "behavior.validation": { "kind": "value", "value": "computed PER ITEM and suppressed when THAT item is disabled", "source": "RadioButton.tsx `const validationStatus = !disabled ? (radioGroup?.validationStatus ?? formFieldValidationStatus ?? validationStatusProp) : undefined`" },
+
+    "prop.selection-shape": { "kind": "value", "value": "group-value", "source": "RadioButtonGroupProps.value: string, RadioButtonProps.value: string — see prop.selection-shape's row note" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "RadioButtonProps.disabled?: boolean, merged with the group's" },
+    "prop.group-disabled": { "kind": "value", "value": [false, true], "source": "RadioButtonGroupProps.disabled?: boolean" },
+    "prop.read-only": { "kind": "value", "value": [false, true], "source": "RadioButtonProps.readOnly?: boolean" },
+    "prop.group-read-only": { "kind": "value", "value": [false, true], "source": "RadioButtonGroupProps.readOnly?: boolean" },
+    "prop.required": { "kind": "value", "value": [false, true], "note": "reachable only via inputProps.required (RadioButtonProps has no top-level required field), see required-implicit" },
+    "prop.validation": { "kind": "value", "value": ["off", "error", "warning"], "source": "RadioButtonProps.validationStatus?: AdornmentValidationStatus, undefined/off by default (SOURCE-DEFAULT-FIRST)" },
+
+    "slot.label": { "kind": "value", "value": "label?: ReactNode, rendered as the LAST child inside the component's own <label>", "source": "RadioButton.tsx" },
+    "slot.composes": { "kind": "value", "value": true, "note": "form-field (useFormFieldProps() pulls aria-describedby/aria-labelledby down from an ancestor <FormField> when NOT inside a RadioButtonGroup), switch/checkbox/dropdown/combo-box (the four explicitly-excluded siblings, usage.mdx)" },
+
+    "state.rest": { "kind": "value", "value": "neutral gray-500 outline on a white/near-black container fill, never filled solid", "note": "an outline-style item at EVERY state, including checked — see state.checked" },
+    "state.checked": { "kind": "value", "value": "the fill NEVER changes — only the border recolours to accent AND a solid inner circle glyph appears", "note": "matches checkbox's own outline-stays-outline pattern" },
+    "state.hover": { "kind": "value", "value": "item border+icon colour move to the -hover variant, keyed off the item's own :hover", "source": "RadioButtonIcon.css .saltRadioButton:hover .saltRadioButtonIcon { border-color: selectable-borderColor-hover; color: selectable-foreground-hover }" },
+    "state.focus": { "kind": "value", "value": "2px dotted accent-stronger outline at 1px offset, plus the hover recolour riding along", "source": "RadioButton.css .saltRadioButton-input:focus-visible + .saltRadioButtonIcon" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-pressed-state" },
+    "state.disabled": { "kind": "value", "value": "blanket opacity 0.4 on the whole label, plus not-allowed cursor", "source": "RadioButton.css .saltRadioButton-disabled { opacity: 0.4; cursor: var(--salt-cursor-disabled) }" },
+    "state.readonly": { "kind": "value", "value": "border recolours to a dedicated readonly token AND switches to a dashed style; the glyph itself swaps to a lighter donut-ring svg", "source": "RadioButtonIcon.css .saltRadioButtonIcon-readOnly { border-color: selectable-borderColor-readonly; border-style: dashed }" },
+
+    "style.group.gap": { "kind": "alias", "slot": "group-gap" },
+    "style.item.gap": { "kind": "alias", "slot": "item-gap" },
+    "style.item.size": { "kind": "value", "value": { "width": "var(--item-size)", "height": "var(--item-size)" }, "note": "aliases the item-size density slot for both dimensions" },
+    "style.item.shape": { "kind": "value", "value": "50%", "source": "RadioButtonIcon.css border-radius: 50% — a plain literal, see shape-is-a-literal-not-a-density-token" },
+    "style.item.border-width": { "kind": "value", "value": "1px", "source": "RadioButtonIcon.css border: var(--salt-size-fixed-100) solid ... = 1px, FIXED scale" },
+    "style.item.rest": {
+      "kind": "value",
+      "value": { "border-color": "var(--neutral)", "background-color": "var(--box-bg)", "color": "var(--neutral-fg)" },
+      "source": "RadioButtonIcon.css .saltRadioButtonIcon { border-color: selectable-borderColor; background: container-primary-background; color: selectable-foreground }"
+    },
+    "style.item.checked": {
+      "kind": "value",
+      "value": { "border-color": "var(--accent)", "color": "var(--accent)" },
+      "source": "RadioButtonIcon.css .saltRadioButtonIcon-checked { border-color: selectable-borderColor-selected; color: selectable-foreground-selected } — no background rule, box-bg UNCHANGED from rest"
+    },
+    "style.item.hover": {
+      "kind": "value",
+      "value": { "border-color": "var(--accent)", "color": "var(--accent)" },
+      "source": "RadioButtonIcon.css .saltRadioButton:hover .saltRadioButtonIcon — resolves to the SAME accent slot as -checked"
+    },
+    "style.item.focus": {
+      "kind": "value",
+      "value": { "outline": "2px dotted var(--focus-outline)", "outline-offset": "1px" },
+      "source": "RadioButton.css .saltRadioButton-input:focus-visible + .saltRadioButtonIcon { outline: var(--saltRadioButton-outline, var(--salt-focused-outline)); outline-offset: var(--salt-spacing-fixed-100) } = 1px"
+    },
+    "style.item.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.item.disabled": { "kind": "value", "value": { "opacity": "0.4", "cursor": "not-allowed" }, "source": "RadioButton.css .saltRadioButton-disabled { opacity: 0.4; cursor: var(--salt-cursor-disabled) }" },
+    "style.item.readonly": {
+      "kind": "value",
+      "value": { "border-color": "var(--neutral)", "border-style": "dashed", "color": "var(--text-fg)" },
+      "source": "RadioButtonIcon.css .saltRadioButtonIcon-readOnly { border-color: selectable-borderColor-readonly; border-style: dashed; color: content-primary-foreground }"
+    },
+    "style.item.validation": {
+      "kind": "value",
+      "value": { "border-color": "var(--error)", "color": "var(--error)" },
+      "source": "RadioButtonIcon.css .saltRadioButtonIcon-error { color: status-error-foreground-decorative; border-color: status-error-borderColor }"
+    },
+    "style.item.validation@warning": {
+      "kind": "value",
+      "value": { "border-color": "var(--warning)", "color": "var(--warning)" },
+      "source": "RadioButtonIcon.css .saltRadioButtonIcon-warning { color: status-warning-foreground-decorative; border-color: status-warning-borderColor }"
+    },
+    "style.item.transition": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-transition" },
+
+    "style.dot.size": { "kind": "value", "value": "100%", "source": "Icon component default --saltIcon-size: 100% — fills whatever item it sits in" },
+    "style.dot.fill": { "kind": "off", "note": "the glyph's fill=\"currentColor\" is a literal in markup, inheriting the item's own color property — no separate CSS row needed" },
+    "style.dot.fill@checked": { "kind": "off", "note": "see style.dot.fill — colour already tracks style.item.checked's own color property via currentColor" },
+    "style.dot.hover": { "kind": "off", "note": "already carried by style.item.hover's color, which the dot inherits via currentColor" },
+    "style.dot.disabled": { "kind": "off", "note": "Salt dims the whole item uniformly instead — see style.item.disabled" },
+    "style.dot.inner-grow@checked": { "kind": "off", "note": "structure.dot=conditional-glyph renders no inner/outer circle pair" },
+
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": "RadioButton.css .saltRadioButton { cursor: var(--salt-cursor-hover) } = pointer" },
+    "style.root.font": {
+      "kind": "value",
+      "value": { "font-size": "var(--type-fontSize)", "line-height": "var(--type-lineHeight)", "font-family": "var(--type-fontFamily)", "font-weight": "var(--type-fontWeight)", "color": "var(--text-fg)" },
+      "source": "RadioButton.css .saltRadioButton { font-size/line-height/font-family/font-weight: var(--salt-text-*) } — the BODY role, REGULAR (400)"
+    },
+    "style.state-layer": { "kind": "off", "note": "CONFIRMED ABSENCE — Salt has no ripple/state-layer concept for radio; hover and focus recolour the item/icon directly" }
+  }
+}

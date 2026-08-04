@@ -1,0 +1,111 @@
+{
+  "system": "shadcn",
+  "component": "radio-group",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "input-border": "oklch(0.922 0 0)",
+      "primary": "oklch(0% 0 0)",
+      "destructive": "oklch(0.577 0.245 27.325)",
+      "ring": "oklch(0.708 0 0)",
+      "ring-alpha-error": "20%",
+      "shadow-color": "rgb(0 0 0 / 0.05)"
+    },
+    "dark": {
+      "input-border": "oklch(1 0 0 / 15%)",
+      "primary": "oklch(0.922 0 0)",
+      "destructive": "oklch(0.704 0.191 22.216)",
+      "ring": "oklch(0.556 0 0)",
+      "ring-alpha-error": "40%"
+    }
+  },
+  "modeInvariant": ["shadow-color"],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/radio-group.tsx — TWO elements (`RadioGroupPrimitive.Root`, `RadioGroupPrimitive.Item`), no owned label, one cva-free literal className string per element, plus an `Indicator` child holding one lucide `CircleIcon`. Token values from apps/v4/app/globals.css — the SAME --primary/--input/--destructive/--ring values every prior shadcn column in this pipeline has resolved from, re-derived here for a self-contained column. Read for the label/field boundary and real-usage proofs: radio-group-demo.tsx, field-radio.tsx, radio-group-disabled.tsx, radio-group-invalid.tsx, radio-group-rtl.tsx, radio-group-choice-card.tsx, radio-group-fieldset.tsx, radio-group-description.tsx. Read only to fix structural boundaries (NOT canonical): apps/v4/registry/bases/{radix,base,aria}/ui/radio-group.tsx (the radix base variant moves an equivalent Root+Item+Indicator shape behind `cn-radio-group`/`cn-radio-group-item` class tokens — same conclusions, no extra capability) and apps/v4/content/docs/components/radix/radio-group.mdx, which LINKS to but does not itself document Radix's internal element. **primitives/ (Radix's own source) was NOT cloned** into 3-source/ for this build, matching the project's standing rule. Every cell depending on Radix's internal element/ARIA wiring (structure.native-input, behavior.role, behavior.group-role, behavior.arrow-navigation, behavior.form-participation, prop.required, prop.group-disabled) is marked [R] and cites the linked docs (https://www.radix-ui.com/docs/primitives/components/radio-group) rather than a grep.",
+    "no-primitives-clone": "Same standing caveat as every prior shadcn column: everything that is shadcn's OWN literal source — both className strings, the absence of any data-[state=checked] variant on the Item, the absence of hover/pressed classes, the RTL/disabled/invalid example wiring — is [S]. Everything depending on Radix's INTERNAL element (is the Root really role=radiogroup on a div? is the Item really a <button role=radio>? does Root really forward a group-level disabled?) is [R], cited to the linked docs.",
+    "input-border": "class `border-input` on RadioGroupItem -> --input globals.css:118 (light) / :161 (dark), the SAME slot checkbox.shadcn.json's own border already used.",
+    "primary": "classes `text-primary` on the Item plus `fill-primary` on the Indicator's CircleIcon -> --primary globals.css:107 (light) / :150 (dark) — the SAME inversion badge.shadcn.json/checkbox.shadcn.json/switch.shadcn.json all already recorded: light is near-black, dark is near-white. NOTE: unlike checkbox's item, RadioGroupItem itself never gets a `bg-primary`/`border-primary` class on ANY data-state — `text-primary` merely sets the inherited text colour, which the CircleIcon's own EXPLICIT `fill-primary` class does not even need (see no-item-state-classes).",
+    "destructive": "class `aria-invalid:border-destructive` on the Item -> --destructive globals.css:115 (light) / :158 (dark), the SAME slot checkbox.shadcn.json already used.",
+    "ring / ring-alpha-error": "classes `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50` -> --ring globals.css:119 (light) / :162 (dark); `aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40` — the SAME indirection-slot pattern checkbox.shadcn.json/switch.shadcn.json both used.",
+    "shadow-color": "class `shadow-xs` = 0 1px 2px 0 rgb(0 0 0 / 0.05). Tailwind is not vendored in this clone; reused verbatim from button.shadcn.json's already-extracted value, the same citation every prior shadcn column has made. MODE-INVARIANT.",
+    "no-item-state-classes": "CONFIRMED ABSENCE, checked directly against the literal className string of `RadioGroupItem`: there is NO `data-[state=checked]:` class of any kind — `aspect-square size-4 shrink-0 rounded-full border border-input text-primary shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40` contains disabled/focus-visible/aria-invalid variants but NOTHING keyed on data-state — a real, sourced finding: the ITEM container is completely interaction-invariant with respect to checked/unchecked, unlike checkbox's own item (which fills solid via `data-[state=checked]:bg-primary`). The whole checked signal is the Indicator's presence.",
+    "no-hover-no-pressed": "CONFIRMED ABSENCE, checked directly against BOTH className strings (Root and Item): no `hover:`, no `active:` class of any kind anywhere.",
+    "root-gap": "RadioGroup's own className: `grid gap-3` = 12px, a real, sourced layout gap — unlike checkbox and switch, which own NO label/layout gap of their own since they render a single control rather than a group of them.",
+    "no-group-disabled-confirmed": "The canonical `radio-group.tsx` file itself does not explicitly forward a `disabled` prop anywhere in its own literal source (Root simply spreads `...props`); Radix's own published API for RadioGroup.Root DOES document a group-level `disabled` per the linked docs, so this is recorded [R] rather than [S] — the capability plausibly exists via prop-spreading + Radix's own context, but is not confirmed by a grep of THIS clone's literal code the way item-level `disabled` (confirmed directly in radio-group-disabled.tsx) is."
+  },
+  "cells": {
+    "structure.group": { "kind": "value", "value": "div-radiogroup", "note": "[R] — RadioGroupPrimitive.Root, documented as role=\"radiogroup\" per the linked Radix docs; not independently confirmable without primitives/ cloned" },
+    "structure.shell": { "kind": "value", "value": "unwrapped", "note": "[R] — the rendered Item owns no label; radio-group-demo.tsx pairs it with a separate <Label htmlFor>" },
+    "structure.native-input": { "kind": "value", "value": true, "note": "[R] — Radix's published API documents the Item as a <button role=\"radio\">, not a native input; not independently confirmable without primitives/ cloned. This chassis renders a real native input anyway, the same declared union checkbox.tsx's/switch.tsx's own chassis already made" },
+    "structure.dot": { "kind": "value", "value": "single-glyph", "source": "RadioGroupPrimitive.Indicator wraps one lucide CircleIcon (fill-primary, size-2), the only child of the Item; [R] the exact mount condition (presumed checked-only) per the general Radix Indicator convention this pipeline's own checkbox.shadcn.json column already used" },
+
+    "behavior.role": { "kind": "value", "value": "[R] role=radio on a <button> Item, aria-checked JS-maintained (no native checked DOM property to read it from)", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.group-role": { "kind": "value", "value": "[R] presumed role=\"radiogroup\" on the Root, per the linked docs and the general APG pattern" },
+    "behavior.keyboard-select": { "kind": "value", "value": "[R] native <button> default-activation semantics answer Space for free; no extra JS needed" },
+    "behavior.arrow-navigation": { "kind": "value", "value": "[R] presumed roving-tabindex behaviour implemented in Radix's own JS, per the general Radix primitives convention", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.selection-model": { "kind": "value", "value": "a GROUP-held string value compared against each item's own value prop, shared via Radix's own context", "note": "[R] the sharing mechanism itself; [S] the value/onValueChange API surface, confirmed in every example file" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native disabled + disabled:cursor-not-allowed disabled:opacity-50 on the Item", "source": "radio-group.tsx cva string; radio-group-disabled.tsx confirms item-level disabled directly" },
+    "behavior.readonly": { "kind": "off", "note": "CONFIRMED ABSENCE — no readOnly/readonly/aria-readonly reference anywhere in radio-group.tsx or any example file" },
+    "behavior.label-click-target": { "kind": "value", "value": "only the dot/button itself; extending the target requires the consumer's OWN separate <Label htmlFor>", "source": "radio-group-demo.tsx, field-radio.tsx" },
+    "behavior.form-participation": { "kind": "value", "value": "[R] a hidden native bubble input, per the linked Radix docs", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.validation": { "kind": "value", "value": "a bare boolean the consumer sets directly, per-item", "source": "radio-group-invalid.tsx passes a literal aria-invalid prop with no computed suppression logic visible in this clone" },
+
+    "prop.selection-shape": { "kind": "value", "value": "group-value", "source": "radio-group-demo.tsx: <RadioGroup defaultValue=\"comfortable\"><RadioGroupItem value=\"default\".../>...</RadioGroup> — a group-level string compared against each item's own value" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "native disabled, confirmed directly in radio-group-disabled.tsx: <RadioGroupItem value=\"option1\" disabled />" },
+    "prop.group-disabled": { "kind": "value", "value": [false, true], "note": "[R] — see no-group-disabled-confirmed" },
+    "prop.read-only": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "prop.group-read-only": { "kind": "off", "note": "CONFIRMED ABSENCE — no readOnly concept anywhere in this clone" },
+    "prop.required": { "kind": "value", "value": [false, true], "note": "[R] — Radix's published API includes required on the Root; not independently confirmable without primitives/ cloned" },
+    "prop.validation": { "kind": "value", "value": ["off", "error"], "source": "aria-invalid is a bare boolean (SOURCE-DEFAULT-FIRST, off/undefined by default), confirmed in radio-group-invalid.tsx; no warning concept exists" },
+
+    "slot.label": { "kind": "off", "note": "CONFIRMED ABSENCE — no label text owned; always external (see slot.composes)" },
+    "slot.composes": { "kind": "value", "value": true, "note": "label (id/htmlFor, radio-group-demo.tsx), field (FieldSet/FieldLegend/FieldDescription/FieldLabel, field-radio.tsx/radio-group-description.tsx/radio-group-invalid.tsx/radio-group-choice-card.tsx)" },
+
+    "state.rest": { "kind": "value", "value": "a border-input 1px border, NO background of any kind in either mode", "note": "unlike checkbox's own item, which had a dark-mode-only translucent fill — radio's item has none in EITHER mode" },
+    "state.checked": { "kind": "value", "value": "THE ITEM CONTAINER ITSELF NEVER CHANGES AT ALL — the entire checked signal is whether the Indicator (and its dot) is present in the DOM", "note": "see no-item-state-classes; the sharpest split this registry has found on this row" },
+    "state.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-hover-no-pressed" },
+    "state.focus": { "kind": "value", "value": "the established translucent 3px ring-ring/50 box-shadow plus a border recolour, on the item itself", "source": "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-hover-no-pressed" },
+    "state.disabled": { "kind": "value", "value": "opacity 0.5, cursor not-allowed", "source": "disabled:cursor-not-allowed disabled:opacity-50" },
+    "state.readonly": { "kind": "off", "note": "CONFIRMED ABSENCE — no readonly concept exists" },
+
+    "style.group.gap": { "kind": "value", "value": "12px", "source": "RadioGroup className: grid gap-3 — see root-gap" },
+    "style.item.gap": { "kind": "off", "note": "no owned label to put a gap before — see slot.composes" },
+    "style.item.size": { "kind": "value", "value": { "width": "16px", "height": "16px" }, "source": "class size-4 = 1rem = 16px" },
+    "style.item.shape": { "kind": "value", "value": "9999px", "source": "class rounded-full" },
+    "style.item.border-width": { "kind": "value", "value": "1px", "source": "bare border utility, undeclared width, Tailwind's own default — the same unvendored-Tailwind caveat every prior shadcn column has recorded" },
+    "style.item.rest": {
+      "kind": "value",
+      "value": { "border-color": "var(--input-border)", "box-shadow": "0 1px 2px 0 var(--shadow-color)" },
+      "source": "border border-input shadow-xs, no bg-* class at all — see state.rest"
+    },
+    "style.item.checked": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-item-state-classes; the item container never changes on check" },
+    "style.item.hover": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.item.focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--ring)", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent), 0 1px 2px 0 var(--shadow-color)" },
+      "source": "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 — the shadow-xs layer repeated after the ring, the same Tailwind v4 layering checkbox.shadcn.json already established"
+    },
+    "style.item.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.item.disabled": { "kind": "value", "value": { "opacity": "0.5", "cursor": "not-allowed" }, "source": "disabled:cursor-not-allowed disabled:opacity-50" },
+    "style.item.readonly": { "kind": "off", "note": "no readonly concept" },
+    "style.item.validation": {
+      "kind": "value",
+      "value": { "border-color": "var(--destructive)", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--destructive) var(--ring-alpha-error), transparent)" },
+      "source": "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 — a PERMANENT ring, not gated on focus"
+    },
+    "style.item.validation@warning": { "kind": "off", "note": "CONFIRMED ABSENCE — aria-invalid is error-only" },
+    "style.item.transition": { "kind": "value", "value": "color, box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1)", "source": "class transition-[color,box-shadow]; timing is Tailwind's own default [R], the same unvendored-Tailwind caveat every prior shadcn column has recorded" },
+
+    "style.dot.size": { "kind": "value", "value": "8px", "source": "CircleIcon wrapped size-2 = 0.5rem = 8px, inside a 16px item" },
+    "style.dot.fill": { "kind": "value", "value": "var(--primary)", "source": "CircleIcon's own fill-primary class — a LITERAL, always-primary colour, not inherited and never overridden by any interaction state" },
+    "style.dot.fill@checked": { "kind": "off", "note": "the dot has no unchecked counterpart to compare against — the Indicator only mounts when checked, so there is nothing for an @checked variant to override" },
+    "style.dot.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — the dot's fixed fill-primary literal never changes on any interaction" },
+    "style.dot.disabled": { "kind": "off", "note": "shadcn dims the whole item uniformly instead — see style.item.disabled" },
+    "style.dot.inner-grow@checked": { "kind": "off", "note": "structure.dot=single-glyph renders no inner/outer circle pair" },
+
+    "style.root.cursor": { "kind": "off", "note": "CONFIRMED ABSENCE — no cursor-pointer class at rest; only disabled:cursor-not-allowed exists" },
+    "style.root.font": { "kind": "off", "note": "no owned label text" },
+    "style.state-layer": { "kind": "off" }
+  }
+}
