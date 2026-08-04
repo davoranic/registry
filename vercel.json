@@ -1,19 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "//": [
-    "The docs site is GENERATED from markdown at build time \u2014 1-intro/site is",
-    "gitignored on purpose, so Vercel must build it rather than serve a commit.",
-    "",
-    "Only the docs build runs here, never build.sh: the gates need 3-source/,",
-    "the six design-system clones (~600MB), which are deliberately not in this",
-    "repo. Gate results come from 2-build/out/gates.json, written by the last",
-    "local run and committed, and the page says so rather than implying they",
-    "were re-checked.",
-    "",
-    "The docs occupy / only. /r/* is intentionally left unrouted so the shadcn",
-    "install endpoint (npx shadcn add davoranic/registry/<item>) can be served",
-    "from this same project later without moving the docs off the domain."
-  ],
   "framework": null,
   "installCommand": "echo 'no dependencies \u2014 the generator is stdlib Python'",
   "buildCommand": "python3 1-intro/build/build-docs.py",
