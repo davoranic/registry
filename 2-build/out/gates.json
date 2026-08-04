@@ -1,0 +1,25 @@
+{
+ "ranAt": "2026-08-04T10:54Z",
+ "gates": [
+  {
+   "name": "check-provenance",
+   "watches": "every citation resolves to a real file",
+   "ok": true
+  },
+  {
+   "name": "check-values",
+   "watches": "tokens still resolve to our stored values",
+   "ok": true
+  },
+  {
+   "name": "check-structure",
+   "watches": "cascade order and unsized parts",
+   "ok": true
+  },
+  {
+   "name": "check-anatomy",
+   "watches": "the three systems render different parts",
+   "ok": true
+  }
+ ]
+}

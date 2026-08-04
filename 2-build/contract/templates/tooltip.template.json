@@ -1,0 +1,441 @@
+{
+  "component": "tooltip",
+  "openUiAnatomy": "no published Open UI tooltip anatomy — plain/basic hover tooltip only, union of salt-ds Tooltip (NOT Toggletip), shadcn Tooltip (Radix primitive), M3 plain-tooltip (NOT rich-tooltip). See docs/TOOLTIP-MATRIX.md scope note for why toggletip/rich-tooltip are excluded.",
+  "behavior": {
+    "pattern": "APG tooltip pattern: hover/focus opens, Escape/outside dismisses, role=tooltip on the panel wired to the trigger via aria-describedby. Converges across all three systems (contrast Spinner's 3-way role split).",
+    "chassis": "skeleton/tooltip.tsx — written from the template's part union; inherits from no design system. Positioning is a minimal rect-measurement approximation, not any of the three real engines (Salt: floating-ui; shadcn: Radix Popper; M3: unsourced) — a declared gap, see docs/TOOLTIP-MATRIX.md behavior.positioning-engine."
+  },
+  "skeletonParams": {
+    "role": [
+      "tooltip"
+    ],
+    "placement": [
+      "top",
+      "right",
+      "bottom",
+      "left"
+    ],
+    "arrow": [
+      true,
+      false
+    ],
+    "statusIcon": [
+      true,
+      false
+    ],
+    "status": [
+      "info",
+      "warning",
+      "success",
+      "error"
+    ],
+    "enterDelay": [
+      0,
+      300
+    ],
+    "leaveDelay": [
+      0,
+      300
+    ],
+    "supplementaryAnnounce": [
+      true,
+      false
+    ],
+    "arrowShape": [
+      "triangle",
+      "diamond"
+    ]
+  },
+  "base": {
+    "[data-slot=\"tooltip\"]": {
+      "box-sizing": "border-box",
+      "position": "fixed",
+      "display": "flex",
+      "align-items": "center",
+      "animation-name": "tooltip-fade-in",
+      "animation-fill-mode": "both"
+    },
+    "[data-slot=\"tooltip-arrow\"]": {
+      "position": "absolute",
+      "pointer-events": "none",
+      "overflow": "visible"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"diamond\"][data-placement=\"top\"] [data-slot=\"tooltip-arrow\"]": {
+      "top": "100%",
+      "left": "50%",
+      "transform": "translate(-50%, -50%) rotate(45deg)"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"diamond\"][data-placement=\"bottom\"] [data-slot=\"tooltip-arrow\"]": {
+      "bottom": "100%",
+      "left": "50%",
+      "transform": "translate(-50%, 50%) rotate(45deg)"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"diamond\"][data-placement=\"left\"] [data-slot=\"tooltip-arrow\"]": {
+      "left": "100%",
+      "top": "50%",
+      "transform": "translate(-50%, -50%) rotate(45deg)"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"diamond\"][data-placement=\"right\"] [data-slot=\"tooltip-arrow\"]": {
+      "right": "100%",
+      "top": "50%",
+      "transform": "translate(50%, -50%) rotate(45deg)"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"triangle\"] [data-slot=\"tooltip-arrow\"]": {
+      "aspect-ratio": "1"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"triangle\"][data-placement=\"top\"] [data-slot=\"tooltip-arrow\"]": {
+      "top": "100%",
+      "left": "50%",
+      "transform": "translate(-50%, 0)"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"triangle\"][data-placement=\"bottom\"] [data-slot=\"tooltip-arrow\"]": {
+      "bottom": "100%",
+      "left": "50%",
+      "transform": "translate(-50%, 0) rotate(180deg)"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"triangle\"][data-placement=\"left\"] [data-slot=\"tooltip-arrow\"]": {
+      "left": "100%",
+      "top": "50%",
+      "transform": "translate(0, -50%) rotate(-90deg)"
+    },
+    "[data-slot=\"tooltip\"][data-arrow-shape=\"triangle\"][data-placement=\"right\"] [data-slot=\"tooltip-arrow\"]": {
+      "right": "100%",
+      "top": "50%",
+      "transform": "translate(0, -50%) rotate(90deg)"
+    },
+    "[data-slot=\"tooltip-arrow-fill\"]": {
+      "stroke": "none"
+    },
+    "[data-slot=\"tooltip-arrow-stroke\"]": {
+      "fill": "none"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.arrow",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "arrow",
+      "note": "Salt: true triangle via floating-ui's FloatingArrow. shadcn: true, rendered as a rotated-square diamond (structural, not a runtime toggle). M3 plain-tooltip: false — confirmed absent from the token file, not merely unmodeled."
+    },
+    {
+      "id": "structure.arrow-shape",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "arrowShape",
+      "note": "A genuine two-way structural split, NOT one shared shape with a cosmetic delta. Salt renders floating-ui's FloatingArrow: a real SVG triangle (width 12, height 6, so a 90-degree apex) filled with the panel background and stroked 1px on its two OUTER edges only, the base left open to merge into the panel's own border - TooltipBase.tsx lines 50-58. shadcn renders a rotated square div with NO border (`size-2.5 rotate-45 bg-foreground`), which reads as a pointer purely because the panel covers its inner half. ADDED IN VALIDATION: the skeleton originally drew one rotated square for both. That is fine for shadcn (borderless) but visibly broken for Salt, whose 1px border then outlined all four edges of a rhombus instead of two edges of a triangle - the owner caught it on the render. The shapes are now separate mechanisms, as they are in source."
+    },
+    {
+      "id": "structure.status-icon",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "statusIcon",
+      "note": "Salt only — conditional StatusIndicator shown when status is set and hideIcon is false. shadcn/M3 have no icon concept on tooltip at all."
+    },
+    {
+      "id": "behavior.trigger-events",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "hover + focus open the panel in all three sources — identical"
+    },
+    {
+      "id": "behavior.dismiss",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Escape key + outside interaction dismiss in all three (Salt useDismiss; shadcn Radix DismissableLayer; M3 [R] APG convention)"
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "role",
+      "note": "converges to role=\"tooltip\" in all three — the mirror of Spinner's 3-way role split"
+    },
+    {
+      "id": "behavior.aria-describedby",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "trigger references the floating panel's id via aria-describedby (APG tooltip pattern), identical mechanism across all three"
+    },
+    {
+      "id": "behavior.supplementary-announce",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "supplementaryAnnounce",
+      "note": "Salt only — useAriaAnnounce pushes the panel's text through a shared live region on trigger mouseenter, layered on top of (not replacing) native role=tooltip/aria-describedby wiring. shadcn/M3 rely on native ARIA only — a declared capability gap, same class of finding as Spinner's repeat-announce."
+    },
+    {
+      "id": "behavior.enter-delay",
+      "piece": "behavior",
+      "policy": "default",
+      "channel": "config",
+      "param": "enterDelay",
+      "note": "Salt: 300ms (enterDelay prop default). shadcn: 0ms (TooltipProvider explicitly zeroes Radix's own 700ms package default). M3: [R] DECLARED ABSENCE — no delay convention in the tokens-only clone, registry default (0ms) applied."
+    },
+    {
+      "id": "behavior.leave-delay",
+      "piece": "behavior",
+      "policy": "default",
+      "channel": "config",
+      "param": "leaveDelay",
+      "note": "Salt: 0ms (leaveDelay prop default). shadcn: 0ms — Radix closes immediately on blur/pointerleave; skipDelayDuration (300ms, not overridden) is a different mechanism (cross-trigger grace window), NOT a close-delay, and is deliberately not represented by this value. M3: [R]."
+    },
+    {
+      "id": "behavior.disabled-suppression",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only — disabled prop fully suppresses; disableHoverListener/disableFocusListener sub-toggle each channel. shadcn/M3 have no equivalent prop."
+    },
+    {
+      "id": "behavior.positioning-engine",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "DECLARED GAP: Salt composes @floating-ui/react (offset/shift/flip/arrow middleware); shadcn composes Radix's own Popper primitive (architecturally similar, different implementation); M3 [R] unsourced. This skeleton approximates with a getBoundingClientRect() calculation and a fixed offset — no flip/shift/collision detection. Declared, not silent."
+    },
+    {
+      "id": "prop.status",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "status",
+      "note": "Salt only — info/warning/success/error (+ undefined = neutral default), also inherited from form-field context. shadcn/M3 have no tone/status axis on tooltip."
+    },
+    {
+      "id": "prop.placement",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "placement",
+      "note": "Salt: full floating-ui enum (12 values incl. -start/-end), default \"right\" — modeled here as the 4 cardinal directions only, a scope trim (cf. Button's 20-combination precedent). shadcn: Radix `side`, default \"top\" (+ separate `align`, not modeled). M3: [R] \"top\" only."
+    },
+    {
+      "id": "prop.hide-arrow",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, a real boolean prop. shadcn's arrow is structurally always-on (a source edit, not an instance toggle) — same class of expressibility gap as Spinner's shadcn stroke-width. M3: N/A, no arrow to hide."
+    },
+    {
+      "id": "prop.hide-icon",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only. shadcn/M3: N/A, no icon."
+    },
+    {
+      "id": "slot.trigger",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned anchor element in all three; out of this component's own style/state scope"
+    },
+    {
+      "id": "slot.content",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in all three; M3's plain-tooltip is text-only by spec — richer content is exactly the rich-tooltip split (out of scope)"
+    },
+    {
+      "id": "state.closed-open",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "the only real state transition, all three"
+    },
+    {
+      "id": "state.panel-non-interactive",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant: confirmed no hover/focus/active/disabled rule for the floating panel itself in any source — those states belong to the trigger, out of this component's scope"
+    },
+    {
+      "id": "style.root.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "background": "$"
+      }
+    },
+    {
+      "id": "style.root.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "color": "$"
+      }
+    },
+    {
+      "id": "style.root.border",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn/M3 off — neither sources a border on the plain tooltip"
+    },
+    {
+      "id": "style.root.status@error",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"][data-status=\"error\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Reassigns ONE indirection property, exactly as Tooltip.css does (`.saltTooltip-error { --tooltip-status-borderColor: var(--salt-status-error-borderColor) }`). Both the panel border AND the arrow's stroke read that property (TooltipBase.tsx passes stroke=\"var(--tooltip-status-borderColor)\" to FloatingArrow), so one reassignment recolours both - which is why this is modelled as an indirection rather than as a direct border-color override."
+    },
+    {
+      "id": "style.root.status@info",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"][data-status=\"info\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Reassigns ONE indirection property, exactly as Tooltip.css does (`.saltTooltip-info { --tooltip-status-borderColor: var(--salt-status-info-borderColor) }`). Both the panel border AND the arrow's stroke read that property (TooltipBase.tsx passes stroke=\"var(--tooltip-status-borderColor)\" to FloatingArrow), so one reassignment recolours both - which is why this is modelled as an indirection rather than as a direct border-color override."
+    },
+    {
+      "id": "style.root.status@warning",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"][data-status=\"warning\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Reassigns ONE indirection property, exactly as Tooltip.css does (`.saltTooltip-warning { --tooltip-status-borderColor: var(--salt-status-warning-borderColor) }`). Both the panel border AND the arrow's stroke read that property (TooltipBase.tsx passes stroke=\"var(--tooltip-status-borderColor)\" to FloatingArrow), so one reassignment recolours both - which is why this is modelled as an indirection rather than as a direct border-color override."
+    },
+    {
+      "id": "style.root.status@success",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"][data-status=\"success\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. Reassigns ONE indirection property, exactly as Tooltip.css does (`.saltTooltip-success { --tooltip-status-borderColor: var(--salt-status-success-borderColor) }`). Both the panel border AND the arrow's stroke read that property (TooltipBase.tsx passes stroke=\"var(--tooltip-status-borderColor)\" to FloatingArrow), so one reassignment recolours both - which is why this is modelled as an indirection rather than as a direct border-color override."
+    },
+    {
+      "id": "style.root.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "border-radius": "$"
+      }
+    },
+    {
+      "id": "style.root.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "padding": "$"
+      }
+    },
+    {
+      "id": "style.root.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "font": "$"
+      }
+    },
+    {
+      "id": "style.root.shadow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "box-shadow": "$"
+      },
+      "note": "Salt only — shadcn/M3 have no shadow on the plain tooltip"
+    },
+    {
+      "id": "style.root.max-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "max-width": "$"
+      },
+      "note": "Salt only (60ch hardcoded literal). shadcn is content-sized (w-fit); M3 has no width token."
+    },
+    {
+      "id": "style.root.z-index",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "z-index": "$"
+      }
+    },
+    {
+      "id": "style.root.duration",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "animation-duration": "$"
+      },
+      "note": "Salt: 0s — no animation/transition rule exists in source at all (an honest literal, not a silent default). shadcn: 150ms [R], tw-animate-css isn't vendored in this clone so its exact value isn't grepped — a registry rendering approximation. M3: 100ms [R], borrowed from docs/foundations/motion.md's short2 tier rather than fabricated."
+    },
+    {
+      "id": "style.root.easing",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip\"]",
+      "declarations": {
+        "animation-timing-function": "$"
+      }
+    },
+    {
+      "id": "style.arrow.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip-arrow\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: 12x6px true triangle geometry (rendered here as the skeleton's neutral rotated-square approximation, declared in TOOLTIP-MATRIX.md). shadcn: 10x10px, matches the skeleton's rotated-square shape closely (source is already a diamond). M3: off, no arrow."
+    },
+    {
+      "id": "style.arrow.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip-arrow\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt/shadcn only — M3 has no arrow to color"
+    },
+    {
+      "id": "style.icon.margin",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"tooltip-icon\"]",
+      "declarations": {
+        "margin": "$"
+      },
+      "note": "Salt only. DECLARED COMPOSITION: the icon's own color/glyph belongs to the future status-indicator registry component, not duplicated here — only its placement margin is modeled."
+    }
+  ]
+}

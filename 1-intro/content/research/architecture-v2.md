@@ -594,3 +594,161 @@ Horizon round (§9):
   context engine for the AI era" (May 2026, +52% accuracy); Google
   Stitch DESIGN.md; Supernova/zeroheight MCP docs; llms.txt adoption
   studies (~10%, no citation lift)
+
+
+## §4c gate 3 — the provenance canary, built 2026-08-02
+
+`scripts/check-provenance.py` (tier 1) and `scripts/check-values.py` (tier 2)
+implement the "provenance canary" this document asks for. Run both; tier 1
+first, because a file that fails its encoding gate is invisible to every
+text-based check including tier 2.
+
+**Tier 1 — citation lint.** Does the cited file still exist, and does the cited
+token still appear in that clone? 2,318 citation strings, 299 distinct source
+files resolved. Found and fixed one real defect: a Salt CSS *class* cited with
+a `--` custom-property prefix, asserting a token that exists nowhere.
+
+**Tier 2 — value re-resolution.** Parses the clones into token tables and
+resolves each cited token through its own alias chain to a literal, then diffs
+against the recorded value, colour-normalised. **210 colour slots verified,
+zero drift.**
+
+### What building it actually cost, and the warning that carries
+
+Every number above is the *fifth* run. The first four were wrong, and each was
+wrong in a way that produced confident, plausible output:
+
+1. **158 phantom missing files** — the regex could not expand brace shorthand
+   (`_md-comp-{elevated,filled}-card.scss`) and reported the truncated tail as a
+   missing file.
+2. **13 "missing" files that are missing on purpose** — chip proves shadcn has
+   no chip by citing files that do not exist. A naive lint punishes the most
+   rigorous evidence in the repo.
+3. **9 phantom drifts** — M3's dark scheme is a separate module that redefines
+   the same role names; consulting it as a *fallback* rather than *first* meant
+   `md-sys-color` always returned the light value, so every dark slot
+   "disagreed" with itself.
+4. **1 phantom drift** — in v0_192 both schemes live in ONE file as
+   `values-dark()` then `values-light()`; a flat parse indexes dark for every
+   light role.
+5. **Its own fix re-flagged** — a note explaining that a token is wrong must
+   quote it, and the lint could not tell asserting from discussing.
+
+**The transferable warning: a canary's own bugs look exactly like the drift it
+is hunting.** Four of those five failures rendered as authoritative "this value
+is wrong" reports. Had the repo been noisier, or had these run unattended into
+a CI badge, the rational response to each would have been to "fix" correct data
+to match a broken resolver — the canary would have *caused* the drift it exists
+to catch. Every finding was disproved by re-reading source, not by trusting the
+tool.
+
+Practical consequence for §4c: **a drift report is a question, not a verdict.**
+Before changing any value it accuses, confirm the resolver handles that value's
+scheme, edition and scoping. Both scripts print their own limits for this reason.
+
+### Known limits, deliberately not papered over
+
+- **Colours only.** Sizes, spacing and typography are not re-resolved. That is
+  tier 3 and is not built.
+- **shadcn is skipped entirely** — 142 colour slots. Its values are Tailwind
+  utility classes inside `cva()` strings, not tokens; resolving them needs a
+  class-to-value table plus the oklch vars from `globals.css`. Reported as
+  SKIPPED, never as passing.
+- **175 slots carry no provenance entry at all** — they are values without a
+  citation, so nothing can be re-resolved. This is the single largest coverage
+  gap the canary exposes, and it is in our own data, not the clones.
+- Salt resolves at theme-next / blue accent / medium density; other contexts are
+  unchecked.
+- A verified slot can still be the WRONG token for its attribute. Tier 2 proves
+  a value has not moved, never that it was right. That stays rule 5's job.
+
+
+## The third gate, built 2026-08-02 — behaviour conformance
+
+`page/conformance.tsx` + `scripts/build-conformance.mjs` drive the real
+skeletons in a real DOM and assert **observable behaviour**, one assertion per
+behavior row. 38 assertions across dialog, select, tabs and card × 3 systems.
+
+This closes the gap the per-component `check-*-behavior.mjs` gates could not:
+they prove a row's code EXISTS and is bound to it; they cannot prove it RUNS.
+Dialog shipped two effects that existed, were correctly written, correctly
+cited, passed that gate, and never executed.
+
+### It was verified by breaking it, and that mattered three times
+
+A gate that has never failed proves nothing. The dialog defect was
+deliberately reintroduced (dropping `mounted` from the effect's dependency
+array) to confirm the harness turns red. It did not — and each failure to fail
+taught something:
+
+1. **The harness mounted the dialog already-open.** The defect only appears on
+   the closed->open TRANSITION: with `open` true from the first render,
+   `mounted` initialises true, the panel exists when the effect first runs, and
+   the missing dependency never bites. **Test the transition a user performs,
+   not the end state.**
+2. **`setTimeout` is throttled to ~1/sec in a hidden tab.** The harness makes
+   hundreds of yields; a timer-based settle turned a 2-second run into minutes
+   and read as a hang. Now yields via `MessageChannel`, which is unthrottled and
+   is what React's own scheduler uses.
+3. **Fixed settles race React's scheduler.** A two-phase mount intermittently
+   reported "no panel", and polling for focus arrival turned two more phantom
+   failures (shadcn, M3 — focus lands a tick later than Salt) back into passes.
+   **Asserting once cannot distinguish "never" from "not yet"**, and reading the
+   second as a defect is how a harness manufactures bugs.
+
+Final state: with the bug present the harness fails on all three systems; with
+it fixed, 38/38 pass. Both directions confirmed.
+
+### The pattern across all three gates built this session
+
+Tier-2's canary, the two static gates, and this harness each produced confident
+false positives before they produced a true one — 158 phantom missing files, 9
+phantom colour drifts, 4 phantom unsized parts, 3 phantom focus failures. **A
+new gate's own bugs are indistinguishable from the defects it hunts**, so every
+one of them must be calibrated by deliberately breaking the thing it watches
+before its output is trusted. An uncalibrated gate does not reduce risk; it
+relocates it, and its authority makes the relocation harder to see.
+
+
+## Correction to the tier-2 edition analysis (recorded 2026-08-02)
+
+While re-pinning every M3 column to `v0.192`, the claim made here that **"all
+104 M3 colour slots resolve identically in both editions"** was found to be
+WRONG, and the method that produced it was unsound.
+
+**The fact:** four light-mode roles differ between editions —
+`on-primary-container`, `on-secondary-container`, `on-tertiary-container` and
+`on-error-container` resolve to the **10** ramp step in v0.192 and the **30**
+step in `latest` (verified directly: `_md-sys-color.scss:79` says
+`$on-secondary-container: md-ref-palette.$secondary30` in latest, against
+`'secondary10'` in v0.192's `values-light()`). Dark mode is identical and the
+palette hexes are identical, which is why a spot check looked reassuring.
+
+**The methodological error, which matters more than the fact.** The edition
+diff only compared a candidate token when its *latest* value already matched
+the recorded value:
+
+    if not (a and same_value(a, rec)): continue    # then compare v0
+
+Any slot whose recorded value did not agree with `latest` was skipped
+silently — and a `continue` inside a candidate loop reports nothing at all,
+so the run ended "0 changed" with no indication of how much it had declined to
+look at. A filter that discards the cases most likely to be interesting, and
+then reports totals as if it had examined everything, is worse than no check:
+it converts unexamined into verified.
+
+Two corrections follow, both applied:
+
+1. **State the denominator.** "104 slots unchanged" was true only of slots that
+   carried provenance AND already matched `latest`. The honest form is
+   "104 of N examined, M skipped, for these reasons".
+2. **Diff the source, not the subset.** The reliable method was the one used
+   during the re-pin: diff the two editions' role maps directly and let the
+   components fall out of it, rather than walking our own records and asking
+   whether each still agrees.
+
+This is the same failure the canary section already warns about, arriving from
+the opposite direction. There the risk was a broken resolver manufacturing
+false drift; here it was a well-behaved resolver manufacturing false calm. Both
+come from trusting a tool's summary line without asking what it declined to
+examine.

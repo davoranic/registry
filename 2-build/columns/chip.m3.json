@@ -1,0 +1,521 @@
+{
+  "system": "m3",
+  "component": "chip",
+  "fontFaces": [
+    {
+      "family": "Roboto",
+      "weight": "500",
+      "file": "fonts/roboto-500.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "chip-bg": "transparent",
+      "chip-fg": "#1d1b20",
+      "chip-fg-variant": "#49454f",
+      "chip-border": "#79747e",
+      "chip-focus-border": "#1d1b20",
+      "chip-icon": "#6750a4",
+      "chip-icon-primary": "#6750a4",
+      "chip-icon-variant": "#49454f",
+      "chip-icon-selected": "#1d192b",
+      "chip-trailing-color": "#49454f",
+      "chip-bg-selected": "#e8def8",
+      "chip-fg-selected": "#1d192b",
+      "chip-bg-elevated": "#f7f2fa",
+      "chip-shadow-elevated": "0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)",
+      "chip-shadow-elevated-hover": "0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15)",
+      "chip-focus-outline": "3px solid #625b71",
+      "chip-disabled-fg": "#1d1b20",
+      "sl-color": "#1d1b20",
+      "chip-height": "32px",
+      "chip-radius": "8px",
+      "chip-border-width": "1px",
+      "chip-padding": "0 16px",
+      "chip-padding-lead-icon": "8px",
+      "chip-padding-trail-icon": "8px",
+      "chip-gap": "8px",
+      "chip-font": "500 0.875rem/1.25rem Roboto, sans-serif",
+      "chip-tracking": "0.00625rem",
+      "chip-icon-size": "18px",
+      "chip-avatar-size": "24px",
+      "chip-avatar-radius": "9999px",
+      "chip-focus-offset": "2px",
+      "chip-disabled-opacity": "0.38",
+      "chip-disabled-outline-opacity": "0.12",
+      "sl-hover": "0.08",
+      "sl-focus": "0.12",
+      "sl-pressed": "0.12"
+    },
+    "dark": {
+      "chip-fg": "#e6e0e9",
+      "chip-fg-variant": "#cac4d0",
+      "chip-border": "#938f99",
+      "chip-focus-border": "#e6e0e9",
+      "chip-icon": "#d0bcff",
+      "chip-icon-primary": "#d0bcff",
+      "chip-icon-variant": "#cac4d0",
+      "chip-icon-selected": "#e8def8",
+      "chip-trailing-color": "#cac4d0",
+      "chip-bg-selected": "#4a4458",
+      "chip-fg-selected": "#e8def8",
+      "chip-bg-elevated": "#1d1b20",
+      "chip-focus-outline": "3px solid #ccc2dc",
+      "chip-disabled-fg": "#e6e0e9",
+      "sl-color": "#e6e0e9"
+    }
+  },
+  "modeInvariant": [
+    "chip-bg",
+    "chip-shadow-elevated",
+    "chip-shadow-elevated-hover"
+  ],
+  "provenance": {
+    "canonical-source": "ONE canonical component with variant axes, built from ALL FOUR of tokens/versions/v0_192/_md-comp-{assist,filter,input,suggestion}-chip.scss — the same treatment card.m3.json gave the three card files and button.m3.json gave filled/outlined/text. The four files agree on EVERY structural number: container-height 32px, container-shape corner-small, the whole label-large typescale, the state-layer scheme, 18px icons, 0.38 disabled label opacity and 0.12 disabled container/outline opacity. They differ ONLY in which colour ROLE the label and icons take, which PARTS exist, and whether a selected state exists at all. Plus tokens/versions/latest/sass/_md-comp-*-chip.scss for the edition diff, and — load-bearing here — the hand-authored tokens/_md-comp-*-chip.scss wrappers, which are the ONLY source of this component's spacing (see chip-padding). Resolution through versions/v0_192/{_md-sys-color.scss (values-light() and values-dark() in ONE file — v0.192 has no _md-sys-color__dark.scss),_md-ref-palette.scss,_md-sys-shape.scss,_md-sys-typescale.scss,_md-ref-typeface.scss,_md-sys-state.scss,_md-sys-elevation.scss} plus the hand-authored, edition-independent tokens/_md-comp-focus-ring.scss for the focus ring; versions/latest/sass/_md-sys-state-focus-indicator.scss is NOT used and does not exist in this edition. Reused rather than re-derived: docs/foundations/{elevation,state-layers,typography,shape,density,colors}.md. material-web is a TOKENS-ONLY clone (no src/, no components), so every structure and behavior row here is [R] and every style cell is [S].",
+    "edition-pin": "versions/v0_192, AND IT IS THE MOST COLOUR-MOVING PIN IN THE REGISTRY — not a no-op like badge's, and lossier than card's. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192 — and all four of tokens/_md-comp-{assist,filter,input,suggestion}-chip.scss do exactly that. The counter-argument this column recorded is now the decision. A full normalized key/value diff of all four files across the editions finds exactly three classes of change, identical in all four, and this pin reverses all three. (1) THE FOCUS-INDICATOR FAMILY IS GONE. `latest` added focus-indicator-color (secondary), -thickness (3px) and -outline-offset (md-sys-state-focus-indicator.$outer-offset = +2px); versions/v0_192 has none of them, and the _md-sys-state-focus-indicator.scss they resolve through does not exist in that edition at all. IT IS RE-POINTED, NOT DROPPED, to material-web's own hand-authored tokens/_md-comp-focus-ring.scss — the token set the shipped md-focus-ring element consumes, edition-independent because it @use's the top-level md-sys-color/md-sys-shape/md-sys-motion shims, every one of which @use's versions/v0_192. Its $color (md-sys-color.secondary), $width (3px) and $outward-offset (2px) are IDENTICAL, value for value, to the three chip tokens they replace, so chip-focus-outline and chip-focus-offset do not move. Declared, not silent: it is a DIFFERENT token set (md.comp.focus-ring.* rather than md.comp.*-chip.focus-indicator.*), and card.m3.json and tabs.m3.json re-point to the same file — the tab is the only one that loses a value doing so. (2) THE RESTING OUTLINE ROLE REVERTS, AND THIS ONE IS VISIBLE. v0.192 resolves all four files' resting stroke to md-sys-color.outline where `latest` says outline-variant: chip-border moves from #cac4d0 to #79747e in light mode and from #49454f to #938f99 in dark. A v0.192 M3 chip has a DARKER, higher-contrast stroke in light mode and a LIGHTER one in dark mode — the outline role is mid-tone (neutral-variant50/60) where outline-variant is near-surface (neutral-variant80/30). (3) THE DEPRECATED LEGACY ALIASES `latest` re-added (the flat/with-icon/unqualified names, plus container-surface-tint-layer-color and filter-chip's container-shadow-color) simply are not in v0.192; none was modelled here. NOTHING ELSE MOVED: container-height 32px, corner-small, the label-large typescale, 18px icons, the 24px avatar, 0.38 disabled label opacity and 0.12 disabled container/outline opacity are byte-identical across the editions. SEPARATELY, TWO MORE VALUES MOVE THROUGH THE COLOUR SYSTEM RATHER THAN THROUGH THESE FILES — see provenance.chip-fg-selected and provenance.sl-focus.",
+    "chip-bg": "CONFIRMED ABSENCE, modelled as transparent. There is no `flat-unselected-container-color` (filter/input) and no `flat-container-color` (assist/suggestion) token in any of the four files, in either edition — only `elevated-*-container-color` and `*-selected-container-color`. So a resting flat unselected M3 chip has NO fill and is defined entirely by its 1px stroke. Nothing was invented for it. MODE-INVARIANT trivially.",
+    "chip-fg": "assist-chip `$label-text-color: md-sys-color.$on-surface` -> _md-sys-color.scss $on-surface: neutral10 = #1d1b20 / __dark neutral90 = #e6e0e9. ASSIST IS THE BASE READING (see prop.kind); the other three families take on-surface-variant instead and reassign this slot in their own blocks.",
+    "chip-fg-variant": "`on-surface-variant` -> neutral-variant30 = #49454f / __dark neutral-variant80 = #cac4d0. The resting label colour for suggestion-chip ($label-text-color), filter-chip ($unselected-label-text-color) and input-chip ($unselected-label-text-color) — three of the four families.",
+    "chip-border": "assist-chip `$flat-outline-color: md-sys-color.$outline` (filter: $flat-unselected-outline-color; input: $unselected-outline-color) -> versions/v0_192/_md-sys-color.scss values-light() neutral-variant50 = #79747e / values-dark() neutral-variant60 = #938f99. VALUE CHANGED BY THE PIN, and it is the most visible change in this column. Under `latest` all four files resolved this to outline-VARIANT (neutral-variant80 #cac4d0 light / neutral-variant30 #49454f dark). What used to be recorded here as 'THE EDITION-PIN PAYOFF' has become the edition-pin COST, in the opposite direction: the chip's resting stroke goes back to the mid-tone outline role. The outline and outline-variant roles themselves resolve identically in both editions — it is the chip files that cite a different one.",
+    "chip-focus-border": "assist-chip `$flat-focus-outline-color: md-sys-color.$on-surface`. NOTE THE PER-KIND DIVERGENCE, and it is one of the few CSS-visible ones: suggestion and filter resolve the same token to `on-surface-variant`, so focusing recolours the stroke to a different role depending on the family. Modelled here at the assist value and reassigned in the @suggestion / @filter / @input blocks.",
+    "chip-icon": "assist-chip `$with-icon-icon-color: md-sys-color.$primary` (suggestion: $with-leading-icon-leading-icon-color; filter: $with-leading-icon-unselected-leading-icon-color) -> primary40 = #6750a4 / __dark primary80 = #d0bcff. Input-chip is the exception — its unselected leading icon is on-surface-variant — which is why @input reassigns this.",
+    "chip-icon-primary": "The same primary40/primary80 value under a role-named slot, so the @input block can reassign chip-icon-selected back to primary without a self-referential var() (input-chip `$with-leading-icon-selected-leading-icon-color: md-sys-color.$primary`, against filter-chip's on-secondary-container). Two slots holding one value, kept apart because they answer two different source questions — the same reason card.salt.json kept two identical accent slots.",
+    "chip-icon-variant": "input-chip `$with-leading-icon-unselected-leading-icon-color: md-sys-color.$on-surface-variant` = #49454f / #cac4d0.",
+    "chip-icon-selected": "filter-chip `$with-leading-icon-selected-leading-icon-color: md-sys-color.$on-secondary-container` -> versions/v0_192/_md-sys-color.scss values-light() secondary10 = #1d192b / values-dark() secondary90 = #e8def8. LIGHT VALUE CHANGED BY THE PIN, and NOT because the chip file changed — because the COLOUR SYSTEM did. on-secondary-container is one of exactly four sys-color roles that differ between the editions: versions/v0_192 resolves it to secondary10 in light mode where versions/latest/sass resolves it to secondary30 (#4a4458). The other three are on-primary-container, on-tertiary-container and on-error-container, all light-mode-only, all the same 10-vs-30 shift; dark mode is identical for all four. THIS CONTRADICTS THE WORKING ASSUMPTION THAT M3 COLOUR IS EDITION-STABLE and is flagged for the owner. Practical effect here: a selected chip's leading icon is much darker against its #e8def8 container, i.e. higher contrast.",
+    "chip-trailing-color": "filter-chip and input-chip `$with-trailing-icon-unselected-trailing-icon-color: md-sys-color.$on-surface-variant` = #49454f / #cac4d0. Assist and suggestion have NO trailing token family at all.",
+    "chip-bg-selected": "filter-chip `$flat-selected-container-color` and input-chip `$selected-container-color`, both `md-sys-color.$secondary-container` -> secondary90 = #e8def8 / __dark secondary30 = #4a4458. filter-chip's `$elevated-selected-container-color` is the SAME role, so an elevated selected chip and a flat selected chip share a fill and differ only by the shadow.",
+    "chip-fg-selected": "`$selected-label-text-color: md-sys-color.$on-secondary-container` -> versions/v0_192/_md-sys-color.scss values-light() secondary10 = #1d192b / values-dark() secondary90 = #e8def8. The exact inverse pair of chip-bg-selected. LIGHT VALUE CHANGED BY THE PIN, for the same colour-system reason as chip-icon-selected — see that entry for the full four-role finding. Was #4a4458 (secondary30) under `latest`.",
+    "chip-bg-elevated": "assist-chip `$elevated-container-color: md-sys-color.$surface-container-low` (filter: $elevated-unselected-container-color) -> neutral96 = #f7f2fa / __dark neutral10 = #1d1b20. Note that input-chip has NO elevated family — see prop.elevation.",
+    "chip-shadow-elevated": "`$elevated-container-elevation: md-sys-elevation.$level1` = 1dp. The dp->CSS conversion is the registry's own and is CITED, NOT RE-DERIVED, from docs/foundations/elevation.md's canonical table (level1). [R] as a CSS string, [S] as a dp level. MODE-INVARIANT because `$shadow` is neutral0 = #000 in both _md-sys-color.scss and _md-sys-color__dark.scss.",
+    "chip-shadow-elevated-hover": "`$elevated-hover-container-elevation: md-sys-elevation.$level2` = 3dp -> docs/foundations/elevation.md level2. [R] as a CSS string. The elevated chip is the ONLY thing in this component that moves on hover other than the state layer.",
+    "chip-focus-outline": "SOURCE RE-POINTED BY THE v0.192 PIN, VALUE UNCHANGED. Previously: `$focus-indicator-thickness: md-sys-state-focus-indicator.$thickness` = 3px and `$focus-indicator-color: md-sys-color.$secondary`, from versions/latest/sass/_md-comp-*-chip.scss — absent from all four v0.192 files, and the _md-sys-state-focus-indicator.scss they resolve through does not exist in that edition. NOW SOURCED FROM tokens/_md-comp-focus-ring.scss: `$width: 3px` and `$color: md-sys-color.secondary` -> secondary40 #625b71 light / secondary80 #ccc2dc dark. Identical numbers, identical colours, different token set (md.comp.focus-ring.* rather than md.comp.*-chip.focus-indicator.*). See provenance.edition-pin change (1).",
+    "chip-focus-offset": "SOURCE RE-POINTED BY THE v0.192 PIN, VALUE UNCHANGED. Previously `$focus-indicator-outline-offset: md-sys-state-focus-indicator.$outer-offset` = +2px. NOW tokens/_md-comp-focus-ring.scss `$outward-offset: 2px` — the same number from the same conceptual place. Still the OUTER offset, the same choice card made; the navigation tab took the INNER offset (-3px) and is the one component this re-point costs a value, because focus-ring's $inward-offset is 0px (see tabs.m3.json).",
+    "chip-disabled-fg": "`$disabled-label-text-color: md-sys-color.$on-surface` in all four files = #1d1b20 / #e6e0e9. Consumed at two different opacities — see chip-disabled-opacity and chip-disabled-outline-opacity.",
+    "chip-disabled-opacity": "`$disabled-label-text-opacity: 0.38` in all four files, both editions. Matches docs/foundations/state-layers.md's note that 0.38-on-content / 0.12-on-containers is an M3 CONVENTION read off many _md-comp files rather than a named token — confirmed again here across four files.",
+    "chip-disabled-outline-opacity": "assist `$flat-disabled-outline-opacity: 0.12`, filter `$flat-disabled-unselected-outline-opacity: 0.12`, input `$disabled-unselected-outline-opacity: 0.12`, and `$elevated-disabled-container-opacity: 0.12` / `$flat-disabled-selected-container-opacity: 0.12`. TWO MECHANISMS at two opacities in one disabled state — the label dims to 38%, the stroke (or the selected fill) to 12%.",
+    "sl-color": "assist-chip `$hover/focus/pressed-state-layer-color: md-sys-color.$on-surface` = #1d1b20 / #e6e0e9. Reassigned per kind, and note one genuine source oddity carried in the @filter block's provenance: filter-chip's SELECTED pressed state layer is on-surface-variant while its selected hover and focus layers are on-secondary-container, and its UNSELECTED pressed layer is on-secondary-container while its unselected hover and focus are on-surface-variant — the two roles swap places on press. Recorded, not modelled (one pressed slot is carried).",
+    "sl-hover": "`md-sys-state.hover-state-layer-opacity` -> versions/v0_192/_md-sys-state.scss = 0.08 — identical in both editions, so the pin does not move it (unlike focus and pressed beside it). Matches docs/foundations/state-layers.md.",
+    "sl-focus": "`focus-state-layer-opacity` = 0.12 in versions/v0_192/_md-sys-state.scss. VALUE CHANGED BY THE PIN — was 0.1 under versions/latest/sass. docs/foundations/state-layers.md tabulates 0.12 for M3, so the foundations page and this column now agree.",
+    "sl-pressed": "`pressed-state-layer-opacity` = 0.12 in versions/v0_192/_md-sys-state.scss. VALUE CHANGED BY THE PIN — was 0.1 under versions/latest/sass. docs/foundations/state-layers.md tabulates 0.12 for M3.",
+    "chip-height": "`$container-height: 32px` — a hardcoded literal, identical in all four files and both editions. Density-invariant because M3 has no density capability at all (docs/foundations/density.md).",
+    "chip-radius": "`$container-shape: md-sys-shape.$corner-small` -> _md-sys-shape.scss:67 = 8px, all four files, both editions. Matches docs/foundations/shape.md's small-medium row. Worth stating against Salt: an M3 chip's 8px sits BETWEEN Salt's pill (1-4px) and Salt's tag (999px), and none of the three is the same shape.",
+    "chip-padding": "THE ONLY SPACING THIS COMPONENT HAS, AND IT IS NOT IN THE GENERATED TOKEN SET. None of the four versions/latest or versions/v0_192 files carries a single spacing token. But the hand-authored tokens/_md-comp-{assist,filter,input,suggestion}-chip.scss wrappers each ADD one, identically, as `$new-tokens`: 'leading-space': 16px, 'trailing-space': 16px. So unlike card — which had to BORROW its 16px padding from m3.material.io and flag it [R] — this value is [S], read from a source file in the clone. It is flagged as a LIBRARY-ADDED token rather than a generated one, because the two sources genuinely disagree about whether it exists.",
+    "chip-padding-lead-icon": "The same four wrappers: 'with-leading-icon-leading-space': 8px. When a leading icon or avatar is present the leading inset HALVES, from 16px to 8px. [S], library-added.",
+    "chip-padding-trail-icon": "filter and input wrappers only: 'with-trailing-icon-trailing-space': 8px. Assist and suggestion do not declare it because they have no trailing part. [S], library-added.",
+    "chip-gap": "The same four wrappers: 'icon-label-space': 8px. [S], library-added.",
+    "chip-font": "`$label-text-{font,size,weight,line-height}` -> md-sys-typescale label-large: $label-large-font = md-ref-typeface.$plain = Roboto (a LITERAL in _md-ref-typeface.scss:21, so [S] per the correction recorded in docs/foundations/typography.md), $label-large-size = 0.875rem, $label-large-weight = md-ref-typeface.$weight-medium = 500, $label-large-line-height = 1.25rem. Matches docs/foundations/typography.md line 57's label row exactly. LABEL-LARGE, not label-small: an M3 chip is 14px where an M3 badge is 11px.",
+    "chip-tracking": "`$label-text-tracking: md-sys-typescale.$label-large-tracking` = 0.00625rem (0.1px at a 16px root). Note that all four hand-authored wrappers list `label-text-tracking` and `label-text-type` under $unsupported-tokens and remove them — the shipped library drops exactly this row, the same generated-vs-shipped disagreement badge, card, tabs, dialog and select all recorded.",
+    "chip-icon-size": "assist `$with-icon-icon-size: 18px`; suggestion and input `$with-leading-icon-leading-icon-size: 18px`; filter `$with-icon-icon-size: 18px`. Also input `$with-trailing-icon-trailing-icon-size: 18px`. One number, four files, both editions, density-invariant.",
+    "chip-avatar-size": "input-chip ONLY: `$with-avatar-avatar-size: 24px`. The single largest part in the component and the only one no other family has.",
+    "chip-avatar-radius": "input-chip ONLY: `$with-avatar-avatar-shape: md-sys-shape.$corner-full` = 9999px. So an M3 input chip is an 8px-cornered box containing a perfectly round 24px avatar — the only place corner-full appears anywhere in the chip family.",
+    "no-cursor-token": "CONFIRMED ABSENCE: no cursor token in any of the four files, the same absence card.m3.json recorded. The chip is described as a control by its state layers and its focus indicator and never says what the pointer should look like.",
+    "no-motion-token": "CONFIRMED ABSENCE: no duration, easing or transition token. Every state change in this column is instantaneous, exactly as it is in Salt's.",
+    "no-overflow-token": "CONFIRMED ABSENCE: no overflow, text-overflow or white-space token. M3 says nothing about what happens to a label longer than its container — a third answer to the question badge found three answers to.",
+    "no-group-token": "CONFIRMED ABSENCE: none of the four files, and none of the four wrappers, declares a chip-set or chip-group spacing token. M3 tokenises the chip and not the row of chips. Left visible in the harness rather than papered over, the same call badge.m3.json made for its missing padding.",
+    "dragged-family-scope-trim": "All four files carry a complete dragged-* family ($dragged-container-elevation level4, $dragged-state-layer-opacity 0.16, $dragged-label-text-color, $dragged-state-layer-color) and NO column models drag, so there is no cross-system contract to hang it on. Declared off rather than modelled for one column — the identical exclusion card.m3.json made.",
+    "material-web-disownment": "Each hand-authored wrapper lists a $supported-tokens set and an $unsupported-tokens set. For assist-chip the unsupported set is container-elevation, the whole dragged-* family, focus-state-layer-color/-opacity, label-text-tracking and label-text-type. So the shipped library declines the FOCUS state layer while keeping the hover and pressed ones — which is why style.state-layer.opacity@focus is carried with a note. The wrappers also RENAME every `flat-*` token to its unprefixed form ('flat-container-elevation' -> 'container-elevation', 'flat-outline-color' -> 'outline-color', citing b/275577569 'Remove flat-* prefix'), which is direct source evidence that FLAT IS THE BASE READING and elevated is the qualified one — see prop.elevation."
+  },
+  "cells": {
+    "structure.element": {
+      "kind": "value",
+      "value": "[R] a button-like control",
+      "note": "material-web is tokens-only, so there is no element to read. The token set describes a control unambiguously — hover, focus, pressed and dragged state layers, a focus indicator, a disabled family — but nothing says which tag carries them"
+    },
+    "structure.leading-icon": {
+      "kind": "value",
+      "value": true,
+      "source": "A real, sized, coloured, component-owned part in all four families: assist/filter `$with-icon-icon-size: 18px`, suggestion/input `$with-leading-icon-leading-icon-size: 18px`, each with its own enabled/hover/focus/pressed/disabled colour and its own leading-space of 8px in the hand-authored wrapper"
+    },
+    "structure.avatar": {
+      "kind": "value",
+      "value": true,
+      "source": "input-chip ONLY: `$with-avatar-avatar-size: 24px`, `$with-avatar-avatar-shape: corner-full`, `$with-avatar-disabled-avatar-opacity: 0.38`. A 24px circle where the leading icon is an 18px square — a genuinely different part, not a bigger icon"
+    },
+    "structure.selection-check": {
+      "kind": "off",
+      "note": "OFF WITH A REASON, not an absence. The published M3 spec shows a selected filter chip swapping its leading icon for a checkmark, and the brief flagged that as a structural change — correctly. But the TOKEN SET does not encode it: filter-chip declares only that the leading icon RECOLOURS on selection ($with-leading-icon-selected-leading-icon-color: on-secondary-container). There is no checkmark token, no glyph token and no element in a tokens-only clone. Turning this on would have meant inventing the part, so the row is off and the spec claim is recorded here as [R] rather than modelled as [S]"
+    },
+    "structure.trailing": {
+      "kind": "value",
+      "value": true,
+      "source": "filter-chip and input-chip only, each with a full `$with-trailing-icon-*` family (18px on input, colours for every state on both) and an 8px trailing-space in the wrapper. Assist and suggestion have no trailing token of any kind. WHAT the trailing control DOES is [R]: the spec makes input-chip's a remove affordance and filter-chip's a dropdown arrow, but the tokens say only 'trailing icon'"
+    },
+    "structure.state-layer": {
+      "kind": "value",
+      "value": true,
+      "source": "All four files carry hover/focus/pressed/dragged state-layer colour+opacity pairs over on-surface or on-surface-variant. The only system of the three with one (docs/foundations/state-layers.md)"
+    },
+    "structure.selection-scope": {
+      "kind": "value",
+      "value": "self",
+      "source": "[R] as a DOM claim, [S] as a token claim: filter-chip and input-chip carry `selected-*` and `unselected-*` token families on the CHIP ITSELF, and no file in the set declares a chip-set, chip-group or selection-container token. So M3 puts selection on the chip where Salt puts it on the group — a real structural divergence, not a naming one"
+    },
+    "prop.interaction": {
+      "kind": "value",
+      "value": [
+        "action",
+        "toggle"
+      ],
+      "source": "SOURCE-DEFAULT-FIRST, and the default is derivable rather than declared. `action` covers assist-chip and suggestion-chip, whose label/state-layer tokens are UNQUALIFIED (`$label-text-color`, `$hover-state-layer-color`) — i.e. there is no selection axis to qualify them with. `toggle` covers filter-chip and input-chip, every one of whose colour tokens is prefixed `selected-` or `unselected-`. Action is value[0] because the unqualified reading is the base reading, the same convention card.m3.json used. NOTE THE COUPLING, declared rather than hidden: in M3 this axis is DETERMINED by prop.kind (assist/suggestion -> action, filter/input -> toggle); the harness moves them together"
+    },
+    "prop.kind": {
+      "kind": "value",
+      "value": [
+        "assist",
+        "filter",
+        "input",
+        "suggestion"
+      ],
+      "source": "THE FAMILY, MODELLED AS ONE AXIS. No source default exists — nothing in the four files or the four wrappers marks one as primary — so the list is in the spec's own published order and the absence is recorded rather than a default invented, exactly as card.m3.json did for elevated/filled/outlined. `assist` is nonetheless the defensible value[0]: it is the family whose enabled-state tokens are entirely unqualified (no selected-/unselected- prefix and no -variant colour role), so it is the base reading. Discriminated by three real CSS blocks (@suggestion, @filter, @input), by which PARTS the skeleton renders (avatar on input alone; trailing on filter and input alone), by whether a selected state exists at all, and by prop.elevation's input exclusion"
+    },
+    "prop.elevation": {
+      "kind": "value",
+      "value": [
+        "flat",
+        "elevated"
+      ],
+      "source": "SOURCE-DEFAULT-FIRST, and source says so twice. (1) All four hand-authored wrappers RENAME the flat-* tokens to their unprefixed forms — 'flat-container-elevation' -> 'container-elevation', 'flat-outline-color' -> 'outline-color', 'flat-outline-width' -> 'outline-width' — citing b/275577569 'Remove flat-* prefix', i.e. the library treats flat as the un-suffixed base. (2) input-chip's tokens are ALREADY unprefixed and it has no elevated family at all. DECLARED CONSTRAINT: elevation and kind are not fully orthogonal — `input` supports only `flat`. The row is carried at the family level because three of four families support both; the exclusion is stated on the @input block and in the harness"
+    },
+    "prop.tag-variant": {
+      "kind": "off",
+      "note": "Salt-only axis. M3 has no read-only chip and no categorical colour scale"
+    },
+    "prop.bordered": {
+      "kind": "off",
+      "note": "Not an axis here — the 1px stroke is UNCONDITIONAL on a flat chip and absent on an elevated one, so 'bordered' is what prop.elevation already decides. Modelling it separately would have double-counted the same property"
+    },
+    "prop.selected": {
+      "kind": "value",
+      "value": [
+        false,
+        true
+      ],
+      "source": "CAPABILITY LIST, not an ordered enum — false is the base rendering and the skeleton reads the per-instance prop, never value[0]. Available on filter-chip and input-chip only; on assist and suggestion there is nothing to select"
+    },
+    "prop.disabled": {
+      "kind": "value",
+      "value": [
+        false,
+        true
+      ],
+      "source": "CAPABILITY LIST. A complete disabled family in all four files at two opacities (0.38 label/icon/avatar, 0.12 outline or selected container)"
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "[R] button, and aria-pressed/aria-selected on the two toggle families",
+      "note": "No element exists. Recorded as [R] and computed from config in the chassis so the inference is a matrix cell rather than a hardcode. The token set's own evidence for 'this is a control' is unusually strong: four state layers, a focus indicator and a disabled family in every one of the four files"
+    },
+    "behavior.tab-stop": {
+      "kind": "value",
+      "value": "[R] 0",
+      "note": "Implied by the focus ring. NOTE the evidence changed with the v0.192 pin: the chip's own focus-indicator family is latest-only and absent from the pinned edition, so the argument now rests on the focus-state-layer family (present in all four v0.192 files) plus material-web shipping an md-focus-ring element whose tokens this column now cites. Weaker evidence, same conclusion, flagged rather than quietly carried"
+    },
+    "behavior.keyboard-activation": {
+      "kind": "value",
+      "value": "[R] Enter and Space",
+      "note": "[R] — no element, no handler, no key token. Carried as the platform default for the button role the token set implies. Contrast Salt, which really does preventDefault Enter on a selectable pill: the two columns differ here on a value one of them cannot source, and that is stated rather than smoothed"
+    },
+    "behavior.selection": {
+      "kind": "value",
+      "value": "per-chip, and it moves THREE properties",
+      "source": "[S] as a style claim: filter-chip and input-chip both swap the container colour to secondary-container, the label to on-secondary-container, AND the outline width from 1px to 0px (`$flat-selected-outline-width: 0px`, `$selected-outline-width: 0px`). Selecting an M3 chip changes the MECHANISM by which it is separated from the page — stroke becomes fill — which is the lesson-6 fork appearing a second time inside one component. [R] as a DOM claim: nothing says how the toggle is driven"
+    },
+    "behavior.delete-affordance": {
+      "kind": "value",
+      "value": "[R] a nested trailing control, and this is the a11y fork",
+      "note": "[S]: input-chip and filter-chip carry a `with-trailing-icon-*` family with its own 8px trailing-space and its own enabled/hover/focus/pressed/disabled colours. [R]: whether that trailing icon is a SEPARATE FOCUSABLE inside the chip. The published spec makes input-chip's trailing icon a remove button, which would make it a nested tab stop — the opposite of Salt, where the whole pill IS the delete control and nothing is nested. The chassis renders it as a real nested <button> in this column so the fork is inspectable in the DOM, and the [R] grade is carried on the cell"
+    },
+    "behavior.delete-keys": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE in the clone. No key contract can be sourced from a tokens-only checkout, and the spec's Delete/Backspace behaviour for input chips is not in any token file. Off in every column — see the Salt column, which has a real Backspace/Delete handler but only inside pill-input, on a different COMPONENTS.md row"
+    },
+    "behavior.disabled-handling": {
+      "kind": "value",
+      "value": "[R] the attribute; [S] two opacities",
+      "source": "[S]: 0.38 on the label, the leading icon, the trailing icon and the avatar; 0.12 on the outline (unselected) or on the container (elevated and selected). [R]: which DOM mechanism carries it"
+    },
+    "behavior.pressed-flag": {
+      "kind": "value",
+      "value": "[R] a ripple, standing in as a data flag",
+      "note": "M3's pressed state is a RIPPLE in the real library, which a tokens-only clone cannot supply. The chassis drives the pressed state layer from a data-active flag instead — the VALUES are [S] ($pressed-state-layer-opacity 0.1), the TRIGGER is [R]. Identical treatment and identical wording to card.m3.json's declared approximation 3"
+    },
+    "behavior.group-navigation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-group-token provenance entry. M3 tokenises the chip and never the row of chips, so there is nothing to navigate between"
+    },
+    "slot.label": {
+      "kind": "value",
+      "value": "[R] arbitrary children",
+      "note": "label-text-* describes the TYPE of a label and says nothing about where the string comes from — the same reading badge.m3.json took"
+    },
+    "slot.leading": {
+      "kind": "value",
+      "value": true,
+      "note": "DECLARED COMPOSITION to an icon set (all four families) and, on input-chip, to `avatar`, which has its own COMPONENTS.md row. Rendered as neutral placeholders"
+    },
+    "slot.trailing": {
+      "kind": "value",
+      "value": true,
+      "note": "DECLARED COMPOSITION to an icon set and, per the spec, to `button` — the remove control on an input chip. Rendered as a neutral placeholder inside a real nested button"
+    },
+    "slot.composes": {
+      "kind": "value",
+      "value": "icon set, avatar, button",
+      "note": "DECLARED COMPOSITION: (a) an ICON SET for both the leading and trailing glyphs; (b) AVATAR, whose 24px corner-full circle input-chip sizes and shapes itself; (c) BUTTON for the trailing remove control [R]. All neutral placeholders"
+    },
+    "state.rest": {
+      "kind": "value",
+      "value": "NO FILL AT ALL and a 1px outline-variant stroke — the chip is a hairline outline over the page",
+      "note": "The most surprising cell in this column, and it is a confirmed absence rather than an omission: there is no flat unselected container-color token in any of the four files"
+    },
+    "state.hover": {
+      "kind": "value",
+      "value": "an on-surface state layer at 8%, and — on an elevated chip only — a lift from level1 to level2",
+      "source": "$hover-state-layer-opacity 0.08 in versions/v0_192/_md-sys-state.scss — identical in both editions, so unlike focus and pressed the pin does not move it; $elevated-hover-container-elevation level2. The LABEL colour does not move either: $hover-label-text-color resolves to the same role as the resting one in every family"
+    },
+    "state.focus": {
+      "kind": "value",
+      "value": "a 3px secondary outline at +2px offset, PLUS a stroke recolour, PLUS a 12% state layer — three simultaneous mechanisms",
+      "source": "the focus ring, now sourced from the edition-independent tokens/_md-comp-focus-ring.scss ($width 3px, $color secondary, $outward-offset 2px) because the chip's own focus-indicator family is latest-only and absent from versions/v0_192, $flat-focus-outline-color (on-surface for assist, on-surface-variant for the rest), $focus-state-layer-opacity 0.12 (v0.192 value; was 0.1 under latest). And the elevated chip does NOT lift on focus ($elevated-focus-container-elevation is level1, the resting level) — the same 'focus does not elevate' finding card.m3.json recorded"
+    },
+    "state.pressed": {
+      "kind": "value",
+      "value": "a 12% state layer, and the elevated chip returns to its RESTING elevation",
+      "source": "$pressed-state-layer-opacity 0.12 in versions/v0_192/_md-sys-state.scss — VALUE CHANGED BY THE PIN, was 0.1 under versions/latest/sass, and 0.12 is what docs/foundations/state-layers.md tabulates; $elevated-pressed-container-elevation level1"
+    },
+    "state.selected": {
+      "kind": "value",
+      "value": "secondary-container fill, on-secondary-container label, and the outline width drops to ZERO",
+      "source": "The fullest selected state of the three systems, against Salt's — which changes nothing on the chip at all"
+    },
+    "state.disabled": {
+      "kind": "value",
+      "value": "38% on the content, 12% on the stroke — two different opacities in one state",
+      "source": "$disabled-label-text-opacity 0.38 with $flat-disabled-outline-opacity 0.12. Reproduced faithfully with two color-mix() expressions rather than one blanket opacity, so the stroke really does sit at 12% and not at 38%"
+    },
+    "style.chip.background": {
+      "kind": "alias",
+      "slot": "chip-bg"
+    },
+    "style.chip.color": {
+      "kind": "alias",
+      "slot": "chip-fg"
+    },
+    "style.chip.font": {
+      "kind": "alias",
+      "slot": "chip-font"
+    },
+    "style.chip.letter-spacing": {
+      "kind": "alias",
+      "slot": "chip-tracking"
+    },
+    "style.chip.shape": {
+      "kind": "alias",
+      "slot": "chip-radius"
+    },
+    "style.chip.height": {
+      "kind": "value",
+      "value": {
+        "height": "var(--chip-height)"
+      },
+      "source": "$container-height: 32px. No min-height token exists, unlike Salt, which declares both"
+    },
+    "style.chip.padding": {
+      "kind": "alias",
+      "slot": "chip-padding"
+    },
+    "style.chip.padding@with-leading": {
+      "kind": "alias",
+      "slot": "chip-padding-lead-icon"
+    },
+    "style.chip.padding@with-trailing": {
+      "kind": "alias",
+      "slot": "chip-padding-trail-icon"
+    },
+    "style.chip.gap": {
+      "kind": "alias",
+      "slot": "chip-gap"
+    },
+    "style.chip.border-width": {
+      "kind": "alias",
+      "slot": "chip-border-width"
+    },
+    "style.chip.border-color": {
+      "kind": "alias",
+      "slot": "chip-border"
+    },
+    "style.chip.overflow": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-overflow-token provenance entry"
+    },
+    "style.chip.white-space": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no token"
+    },
+    "style.chip.cursor": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-cursor-token provenance entry"
+    },
+    "style.chip.transition": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-motion-token provenance entry"
+    },
+    "style.chip.elevation": {
+      "kind": "value",
+      "value": "none",
+      "source": "$flat-container-elevation: md-sys-elevation.$level0 (input: $container-elevation: level0). Declared rather than left off, because level0 is a real sourced value and because the @elevated block needs a base to override"
+    },
+    "style.chip.elevation@hover": {
+      "kind": "alias",
+      "slot": "chip-shadow-elevated-hover"
+    },
+    "style.chip.hover": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE ON THE CONTAINER, and worth stating: $hover-label-text-color resolves to the SAME colour role as the resting label in every one of the four families, and there is no hover container-color, hover outline-color or hover border token. An M3 chip's entire hover response is its state layer (style.state-layer.opacity@hover) plus, if elevated, its shadow"
+    },
+    "style.chip.focus": {
+      "kind": "value",
+      "value": {
+        "outline": "var(--chip-focus-outline)",
+        "outline-offset": "var(--chip-focus-offset)",
+        "border-color": "var(--chip-focus-border)"
+      },
+      "source": "Two sourced mechanisms on one selector: the focus ring re-pointed to tokens/_md-comp-focus-ring.scss (the chip's own focus-indicator triple is latest-only and absent from versions/v0_192; the values are identical) and $flat-focus-outline-color, which recolours the 1px stroke. On an elevated chip the border-width is 0, so the recolour is invisible there — the correct outcome, and the same 'invisible at width 0' note card.m3.json made"
+    },
+    "style.chip.pressed": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE ON THE CONTAINER — $pressed-label-text-color matches the resting role, and no pressed container-color or outline token exists. The pressed response is the state layer plus, on an elevated chip, the return to level1 (declared, not modelled: it equals the resting shadow, so no rule is needed)"
+    },
+    "style.chip.selected": {
+      "kind": "value",
+      "value": {
+        "background": "var(--chip-bg-selected)",
+        "color": "var(--chip-fg-selected)",
+        "border-width": "0",
+        "--chip-icon": "var(--chip-icon-selected)"
+      },
+      "source": "$flat-selected-container-color / $selected-container-color -> secondary-container; $selected-label-text-color -> on-secondary-container; $flat-selected-outline-width / $selected-outline-width -> 0px; $with-leading-icon-selected-leading-icon-color -> on-secondary-container. The --chip-icon reassignment is DECLARED ON THE CHIP so the leading-icon child inherits it (lesson 2: the var is read on [data-slot=\"chip-leading\"], and a custom property declared on an ancestor is the correct way to reach it)"
+    },
+    "style.chip.disabled": {
+      "kind": "value",
+      "value": {
+        "color": "color-mix(in srgb, var(--chip-disabled-fg) 38%, transparent)",
+        "border-color": "color-mix(in srgb, var(--chip-disabled-fg) 12%, transparent)",
+        "box-shadow": "none",
+        "--chip-icon": "color-mix(in srgb, var(--chip-disabled-fg) 38%, transparent)",
+        "--chip-trailing-color": "color-mix(in srgb, var(--chip-disabled-fg) 38%, transparent)"
+      },
+      "source": "TWO OPACITIES, REPRODUCED AS TWO. $disabled-label-text-opacity 0.38 on the content (label, leading icon, trailing icon, avatar) and $flat-disabled-outline-opacity 0.12 on the stroke. A single blanket `opacity: 0.38` on the chip — the shape Salt's disabled rule really does take — would have put the stroke at 38% instead of 12%. DECLARED APPROXIMATION: the selected+disabled case ($flat-disabled-selected-container-opacity 0.12 on the CONTAINER) is not modelled, because it needs a compound selector the template has no channel for; recorded here"
+    },
+    "style.chip.elevation@elevated": {
+      "kind": "value",
+      "value": {
+        "background": "var(--chip-bg-elevated)",
+        "box-shadow": "var(--chip-shadow-elevated)",
+        "border-width": "0"
+      },
+      "source": "THE LESSON-6 MECHANISM ROW. $elevated-container-color surface-container-low + $elevated-container-elevation level1, and NO elevated outline token exists in any of the four files — so switching to elevated does not thicken or recolour a stroke, it DELETES the stroke and replaces it with a shadow. Shadow-versus-stroke, exactly as card's elevated-versus-outlined, and modelled as structure rather than as an approximation. NOT AVAILABLE ON input-chip, which has no elevated family at all"
+    },
+    "style.chip.kind@suggestion": {
+      "kind": "value",
+      "value": {
+        "--chip-fg": "var(--chip-fg-variant)",
+        "--chip-focus-border": "var(--chip-fg-variant)",
+        "--sl-color": "var(--chip-fg-variant)"
+      },
+      "source": "suggestion-chip is assist-chip with ONE role substituted: a normalized value diff of the two files finds them identical except that every on-surface becomes on-surface-variant (label, hover/focus/pressed/dragged label and state layer, flat-focus-outline) and the icon family is renamed with-icon-* -> with-leading-icon-*. Same height, same shape, same typescale, same icon size, same icon colour (primary), same elevated family. Two files, one substitution"
+    },
+    "style.chip.kind@filter": {
+      "kind": "value",
+      "value": {
+        "--chip-fg": "var(--chip-fg-variant)",
+        "--chip-focus-border": "var(--chip-fg-variant)",
+        "--sl-color": "var(--chip-fg-variant)"
+      },
+      "source": "$unselected-label-text-color and $flat-unselected-focus-outline-color -> on-surface-variant, and the unselected state layers likewise. AT REST, FLAT AND UNSELECTED, A FILTER CHIP AND A SUGGESTION CHIP ARE BYTE-IDENTICAL — stated rather than hidden. They are discriminated instead by three real things: filter has a selected state (three properties, style.chip.selected), filter has a trailing icon part, and suggestion has neither. Also carried, not modelled: filter-chip's state-layer roles SWAP on press — the selected pressed layer is on-surface-variant while its hover/focus are on-secondary-container, and the unselected pressed layer is on-secondary-container while its hover/focus are on-surface-variant"
+    },
+    "style.chip.kind@input": {
+      "kind": "value",
+      "value": {
+        "--chip-fg": "var(--chip-fg-variant)",
+        "--chip-focus-border": "var(--chip-fg-variant)",
+        "--sl-color": "var(--chip-fg-variant)",
+        "--chip-icon": "var(--chip-icon-variant)",
+        "--chip-icon-selected": "var(--chip-icon-primary)"
+      },
+      "source": "The most divergent of the four. Its unselected LEADING ICON is on-surface-variant where every other family's is primary, and its SELECTED leading icon is primary where filter's is on-secondary-container — the two families invert each other on that one part. It is also the only family with an avatar, the only one with no elevated tokens, and the only one whose selection tokens are unprefixed by `flat-` (because there is no elevated form to distinguish from)"
+    },
+    "style.chip.tag-variant@secondary": {
+      "kind": "off"
+    },
+    "style.chip.bordered": {
+      "kind": "off"
+    },
+    "style.chip.tag-rest": {
+      "kind": "off",
+      "note": "no read-only chip in M3; every one of the four families is a control"
+    },
+    "style.leading.box": {
+      "kind": "value",
+      "value": {
+        "width": "var(--chip-icon-size)",
+        "height": "var(--chip-icon-size)"
+      },
+      "source": "18px square, all four families, both editions, density-invariant (M3 has no density capability — docs/foundations/density.md)"
+    },
+    "style.leading.color": {
+      "kind": "alias",
+      "slot": "chip-icon"
+    },
+    "style.leading.color@selected": {
+      "kind": "alias",
+      "slot": "chip-icon-selected"
+    },
+    "style.avatar.box": {
+      "kind": "value",
+      "value": {
+        "width": "var(--chip-avatar-size)",
+        "height": "var(--chip-avatar-size)",
+        "border-radius": "var(--chip-avatar-radius)"
+      },
+      "source": "input-chip $with-avatar-avatar-size 24px + $with-avatar-avatar-shape corner-full. Note it is TALLER than the 18px leading icon and only 8px short of the 32px chip, so an avatar chip is nearly filled edge to edge on the block axis"
+    },
+    "style.trailing.box": {
+      "kind": "value",
+      "value": {
+        "width": "var(--chip-icon-size)",
+        "height": "var(--chip-icon-size)"
+      },
+      "source": "input-chip $with-trailing-icon-trailing-icon-size 18px; filter-chip declares colours for a trailing icon but no size of its own, so it inherits the 18px $with-icon-icon-size — recorded"
+    },
+    "style.trailing.color": {
+      "kind": "alias",
+      "slot": "chip-trailing-color"
+    },
+    "style.check.box": {
+      "kind": "off",
+      "note": "see structure.selection-check — no checkmark part is tokenised"
+    },
+    "style.state-layer.color": {
+      "kind": "alias",
+      "slot": "sl-color"
+    },
+    "style.state-layer.opacity@hover": {
+      "kind": "alias",
+      "slot": "sl-hover"
+    },
+    "style.state-layer.opacity@focus": {
+      "kind": "alias",
+      "slot": "sl-focus",
+      "note": "CARRIED WITH A DISOWNMENT: all four hand-authored wrappers list focus-state-layer-color and focus-state-layer-opacity under $unsupported-tokens, so the shipped library draws a focus INDICATOR but no focus state layer. The generated value is taken and the disagreement recorded — the sixth time this pipeline has hit it"
+    },
+    "style.state-layer.opacity@pressed": {
+      "kind": "alias",
+      "slot": "sl-pressed"
+    },
+    "style.group.box": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-group-token provenance entry. Left visible in the harness rather than borrowed"
+    }
+  }
+}

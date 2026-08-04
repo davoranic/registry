@@ -1,4 +1,17 @@
+# 3-source — the design-system clones. Each is its own git repository (~600MB
+# total) and is read-only input: never edited here, so never versioned here.
+3-source/
+
+# generated output — rebuilt by build.sh, never hand-edited
+1-intro/site/
+2-build/out/*
+# ...except the gate record: CI cannot re-run the gates (no clones), so the
+# status page reports the last real local run rather than inventing one.
+!2-build/out/gates.json
+
 node_modules/
+.claude/
 *.log
 .DS_Store
-.claude/
+.vercel
+.env*

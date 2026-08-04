@@ -1,0 +1,104 @@
+{
+  "system": "salt",
+  "component": "badge",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "600", "file": "fonts/open-sans-600.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "pill-bg": "rgb(0, 120, 207)",
+      "pill-fg": "rgb(255, 255, 255)",
+      "pill-radius": "999px",
+      "pill-z": "1"
+    },
+    "byDensity": {
+      "high":   { "badge-size": "10px", "badge-size-dot": "6px",  "pill-padding": "0 2px", "anchor-right": "4px",  "type-notation": "600 8px/10px 'Open Sans', sans-serif" },
+      "medium": { "badge-size": "13px", "badge-size-dot": "8px",  "pill-padding": "0 4px", "anchor-right": "8px",  "type-notation": "600 10px/13px 'Open Sans', sans-serif" },
+      "low":    { "badge-size": "16px", "badge-size-dot": "10px", "pill-padding": "0 6px", "anchor-right": "12px", "type-notation": "600 12px/16px 'Open Sans', sans-serif" },
+      "touch":  { "badge-size": "18px", "badge-size-dot": "12px", "pill-padding": "0 8px", "anchor-right": "16px", "type-notation": "600 14px/18px 'Open Sans', sans-serif" }
+    }
+  },
+  "modeInvariant": ["pill-bg", "pill-fg"],
+  "provenance": {
+    "canonical-source": "packages/core/src/badge/{Badge.tsx,Badge.css,index.ts} — the whole component, three files and 90 lines of CSS. Read for defaults, composition and the documented contract: packages/core/stories/badge/{badge.stories.tsx,badge.qa.stories.tsx} and site/docs/components/badge/{index,usage,examples,accessibility}.mdx. Resolution through packages/theme/css/next/characteristics/{text,sentiment,content}.css, next/palette/{accent,foreground,corner}.css, next/foundations/color.css and packages/theme/css/foundations/{size,spacing,curve,typography,zindex}.css. Reused rather than re-derived: docs/foundations/{typography,sizes,spacing,shape,colors,density,layers}.md.",
+    "pill-bg": "Badge.css `background: var(--salt-sentiment-accent-background)` -> next/characteristics/sentiment.css:16 -> --salt-palette-accent -> next/palette/accent.css -> --salt-color-blue-500 -> next/foundations/color.css --salt-color-blue-500-rgb: 0, 120, 207. MODE-INVARIANT: accent.css declares --salt-palette-accent: var(--salt-color-blue-500) under BOTH [data-mode=\"light\"] and [data-mode=\"dark\"]. ACCENT SCOPE TRIM: palette-accent also has a data-accent axis (blue default, teal alternate); this column pins blue, matching button/input/select/dialog/tabs/card.salt.json — only calendar.salt.json models byAccent. Recorded, not modelled.",
+    "pill-fg": "Badge.css `color: var(--salt-content-bold-foreground)` -> next/characteristics/content.css:9 -> --salt-palette-foreground-primary-alt -> next/palette/foreground.css, which declares it as --salt-color-white in BOTH the light block (line 4) and the dark block (line 13) -> --salt-color-white-rgb: 255, 255, 255. So a Salt badge is white-on-blue in dark mode too — the whole component is mode-invariant, which no other system's badge is.",
+    "pill-radius": "Badge.css `border-radius: var(--salt-palette-corner-strongest, 9999px)` -> next/palette/corner.css, which assigns corner-strongest to --salt-curve-999 = 999px under BOTH [data-corner=\"rounded\"] (line 7) AND [data-corner=\"sharp\"] (line 15), where every other corner stop collapses to curve-0 under sharp. So the badge stays a pill in the sharp corner edition — density-invariant and corner-edition-invariant (foundations/curve.css declares curve-999: 999px in all four density blocks). Matches docs/foundations/shape.md's 'pill/full ... 999px (all editions)'. NOTE: this is the only var() FALLBACK in the whole component; the generated output uses no fallbacks (lesson 1).",
+    "pill-z": "Badge.css `z-index: var(--salt-zIndex-default)` -> foundations/zindex.css --salt-zIndex-default: 1, density-invariant. Salt is the only one of the three systems with a shared z-index scale at all (docs/foundations/layers.md).",
+    "byDensity.badge-size": "Badge.css declares `--badge-size: var(--salt-text-notation-lineHeight)` on the ROOT .saltBadge and consumes it on the inner pill (`height: var(--badge-size); min-width: var(--badge-size)`). -> next/characteristics/text.css, density blocks .salt-theme-next.salt-density-{high,medium,low,touch}: notation lineHeight 10 / 13 / 16 / 18px. Salt sizes its badge off a TYPE metric rather than off the size scale — which is why the dot form has to override --badge-size itself rather than only a height.",
+    "byDensity.badge-size-dot": "Badge.css `.saltBadge-dotBadge { height: var(--salt-size-adornment); min-width: var(--salt-size-adornment); --badge-size: var(--salt-size-adornment) }` -> foundations/size.css --salt-size-adornment: 6 / 8 / 10 / 12px by density (high/medium/low/touch). FROZEN-TOKEN CHECK, run in both directions per lesson 7: size-adornment IS on the DENSITY scale (docs/foundations/sizes.md line 11), so snapshotting the medium 8px would have been wrong at three of four densities. Nothing in this component is on the size-fixed-* or spacing-fixed-* scales.",
+    "byDensity.pill-padding": "Badge.css `padding-left: var(--salt-spacing-50); padding-right: var(--salt-spacing-50)` and NO block padding -> foundations/spacing.css spacing-50 = calc(0.5 * spacing-100), with spacing-100 = 4 / 8 / 12 / 16px by density, giving 2 / 4 / 6 / 8px. Source carries a comment on this exact declaration: `/* Should this vary according to touch size */`.",
+    "byDensity.anchor-right": "Badge.css `.saltBadge-topRight { right: var(--salt-spacing-100) }` -> foundations/spacing.css spacing-100 = 4 / 8 / 12 / 16px by density. The DOT form overrides this with calc(size-adornment / 2) — see style.badge.anchor@dot.",
+    "byDensity.type-notation": "Badge.css `font-size: var(--salt-text-notation-fontSize); font-weight: var(--salt-text-notation-fontWeight); font-family: var(--salt-text-fontFamily); line-height: var(--salt-text-notation-lineHeight)`. -> next/characteristics/text.css: notation fontSize/lineHeight 8/10 . 10/13 . 12/16 . 14/18 by density (high/medium/low/touch); --salt-text-notation-fontWeight: var(--salt-typography-fontWeight-semiBold) = 600 (foundations/typography.css:9); --salt-text-fontFamily: var(--salt-typography-fontFamily-openSans) = 'Open Sans'. Matches docs/foundations/typography.md line 58's caption/notation row (10px/13px at medium). SEMIBOLD is the finding: Salt's badge is the heaviest of the three (600 against shadcn's and M3's 500) and the smallest at 10px.",
+    "no-variant-axis": "CONFIRMED ABSENCE, checked against the whole component and its docs: BadgeProps declares exactly three props — `value?: number | string`, `children?: ReactNode`, `max?: number`. There is no variant, appearance, sentiment, tone, status, size, emphasis or disabled prop, and Badge.css declares exactly one background and one colour. A Salt badge is always accent blue. Its usage.mdx makes the omission deliberate: 'To communicate status through color, such as red/amber/green statuses. Instead, use Pill.'",
+    "no-interaction-rules": "CONFIRMED ABSENCE: Badge.css contains no :hover, :focus, :focus-visible, :active or disabled selector, and Badge.tsx binds no handler and sets no tabIndex or cursor. usage.mdx states the intent: 'Badges are independent of user action'.",
+    "no-icon-and-no-gap": "CONFIRMED ABSENCE: the pill's only child is the formatted value string. There is no icon rule, no gap, no ::before and no ::after in Badge.css.",
+    "children-means-host-not-label": "API divergence recorded rather than smoothed: in Salt, `children` is the HOST the badge anchors to and `value` is the label. The chassis separates them (`host` and `value`/`children`) so that shadcn and M3, whose children ARE the label, can share the same component — see docs/BADGE-MATRIX.md's declared approximations."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "wrapper", "source": "Badge.tsx returns <span className=saltBadge>{children}<span className=saltBadge-badge>{valueText}</span></span> — always two spans, even for an inline badge, because .saltBadge is the position:relative context the anchored form absolutely positions out of" },
+    "structure.label-format": { "kind": "value", "value": "clamped-value", "source": "Badge.tsx `const valueText = typeof value === \"number\" && value > max ? `${max}+` : value` — the component formats its own label from a value prop; children mean something else entirely" },
+    "structure.dot": { "kind": "value", "value": true, "source": "Badge.css .saltBadge-dotBadge + Badge.tsx `const dotBadge = typeof value === \"undefined\"`; site/docs/components/badge/examples.mdx has dedicated 'Dot badge' and 'Inline dot badge' sections" },
+    "structure.anchoring": { "kind": "value", "value": true, "source": "Badge.css .saltBadge-topRight + Badge.tsx `[withBaseName(\"topRight\")]: children`; examples.mdx: 'The Badge is anchored to the top-right corner when attached to a child component such as a button'" },
+    "structure.icon": { "kind": "off", "note": "CONFIRMED ABSENCE — no icon rule and no gap anywhere in Badge.css; the pill's only content is the formatted value" },
+
+    "prop.content": { "kind": "value", "value": ["dot", "label"], "source": "Badge.tsx: `value` is optional and `dotBadge = typeof value === \"undefined\"`, so a bare <Badge /> renders a DOT. DOT IS THE SOURCE DEFAULT and is therefore value[0] — a label-first list would have made every unqualified Salt badge in the harness render as a pill against source" },
+    "prop.placement": { "kind": "value", "value": ["inline", "anchored"], "source": "Badge.tsx JSDoc on `children`: 'If a child is provided the Badge will render top right. By defualt renders inline.' (typo in source). Inline is the stated default and is value[0]" },
+    "prop.variant": { "kind": "off", "note": "CONFIRMED ABSENCE — see the no-variant-axis provenance entry. Three props, none of them an appearance axis" },
+    "prop.interaction": { "kind": "value", "value": ["static"], "source": "single-valued confirmed absence: no handler, no tabIndex, no asChild, no interaction rule in the CSS" },
+    "prop.max": { "kind": "value", "value": 999, "source": "Badge.tsx `{ value, max = 999, ... }` — a single sourced default, not a capability list. usage.mdx: 'If you don't pass a max value to the component, it will truncate the value after three digits displaying 999+ for any values over 999'" },
+
+    "behavior.role": { "kind": "value", "value": "none — no role and no aria-* on either span", "source": "Badge.tsx writes className, ref and {...rest} only. accessibility.mdx puts the whole contract on the consumer: 'ensure the focusable element has an aria-label or aria-labelledby attribute that describes the badge, such as \"9 notifications\"'" },
+    "behavior.dot-detection": { "kind": "value", "value": "inferred from the ABSENCE of a value", "source": "Badge.tsx `const dotBadge = typeof value === \"undefined\"`" },
+    "behavior.anchor-detection": { "kind": "value", "value": "inferred from the PRESENCE of a child", "source": "Badge.tsx `[withBaseName(\"topRight\")]: children`" },
+    "behavior.value-clamping": { "kind": "value", "value": "numbers above max render as `${max}+`; strings are never clamped", "source": "Badge.tsx `typeof value === \"number\" && value > max ? `${max}+` : value`; usage.mdx confirms the string half: 'When you pass a string, the badge will not clamp the value'" },
+    "behavior.activation": { "kind": "value", "value": "none — inert", "source": "no onClick, no onKeyDown, no tabIndex, no cursor rule. usage.mdx: 'Badges are independent of user action'; 'To trigger an immediate action ... Instead, use Pill'" },
+    "behavior.live-region": { "kind": "off", "note": "CONFIRMED ABSENCE — no aria-live, aria-atomic or role=status. accessibility.mdx relies on the badge being read when navigated to ('the screen reader automatically announces the contents of the badge'), so a Salt badge whose count changes while unfocused announces nothing" },
+
+    "slot.label": { "kind": "value", "value": "the formatted `value` prop (number or string)", "note": "not children — see structure.label-format" },
+    "slot.host": { "kind": "value", "value": true, "source": "badge.stories.tsx Icon/MaxNumber/DefaultTruncation/String/MultipleButtons/DotBadge all pass a <Button> with an icon as children. DECLARED COMPOSITION to `button` and to an icon set" },
+    "slot.icon": { "kind": "off" },
+
+    "state.rest": { "kind": "value", "value": "accent blue fill, white label — MODE-INVARIANT in both properties", "note": "the only badge of the three that looks identical in dark mode" },
+    "state.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — no :hover selector in Badge.css" },
+    "state.focus": { "kind": "off", "note": "CONFIRMED ABSENCE — no :focus or :focus-visible selector; the badge is never focusable" },
+
+    "style.badge.background": { "kind": "alias", "slot": "pill-bg" },
+    "style.badge.color": { "kind": "alias", "slot": "pill-fg" },
+    "style.badge.font": { "kind": "alias", "slot": "type-notation" },
+    "style.badge.letter-spacing": { "kind": "off", "note": "CONFIRMED ABSENCE — Badge.css declares no letter-spacing" },
+    "style.badge.shape": { "kind": "alias", "slot": "pill-radius" },
+    "style.badge.size": { "kind": "value", "value": { "height": "var(--badge-size)", "min-width": "var(--badge-size)" }, "source": "Badge.css `height: var(--badge-size); min-width: var(--badge-size)` with --badge-size = text-notation-lineHeight" },
+    "style.badge.padding": { "kind": "alias", "slot": "pill-padding" },
+    "style.badge.gap": { "kind": "off", "note": "CONFIRMED ABSENCE — nothing to space" },
+    "style.badge.border-width": { "kind": "off", "note": "CONFIRMED ABSENCE — no border token" },
+    "style.badge.border-color": { "kind": "off" },
+    "style.badge.overflow": { "kind": "off", "note": "CONFIRMED ABSENCE — no overflow rule. usage.mdx handles long labels in PROSE instead: 'avoid using a badge with more than four to six characters. If needed, truncate strings exceeding this count with an ellipsis' — a consumer instruction, not a component rule" },
+    "style.badge.white-space": { "kind": "value", "value": "nowrap", "source": "Badge.css `white-space: nowrap`" },
+    "style.badge.z-index": { "kind": "alias", "slot": "pill-z" },
+    "style.badge.margin": { "kind": "value", "value": "auto", "source": "Badge.css `margin: auto` on the pill. The pill is a flex item of the inline-flex .saltBadge wrapper, so auto centres it on the cross axis; it is deliberately NOT promoted to the chassis base, because on shadcn's and M3's wrapper-less badges an auto margin in a consumer flex row would absorb free space and push them apart" },
+    "style.badge.font-smoothing": { "kind": "value", "value": { "-webkit-font-smoothing": "antialiased", "-moz-osx-font-smoothing": "grayscale" }, "source": "Badge.css, last two declarations of .saltBadge-badge" },
+    "style.badge.transition": { "kind": "off", "note": "CONFIRMED ABSENCE — no transition and nothing that changes" },
+    "style.badge.hover": { "kind": "off" },
+    "style.badge.focus": { "kind": "off" },
+    "style.badge.dot": {
+      "kind": "value",
+      "value": { "height": "var(--badge-size-dot)", "min-width": "var(--badge-size-dot)", "padding": "0", "--badge-size": "var(--badge-size-dot)" },
+      "source": "Badge.css `.saltBadge-dotBadge { height: var(--salt-size-adornment); min-width: var(--salt-size-adornment); padding: 0; --badge-size: var(--salt-size-adornment) }`. The --badge-size redeclaration is ON THE PILL, not on the wrapper, and that placement is load-bearing: style.badge.anchor's translateY reads --badge-size on the element the transform applies to (lesson 2). Reproduced with the same placement"
+    },
+    "style.badge.anchor": {
+      "kind": "value",
+      "value": { "position": "absolute", "right": "var(--anchor-right)", "transform": "translateX(100%) translateY(calc(-1 * (var(--badge-size) / 2)))" },
+      "source": "Badge.css `.saltBadge-topRight { position: absolute; right: var(--salt-spacing-100); transform: translateX(100%) translateY(calc(-1 * (var(--badge-size) / 2))) }`. No `top` is declared — the vertical placement is the static position plus a half-height lift"
+    },
+    "style.badge.anchor@dot": { "kind": "value", "value": "calc(var(--badge-size-dot) / 2)", "source": "Badge.css `.saltBadge-dotBadge.saltBadge-topRight { right: calc((var(--salt-size-adornment) / 2)) }` — the dot sits half its own width in, where the labelled form sits a full spacing-100 in" },
+
+    "style.badge.variant@secondary": { "kind": "off" },
+    "style.badge.variant@destructive": { "kind": "off" },
+    "style.badge.variant@outline": { "kind": "off" },
+    "style.badge.variant@ghost": { "kind": "off" },
+    "style.badge.variant@link": { "kind": "off" },
+
+    "style.icon.box": { "kind": "off" }
+  }
+}

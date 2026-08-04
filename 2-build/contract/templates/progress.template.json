@@ -1,0 +1,524 @@
+{
+  "component": "progress",
+  "openUiAnatomy": "no published Open UI progress anatomy — union of salt-ds's packages/core/src/progress/ (ONE directory, TWO peer exports: LinearProgress and CircularProgress, sharing an identical prop set, an identical ARIA contract and an identical label formatter), shadcn's Progress (a Radix Progress.Root + Progress.Indicator pair, LINEAR ONLY), and Material 3's MERGED md.comp.progress-indicator token family — _md-comp-progress-indicator.scss (colour + shape, shared) plus _md-comp-progress-indicator-{linear,circular}.scss (geometry, per shape). ONE canonical component with a SHAPE axis; see docs/PROGRESS-MATRIX.md's scope note for the three boundary decisions (determinate vs indeterminate, linear vs circular, and the spinner overlap).",
+  "behavior": {
+    "pattern": "A non-interactive OUTPUT that reports how far along a task is. No system gives it a tab stop, a keyboard pattern, a handler, a hover, a focus ring or a disabled state — the entire behavioural surface is (a) which ARIA a progressbar publishes and when, (b) how DETERMINACY is inferred from the value rather than selected by a prop, and (c) how the component formats the value into a human-readable label. Unlike spinner, where three systems chose three different roles, all three agree on role=progressbar here; the divergence has moved into WHICH value attributes each one writes.",
+    "chassis": "skeleton/progress.tsx — written from the template's part union (track, groove, buffer, indicator, stop-indicator, label; a linear box or a circular SVG ring chosen by prop.shape). Inherits from no design system: the DOM shape, the fill mechanism, the ARIA range contract and the label formatter are all received as config. THE PERCENTAGE IS SET INLINE ON THE ELEMENT THAT USES IT and never routed through a theme-scoped custom property (docs/SELECT-MATRIX.md's frozen-width bug, lesson 2) — source does the same in both Salt and shadcn. Every behavior row below is implemented in that file and asserted by scripts/check-progress-behavior.mjs, which exists because locked behavior rows have NO generator gate (docs/SELECT-MATRIX.md finding 16)."
+  },
+  "skeletonParams": {
+    "shape": ["linear", "circular"],
+    "determinacy": ["determinate", "indeterminate"],
+    "fillMechanism": ["width", "translate", "scale"],
+    "buffer": [true, false],
+    "stopIndicator": [true, false],
+    "label": [true, false],
+    "indeterminateBand": [true, false],
+    "indeterminateCircular": [true, false],
+    "role": ["progressbar"],
+    "valueRange": ["min-max", "max-only", "none"],
+    "valueText": [true, false],
+    "labelFormat": ["percent-spaced"],
+    "completeState": [true, false],
+    "hideLabel": [true, false],
+    "max": [100],
+    "min": [0]
+  },
+  "base": {
+    "[data-slot=\"progress\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "align-items": "center",
+      "position": "relative"
+    },
+    "[data-slot=\"progress\"][data-shape=\"linear\"]": {
+      "flex-direction": "row",
+      "inline-size": "100%"
+    },
+    "[data-slot=\"progress-track\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "flex": "1 1 auto",
+      "min-inline-size": "0",
+      "inline-size": "100%",
+      "overflow": "hidden"
+    },
+    "[data-slot=\"progress-groove\"]": {
+      "position": "absolute",
+      "inset-inline": "0",
+      "inset-block-start": "0"
+    },
+    "[data-slot=\"progress-indicator\"], [data-slot=\"progress-buffer\"]": {
+      "position": "absolute",
+      "inset-block": "0",
+      "inset-inline-start": "0",
+      "transform-origin": "left center"
+    },
+    "[data-slot=\"progress-indicator\"]": {
+      "z-index": "2"
+    },
+    "[data-slot=\"progress-indicator\"][data-indeterminate]": {
+      "inline-size": "66%",
+      "animation-name": "progress-indeterminate-band",
+      "animation-iteration-count": "infinite"
+    },
+    "[data-slot=\"progress-stop-indicator\"]": {
+      "position": "absolute",
+      "inset-block-start": "50%",
+      "translate": "0 -50%",
+      "z-index": "3"
+    },
+    "[data-slot=\"progress-ring\"]": {
+      "display": "block",
+      "flex-shrink": "0",
+      "overflow": "visible",
+      "rotate": "-90deg"
+    },
+    "[data-slot=\"progress-ring-track\"], [data-slot=\"progress-ring-indicator\"]": {
+      "fill": "none",
+      "cx": "50%",
+      "cy": "50%"
+    },
+    "[data-slot=\"progress-label\"]": {
+      "margin": "0",
+      "flex-shrink": "0",
+      "white-space": "nowrap",
+      "color": "inherit"
+    },
+    "[data-slot=\"progress\"][data-shape=\"circular\"]": {
+      "flex-direction": "row",
+      "inline-size": "auto"
+    },
+    "[data-slot=\"progress\"][data-shape=\"circular\"] [data-slot=\"progress-label\"]": {
+      "position": "absolute",
+      "inset": "0",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "padding": "0"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.shape",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "shape",
+      "note": "THE STRUCTURE AXIS, and it is geometry rather than a colour delta (lesson 6). A linear progress is a clipped horizontal box with an absolutely-positioned fill inside it; a circular progress is a ring whose arc length is the value. They share no element. Salt [\"linear\", \"circular\"]: TWO PEER EXPORTS FROM ONE DIRECTORY — packages/core/src/progress/index.tsx re-exports both, site/docs/components/progress/index.mdx calls them \"Two variants ... available to accommodate different layouts\", and their prop interfaces are character-for-character the same five props. shadcn [\"linear\"]: a CONFIRMED ABSENCE — apps/v4/registry/new-york-v4/ui/progress.tsx is the only progress file and it is a horizontal bar; shadcn has no circular progress anywhere. M3 [\"linear\", \"circular\"]: the strongest evidence of the three, because M3 MERGED them — the older _md-comp-{linear,circular}-progress-indicator.scss files carry, on every single token, `@deprecated Token set deprecated in favour of a merged token set which combines the circular and linear progress indicator. Please use \"md.com.progress-indicator\" tokens instead.` NO SOURCE DEFAULT EXISTS in any column (Salt's two exports are peers, M3's two sub-namespaces are peers), so `linear` is listed first as a DECLARED REGISTRY ORDERING CHOICE — it is the only shape all three columns express — and that is stated rather than passed off as a source default (same treatment TABS-MATRIX.md gave M3's emphasis and CARD-MATRIX.md gave M3's variant)."
+    },
+    {
+      "id": "structure.fill-mechanism",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "fillMechanism",
+      "note": "THREE SYSTEMS, THREE DIFFERENT MECHANISMS for the same pixel. Salt = \"width\": LinearProgress.tsx computes `const barStyle = { width: isIndeterminate ? undefined : `${progress}%` }` and puts it INLINE on the bar div. shadcn = \"translate\": progress.tsx puts `style={{ transform: `translateX(-${100 - (value || 0)}%)` }}` inline on a full-width indicator inside an `overflow-hidden` track — which is why its own RTL example has to add `className=\"rtl:rotate-180\"` (apps/v4/examples/radix/progress-rtl.tsx), a physical-axis transform being flipped by hand. M3 = \"scale\": material-web's own tokens/_md-comp-linear-progress.scss puts `active-indicator-shape` under $unsupported-tokens with the comment `// can only control track since scaling is used on buffer/progress` — i.e. the shipped M3 library scales the indicator, and that is precisely why it cannot honour a corner radius on it. Not cosmetic: the mechanism decides whether the fill can be rounded, whether it composites on the GPU, and whether it is direction-aware. IN ALL THREE COLUMNS THE VALUE IS AN INLINE STYLE ON THE ELEMENT THAT CONSUMES IT, never a theme-scoped custom property — the chassis does the same, deliberately (lesson 2)."
+    },
+    {
+      "id": "structure.track",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "info",
+      "note": "SHARED INVARIANT — every system draws a resting rail behind the fill, and unlike spinner (where only M3 had a track) there is no column to switch off. Salt: `.saltLinearProgress-track` / `.saltCircularProgress-track`. shadcn: the Root element itself carries `bg-primary/20`, so its track is a background rather than a child element. M3: `track-color` / `track-thickness` / `track-shape` in the merged family. The chassis paints the groove on a dedicated full-bleed child in every column — see the declared approximation in docs/PROGRESS-MATRIX.md — because Salt's groove is thinner than its container and has to be positioned, and shadcn's and M3's are visually identical whether painted on the container or on a 100%-tall child."
+    },
+    {
+      "id": "structure.buffer",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "buffer",
+      "note": "SALT ONLY, and it is a real extra PART in both shapes. `bufferValue?: number` renders a second indicator BEHIND the active one: linear gets `.saltLinearProgress-buffer` (a `container-primary-background` fill with a 1px accent `outline` at a −1px offset, i.e. an outlined hollow bar, at z-index 1 under the solid bar's z-index 2); circular gets four more nested overlay divs (`bufferOverlay{Right,Left}` / `bufferSubOverlay{Right,Left}` / `bufferBackground` / `bufferBorder`). shadcn: OFF — a CONFIRMED ABSENCE; neither progress.tsx nor the Radix primitive has any second value. M3: OFF — no buffer token in either edition of any of the five progress files, and the only mention of the word is in material-web's `// can only control track since scaling is used on buffer/progress` comment, which names a buffer the token set does not describe."
+    },
+    {
+      "id": "structure.stop-indicator",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "stopIndicator",
+      "note": "M3 ONLY, AND THIS ROW IS THE DEBT docs/SPINNER-MATRIX.md finding 6 LEFT — it recorded `stop-indicator-*` as living in the same token file spinner drew from, out of scope there, and deferred to \"the future `progress` component's matrix, which will need to explicitly claim those\". CLAIMED HERE. It is a real extra PART and not a style (lesson 6): a small dot pinned at the 100% end of the track, marking the target the fill is travelling towards. Four tokens across two files: `stop-indicator-color` -> primary and `stop-indicator-shape` -> corner-full in the shared _md-comp-progress-indicator.scss, plus `linear.stop-indicator.size` 4px and `linear.stop-indicator.trailing-space` 0px in _md-comp-progress-indicator-linear.scss. It exists ONLY in `latest`: the whole merged family is absent from versions/v0_192, which is one of the two reasons this matrix pins latest. Salt and shadcn: OFF — neither has any end marker."
+    },
+    {
+      "id": "structure.label",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "label",
+      "note": "SALT ONLY, and it is ON BY DEFAULT — `hideLabel = false`, so a bare Salt progress SHOWS ITS PERCENTAGE. It is a real component part, `<Text styleAs=\"h2\" className={withBaseName(\"progressLabel\")}>`, and it moves between the shapes inside one system: linear puts it BESIDE the bar (a flex sibling with `padding-left: spacing-100`), circular puts it OVER the ring (`position: absolute`, full-size, flex-centred). shadcn: OFF — a CONFIRMED ABSENCE in the component, and its own examples supply one by COMPOSITION instead (apps/v4/examples/radix/progress-label.tsx wraps the bar in `Field` + `FieldLabel` and hand-writes `<span className=\"ml-auto\">66%</span>`), which is a different contract: consumer-owned text that the component neither formats nor keeps in sync. M3: OFF — no label, typescale or text token in any of the five progress files in either edition."
+    },
+    {
+      "id": "structure.indeterminate-band",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "indeterminateBand",
+      "note": "The LINEAR indeterminate mechanism — a fixed-length band travelling across the track, which is a DIFFERENT MECHANISM from a growing fill and not a state of one (lesson 6). Salt: ON — `.saltLinearProgress-indeterminate` sets `width: 66%` and `animation: 1.8s ease-in-out infinite salt-indeterminate-progress-bar`, whose keyframe runs `translateX(-100%)` -> `155%` at 60% -> `200%`, with a source comment explaining the 155%: `/* 155% is slightly more than moving the bar off screen (with width of 66%) */`. shadcn: OFF, AND IT IS A SOURCED ABSENCE WITH A VISIBLE CONSEQUENCE — Radix fully supports indeterminate (value null -> data-state=\"indeterminate\", no aria-valuenow), but shadcn's own style line is `translateX(-${100 - (value || 0)}%)`, so a null value coerces to 0 and an indeterminate shadcn progress renders as A MOTIONLESS EMPTY BAR. Its indeterminate support is ARIA-only. M3: ON — evidenced by a token rather than by an element: `linear.indeterminate.active-indicator.wave.wavelength: 20px` exists in _md-comp-progress-indicator-linear.scss and is the ONLY indeterminate-qualified token in M3's whole progress family, which proves the mode exists even though the clone carries no geometry or duration for it."
+    },
+    {
+      "id": "structure.indeterminate-circular",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "indeterminateCircular",
+      "note": "OFF IN ALL THREE COLUMNS, AND THE ROW EXISTS TO MAKE THE SPINNER BOUNDARY A MATRIX CELL RATHER THAN AN ASSUMPTION — the same treatment badge.template.json gave behavior.live-region. `spinner` owns the indeterminate circular glyph; `progress` owns determinate (both shapes) plus indeterminate LINEAR. Each column's reason differs and each is sourced. Salt: CircularProgress.tsx defaults `value = 0` and writes `aria-valuenow={Math.round(value)}` UNCONDITIONALLY — it has no indeterminate branch at all, where LinearProgress.tsx does (`const isIndeterminate = value === undefined && bufferValue === undefined`). Salt's own usage.mdx draws the same line in prose: \"When a task or operation will take an indeterminate length of time to complete. Instead, use Spinner.\" shadcn: no circular progress of any kind; its indeterminate circular is the separate Spinner component (lucide Loader2Icon + animate-spin), already matrixed. M3: the merged family DOES cover indeterminate circular, and docs/SPINNER-MATRIX.md already claims that reading of exactly these tokens — turning it on here would be the double-ownership the boundary decision forbids. Cross-referenced, not re-modelled."
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "role",
+      "note": "ALL THREE AGREE ON role=\"progressbar\", AND THE UNANIMITY IS THE FINDING — it is the exact inverse of docs/SPINNER-MATRIX.md finding 1, where the same three systems produced role=img, role=status and role=progressbar for one concept. Salt: LinearProgress.tsx and CircularProgress.tsx both hardcode `role=\"progressbar\"` on the root div [S]. shadcn: primitives/packages/react/progress/src/progress.tsx writes `role=\"progressbar\"` on Primitive.div [S] — grepped in the Radix clone, per the brief's behaviour-only allowance. M3: [R] progressbar, the APG convention; material-web is a tokens-only clone with no element. Computed from config rather than hardcoded so that the agreement is a value in the matrix rather than an assumption in the chassis. NOTE THE CONTRAST WITH BADGE, where the same investigation found all three systems shipping ZERO aria — here all three ship a full progressbar contract, so the absence-vs-presence question really does have to be re-grepped per component."
+    },
+    {
+      "id": "behavior.value-range",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "config",
+      "param": "valueRange",
+      "note": "WHERE THE ARIA CONTRACTS ACTUALLY DIVERGE. Salt = \"min-max\": both `min` (default 0) and `max` (default 100) are real props, both are written out (`aria-valuemin={min}` / `aria-valuemax={max}`), and the percentage is normalised over the whole range — `((value - min) / (max - min)) * 100` — so `min={20} max={40} value={35}` publishes valuemin 20, valuemax 40, valuenow 35 and DISPLAYS \"75 %\". Its own e2e test asserts exactly that (packages/core/src/__tests__/__e2e__/progress/LinearProgress.cy.tsx). shadcn = \"max-only\": Radix takes `max` but HAS NO `min` PROP AT ALL and hardcodes `aria-valuemin={0}`, so a shadcn progress cannot express a non-zero floor — a real expressibility ceiling, not a missing default. M3 = \"none\": [R], no element and no token implies one."
+    },
+    {
+      "id": "behavior.determinacy-detection",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "DETERMINACY IS INFERRED FROM THE VALUE, NOT SELECTED BY A PROP — in BOTH systems that have an element, which is why prop.determinacy is a CAPABILITY LIST and not an ordered enum (lesson 3). Salt: `const isIndeterminate = value === undefined && bufferValue === undefined` — note that a buffer alone is enough to make it determinate. shadcn/Radix: `const value = isValidValueNumber(valueProp, max) ? valueProp : null` and `getProgressState(value, max)` returns 'indeterminate' | 'loading' | 'complete', published as `data-state` on BOTH the root and the indicator. AND THERE IS AN ASYMMETRY INSIDE SALT: LinearProgress infers, CircularProgress cannot — it defaults `value = 0`, so a bare `<CircularProgress />` is a determinate ring at 0%, not an indeterminate one. The chassis reproduces both halves: it infers from `value === undefined`, and it CLAMPS to determinate whenever the shape is circular and the column's structure.indeterminate-circular is off."
+    },
+    {
+      "id": "behavior.value-now",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "`aria-valuenow` IS OMITTED WHEN THE VALUE IS UNKNOWN, in both systems that have an element, and both state it twice. Salt: `aria-valuenow={value === undefined ? undefined : Math.round(value)}` — and its e2e test asserts `should(\"not.have.attr\", \"aria-valuenow\")` on the indeterminate story while asserting all three attributes on the determinate one. Radix: `aria-valuenow={isNumber(value) ? value : undefined}`. TWO DIVERGENCES INSIDE THE AGREEMENT. (1) SALT HAS TWO DIFFERENT NOTIONS OF \"WE DO NOT KNOW\", KEYED ON DIFFERENT CONDITIONS: the ARIA omission tests the VALUE ALONE, while behavior.determinacy-detection's visual indeterminacy tests the value AND the buffer. They disagree in exactly one case — `<LinearProgress bufferValue={65} />` renders a STATIC 0% bar labelled \"0 %\" and yet publishes NO aria-valuenow. A chassis that keyed both off one flag would publish aria-valuenow=\"0\" there; this one keys them separately, as source does. (2) SALT ROUNDS THE PUBLISHED VALUE and Radix does not — `value={35.6}` announces 36 in Salt and 35.6 in shadcn. M3: [R]."
+    },
+    {
+      "id": "behavior.value-text",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "valueText",
+      "note": "SHADCN ONLY, AND IT IS THE EXACT MIRROR OF structure.label. Radix writes `aria-valuetext={valueLabel}` from a `getValueLabel` prop whose default is ``${Math.round((value / max) * 100)}%`` — so a shadcn progress announces a percentage it never draws. Salt draws a percentage (\"75 %\", with a space) and writes NO aria-valuetext at all, so a screen reader gets the raw valuenow. TWO SYSTEMS SOLVED THE SAME PROBLEM IN OPPOSITE CHANNELS, one visual and one assistive, and neither did both. M3: [R] OFF."
+    },
+    {
+      "id": "behavior.label-formatting",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "labelFormat",
+      "note": "SALT ONLY — \"percent-spaced\" — and content formatting IS character (CLAUDE.md law 3), so the exact string matters. Determinate: ``${Math.round(progress)} %`` — rounded, and WITH A SPACE BEFORE THE PERCENT SIGN, which is neither `66%` (Radix's aria-valuetext) nor `66 percent`. Indeterminate: the literal `\"— %\"` (EM DASH, space, percent) — a real designed string for \"we do not know yet\", not a blank. And `progress` here is the NORMALISED figure, not `value`: `((value - min) / (max - min)) * 100`, so the label and `aria-valuenow` deliberately disagree whenever `min` is non-zero. Salt's own examples.mdx adds the rule for the buffer: \"The buffer is a pending value so will not affect the progress label.\" shadcn and M3: \"none\" — neither formats anything."
+    },
+    {
+      "id": "behavior.buffer-visibility",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "SALT ONLY, and it is inference again rather than a prop. Linear renders the buffer element only when `bufferValue && bufferValue > 0` — a TRUTHY test, so `bufferValue={0}` renders nothing while still counting as \"determinate\" for isIndeterminate, which is a genuine source edge. Circular renders its four buffer overlay divs only when the NORMALISED `buffer > 0`. In both shapes the buffer is excluded from the label and from every ARIA attribute: it is a purely visual second track with no assistive representation at all. shadcn and M3: OFF."
+    },
+    {
+      "id": "behavior.non-interactive",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "SHARED INVARIANT, confirmed by grep in all three: no `tabIndex`, no `onClick`, no `onKeyDown`, no `:hover`, no `:focus`, no `:focus-visible`, no `disabled` prop and no `:disabled` selector anywhere in LinearProgress.{tsx,css}, CircularProgress.{tsx,css}, progress.tsx, the Radix primitive, or any of the five M3 token files in either edition. A progress bar is an OUTPUT. This is also the structural line against `slider`, which shares Salt's `--salt-sentiment-neutral-track` and `--salt-size-bar` tokens and is an INPUT with a focusable thumb — see docs/PROGRESS-MATRIX.md's scope note."
+    },
+    {
+      "id": "prop.shape",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "shape",
+      "note": "The instance-facing face of structure.shape. Salt [\"linear\", \"circular\"], M3 [\"linear\", \"circular\"], shadcn [\"linear\"]. NO SOURCE DEFAULT EXISTS — see structure.shape; `linear` is first as a declared registry ordering choice, not as a sourced default. Discriminated by a real skeleton branch (a clipped box vs an SVG ring — they share no element) and by nine CSS rows gated on [data-shape]."
+    },
+    {
+      "id": "prop.determinacy",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "determinacy",
+      "note": "A CAPABILITY LIST, NOT AN ORDERED ENUM WITH A DEFAULT — declared as such because the ordering convention differs from the enum rows (the same declaration card.template.json's prop.disabled/prop.hoverable and tabs' [true,false] rows had to make). The skeleton never reads value[0]: it INFERS determinacy from the per-instance `value` exactly as Salt and Radix do (see behavior.determinacy-detection). All three columns list both values, but for three different reasons and with three different renderings — Salt animates a travelling band, shadcn renders a motionless empty bar (structure.indeterminate-band OFF), and M3 has the mode with no geometry token for it. Listing determinate first would have been meaningless here and indeterminate first actively misleading, so the list is capability-ordered and the row says so."
+    },
+    {
+      "id": "prop.hide-label",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "hideLabel",
+      "note": "SALT ONLY: `hideLabel?: boolean`, and the JSDoc states the default in words — \"Whether to hide the text label within the progress. Defaults to `false`.\" A CAPABILITY LIST, written DEFAULT-FIRST as [false, true] so that value[0] and the source default agree even though the skeleton reads the per-instance prop rather than value[0]. shadcn and M3: OFF — neither has a label to hide."
+    },
+    {
+      "id": "prop.max",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "max",
+      "note": "A SINGLE SOURCED DEFAULT in two columns, not a list. Salt: `max = 100` destructured in both LinearProgress.tsx and CircularProgress.tsx. shadcn: Radix's `const DEFAULT_MAX = 100`, applied through `isValidMaxNumber` — and Radix additionally `console.error`s an invalid max and falls back, which Salt does not. M3: OFF, no element."
+    },
+    {
+      "id": "prop.min",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "min",
+      "note": "SALT ONLY: `min = 100`? no — `min = 0`, a real prop in both exports, written to `aria-valuemin` and used as the floor of the normalisation. shadcn: OFF, AND IT IS A CEILING RATHER THAN AN OMISSION — Radix has no min prop and hardcodes `aria-valuemin={0}`, so the concept is unreachable. M3: OFF."
+    },
+    {
+      "id": "slot.label",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "COMPONENT-OWNED IN ONE SYSTEM AND CONSUMER-OWNED IN ANOTHER, which is a stronger divergence than a missing part. Salt formats the string itself and renders it through its own `Text` component at `styleAs=\"h2\"` — DECLARED COMPOSITION to a future `text` component, the same declaration CARD-MATRIX.md made for Salt's card headings. shadcn has no label part and its own examples build one out of `Field` + `FieldLabel` with a hand-written percentage — DECLARED COMPOSITION to `field`/`label`, both unbuilt. M3 has neither."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION, same pattern as card.template.json and badge.template.json: (a) `text` — Salt's label is a `<Text styleAs=\"h2\">`, and the h2 typescale is the only typography anywhere in this component in any system; (b) `field` / `label` — shadcn's progress-label and progress-rtl examples both wrap the bar in `Field` + `FieldLabel`, which is where a shadcn progress's visible percentage actually lives; (c) `button` — Salt's own stories drive every progress example with Start/Stop/Reset buttons (packages/core/stories/progress/*.stories.tsx, useProgressingValue.tsx), i.e. the component is always shown under external control; (d) `card` — shadcn's savings-progress block puts a progress inside a card. All render as neutral placeholders; nothing is imported."
+    },
+    {
+      "id": "state.rest",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "The determinate resting state, and the only one all three fully specify. Salt: an accent-blue bar over a 50%-contrast-alpha groove, with the BAR TWICE AS THICK AS THE GROOVE (size-bar-strong against size-bar) — the fill is a fat overlay on a thin rail, not a fill of the rail. shadcn: `bg-primary` over `bg-primary/20`, i.e. the groove is the SAME COLOUR as the fill at 20% — the only system whose track is derived from its indicator rather than declared independently. M3: `active-indicator-color` primary over `track-color` secondary-container, two unrelated colour roles."
+    },
+    {
+      "id": "state.indeterminate",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Three different renderings of one concept. Salt: a 66%-wide band sweeping the track on a 1.8s ease-in-out loop, with the label replaced by the literal \"— %\" and `aria-valuenow` removed. shadcn: `data-state=\"indeterminate\"` on both elements, `aria-valuenow` removed, `aria-valuetext` removed — and VISUALLY AN EMPTY BAR, because `100 - (value || 0)` coerces null to 0. M3: the mode exists (the indeterminate wave-wavelength token) with no geometry to draw it. Retained even though one column renders nothing, because the nothing is the finding."
+    },
+    {
+      "id": "state.complete",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "completeState",
+      "note": "SHADCN ONLY, AND IT IS DATA-ONLY. Radix's `getProgressState` returns 'complete' when `value === maxValue`, published as `data-state=\"complete\"` on the root AND the indicator — a named, machine-readable terminal state no other system has. NOTHING IN shadcn's progress.tsx SELECTS ON IT: there is no `data-[state=complete]:` utility anywhere in the file, so a finished shadcn progress looks exactly like a 99% one. Reproduced as source has it (the attribute is written, no rule hangs off it) and flagged. Salt: OFF — no state concept at all. M3: OFF as a state, but note that its `stop-indicator` is the same idea expressed as GEOMETRY rather than as an attribute — a dot marking where 100% is."
+    },
+    {
+      "id": "state.interaction-states",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "CONFIRMED ABSENCE IN ALL THREE, recorded here rather than as four dead rows. No hover, focus, pressed, selected or disabled state exists anywhere: Salt's two CSS files contain no `:hover`, `:focus`, `:active` or disabled selector; shadcn's progress.tsx carries none of the `focus-visible:` / `aria-invalid:` groups its other components paste in; and none of the five M3 token files carries a state-layer, focus-indicator, hover, pressed, dragged or disabled family in either edition. Where card and tabs gained a focus-indicator family in `latest`, progress did not."
+    },
+    {
+      "id": "style.root.min-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"][data-shape=\"linear\"]",
+      "declarations": { "min-inline-size": "$" },
+      "note": "SALT ONLY, and it is a startling number to find in a design system: `.saltLinearProgress { min-width: 400px }`, a HARDCODED PIXEL LITERAL with no token behind it, density-invariant, and large enough that a Salt linear progress cannot be placed in a narrow column at all without an override. shadcn: OFF — `w-full` and nothing else, so it takes whatever its parent gives it. M3: OFF — no width token."
+    },
+    {
+      "id": "style.root.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"]",
+      "declarations": { "color": "$" },
+      "note": "SALT ONLY: `.saltLinearProgress { color: var(--salt-content-primary-foreground) }` and the same on `.saltCircularProgress`, resolving through `palette-foreground-primary` to plain black / plain white. It exists to colour the label, which then takes `color: inherit`. shadcn and M3: OFF — neither has a label to colour, and neither declares a colour on the progress root."
+    },
+    {
+      "id": "style.track.height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"][data-shape=\"linear\"] [data-slot=\"progress-track\"]",
+      "declarations": { "block-size": "$" },
+      "note": "The outer clipped box. Salt: `--salt-size-bar-strong` — 4/8/12/16 by DENSITY (docs/foundations/sizes.md line 10, confirmed by grep of foundations/size.css) — and it is the FAT measure, because Salt's active bar fills the whole container while its groove is only half as tall. shadcn: `h-2` = 8px, density-invariant (shadcn has no density capability). M3: `linear.height` 4px. So at each system's default the three containers are 8px, 8px and 4px, and only Salt's moves."
+    },
+    {
+      "id": "style.track.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"][data-shape=\"linear\"] [data-slot=\"progress-track\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "AND THIS IS THE EDITION DIFF MADE VISIBLE. Salt: `0` — a CONFIRMED ABSENCE; neither LinearProgress.css nor CircularProgress.css declares a border-radius on anything but the circular ring, so a Salt linear progress has SQUARE ENDS. shadcn: `rounded-full` -> 9999px [R concrete value, Tailwind not vendored, per docs/foundations/shape.md]. M3 `latest`: `track-shape` -> `md-sys-shape.$corner-full` = 9999px. M3 `v0.192` and both deprecated files: `track-shape` -> `corner-none` = 0px. M3 CHANGED ITS LINEAR PROGRESS FROM SQUARE TO FULLY ROUNDED BETWEEN THE TWO EDITIONS IN THIS CLONE, and the pin decides which one the registry ships."
+    },
+    {
+      "id": "style.groove.height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"][data-shape=\"linear\"] [data-slot=\"progress-groove\"]",
+      "declarations": { "block-size": "$" },
+      "note": "The visible resting rail. Salt: `--salt-size-bar` — 2/4/6/8 by density — i.e. HALF the container, which is the whole reason style.groove.offset exists. shadcn and M3: `100%`, because in both of those systems the groove IS the container (shadcn paints `bg-primary/20` on the Root; M3's `track.thickness` 4px equals `linear.height` 4px). Declared approximation: the chassis always paints the groove on a dedicated child, which is byte-equivalent for shadcn and M3 and necessary for Salt."
+    },
+    {
+      "id": "style.groove.offset",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"][data-shape=\"linear\"] [data-slot=\"progress-groove\"]",
+      "declarations": { "inset-block-start": "$" },
+      "note": "SALT ONLY: `top: calc((var(--salt-size-bar-strong) - var(--salt-size-bar)) / 2)` — 1/2/3/4 by density — the arithmetic that centres a thin rail inside a fat container. Carried as a calc over the two slots rather than as a snapshotted 2px, so it moves with density (lesson 7, run in the other direction: this is NOT a frozen token). shadcn and M3: OFF, their groove is full-bleed."
+    },
+    {
+      "id": "style.groove.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-groove\"]",
+      "declarations": { "background": "$" },
+      "note": "Salt: `--salt-sentiment-neutral-track` -> `palette-alpha-contrast-high` -> `color-black-50a` / `color-white-50a` = rgba(0,0,0,0.5) / rgba(255,255,255,0.5) — a 50% TRANSLUCENT wash that inverts by mode, and by far the highest-contrast track of the three. shadcn: `bg-primary/20` -> color-mix(in oklab, var(--primary) 20%, transparent) — THE ONLY TRACK OF THE THREE DERIVED FROM THE INDICATOR'S OWN COLOUR rather than declared independently, so recolouring a shadcn progress recolours its track too. M3: `track-color` -> `secondary-container` -> #e8def8 / #4a4458, an opaque unrelated role."
+    },
+    {
+      "id": "style.groove.shape",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-groove\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "M3 ONLY as a distinct token — `track-shape` -> corner-full, declared separately from the container. Salt: OFF (square). shadcn: OFF as a groove token, because its radius lives on the track/Root element (style.track.shape) and the groove is that same element in source."
+    },
+    {
+      "id": "style.indicator.thickness",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"][data-shape=\"linear\"] [data-slot=\"progress-indicator\"]",
+      "declarations": { "block-size": "$" },
+      "note": "M3 tokenises the active indicator's thickness SEPARATELY from the track's (`linear.active-indicator.thickness` 4px against `linear.track.thickness` 4px — equal at baseline, and 8px against 8px in the deprecated thick variant), so this is a real row and not a duplicate. Salt: `100%` — `.saltLinearProgress-bar` is `top: 0; bottom: 0`, i.e. it fills the FAT container and therefore stands proud of the thin groove. shadcn: `100%` (`h-full`)."
+    },
+    {
+      "id": "style.indicator.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-indicator\"]",
+      "declarations": { "background": "$" },
+      "note": "Salt: `--salt-sentiment-accent-background` -> `palette-accent` -> blue-500 rgb(0,120,207), MODE-INVARIANT (the same accent family badge, card, button and calendar all use). shadcn: `bg-primary` -> oklch(0% 0 0) / oklch(0.922 0 0) — near-black in light and near-white in dark, so a shadcn progress INVERTS while a Salt one holds still. M3: `active-indicator-color` -> primary -> #6750a4 / #d0bcff."
+    },
+    {
+      "id": "style.indicator.shape",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-indicator\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "M3 ONLY, AND CARRIED WITH ITS DISOWNMENT. `latest`'s merged family declares `active-indicator-shape` -> corner-full (9999px); the deprecated singular files declared corner-none (0px), so this is the second half of the same edition change style.track.shape records. material-web's own tokens/_md-comp-linear-progress.scss then puts `active-indicator-shape` under $unsupported-tokens with the comment `// can only control track since scaling is used on buffer/progress` — the SHIPPED library cannot honour it, for the mechanical reason recorded in structure.fill-mechanism. That is the generated-tokens-vs-shipped-library disagreement SELECT-MATRIX.md finding 6, DIALOG-MATRIX.md finding 8, TABS-MATRIX.md finding 11, CARD-MATRIX.md finding 3 and BADGE-MATRIX.md's letter-spacing row all recorded, for the SIXTH time — and it is the first time the library gives a mechanical reason rather than a TODO. Salt and shadcn: OFF (Salt is square; shadcn's indicator is clipped by the track's own radius plus overflow-hidden rather than carrying one)."
+    },
+    {
+      "id": "style.indicator.trailing-space",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"][data-shape=\"linear\"] [data-slot=\"progress-indicator\"]",
+      "declarations": { "margin-inline-end": "$" },
+      "note": "M3 ONLY: `linear.track-active-indicator-space` = 4px, a GAP BETWEEN THE END OF THE FILL AND THE START OF THE REMAINING TRACK — an M3 Expressive detail with no equivalent anywhere else, and the reason an M3 progress reads as two separate rounded segments rather than one bar half-filled. Absent from v0.192 entirely. Salt and shadcn: OFF — in both, the fill sits flush against the track it covers."
+    },
+    {
+      "id": "style.indicator.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-indicator\"]",
+      "declarations": { "transition": "$" },
+      "note": "AND ONE OF THE TWO IS DEAD ON ARRIVAL. Salt declares `transition: transform 0.2s linear` on `.saltLinearProgress-bar` (and again on `.saltLinearProgress-track`, which never moves at all) — but the component animates `width`, not `transform`, so THE DECLARED TRANSITION CAN NEVER FIRE on a determinate value change. Reproduced as source has it and flagged; it is the same class of source self-contradiction as CARD-MATRIX.md finding 6's `transition: box-shadow var(--salt-duration-instant)` where the duration is 0ms. Both literals are also hardcoded rather than routed through Salt's own duration foundation, which does define `--salt-duration-notable: 1000ms` (docs/foundations/motion.md) — the third component to show that pattern after spinner. shadcn: `transition-all`, which DOES cover the transform it animates — property list [S], duration 150ms and cubic-bezier(0.4,0,0.2,1) [R], Tailwind not vendored. M3: OFF, no motion token in any of the five files."
+    },
+    {
+      "id": "style.indeterminate.duration",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-indicator\"][data-indeterminate]",
+      "declarations": { "animation-duration": "$" },
+      "note": "Salt: `1.8s`, a hardcoded literal in `animation: 1.8s ease-in-out infinite salt-indeterminate-progress-bar` — twice the length of its own spinner's 0.9s and, like it, not a reference to any duration token. shadcn: OFF — there is no indeterminate animation to time (structure.indeterminate-band). M3: DECLARED ABSENCE — the mode exists (the indeterminate wave-wavelength token) and no duration token for it exists anywhere in the clone; the registry default is labelled here rather than left silently blank, the same treatment spinner.m3.json's style.root.duration got."
+    },
+    {
+      "id": "style.indeterminate.easing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-indicator\"][data-indeterminate]",
+      "declarations": { "animation-timing-function": "$" },
+      "note": "Salt: `ease-in-out` — and here Salt IS consistent with its own foundation, because `--salt-animation-timing-function` is `ease-in-out` and is the only easing curve Salt declares (docs/foundations/motion.md). It is still written as a literal rather than as a var(). shadcn: OFF. M3: [R] — declared absence, as above."
+    },
+    {
+      "id": "style.buffer.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-buffer\"]",
+      "cellIsDeclarations": true,
+      "note": "SALT ONLY, and the construction is unusual enough to be worth stating: the buffer is NOT a translucent version of the bar. It is `background: var(--salt-container-primary-background)` — the PAGE'S OWN SURFACE COLOUR, snow / jet — with `outline: solid var(--salt-size-fixed-100) var(--salt-sentiment-accent-background)` at `outline-offset: calc(var(--salt-size-fixed-100) * -1)`, i.e. an OPAQUE HOLE punched in the groove with a 1px accent hairline drawn inside its own edge. So a Salt buffer reads as an empty outlined segment ahead of the solid fill, not as a faded fill. The 1px comes from `size-fixed-100`, which is on the FIXED scale and density-invariant BY DESIGN (docs/foundations/sizes.md line 14) — carried as a plain 1px rather than per density, the same finding CARD-MATRIX.md finding 10 made for its border and accent overhang."
+    },
+    {
+      "id": "style.buffer.z-index",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-buffer\"]",
+      "declarations": { "z-index": "$" },
+      "note": "SALT ONLY: the buffer takes `var(--salt-zIndex-default)` = 1 and the bar takes `calc(var(--salt-zIndex-default) * 2)` = 2, so the solid fill always covers the buffer where they overlap. Salt is the only one of the three with a shared z-index scale at all (docs/foundations/layers.md), and this is the second component after badge to use it. The bar's own z-index 2 is theme-invariant chassis layout and lives in `base`; only the buffer's is a themed row, because only Salt has a buffer."
+    },
+    {
+      "id": "style.stop-indicator.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-stop-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY, `latest` ONLY. `linear.stop-indicator.size` = 4px square, positioned `linear.stop-indicator.trailing-space` = 0px in from the track's end — so at baseline the dot is flush with the far edge, and the deprecated thick variant would inset it 2px. Both are absent from v0.192, where no merged family exists. Claimed here per docs/SPINNER-MATRIX.md finding 6's explicit deferral. Salt and shadcn: OFF."
+    },
+    {
+      "id": "style.stop-indicator.paint",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-stop-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY: `stop-indicator-color` -> primary (THE SAME ROLE AS THE ACTIVE INDICATOR — the dot is the fill's own colour showing where it is going, not a neutral tick) and `stop-indicator-shape` -> corner-full, so at 4px it is a circle. Both live in the SHARED _md-comp-progress-indicator.scss rather than in the linear file, which is the clearest single piece of evidence for the one-component-with-a-shape-axis reading: M3 files its progress tokens by CONCERN (colour and shape shared, geometry per shape), not by component."
+    },
+    {
+      "id": "style.label.font",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-label\"]",
+      "declarations": { "font": "$" },
+      "note": "SALT ONLY, AND IT IS THE H2 HEADING ROLE — `<Text styleAs=\"h2\">`, resolving to `text-h2` = semiBold 600, Open Sans (the default `data-heading-font`, confirmed in SaltProvider's DEFAULT_HEADING_FONT and its e2e assertions), at 14/18 · 18/24 · 24/32 · 32/42 px by density. That is a LARGE type choice for a status readout — at touch density the percentage is 32px — and it matches docs/foundations/typography.md line 55's title row exactly (18px/24px at medium). shadcn and M3: OFF, and unanimously — neither declares any typography anywhere in this component, so unlike badge (where all three did) this is closer to CARD-MATRIX.md finding 1's absence, with exactly one system dissenting."
+    },
+    {
+      "id": "style.label.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress\"][data-shape=\"linear\"] [data-slot=\"progress-label\"]",
+      "declarations": { "padding-inline-start": "$" },
+      "note": "SALT ONLY: `.saltLinearProgress-progressLabel { padding-left: var(--salt-spacing-100) }` — 4/8/12/16 by density. Note it is a PADDING on the label rather than a `gap` on the flex root, which matters because the circular form reuses the same class with `padding` overridden to 0 by the absolute centring. shadcn and M3: OFF."
+    },
+    {
+      "id": "style.circular.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-ring\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `calc(var(--salt-size-base) * 3)` — 60/84/108/132 by density, i.e. THREE TIMES the base control size and more than twice the diameter of Salt's own large spinner (56px at medium). A Salt circular progress is a big object. M3: `circular.size` = 40px, density-invariant. shadcn: OFF — no circular progress exists."
+    },
+    {
+      "id": "style.circular.track",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-ring-track\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: stroke `--salt-sentiment-neutral-track` (the same 50% alpha as the linear groove) at `--salt-size-bar` (2/4/6/8), drawn in source as an `outline` with `outline-offset: calc(var(--salt-size-bar) * -1.5)`, which places its ring centre at `diameter/2 - 2 * size-bar` — 26/34/42/50 by density. M3: stroke `track-color` (secondary-container) at `circular.track.thickness` 4px on a radius of (40 − 4) / 2 = 18px. THE RADIUS DERIVATION DELIBERATELY DIVERGES FROM spinner.m3.json — see docs/PROGRESS-MATRIX.md's declared approximations."
+    },
+    {
+      "id": "style.circular.indicator",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"progress-ring-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: stroke `--salt-sentiment-accent-background` at `--salt-size-bar-strong` (4/8/12/16) — AGAIN TWICE THE TRACK'S THICKNESS, exactly as in the linear form, and drawn in source as a `border` on a border-box element so its ring centre sits at `(diameter − size-bar-strong) / 2` = 28/38/48/58, i.e. OUTSIDE the track's ring rather than concentric with it. Reproduced with those two radii rather than collapsed onto one circle, because the offset is the visible character. M3: stroke `active-indicator-color` (primary) at `circular.active-indicator.thickness` 4px, CONCENTRIC with its track at r = 18px. shadcn: OFF."
+    }
+  ]
+}

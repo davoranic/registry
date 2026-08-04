@@ -1,0 +1,484 @@
+{
+  "component": "badge",
+  "openUiAnatomy": "no published Open UI badge anatomy — union of salt-ds's Badge (an outer .saltBadge span holding an optional host child plus an inner .saltBadge-badge pill, with a dot form and a top-right anchored form), shadcn's Badge (ONE span, six cva variants, asChild, no dot and no anchoring), and M3's single _md-comp-badge.scss token family, which describes TWO forms in one file — the unprefixed `size`/`shape`/`color` (a 6px dot) and the `large-*` family (a 16px labelled container with its own label-text typescale).",
+  "behavior": {
+    "pattern": "A small, non-interactive annotation attached to or placed beside other content. The cross-system axes are: (1) whether the badge is a DOT (no content, a pure state signal) or a LABELLED container (a count or a short string) — two different shapes with different sizing rules, and M3 tokenises them as two token families in one file; (2) whether the badge is STANDALONE/inline or ANCHORED to a host element, which decides whether the component owns a positioning wrapper at all; (3) how the LABEL is produced — a `value` prop the component formats and clamps, versus arbitrary consumer children; (4) whether the surface has a tone/variant axis at all. No system gives a badge a role, a tab stop, a handler or a disabled state; the only interaction styling anywhere is shadcn's, and it is gated on the badge having been turned into an anchor with asChild.",
+    "chassis": "skeleton/badge.tsx — written from the template's part union (an optional positioning root holding an optional host slot, the badge pill itself, an optional leading icon and a label). Inherits from no design system: the shell (a wrapper pair vs a single element) is received as config, so shadcn does not get a spurious wrapper and Salt does not lose its positioning context. Every behavior row below is implemented in that file and asserted by scripts/check-badge-behavior.mjs, which exists because locked behavior rows have NO generator gate (docs/SELECT-MATRIX.md finding 16)."
+  },
+  "skeletonParams": {
+    "shell": ["wrapper", "single"],
+    "dot": [true, false],
+    "anchoring": [true, false],
+    "icon": [true, false],
+    "labelFormat": ["clamped-value", "children"],
+    "content": ["dot", "label"],
+    "placement": ["inline", "anchored"],
+    "variant": ["default", "secondary", "destructive", "outline", "ghost", "link"],
+    "interaction": ["static", "link"],
+    "max": [999],
+    "liveRegion": ["polite", "off"]
+  },
+  "base": {
+    "[data-slot=\"badge-root\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "position": "relative",
+      "flex-shrink": "0",
+      "vertical-align": "middle"
+    },
+    "[data-slot=\"badge-host\"]": {
+      "display": "inline-flex",
+      "flex-shrink": "0",
+      "min-width": "0"
+    },
+    "[data-slot=\"badge\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "width": "fit-content",
+      "margin": "0",
+      "padding": "0",
+      "border-style": "solid",
+      "border-width": "0",
+      "border-color": "transparent",
+      "background": "none",
+      "color": "inherit",
+      "font": "inherit",
+      "text-decoration": "none"
+    },
+    "[data-slot=\"badge-icon\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"badge-icon\"] svg": {
+      "display": "block",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"badge-label\"]": {
+      "display": "block",
+      "min-width": "0"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.shell",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "shell",
+      "note": "The DOM fork, and it is the tab-shell fork again (docs/TABS-MATRIX.md finding 8) for a different reason. Salt = \"wrapper\": Badge.tsx always renders TWO spans — an outer .saltBadge that is `position: relative` and an inner .saltBadge-badge that carries every box style — because the inner one is absolutely positioned out of the outer one when a host child is present. Even an inline Salt badge renders both. shadcn = \"single\": badge.tsx renders exactly one element (a span, or whatever asChild supplies) with the whole cva class list on it; there is no wrapper and nothing to position against. M3 = \"single\" [R]: material-web is a tokens-only clone, and _md-comp-badge.scss describes a container and a label and no positioning context at all — the anchoring geometry M3 does have lives on the HOST component (see structure.anchoring). Rendering the wrapper for all three would have put a spurious span around every shadcn badge; rendering one element for all three would have destroyed Salt's anchoring. Both shells keep every box style on [data-slot=\"badge\"], so no style row has to know which shell it is in."
+    },
+    {
+      "id": "structure.label-format",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "labelFormat",
+      "note": "CHARACTER LIVES IN CONTENT FORMATTING (CLAUDE.md law 3), and this is the clearest example the pipeline has hit. Salt = \"clamped-value\": the label is NOT children. Badge.tsx takes `value?: number | string` and `max?: number` (default 999) and computes the displayed text itself — `typeof value === \"number\" && value > max ? ${max}+ : value` — so a Salt badge is a component that FORMATS a number, and its `children` prop means something else entirely (the host element). shadcn = \"children\": the label is whatever the consumer puts inside; its own badge-demo has to hand-roll the numeric look with `className=\"h-5 min-w-5 rounded-full px-1 font-mono tabular-nums\"`, i.e. the counter shape is consumer CSS, not a component capability. M3 = \"children\" [R]: large-label-text-* tokens describe the type of a label and say nothing about where the string comes from."
+    },
+    {
+      "id": "structure.dot",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "dot",
+      "note": "A dot badge and a labelled badge are TWO SHAPES WITH DIFFERENT SIZING RULES, not one shape with a colour delta (lesson 6), and two of three systems say so in source. Salt: `.saltBadge-dotBadge` replaces the notation-lineHeight box with `--salt-size-adornment`, sets `padding: 0`, and — critically — REDECLARES `--badge-size` on the pill itself so the anchoring transform reads the dot's height rather than the label's. M3: one token file, two families — the unprefixed `size: 6px` / `shape: corner-full` / `color: error`, and the `large-*` family (`large-size: 16px`, `large-color`, `large-shape`, `large-label-text-{color,font,size,line-height,tracking,weight}`). Six pixels versus sixteen is not a variant of a colour. shadcn: OFF, a CONFIRMED ABSENCE — badge.tsx has no dot form, and the anchored dot shadcn does ship (`AvatarBadge`) is a part of `avatar`, a different component on a different docs/COMPONENTS.md row."
+    },
+    {
+      "id": "structure.anchoring",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "anchoring",
+      "note": "Salt ONLY, and it is the reason structure.shell exists. Passing `children` to a Salt Badge makes the pill `.saltBadge-topRight`: absolutely positioned, `right: spacing-100`, then `translateX(100%) translateY(calc(-1 * (badge-size / 2)))` so it hangs off the host's top-right corner — with a separate `right: calc(size-adornment / 2)` for the dot form. shadcn: OFF, confirmed absence — no positioning utility of any kind in badge.tsx. M3: OFF, and the reason is structural rather than an absence. M3 badges DO anchor, but the geometry belongs to the host: _md-comp-navigation-bar.scss and _md-comp-navigation-rail.scss carry a `badge.*` / `large-badge.*` family, every member marked `@deprecated` with the comment `Badge values were refactored out into their own token set. Replace usage with the equivalent md.comp.badge.* tokens.` — so M3 has deliberately moved the badge's own properties OUT of the host and left only the host's placement behind. _md-comp-badge.scss itself is placement-agnostic."
+    },
+    {
+      "id": "structure.icon",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "icon",
+      "note": "shadcn ONLY. The cva base string carries `gap-1`, `[&>svg]:pointer-events-none` and `[&>svg]:size-3`, i.e. the component sizes and neutralises any SVG child at 12px — a real, component-owned leading/trailing glyph slot, exercised by its own badge-icon and badge-demo examples. Salt: OFF — Badge.css has no icon rule and no gap; a Salt badge's content is the formatted value and nothing else. M3: OFF — no icon token in _md-comp-badge.scss in either edition."
+    },
+    {
+      "id": "prop.content",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "content",
+      "note": "SOURCE-DEFAULT-FIRST, and the default is the one a reader is least likely to guess. Salt [\"dot\", \"label\"]: `value` is optional and Badge.tsx computes `const dotBadge = typeof value === \"undefined\"` — so a bare <Badge /> renders a DOT, and dot is value[0]. M3 [\"dot\", \"label\"]: the UNPREFIXED token family (`size`, `shape`, `color`) is the dot and the `large-*` family is the labelled form, so the dot is the base reading exactly as card.m3.json took the unqualified enabled state as its base. shadcn [\"label\"]: single-valued, a confirmed absence. Discriminated by style.badge.dot (a real block moving height, min-width, padding and, in Salt, the --badge-size indirection the anchor transform consumes) plus style.badge.anchor@dot plus a skeleton branch that omits the label element entirely."
+    },
+    {
+      "id": "prop.placement",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "placement",
+      "note": "Salt [\"inline\", \"anchored\"], SOURCE-DEFAULT-FIRST and the source says so in words: Badge.tsx's JSDoc on `children` reads `If a child is provided the Badge will render top right. By defualt renders inline.` (typo in source). So inline is value[0] and anchored is the opt-in, which is the opposite of the near-universal expectation that a badge is a corner ornament. shadcn [\"inline\"] and M3 [\"inline\"]: single-valued (see structure.anchoring). Discriminated by style.badge.anchor and style.badge.anchor@dot, plus the skeleton branch that renders the host slot."
+    },
+    {
+      "id": "prop.variant",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "variant",
+      "note": "shadcn ONLY, six values, `defaultVariants: { variant: \"default\" }` [S] — so the list is source-default-first. And it is six, not the four the docs demo shows: badge.tsx also ships `ghost` (no background, no border colour, hover only) and `link` (primary text plus underline-offset-4 and a hover underline). Salt: OFF — Badge.css declares ONE background (sentiment-accent-background) and no tone, sentiment, appearance or variant prop of any kind; a Salt badge is always accent blue. M3: OFF — `color` and `large-color` both resolve to md-sys-color.$error and there is no second value anywhere in the file. Three systems, three fixed answers to 'what colour is a badge': Salt says accent, M3 says error, shadcn says 'pick one of six'."
+    },
+    {
+      "id": "prop.interaction",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "interaction",
+      "note": "shadcn [\"static\", \"link\"], SOURCE-DEFAULT-FIRST (`asChild = false` is the declared default [S]). This is a real axis, not a courtesy one: EVERY hover rule in badge.tsx is written `[a&]:hover:...`, a Tailwind arbitrary-variant meaning 'only when this element is an <a>'. So a shadcn badge has hover styling if and only if the consumer has made it a link with asChild — its own badge-link example does exactly that. Salt [\"static\"] and M3 [\"static\"]: single-valued confirmed absences; neither has a hover, focus, pressed or disabled rule anywhere. Discriminated by style.badge.hover (gated on [data-interaction=\"link\"]) and by a skeleton element branch that renders an <a href> instead of a <span>."
+    },
+    {
+      "id": "prop.max",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "max",
+      "note": "Salt ONLY: `max?: number`, default 999 [S]. Not a capability list and not an enum — a single sourced default carried so the clamping behaviour has a value to clamp against. shadcn and M3: OFF, because neither has a `value` prop to clamp; their labels are arbitrary children (see structure.label-format)."
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "NO SYSTEM GIVES A BADGE ANY ARIA, and the unanimity is the finding. Salt: Badge.tsx writes className and ref and spreads rest — no role, no aria-label, no aria-live, on either span. Its accessibility.mdx pushes the whole contract onto the consumer: 'ensure the focusable element has an aria-label or aria-labelledby attribute that describes the badge, such as \"9 notifications\"'. shadcn: badge.tsx writes data-slot and data-variant and nothing else. M3: [R] — a tokens-only clone has no element. The chassis therefore computes the role from config rather than hardcoding one, so that 'no column turns it on' is a value in the matrix instead of an assumption in the code."
+    },
+    {
+      "id": "behavior.dot-detection",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: `const dotBadge = typeof value === \"undefined\"` — the dot form is INFERRED from the absence of a value, not selected by a prop, which is why prop.content is dot-first. M3: [R] — the two token families exist and are unambiguous, but there is no element in the clone to say how one is chosen. shadcn: OFF — there is no dot form to detect."
+    },
+    {
+      "id": "behavior.anchor-detection",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: `[withBaseName(\"topRight\")]: children` — the anchored form is INFERRED from the presence of a child, exactly as the dot form is inferred from the absence of a value. Two of Salt's three modes are therefore decided by what you pass rather than by what you ask for, which is a real API character trait and not a detail. shadcn and M3: OFF."
+    },
+    {
+      "id": "behavior.value-clamping",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt ONLY, and it has a sourced asymmetry worth stating: `const valueText = typeof value === \"number\" && value > max ? ${max}+ : value`. A NUMBER above `max` is replaced by `max` with a plus suffix; a STRING is never clamped, at any length. Salt's own usage.mdx states the second half in prose ('When you pass a string, the badge will not clamp the value') and separately recommends four to six characters maximum with a consumer-supplied ellipsis. shadcn and M3: OFF — no value prop, nothing to clamp."
+    },
+    {
+      "id": "behavior.activation",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: NONE — no onClick, no onKeyDown, no tabIndex, no cursor rule. A Salt badge is inert, and its usage.mdx says so structurally: 'Badges are independent of user action' and 'To trigger an immediate action ... instead, use Pill'. shadcn: DELEGATED — badge.tsx binds no handler either, but `asChild` swaps the span for whatever the consumer supplies (its badge-link example supplies <a href>), so activation becomes the platform's and the [a&]:hover styling lights up. M3: [R] NONE — no element, and no state-layer, focus-indicator, pressed or disabled token in _md-comp-badge.scss in either edition, which is the strongest evidence available that an M3 badge is not a control."
+    },
+    {
+      "id": "behavior.live-region",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "liveRegion",
+      "note": "OFF IN ALL THREE COLUMNS, retained deliberately because for a component whose whole job is announcing a changing count the absence is surprising and load-bearing. No system writes aria-live, aria-atomic or role=status on a badge. Salt's accessibility.mdx explains why it thinks it does not need one for the inline case ('the screen reader automatically announces the contents of the badge' when the user navigates to it) and hands the anchored case to the host's aria-label instead — i.e. a Salt badge that changes while unfocused announces nothing. shadcn and M3 say nothing at all. The chassis implements the capability and every column leaves it off, so the gap is a matrix cell rather than a silent omission."
+    },
+    {
+      "id": "slot.label",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in every system, but supplied through two different doors — a formatted `value` prop in Salt, arbitrary children in shadcn and M3 (see structure.label-format). No system styles the label as a separate element: Salt, shadcn and M3 all put the type on the container itself, and M3's `large-label-text-*` family is the only one that even names a label sub-part in its token grammar."
+    },
+    {
+      "id": "slot.host",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only — the element the badge hangs off, passed as `children`. DECLARED COMPOSITION to `button` (already built) and to an icon set: every anchored example in badge.stories.tsx is <Badge value={9}><Button aria-label=\"9 Notifications\"><NotificationIcon aria-hidden /></Button></Badge>. Rendered here as a neutral placeholder rather than importing the button skeleton, the same convention alert.tsx and card-check.tsx use. shadcn and M3: OFF."
+    },
+    {
+      "id": "slot.icon",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "shadcn only — a leading or trailing glyph inside the badge, sized to 12px and pointer-event-neutralised by the component. DECLARED COMPOSITION to a future icon-set component (shadcn's examples use lucide's BadgeCheckIcon / BookmarkIcon). Salt and M3: OFF."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION, same pattern as card.template.json's slot.composes: (a) `button` — Salt's anchored stories and shadcn's badge-link both put an interactive element in or under the badge; (b) an ICON SET — Salt's NotificationIcon/MessageIcon hosts and shadcn's [&>svg] slot; (c) `tabs`, already built, which composes a badge INSIDE a tab in both directions (Salt's InlineBadge story puts <Badge value={30} /> in a TabTrigger, and docs/TABS-MATRIX.md's structure.tab-badge row records the same relationship from the other side); (d) `avatar` — shadcn's anchored dot ships as `AvatarBadge`, a part of avatar rather than of badge, so the anchored-dot capability shadcn does have is on a different canonical row; (e) `chip`/`tag`/`pill`, still to be built, which is where all three systems send you when the annotation needs to be interactive or to carry status colour. All render as neutral placeholders."
+    },
+    {
+      "id": "state.rest",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: accent blue with white text, and BOTH are mode-invariant — sentiment-accent-background resolves to palette-accent = blue-500 rgb(0,120,207) in light and dark alike, and content-bold-foreground resolves to palette-foreground-primary-alt, which is white in BOTH modes. A Salt badge looks identical in dark mode. shadcn: --primary / --primary-foreground, which INVERT by mode (near-black on white light, near-white on black dark). M3: error / on-error, which also invert (error40 #b3261e with #fff text light, error80 #f2b8b5 with error20 #601410 text dark). One system holds still and two flip."
+    },
+    {
+      "id": "state.hover",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "shadcn ONLY, and only as a link: every hover rule is `[a&]:hover:`, so a plain <span> badge never reacts to the pointer. default/secondary/destructive darken their own background to 90% alpha; outline and ghost take --accent as a background and --accent-foreground as a colour; link gains an underline. Salt: OFF — Badge.css contains no :hover selector. M3: OFF — no hover-state-layer or hover-color token in _md-comp-badge.scss in either edition."
+    },
+    {
+      "id": "state.focus",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "shadcn ONLY, and it is a declared-but-usually-dead rule: the cva BASE string (not a variant) carries `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50`, on an element that is a <span> by default and therefore cannot receive focus at all. It becomes reachable only under asChild with a focusable element. Reproduced as source has it and flagged. The destructive variant additionally narrows the ring alpha to 20% light / 40% dark. Salt: OFF, no :focus or :focus-visible rule. M3: OFF, and note that _md-comp-badge.scss has no focus-indicator family at all, where the card and tab files both gained one in `latest`."
+    },
+    {
+      "id": "style.badge.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "background": "$" },
+      "note": "Each column at its default: Salt has one background and no axis; shadcn is variant=\"default\"; M3 reads `color` (the dot) and `large-color` (the labelled form), which are the SAME token value, so one slot serves both forms. Read through an indirection slot in the shadcn column so the five variant rows reassign one property rather than restating the rule."
+    },
+    {
+      "id": "style.badge.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "color": "$" },
+      "note": "Salt: content-bold-foreground -> palette-foreground-primary-alt -> WHITE IN BOTH MODES (foreground.css declares the same value under [data-mode=\"light\"] and [data-mode=\"dark\"]) — the only text colour in this component that does not move. shadcn: --primary-foreground at default, reassigned per variant, and `destructive` uses the LITERAL Tailwind `text-white` rather than a token, in both modes. M3: large-label-text-color -> on-error. Note that M3 declares a label colour only on the LARGE form; the dot has no text, so the same slot is harmless there."
+    },
+    {
+      "id": "style.badge.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "font": "$" },
+      "note": "Salt: text-notation, and it is a real and unusually small type role — SEMIBOLD 600 (typography-fontWeight-semiBold) at 8/10 . 10/13 . 12/16 . 14/18 px by density, in Open Sans. shadcn: text-xs font-medium = 500 0.75rem/1rem. M3: label-small = 500 0.6875rem/1rem Roboto, the smallest role in the M3 typescale. Three systems, three different weights of the same idea (600 / 500 / 500) and three different sizes (10px / 12px / 11px at each system's default) — and unlike card, where docs/CARD-MATRIX.md finding 1 found NO system declaring any typography, every system declares it here."
+    },
+    {
+      "id": "style.badge.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "letter-spacing": "$" },
+      "note": "M3 ONLY: large-label-text-tracking -> md-sys-typescale.$label-small-tracking = 0.03125rem (0.5px at a 16px root). Recorded with its disownment: material-web's own tokens/_md-comp-badge.scss lists `large-label-text-tracking` and `large-label-text-type` under $_unsupported-tokens and map.remove()s them, so the shipped library drops exactly this row — the same generated-token-vs-shipped-library disagreement docs/SELECT-MATRIX.md finding 6, DIALOG-MATRIX.md finding 8, TABS-MATRIX.md finding 11 and CARD-MATRIX.md finding 3 recorded. Salt and shadcn: OFF, neither declares any letter-spacing."
+    },
+    {
+      "id": "style.badge.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "All three agree it is a pill, and all three get there differently. Salt: `var(--salt-palette-corner-strongest, 9999px)` -> curve-999 = 999px — and DENSITY-INVARIANT AND CORNER-EDITION-INVARIANT, because next/palette/corner.css assigns corner-strongest to curve-999 under BOTH [data-corner=\"rounded\"] AND [data-corner=\"sharp\"], where every other corner stop collapses to curve-0 under sharp. A Salt badge stays a pill in the sharp edition. It is also the only place in this component where source uses a var() FALLBACK, which is exactly the pattern lesson 1 forbids in generated output. shadcn: `rounded-full`, a bare Tailwind utility with no shadcn token behind it (docs/foundations/shape.md). M3: shape and large-shape both -> md-sys-shape.$corner-full = 9999px, identical in both editions and both forms."
+    },
+    {
+      "id": "style.badge.size",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "cellIsDeclarations": true,
+      "note": "The labelled form's box. Salt: `height: var(--badge-size); min-width: var(--badge-size)` where --badge-size is the NOTATION LINE-HEIGHT (10/13/16/18 by density) — Salt sizes its badge off its own type metric rather than off the size scale, which is why the dot form has to override --badge-size rather than merely a height. shadcn: OFF, a confirmed absence — badge.tsx declares no height and no min-width, so a shadcn badge is sized entirely by its padding and line-height (2 + 16 + 2 + 2px of border = 22px). M3: large-size = 16px, hardcoded in both editions, with min-width equal to it so a single digit renders as a circle."
+    },
+    {
+      "id": "style.badge.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt: `padding-left/right: spacing-50` and no block padding — 0 2/4/6/8px by density, with a source comment that reads `/* Should this vary according to touch size */`, i.e. Salt is itself unsure. shadcn: `px-2 py-0.5` = 2px 8px. M3: OFF, and it is a CONFIRMED ABSENCE with a visible consequence — _md-comp-badge.scss carries no spacing token of any kind in either edition, so an M3 badge is a fixed 16px box and a label wider than 16px has nothing to breathe into. Recorded rather than borrowed: no padding number was invented for M3, unlike the one declared borrow card.m3.json had to make."
+    },
+    {
+      "id": "style.badge.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "gap": "$" },
+      "note": "shadcn only: `gap-1` = 4px between the icon and the label. Salt and M3: OFF — neither has an icon slot, so neither has anything to space."
+    },
+    {
+      "id": "style.badge.border-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "border-width": "$" },
+      "note": "shadcn only: `border border-transparent` in the cva BASE — every shadcn badge carries a 1px border in every variant, transparent unless `outline` recolours it, so switching to outline changes a colour and not a size. Salt and M3: OFF, no border token at all."
+    },
+    {
+      "id": "style.badge.border-color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "border-color": "$" },
+      "note": "shadcn only, read through an indirection the outline variant reassigns to --border. Salt and M3: OFF."
+    },
+    {
+      "id": "style.badge.overflow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "overflow": "$" },
+      "note": "shadcn only: `overflow-hidden`, which clips a long label to the pill's own full radius rather than letting it escape. Salt: OFF — and its own usage.mdx fills the gap with prose instead, recommending four to six characters and a CONSUMER-supplied ellipsis. M3: OFF."
+    },
+    {
+      "id": "style.badge.white-space",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "white-space": "$" },
+      "note": "Salt and shadcn both declare `nowrap` (Badge.css `white-space: nowrap`; badge.tsx `whitespace-nowrap`) — two systems reaching the same conclusion independently. M3: OFF, no token."
+    },
+    {
+      "id": "style.badge.z-index",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "z-index": "$" },
+      "note": "Salt only: `z-index: var(--salt-zIndex-default)` = 1, so an anchored badge stacks above its host. Salt is the only system with a shared z-index scale at all (docs/foundations/layers.md); shadcn and M3 manage stacking per component and neither badge sets one."
+    },
+    {
+      "id": "style.badge.margin",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "margin": "$" },
+      "note": "Salt only: `.saltBadge-badge { margin: auto }`, and it is not decorative. The pill is a flex item of the .saltBadge wrapper, so `auto` centres it on the cross axis for an inline badge, and it is what lets the absolutely-positioned anchored form resolve its own box. Carried as a Salt row rather than as chassis layout precisely because auto margins on a flex item ABSORB FREE SPACE — emitting it for shadcn and M3, whose badges sit directly in consumer flex rows with no wrapper, would push them apart."
+    },
+    {
+      "id": "style.badge.font-smoothing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only: `-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale`. A small row, carried because it is genuinely present in source and genuinely absent in the other two, and because at 10px semibold on a saturated fill it is a visible difference rather than a nicety."
+    },
+    {
+      "id": "style.badge.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]",
+      "declarations": { "transition": "$" },
+      "note": "shadcn only: `transition-[color,box-shadow]` — property list [S], duration and easing [R] because Tailwind is not vendored in this clone, the same caveat input.shadcn.json, select.shadcn.json, dialog.shadcn.json and tabs.shadcn.json all recorded. Salt and M3: OFF, no transition and no motion token."
+    },
+    {
+      "id": "style.badge.hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-interaction=\"link\"]:hover",
+      "cellIsDeclarations": true,
+      "note": "shadcn only, and gated on the LINK reading because that is exactly what `[a&]:hover:` means in source. Reads three indirection slots the variant rows reassign (--pill-bg-hover, --pill-fg-hover, --pill-decoration-hover) so one rule expresses three different hover mechanisms: darken your own fill (default/secondary/destructive), take the accent pair (outline/ghost), or underline (link). Salt and M3: OFF."
+    },
+    {
+      "id": "style.badge.focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"]:focus-visible",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50` from the cva base, drawn as a translucent 3px box-shadow ring plus a border recolour, exactly the rendering input.shadcn.json established. The alpha is read through --ring-alpha-current so the destructive variant can narrow it to 20% / 40% without restating the shadow. DECLARED DEAD BY DEFAULT: a <span> cannot take focus, so this rule fires only under asChild. Salt and M3: OFF."
+    },
+    {
+      "id": "style.badge.dot",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-content=\"dot\"]",
+      "cellIsDeclarations": true,
+      "note": "The second shape. Salt: `.saltBadge-dotBadge` sets height and min-width to --salt-size-adornment (6/8/10/12 by DENSITY — on the density scale, verified, not a frozen snapshot), `padding: 0`, AND redeclares `--badge-size: var(--salt-size-adornment)` ON THE PILL, which is lesson 2 handled correctly in source: the anchoring transform below reads --badge-size on the element it is applied to, so the dot's own value has to be declared there and not on the wrapper. Reproduced with the same placement for the same reason. M3: `size: 6px` and its `shape` (identical corner-full), density-invariant because M3 has no density capability (docs/foundations/density.md). shadcn: OFF."
+    },
+    {
+      "id": "style.badge.anchor",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-anchored]",
+      "cellIsDeclarations": true,
+      "note": "Salt only: `.saltBadge-topRight { position: absolute; right: var(--salt-spacing-100); transform: translateX(100%) translateY(calc(-1 * (var(--badge-size) / 2))) }`. Note what is NOT there: no `top`. The vertical placement is the static position plus a half-height lift, which is why the pill's `margin: auto` (style.badge.margin) matters. Reproduced declaration for declaration. shadcn and M3: OFF."
+    },
+    {
+      "id": "style.badge.anchor@dot",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-anchored][data-content=\"dot\"]",
+      "declarations": { "right": "$" },
+      "note": "Salt only: `.saltBadge-dotBadge.saltBadge-topRight { right: calc(var(--salt-size-adornment) / 2) }` — the dot sits HALF ITS OWN WIDTH in from the host's right edge, where the labelled form sits a full spacing-100 in. Two different anchoring offsets for two different shapes, which is the clearest possible evidence that dot and label are a shape axis rather than a size variant."
+    },
+    {
+      "id": "style.badge.variant@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-variant=\"secondary\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only. Reassigns the indirection slots the base rows consume — the pattern card.template.json used for its variant and tone axes. bg-secondary / text-secondary-foreground, hover at 90% of its own fill."
+    },
+    {
+      "id": "style.badge.variant@destructive",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-variant=\"destructive\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only, and the busiest of the six: bg-destructive, a LITERAL text-white (not a token) in both modes, `dark:bg-destructive/60` so the dark fill is a 60% mix rather than the raw colour, and a NARROWER focus ring alpha than every other variant (20% light, 40% dark against the base 50%). It is also the only variant that touches the focus ring at all."
+    },
+    {
+      "id": "style.badge.variant@outline",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-variant=\"outline\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: `border-border text-foreground` and NO background class, so the fill falls back to the base's `background: none` — an outline badge is transparent, not white. Hover takes --accent / --accent-foreground, which is a different mechanism from the three filled variants' 90% self-darken."
+    },
+    {
+      "id": "style.badge.variant@ghost",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-variant=\"ghost\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only, and the emptiest declaration in the component: `ghost` sets NO background, NO border colour and NO text colour — its entire content is the [a&]:hover pair. A resting ghost badge is therefore a transparent box with an inherited colour and a transparent 1px border, i.e. it is only visible once it is a link and hovered. Not shown in the docs' badge-demo; found by reading the cva object."
+    },
+    {
+      "id": "style.badge.variant@link",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge\"][data-variant=\"link\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: `text-primary underline-offset-4 [a&]:hover:underline`. The one variant whose hover moves TEXT-DECORATION rather than a colour, which is why style.badge.hover reads a --pill-decoration-hover slot instead of only a background and a colour. Also not in the docs' badge-demo."
+    },
+    {
+      "id": "style.icon.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"badge-icon\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: `[&>svg]:size-3` = 12px square, plus `[&>svg]:pointer-events-none` so a glyph inside a link badge never swallows the pointer. Density-invariant because shadcn has no density capability at all (docs/foundations/density.md). Salt and M3: OFF — neither has an icon slot in this component."
+    }
+  ]
+}

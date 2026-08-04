@@ -1,0 +1,658 @@
+{
+  "component": "calendar",
+  "openUiAnatomy": "no published Open UI calendar anatomy (2026-08) \u2014 parts are the cross-system union of salt-ds Calendar, shadcn calendar, M3 date picker",
+  "behavior": {
+    "pattern": "APG grid + date picker: arrows=day, PageUp/PageDown=month, Home/End=week ends, Enter/Space=select; roving tabindex; aria-selected; month/year change announced",
+    "chassis": "skeleton/calendar.tsx \u2014 written from the APG spec for this template's union; inherits from no design system"
+  },
+  "skeletonParams": {
+    "navVariant": [
+      "caption",
+      "month-year-dropdowns",
+      "month-menu"
+    ],
+    "weekdayFormat": [
+      "narrow",
+      "short"
+    ],
+    "dayFormat": [
+      "numeric",
+      "2-digit"
+    ],
+    "outsideDays": [
+      "muted",
+      "hidden"
+    ],
+    "range": [
+      true,
+      false
+    ],
+    "header": [
+      true,
+      false
+    ],
+    "inputToggle": [
+      true,
+      false
+    ],
+    "actions": [
+      true,
+      false
+    ],
+    "selectionCommit": [
+      "immediate",
+      "confirm"
+    ],
+    "todayMarker": [
+      true,
+      false
+    ],
+    "densities": [
+      [
+        "high",
+        "medium",
+        "low",
+        "touch"
+      ],
+      null
+    ],
+    "gridWeeks": [
+      "variable",
+      "fixed-6"
+    ],
+    "accents": [
+      [
+        "blue",
+        "teal"
+      ],
+      null
+    ]
+  },
+  "base": {
+    "[data-slot=\"calendar\"]": {
+      "display": "inline-block",
+      "font": "var(--type-body)"
+    },
+    "[data-slot=\"nav\"]": {
+      "display": "flex",
+      "align-items": "center",
+      "gap": "4px"
+    },
+    "[data-slot=\"nav\"] [data-slot=\"caption\"]": {
+      "flex": "1",
+      "text-align": "center"
+    },
+    "[data-slot=\"grid\"]": {
+      "border-collapse": "collapse"
+    },
+    "[data-slot=\"weekday\"]": {
+      "text-align": "center",
+      "padding": "0",
+      "font-style": "normal"
+    },
+    "[data-slot=\"day\"]": {
+      "text-align": "center",
+      "padding": "0"
+    },
+    "[data-slot=\"day-button\"]": {
+      "appearance": "none",
+      "border": "none",
+      "background": "transparent",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "position": "relative",
+      "font": "inherit",
+      "color": "inherit",
+      "cursor": "var(--cursor-interactive)",
+      "box-sizing": "border-box"
+    },
+    "[data-slot=\"nav-previous\"], [data-slot=\"nav-next\"]": {
+      "appearance": "none",
+      "border": "none",
+      "background": "transparent",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "cursor": "var(--cursor-interactive)",
+      "color": "inherit"
+    },
+    "[data-slot=\"header\"]": {
+      "display": "flex",
+      "flex-direction": "column"
+    },
+    "[data-slot=\"header-row\"]": {
+      "display": "flex",
+      "align-items": "flex-end",
+      "justify-content": "space-between"
+    },
+    "[data-slot=\"actions\"]": {
+      "display": "flex",
+      "justify-content": "flex-end"
+    },
+    "[data-slot=\"month-select\"], [data-slot=\"year-select\"]": {
+      "appearance": "none",
+      "background": "transparent",
+      "border": "none",
+      "font": "inherit",
+      "color": "inherit",
+      "cursor": "var(--cursor-interactive)"
+    },
+    "[data-slot=\"visually-hidden\"]": {
+      "position": "absolute",
+      "width": "1px",
+      "height": "1px",
+      "overflow": "hidden",
+      "clip-path": "inset(50%)"
+    },
+    "[data-slot=\"nav\"][data-variant=\"month-menu\"] [data-slot=\"caption\"]": {
+      "text-align": "start"
+    },
+    "[data-slot=\"dropdown-wrap\"]": {
+      "display": "inline-flex",
+      "align-items": "center"
+    },
+    "[data-slot=\"dropdown-wrap\"] svg": {
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"dropdown-wrap\"] select": {
+      "flex": "1",
+      "min-width": "0"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.nav.variant",
+      "piece": "structure",
+      "policy": "default",
+      "channel": "config",
+      "param": "navVariant",
+      "note": "Salt: month+year dropdowns; shadcn: text caption; M3: month menu-button"
+    },
+    {
+      "id": "structure.header",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "header",
+      "note": "M3 only: 'Select date' label + headline date"
+    },
+    {
+      "id": "structure.input-toggle",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "inputToggle",
+      "note": "M3 only: pencil toggles calendar <-> text input"
+    },
+    {
+      "id": "structure.actions",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "actions",
+      "note": "M3 only: Cancel / OK text buttons"
+    },
+    {
+      "id": "structure.today-marker",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only: separate accent bar element under the date. Live toggle lives on style.day.today-marker below — the marker is pure CSS (::after), not a skeleton-conditional element, so this row is documentation only."
+    },
+    {
+      "id": "behavior.selection-commit",
+      "piece": "behavior",
+      "policy": "default",
+      "channel": "config",
+      "param": "selectionCommit",
+      "note": "Salt/shadcn: click commits; M3: pending until OK"
+    },
+    {
+      "id": "behavior.grid-keyboard",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "APG grid pattern \u2014 identical in every column, carried by the skeleton"
+    },
+    {
+      "id": "behavior.range-selection",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "range"
+    },
+    {
+      "id": "prop.density",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "densities",
+      "note": "Salt only; other columns show the control locked"
+    },
+    {
+      "id": "prop.accent",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "accents",
+      "note": "Salt's two color themes (blue/teal accent); a capability control like density"
+    },
+    {
+      "id": "slot.weekday-format",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "config",
+      "param": "weekdayFormat",
+      "note": "content formatting IS character: Salt/M3 single letters, shadcn short names"
+    },
+    {
+      "id": "slot.day-format",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "config",
+      "param": "dayFormat",
+      "note": "Salt zero-pads (01); shadcn/M3 plain"
+    },
+    {
+      "id": "slot.outside-days",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "config",
+      "param": "outsideDays",
+      "note": "Salt/shadcn: shown muted; M3: hidden (empty leading cells)"
+    },
+    {
+      "id": "slot.grid-weeks",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "config",
+      "param": "gridWeeks",
+      "note": "Salt renders a fixed 6-week grid (trailing next-month week always shown); shadcn/M3 variable height"
+    },
+    {
+      "id": "slot.icons",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED DEFERRAL: chevrons/pencil/caret render as neutral geometric SVG placeholders in every column; per-system icon sets are a later template row. Visible here so the gap is never silent."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION: calendar composes other registry components \u2014 button (nav chevrons), dropdown (Salt month/year, M3 month menu), icon set. Each has its own template, pending; current renders are placeholders. The composed components' own matrices will replace these approximations."
+    },
+    {
+      "id": "slot.locale",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED GAP: locale is a resolution axis (Salt's dateAdapter/useLocalization drives formats and week-start). Current build fixes en-US/Sunday-start; the skeleton takes a locale prop but the matrix does not yet declare per-locale behavior."
+    },
+    {
+      "id": "state.today",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info"
+    },
+    {
+      "id": "state.range",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "start/middle/end \u2014 absent in M3 (inline calendar has no range mode)"
+    },
+    {
+      "id": "state.disabled",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info"
+    },
+    {
+      "id": "state.range-preview",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "DECLARED GAP: Salt specs transient preview states while selecting a range (hoveredSpan/hoveredStart/hoveredEnd, CalendarDay.css:85) \u2014 interaction states beyond CSS pseudo-classes. Not implemented in any column yet."
+    },
+    {
+      "id": "style.root.background",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"calendar\"]",
+      "declarations": {
+        "background": "$"
+      }
+    },
+    {
+      "id": "style.root.color",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"calendar\"]",
+      "declarations": {
+        "color": "$"
+      }
+    },
+    {
+      "id": "style.root.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"calendar\"]",
+      "declarations": {
+        "padding": "$"
+      }
+    },
+    {
+      "id": "style.root.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"calendar\"]",
+      "declarations": {
+        "border-radius": "$"
+      }
+    },
+    {
+      "id": "style.root.width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"calendar\"]",
+      "declarations": {
+        "inline-size": "$",
+        "box-sizing": "border-box"
+      }
+    },
+    {
+      "id": "style.day.size",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"]",
+      "declarations": {
+        "inline-size": "$",
+        "block-size": "$"
+      }
+    },
+    {
+      "id": "style.day.cell-padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"day\"]",
+      "declarations": {
+        "padding": "$"
+      }
+    },
+    {
+      "id": "style.day.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"]",
+      "declarations": {
+        "border-radius": "$"
+      }
+    },
+    {
+      "id": "style.day.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"]",
+      "declarations": {
+        "font": "$"
+      }
+    },
+    {
+      "id": "style.day.background@hover",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"]:not([data-state=\"selected\"]):not([data-outside]):not(:disabled):hover",
+      "declarations": {
+        "background": "$"
+      }
+    },
+    {
+      "id": "style.day.selected",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"][data-state=\"selected\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.day.range-middle-cell",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"day\"][data-range=\"middle\"]",
+      "cellIsDeclarations": true,
+      "note": "the span band lives on the CELL and bleeds across the cell gap (Salt CalendarDay.css:84-96 ::before with -gap inset) so the range reads as one continuous bordered band"
+    },
+    {
+      "id": "style.day.range-middle",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"day\"][data-range=\"middle\"] [data-slot=\"day-button\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.day.range-start",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"day\"][data-range=\"start\"] [data-slot=\"day-button\"]",
+      "cellIsDeclarations": true,
+      "note": "directional rounding on range endpoints (Salt CalendarDay.css:115, shadcn rounded-l-md)"
+    },
+    {
+      "id": "style.day.range-end",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"day\"][data-range=\"end\"] [data-slot=\"day-button\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.day.today",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"][data-today]:not([data-state=\"selected\"])",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.day.today-marker",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"][data-today]:not([data-state=\"selected\"])::after",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.day.today-marker@outside",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"][data-outside][data-today]::after",
+      "cellIsDeclarations": true,
+      "note": "Salt mutes the today bar on out-of-month days (CalendarDay.css:240)"
+    },
+    {
+      "id": "style.day.outside",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"][data-outside]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.day.disabled",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"]:disabled",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.day.focus",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"day-button\"]:focus-visible",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.nav.button.size",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"nav-previous\"], [data-slot=\"nav-next\"]",
+      "declarations": {
+        "inline-size": "$",
+        "block-size": "$"
+      }
+    },
+    {
+      "id": "style.nav.button.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"nav-previous\"], [data-slot=\"nav-next\"]",
+      "declarations": {
+        "border-radius": "$"
+      }
+    },
+    {
+      "id": "style.nav.button.background@hover",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"nav-previous\"]:hover, [data-slot=\"nav-next\"]:hover",
+      "declarations": {
+        "background": "$"
+      }
+    },
+    {
+      "id": "style.nav.spacing",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"nav\"]",
+      "cellIsDeclarations": true,
+      "note": "spacing between nav and grid \u2014 was hardcoded in base (a violation of base's layout-only rule), now a themed row"
+    },
+    {
+      "id": "style.nav.layout",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"nav\"]",
+      "cellIsDeclarations": true,
+      "note": "LESSON: layout is a themed attribute \u2014 complex systems specify grid templates and gaps per part, not just colors/sizes"
+    },
+    {
+      "id": "style.caption.layout",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"caption\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.caption.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"caption\"], [data-slot=\"month-menu\"]",
+      "declarations": {
+        "font": "$"
+      }
+    },
+    {
+      "id": "style.dropdowns",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"dropdown-wrap\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt's flush bottom-border dropdown; the wrap carries the underline across value + caret"
+    },
+    {
+      "id": "style.weekday.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"weekday\"]",
+      "declarations": {
+        "font": "$"
+      }
+    },
+    {
+      "id": "style.weekday.color",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"weekday\"]",
+      "declarations": {
+        "color": "$"
+      }
+    },
+    {
+      "id": "style.header.label",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"header-label\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.header.headline",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"header-headline\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.header.spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"header\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.actions.spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"actions\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.header.divider",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"header\"]",
+      "cellIsDeclarations": true
+    },
+    {
+      "id": "style.actions.button",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"action-cancel\"], [data-slot=\"action-ok\"]",
+      "cellIsDeclarations": true
+    }
+  ]
+}

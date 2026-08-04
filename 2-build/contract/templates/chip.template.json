@@ -1,0 +1,839 @@
+{
+  "component": "chip",
+  "openUiAnatomy": "no published Open UI chip anatomy — union of salt-ds's Pill (a <button> whose selection is owned by a PillGroup <fieldset>, with a component-rendered PillCheckIcon as its leading part) and Tag (a read-only <div> on a 20-value categorical colour axis), and Material 3's FOUR-FILE chip family (assist / filter / input / suggestion), modelled as one component because all four agree on container-height 32px, container-shape corner-small, the whole label-large typescale, the focus-indicator triple, the state-layer scheme, 18px icons and the 0.38/0.12 disabled opacities, and differ only in colour role, which parts exist and whether selection exists. shadcn/ui contributes NOTHING: it ships no chip, no tag and no pill (see themes/columns/chip.shadcn.json for the six-part absence proof).",
+  "behavior": {
+    "pattern": "A small interactive element carrying a short label, optionally a leading icon or avatar and optionally a trailing control, used to filter, select, dismiss or trigger. The cross-system axes are: (1) WHAT THE CHIP IS — an action, a toggle, or inert read-only metadata, which decides the element itself (button vs div) and whether any ARIA exists; (2) WHERE SELECTION LIVES — on the chip (M3's selected-/unselected- token families) or on its GROUP (Salt's PillGroup context, where a Pill outside a group cannot be selected at all); (3) HOW THE SURFACE SEPARATES ITSELF — a stroke or a shadow (M3's flat/elevated), which is the same shadow-versus-stroke mechanism fork card had, appearing twice here because SELECTING an M3 chip also swaps its stroke for a fill; (4) WHAT THE DELETE AFFORDANCE IS — the whole chip (Salt) or a nested trailing control (M3 [R]), which is a genuine a11y fork about whether a focusable sits inside a focusable. NO SYSTEM IN THE CLONES BINDS Delete OR Backspace to a standalone chip.",
+    "chassis": "skeleton/chip.tsx — written from the template's part union (a root, an optional leading icon / avatar / selection-check, a label, an optional trailing control, an optional state-layer overlay, and an optional group wrapper). Inherits from no design system: the ELEMENT is derived from prop.interaction rather than hardcoded, so Salt's static Tag really is a <div> and its action/toggle Pill really is a <button>; the SELECTION SCOPE is config, so Salt's group-owned selection and M3's chip-owned selection are both expressible without either being the default. Every behavior row below is implemented in that file and asserted by scripts/check-chip-behavior.mjs, which exists because locked behavior rows have NO generator gate (docs/SELECT-MATRIX.md finding 16)."
+  },
+  "skeletonParams": {
+    "leadingIcon": [
+      true,
+      false
+    ],
+    "avatar": [
+      true,
+      false
+    ],
+    "selectionCheck": [
+      true,
+      false
+    ],
+    "trailing": [
+      true,
+      false
+    ],
+    "stateLayer": [
+      true,
+      false
+    ],
+    "selectionScope": [
+      "group",
+      "self"
+    ],
+    "interaction": [
+      "action",
+      "toggle",
+      "static"
+    ],
+    "kind": [
+      "assist",
+      "filter",
+      "input",
+      "suggestion"
+    ],
+    "elevation": [
+      "flat",
+      "elevated"
+    ],
+    "tagVariant": [
+      "primary",
+      "secondary"
+    ],
+    "bordered": [
+      true,
+      false
+    ],
+    "selected": [
+      true,
+      false
+    ],
+    "disabled": [
+      true,
+      false
+    ],
+    "deleteKeys": [
+      "Delete",
+      "Backspace"
+    ]
+  },
+  "base": {
+    "[data-slot=\"chip-group\"]": {
+      "display": "flex",
+      "flex-wrap": "nowrap",
+      "align-items": "center",
+      "min-width": "0",
+      "border": "0",
+      "padding": "0",
+      "margin": "0"
+    },
+    "[data-slot=\"chip\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "width": "fit-content",
+      "margin": "0",
+      "padding": "0",
+      "appearance": "none",
+      "background": "none",
+      "color": "inherit",
+      "font": "inherit",
+      "text-align": "left",
+      "text-decoration": "none",
+      "border-style": "solid",
+      "border-width": "0",
+      "border-color": "transparent"
+    },
+    "[data-slot=\"chip-leading\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "box-sizing": "border-box"
+    },
+    "[data-slot=\"chip-leading\"] svg": {
+      "display": "block",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"chip-avatar\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "box-sizing": "border-box",
+      "overflow": "hidden"
+    },
+    "[data-slot=\"chip-check\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "box-sizing": "border-box",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"chip-check\"] svg": {
+      "display": "block",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"chip-label\"]": {
+      "display": "block",
+      "min-width": "0",
+      "flex-shrink": "1",
+      "overflow": "hidden",
+      "text-overflow": "ellipsis"
+    },
+    "[data-slot=\"chip-trailing\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "box-sizing": "border-box",
+      "margin": "0",
+      "padding": "0",
+      "border": "0",
+      "background": "none",
+      "color": "inherit",
+      "font": "inherit",
+      "appearance": "none"
+    },
+    "[data-slot=\"chip-trailing\"] svg": {
+      "display": "block",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"chip-state-layer\"]": {
+      "position": "absolute",
+      "inset": "0",
+      "border-radius": "inherit",
+      "pointer-events": "none",
+      "opacity": "0"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.element",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: TWO ELEMENTS FROM TWO EXPORTS ON ONE docs/COMPONENTS.md ROW (line 111, `tag / pill`). Pill.tsx returns a real <button type=\"button\">; Tag.tsx returns a bare <div> with no role and no tabindex. M3: [R] — material-web is a tokens-only clone, so no element exists to read, though the token set describes a control unambiguously (four state layers, a focus indicator, a disabled family, in every one of the four files). shadcn: OFF — there is no component. The chassis DERIVES the element from prop.interaction rather than taking it as its own axis, because in source the element is a consequence of what the chip is and not an independent choice: static -> div, action/toggle -> button. A boolean `interactive` flag would have been the CARD-MATRIX.md finding-4 mistake with new labels."
+    },
+    {
+      "id": "structure.leading-icon",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "leadingIcon",
+      "note": "On in Salt and M3, and the two systems own DIFFERENT AMOUNTS OF IT — which is why the slot row and the style rows disagree. Salt owns only the GAP (Pill.css `gap: var(--salt-spacing-50)`, Tag.css `column-gap: var(--salt-spacing-50)`); the glyph is a consumer child sized by Salt's own Icon component, so style.leading.box and style.leading.color are OFF in that column and the icon simply inherits the label colour — which is why a pressed Salt pill's icon inverts along with its text. M3 owns the whole part: 18px square, a colour for every state, and an 8px leading-space that HALVES the chip's own 16px leading inset when it is present (style.chip.padding@with-leading). shadcn: OFF, confirmed absence."
+    },
+    {
+      "id": "structure.avatar",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "avatar",
+      "note": "M3's input-chip ONLY, and it is a PART and not a bigger icon (lesson 6): `$with-avatar-avatar-size: 24px` against the leading icon's 18px, plus `$with-avatar-avatar-shape: md-sys-shape.$corner-full` = 9999px — the only appearance of corner-full anywhere in the chip family, inside a container whose own shape is corner-small. A round 24px disc in an 8px-cornered 32px box. Salt: OFF, confirmed absence — no avatar rule in Pill.css or Tag.css, and Salt ships `avatar` on its own COMPONENTS.md row without ever composing it into a pill. shadcn: OFF."
+    },
+    {
+      "id": "structure.selection-check",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "selectionCheck",
+      "note": "SALT ONLY, and it is the whole of Salt's selected state. PillCheckIcon.tsx/.css is a component-OWNED part — Pill.tsx renders `{insideSelectableGroup && <PillCheckIcon checked={selected} active={combinedActive} />}` as the first child — and it is a visible CHECKBOX, not a checkmark: a size-selectable square with a 1px currentColor border and the pill's own corner radius, which fills with a CheckmarkSolidIcon when checked and a plain CheckmarkIcon while active. Salt's own examples.mdx says so: 'A visible checkbox provides the user with a clear visual cue that the accompanying pill is selectable.' M3: OFF WITH A REASON rather than an absence — the published spec shows a selected filter chip swapping its leading icon for a checkmark, and that would be exactly the structural change the brief flagged, but the TOKEN SET encodes only a leading-icon RECOLOUR on selection ($with-leading-icon-selected-leading-icon-color). No checkmark token, no glyph token, no element. Turning it on would have meant inventing the part."
+    },
+    {
+      "id": "structure.trailing",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "trailing",
+      "note": "M3's filter-chip and input-chip only ($with-trailing-icon-* colour families, an 18px size on input, and an 8px trailing-space in the hand-authored wrapper). Assist and suggestion have no trailing token at all. Salt: OFF — CONFIRMED ABSENCE, and it is the a11y fork of this component. Pill exports no close subcomponent and Pill.css has no trailing rule; the documented closable pattern puts a bare <CloseIcon style={{ marginLeft: 'auto' }} /> INSIDE the button as a decorative child and makes the whole pill's onClick the remove handler (stories/pill/pill.stories.tsx `Closable`; examples.mdx: 'A pill can be indicated as closable by adding a close icon on the right side of the pill'). So Salt ships zero nested focusables inside a chip and M3's spec ships one. See behavior.delete-affordance."
+    },
+    {
+      "id": "structure.state-layer",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "stateLayer",
+      "note": "M3 ONLY, in all four files: hover / focus / pressed / dragged colour+opacity pairs over on-surface or on-surface-variant. Salt: OFF — it moves the fill, the label and the border colour directly, and docs/foundations/state-layers.md records that neither Salt nor shadcn tokenises interaction-state opacity as a shared scale. Rendered as an absolutely-positioned overlay child rather than as a background-image, so the chip's own background stays readable underneath and the opacity rows have one element to move."
+    },
+    {
+      "id": "structure.selection-scope",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "selectionScope",
+      "note": "A REAL STRUCTURAL DIVERGENCE, not a naming one, and the reason a boolean `selectable` flag would have been wrong. Salt = \"group\": Pill.tsx reads `usePillGroup()` and computes `insideSelectableGroup = pillGroupContext.selectionVariant === \"multiple\"`. A Pill OUTSIDE a group — or inside a group left at its default selectionVariant=\"none\" — has no role, no aria-checked and no check icon, and passing it a `value` does nothing at all. PillGroup owns the controlled/uncontrolled `selected: string[]` and performs the toggle. M3 = \"self\": filter-chip and input-chip carry `selected-*`/`unselected-*` families on the CHIP, and no file in the set declares a chip-set or selection-container token. shadcn: OFF."
+    },
+    {
+      "id": "prop.interaction",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "interaction",
+      "note": "THE SHARED AXIS, SOURCE-DEFAULT-FIRST IN BOTH COLUMNS. Salt [\"action\", \"toggle\", \"static\"]: `action` is a bare <Pill onClick>, which is what index.mdx and the Default story open with and what PillGroup's own `selectionVariant = \"none\"` default produces; `toggle` is the same Pill inside a selectionVariant=\"multiple\" group; `static` is Tag. Action-first is load-bearing — a toggle-first list would have put a checkbox glyph on every unqualified Salt chip in the harness against source, and a static-first list would have turned every Salt chip into a 999px categorical tag. M3 [\"action\", \"toggle\"]: `action` covers assist and suggestion, whose colour tokens are UNQUALIFIED, and `toggle` covers filter and input, every one of whose colour tokens is prefixed selected-/unselected-; the unqualified reading is value[0], the same convention card.m3.json used. DECLARED COUPLING: in M3 this axis is determined by prop.kind and is not independently settable — the harness moves them together. Discriminated by a real SKELETON ELEMENT BRANCH (div vs button), by the ARIA computation, by structure.selection-check's group gate, and by style.chip.tag-rest, which is gated on [data-interaction=\"static\"]."
+    },
+    {
+      "id": "prop.kind",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "kind",
+      "note": "M3 ONLY — THE FOUR-MEMBER FAMILY MODELLED AS ONE COMPONENT WITH AN AXIS, the way button handled filled/outlined/text and card handled elevated/filled/outlined. Source supports the collapse: the four files agree on container-height (32px), container-shape (corner-small), the entire label-large typescale, the focus-indicator triple, the state-layer scheme, the 18px icon size, the 0.38/0.12 disabled opacities AND — via the four hand-authored wrappers — the identical 16/16/8/8px spacing. NO SOURCE DEFAULT EXISTS, so the list is in the spec's own published order and the absence is recorded rather than a default invented (card.m3.json's treatment of prop.variant). `assist` is nonetheless the defensible value[0]: it is the only family whose enabled tokens are entirely unqualified and whose label takes the plain on-surface role. Discriminated by three real CSS blocks (@suggestion, @filter, @input, which between them move the label colour, the focus stroke colour, the state-layer colour, the leading-icon colour and the SELECTED leading-icon colour), by which parts the skeleton renders (avatar on input alone, trailing on filter and input alone), by whether prop.selected is reachable at all, and by input's exclusion from prop.elevation."
+    },
+    {
+      "id": "prop.elevation",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "elevation",
+      "note": "M3 ONLY, and this is the LESSON-6 MECHANISM AXIS: elevated versus flat is shadow-versus-stroke, not one surface with a shadow bolted on. A flat chip has a 1px outline-variant stroke and level0; an elevated chip has NO outline token at all in any of the four files, a surface-container-low fill and a level1 shadow. SOURCE-DEFAULT-FIRST, and source says so twice: (1) all four hand-authored wrappers RENAME the flat-* tokens to their unprefixed forms ('flat-outline-color' -> 'outline-color' etc.) citing b/275577569 'Remove flat-* prefix', i.e. the library treats flat as the base; (2) input-chip's tokens are already unprefixed and it has NO elevated family whatsoever. DECLARED CONSTRAINT, stated rather than smoothed: kind and elevation are not fully orthogonal — `input` supports only `flat`. The axis is carried at the family level because three of four support both, and the exclusion is enforced in the harness."
+    },
+    {
+      "id": "prop.tag-variant",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "tagVariant",
+      "note": "SALT ONLY, and only meaningful under interaction=\"static\". Tag.tsx `variant = \"primary\"` is the literal declared default, so the list is SOURCE-DEFAULT-FIRST. `primary` is a categorical-weakest fill with a categorical-strong label; `secondary` is the categorical colour at full strength with a white label. NOTE THE ASYMMETRY carried in the column's provenance: primary reads a per-category `--tag-primary-foreground` indirection, secondary reads `--salt-content-bold-foreground` directly, so all 20 secondary tags share one label colour. CATEGORY SCOPE TRIM: Tag.css enumerates categories 1-20 as twenty near-identical four-property blocks; this template pins category 1 (Tag.tsx's own `category = 1` default), the same treatment the accent scope trim gives palette-accent. The other 19 are recorded, not modelled."
+    },
+    {
+      "id": "prop.bordered",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "bordered",
+      "note": "SALT ONLY. Tag.tsx `bordered?: boolean`, destructured with NO default. CAPABILITY LIST, NOT AN ORDERED ENUM — false is the base rendering in the only column that has it, and the skeleton reads the per-instance prop and never value[0]. Declared as such because the ordering convention differs from the enum rows above, exactly as card.salt.json had to declare for `disabled` and `hoverable`. M3: OFF, and deliberately — its 1px stroke is UNCONDITIONAL on a flat chip and ABSENT on an elevated one, so 'bordered' is what prop.elevation already decides; modelling it separately would have double-counted one property on two axes."
+    },
+    {
+      "id": "prop.selected",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "selected",
+      "note": "CAPABILITY LIST in both columns that have it — false is the base rendering and the skeleton reads the per-instance prop, never value[0]. Salt: not a Pill prop at all; `selected` is DERIVED in Pill.tsx from `pillGroupContext.selected.includes(value)`, so the column declares only that the capability exists and the chassis takes it as an instance prop (a declared API divergence). M3: available on filter-chip and input-chip only. The two systems' selected states are the widest divergence in this matrix — Salt changes NOTHING on the chip (the check icon carries the whole signal) and M3 changes THREE properties (fill, label, and the outline width to zero)."
+    },
+    {
+      "id": "prop.disabled",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "disabled",
+      "note": "CAPABILITY LIST. Salt: Pill inherits `disabled` from the native button props and PillGroup has its own `disabled` that ORs into it (`const disabled = pillGroupContext.disabled || buttonDisabled`); Tag has no disabled state at all, so a static Salt chip cannot be disabled. M3: a complete disabled family in all four files at TWO opacities. shadcn: OFF. Discriminated by style.chip.disabled (two genuinely different mechanisms — Salt's blanket 40% dim with the resting colours restated, against M3's 38%-on-content plus 12%-on-stroke) plus the skeleton's element/handler/tab-stop branches."
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "THREE ANSWERS IN ONE SYSTEM, AND THE ARIA IS CONDITIONAL. Salt: an ACTION pill writes NO ARIA at all and relies on native <button> semantics; a TOGGLE pill writes `role=\"checkbox\"` and `aria-checked`, and only inside a selectionVariant=\"multiple\" group (Pill.tsx `groupProps = insideSelectableGroup ? { \"aria-checked\": selected, role: \"checkbox\", value } : {}`); a Tag writes nothing whatsoever. Note also what PillGroup does NOT write: it renders a <fieldset> and forwards aria-labelledby/aria-describedby from the FormField context, but sets no role=\"group\" and no role=\"radiogroup\". There is no `radio` reading anywhere, because PillGroup's selectionVariant is only \"none\" | \"multiple\" — Salt has no single-select pill group. M3: [R] button, with a pressed/selected state on the two toggle families; no element exists, and the chassis computes the role from config so the inference is a matrix cell rather than a hardcode. shadcn: OFF. This is the FIRST component since badge where a column ships real ARIA, and badge taught us to verify rather than assume — verified."
+    },
+    {
+      "id": "behavior.tab-stop",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: 0 ON EVERY PILL, INCLUDING EVERY PILL OF A GROUP — there is NO roving tabindex. Pill.tsx deliberately discards useButton's tabIndex with a source comment: `const { tabIndex: _tabIndex, disabled: buttonDisabled, ...restButtonProps } = buttonProps` / 'we do not want to spread tab index in this case because the button element does not require tabindex=\"0\" attribute'. accessibility.mdx confirms the consequence in prose: Tab moves focus to the FIRST pill of a group and Shift+Tab to the LAST. Disabled pills leave the tab order via the native disabled attribute. A Tag is never focusable. THIS IS THE OPPOSITE OF THE SAME DESIGN SYSTEM'S OWN CARD GROUP, which card.salt.json recorded as a roving-tabindex radiogroup with arrow navigation — two group components in one system with two different navigation contracts. M3: [R] 0, implied by the focus-indicator family `latest` adds to all four files, which would be unreachable on a non-focusable element."
+    },
+    {
+      "id": "behavior.keyboard-activation",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "TWO CONTRACTS IN ONE SYSTEM, AND THE FORK IS AN EXPLICIT preventDefault. An ACTION Salt pill is a native button: Enter and Space both activate. A TOGGLE Salt pill activates on SPACE ONLY, because Pill.tsx's keydown handler contains `if (event.key === \"Enter\" && insideSelectableGroup) { /* Prevent selection on enter key for selectable pill. */ event.preventDefault(); return; }`. accessibility.mdx states both halves in two separate KeyboardControls blocks — 'Enter / Space' for a Pill, and 'Space' alone for a pill within a selectable group. Modelling interaction as a boolean, or even as static/interactive, would have given a selectable pill Enter activation that source explicitly removes — the same trap CARD-MATRIX.md finding 4 found in the other direction (an anchor that activates on Enter and NOT Space). M3: [R] Enter and Space, the platform default for the button role its token set implies; no key contract can be sourced from a tokens-only clone, and that difference is stated rather than smoothed."
+    },
+    {
+      "id": "behavior.selection",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: MULTI-SELECT ONLY, owned by the group, toggling on click. PillGroup's `selectionVariant?: \"none\" | \"multiple\"` has no single-select member, which is exactly why the pill's role is `checkbox` and never `radio`; `select` filters the value out if present and concatenates it if absent, so every activation is a toggle, and the group is controlled-or-uncontrolled through useControlled. M3: PER-CHIP, and it moves THREE properties — the container colour to secondary-container, the label to on-secondary-container, and the outline width from 1px to 0px. Selecting an M3 chip changes the MECHANISM by which the surface is separated from the page (stroke becomes fill), which is the lesson-6 fork appearing a second time inside one component. shadcn: OFF."
+    },
+    {
+      "id": "behavior.delete-affordance",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "THE A11Y FORK THE BRIEF ASKED FOR, AND IT HAS ONLY TWO ANSWERS BECAUSE ONE SYSTEM ABSTAINS. Salt says DO NOT NEST: the whole pill is the delete control. Its documented closable pattern is `<Pill onClick={() => removeColor(color)}>{color} <CloseIcon style={{ marginLeft: \"auto\" }} /></Pill>` — the glyph is a decorative child of the button pushed right by a consumer inline style, there is no second tab stop and no second click target, and examples.mdx describes it as 'adding a close icon on the right side of the pill'. M3's tokens say a trailing icon EXISTS on filter and input chips, with its own 8px trailing-space and its own enabled/hover/focus/pressed/disabled colours — but whether it is a separate focusable is [R], because material-web is tokens-only. The published spec makes an input chip's trailing icon a remove BUTTON, which would put a focusable inside a focusable and give each chip two tab stops. The chassis renders it as a real nested <button> in the M3 column so the fork is INSPECTABLE IN THE DOM rather than merely described, carries the [R] grade on the cell, and stops the trailing button's click from reaching the chip. shadcn: OFF — no component."
+    },
+    {
+      "id": "behavior.delete-keys",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "deleteKeys",
+      "note": "OFF IN ALL THREE COLUMNS, retained deliberately — the same treatment badge.template.json gave behavior.live-region, and for the same reason: for a component whose canonical use includes dismissal, the unanimous absence of a Delete/Backspace contract is surprising and load-bearing. Salt DOES have one, and it is in the wrong place: PillInput.tsx lines 225 and 253 bind `event.key === \"Backspace\" && lastPill` and `event.key === \"Delete\" || event.key === \"Backspace\"`, and lab/tokenized-input binds the same — but that is the chip-INSIDE-A-FIELD pattern, excluded by the brief's own structural reason and placed by docs/COMPONENTS.md line 45 on the `input-group` row. Nothing in packages/core/src/pill or /tag contains either key. M3 cannot source a key contract from a tokens-only clone. shadcn has no component. So a standalone chip in this registry is removable by Enter/Space (Salt) or by clicking a nested control (M3) and by NO keyboard shortcut in any column. The chassis implements the capability and every column leaves it off, so the gap is a matrix cell rather than a silent omission."
+    },
+    {
+      "id": "behavior.disabled-handling",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: the NATIVE disabled attribute, plus a group-level disabled that ORs into it — `const disabled = pillGroupContext.disabled || buttonDisabled`, written straight onto <button disabled>, with useButton returning `disabled: disabled && !focusableWhenDisabled` and `tabIndex: -1` (Pill never passes focusableWhenDisabled, so it is always the real attribute). Pill.tsx ALSO guards its own pointer handler separately — `handlePointerDown` returns early `if (disabledProp)` — because that handler is bound outside useButton and the native attribute would not stop the state update. NOTE THE DIVERGENCE FROM CARD IN THE SAME SYSTEM: an InteractableCard uses aria-disabled and STAYS focusable; a Pill uses the native attribute and LEAVES the tab order. A Tag has no disabled state at all. M3: [S] two opacities (0.38 content, 0.12 stroke or container), [R] the DOM mechanism."
+    },
+    {
+      "id": "behavior.pressed-flag",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: TWO INDEPENDENT PRESSED FLAGS, COMBINED DIFFERENTLY DEPENDING ON WHETHER THE PILL IS SELECTABLE. Pill.tsx holds `pressActive` (set on pointerdown, cleared by a WINDOW-level pointerup/pointercancel listener registered in a useEffect, so a pointer released outside the pill still clears it) and `spaceActive` (set on Space keydown, cleared on Space keyup) alongside useButton's own `active`. Then `combinedActive = insideSelectableGroup ? pressActive || spaceActive : pressActive || active` — a selectable pill deliberately DROPS useButton's `active` so that Enter, which the browser reports as both a key and a click, cannot flash it. useButton's own source comments name the same two browser quirks card.salt.json recorded ('the browser treats [Enter] as both key and click events on a Button'; 'Firefox Button where Space key is pressed but button fails to be in active state'). M3: [R] — the pressed state is a RIPPLE in the real library, which a tokens-only clone cannot supply, so the chassis drives the pressed state layer from the same data flag; the VALUES are [S] and the TRIGGER is [R], identical to card.m3.json's declared approximation 3."
+    },
+    {
+      "id": "behavior.group-navigation",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "OFF IN EVERY COLUMN, and the Salt cell is a genuine confirmed absence rather than a missing feature. PillGroup.tsx binds NO keydown handler of any kind — it is a context provider around a stripped <fieldset>. Because every pill keeps its own tab stop (behavior.tab-stop), navigation inside a Salt pill group is Tab and Shift+Tab, and accessibility.mdx documents exactly that and nothing else. M3 has no chip-set token at all, let alone a navigation contract. The row is retained as documentation of the contrast with InteractableCardGroup, which is arrow-navigated in the same design system."
+    },
+    {
+      "id": "slot.label",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in every column, as arbitrary children, and NO system formats or clamps it — a deliberate contrast with badge, where Salt owns a `value`/`max` and clamps numbers but not strings. Both Salt components handle length in PROSE instead (pill/usage.mdx: 'Content should be succinct, often one or a couple of words'; tag/usage.mdx: 'limiting to one or two words'), and both then CLIP with `overflow: hidden` and no ellipsis. M3 declares no overflow, text-overflow or white-space token at all — a third answer to the question docs/BADGE-MATRIX.md finding 3 found three answers to."
+    },
+    {
+      "id": "slot.leading",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION to an icon set in both columns, and additionally to `avatar` in M3's input-chip, which has its own docs/COMPONENTS.md row. Rendered as neutral placeholders rather than importing another component's skeleton, the same convention alert.tsx, card-check.tsx and badge-check.tsx use."
+    },
+    {
+      "id": "slot.trailing",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "M3 only. DECLARED COMPOSITION to an icon set and, per the spec, to `button` — an input chip's trailing icon is its remove control [R]. Rendered as a neutral placeholder inside a real nested <button> so behavior.delete-affordance's a11y fork is inspectable."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION, same pattern as card.template.json and badge.template.json: (a) FORM-FIELD — PillGroup calls useFormFieldProps() and merges the field's aria-labelledby/aria-describedby and its disabled state, and Salt's examples.mdx recommends wrapping every selectable pill group in one; (b) an ICON SET — the leading glyph in both columns, the closable pattern's CloseIcon in Salt, and both glyphs in M3; (c) AVATAR — M3's input-chip sizes and shapes one (24px, corner-full) without owning it; (d) BUTTON — M3's trailing remove control [R]; (e) COMBO-BOX — Salt's examples.mdx routes the closable pill 'within an input control such as ComboBox', which is the boundary this component does NOT cross (see the scope note); (f) BADGE, already built, which points here from the other side: badge/usage.mdx sends immediate actions and status colour to Pill and read-only metadata to Tag. All render as neutral placeholders."
+    },
+    {
+      "id": "state.rest",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "THREE DIFFERENT OBJECTS. A Salt PILL is a solid gray-500 fill with a white label, a same-colour (therefore invisible) 1px border and a nearly-square 1-4px radius. A Salt TAG is a cobalt-100 wash with a cobalt-600 label and a fully round 999px radius. An M3 chip has NO FILL AT ALL — there is no flat unselected container-color token in any of the four files, in either edition — and is defined entirely by a 1px outline-variant hairline at an 8px radius. Salt's two chips share nothing but their height, their gap and their type."
+    },
+    {
+      "id": "state.hover",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: a 15% black gradient wash composited over the SAME fill, the SAME label colour (see the finding on actionable-bold-foreground-hover, which resolves to the resting token), and a border recoloured to a 30% contrast alpha that inverts by mode. And the hover rule's selector also lists `:focus-visible`, so a keyboard-focused Salt pill is styled as hovered. Tag has no hover. M3: a state layer at 8% and nothing else on the container — every $hover-label-text-color in all four files resolves to the same role as its resting label, and there is no hover container-color or hover outline token — except on an ELEVATED chip, which lifts from level1 to level2. shadcn: OFF."
+    },
+    {
+      "id": "state.focus",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: a 2px DOTTED accent-stronger outline at offset 0, plus the entire hover treatment, because Pill.css lists `:focus-visible` alongside `:hover` in one declaration block. M3: THREE SIMULTANEOUS MECHANISMS — a 3px solid `secondary` indicator at the OUTER +2px offset (latest only; absent from all four v0.192 files), a recolour of the 1px stroke to `flat-focus-outline-color`, and a 10% state layer. And an elevated M3 chip does NOT lift on focus ($elevated-focus-container-elevation is level1, the resting level) — the same 'focus does not elevate' finding card.m3.json recorded. shadcn: OFF."
+    },
+    {
+      "id": "state.pressed",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: THE PILL INVERTS — a gray-200 fill with a BLACK label in light mode, the largest single state change in this component, from `actionable-bold-{background,foreground}-active`. `.saltPill-clickable.saltPill-active` and `:active` share one declaration block precisely because a keyboard activation never produces `:active`, exactly as InteractableCard does. M3: a 10% state layer, and the elevated chip returns to its RESTING level1 from the hovered level2; no pressed container-color or label-colour change exists. shadcn: OFF."
+    },
+    {
+      "id": "state.selected",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "THE WIDEST DIVERGENCE IN THIS MATRIX. Salt changes NOTHING ON THE CHIP: Pill.css contains no `-selected` selector, no `[aria-checked]` selector and no `selectable-*` characteristic reference, so a selected Salt pill's fill, label and border are byte-identical to an unselected one and the ENTIRE selected signal is a CheckmarkSolidIcon appearing inside the PillCheckIcon box. M3 changes THREE properties: the fill to secondary-container, the label to on-secondary-container, and the outline width to zero. One system signals selection with a glyph, the other by swapping the surface's whole separation mechanism. shadcn: OFF."
+    },
+    {
+      "id": "state.disabled",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: a blanket `opacity: 0.4` on the whole pill, with the three resting colour indirections RESTATED inside `.saltPill:disabled, .saltPill:disabled:hover` so the hover rule cannot win — the same defensive restatement card.salt.json recorded — plus a not-allowed cursor. A Salt Tag has no disabled state. M3: TWO DIFFERENT OPACITIES IN ONE STATE — 0.38 on the content (label, leading icon, trailing icon, avatar) and 0.12 on the stroke (or on the container, when selected or elevated). Reproduced as two color-mix() expressions rather than one blanket opacity, because a single 0.38 would have put the stroke at 38% instead of 12%. shadcn: OFF."
+    },
+    {
+      "id": "style.chip.background",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "Each column at its default: Salt an action Pill (actionable-bold, gray-500, MODE-INVARIANT); M3 a flat unselected assist chip, which is `transparent` and is a CONFIRMED ABSENCE rather than a value — no flat unselected container-color token exists in any of the four files. Read through an indirection in Salt so the hover, pressed and disabled rows reassign one property."
+    },
+    {
+      "id": "style.chip.color",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "Salt: `actionable-bold-foreground` -> palette-foreground-primary-alt -> WHITE IN BOTH MODES, the same mode-invariant white badge.salt.json found. M3: `on-surface` for assist, reassigned to on-surface-variant by the other three kind blocks. The leading icon inherits this in the Salt column (no icon-colour rule exists there) and overrides it in the M3 column."
+    },
+    {
+      "id": "style.chip.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "font": "$"
+      },
+      "note": "Salt: REGULAR 400 body type at the standard body size — 11/14 . 12/16 . 14/18 . 16/20 by density, in Open Sans. M3: `label-large` = 500 0.875rem/1.25rem Roboto. Worth stating against the neighbouring component: a chip is BODY-SIZED in both systems where a badge was the smallest type either system has (Salt 600 at 10px, M3 label-small at 11px). Matches docs/foundations/typography.md line 9 (Salt's Open Sans family) and line 57 (M3's label-large 0.875rem/1.25rem, plain, weight-medium)."
+    },
+    {
+      "id": "style.chip.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "letter-spacing": "$"
+      },
+      "note": "Salt: `--salt-text-letterSpacing` = 0, declared on Pill.css and NOT on Tag.css — one of the small asymmetries between Salt's two chips. M3: `label-large-tracking` = 0.00625rem, and recorded with its disownment: all four hand-authored wrappers list label-text-tracking under $unsupported-tokens and remove it, so the shipped library drops exactly this row."
+    },
+    {
+      "id": "style.chip.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "THE HEADLINE ROW OF THIS MATRIX. Salt's PILL is `palette-corner-weaker` -> curve-50 -> 1/2/3/4px by density: a nearly SQUARE box. Salt's TAG is `palette-corner-strongest` -> curve-999 -> 999px: a full pill. The names are the wrong way round, and under [data-corner=\"sharp\"] the gap WIDENS to 0px against 999px, because corner-weaker collapses to curve-0 while corner-strongest does not (next/palette/corner.css lines 2 and 16). M3 sits between them at `corner-small` = 8px in all four files and both editions. Three chips, three shapes, no two alike. The Tag value is carried on style.chip.tag-rest so this row stays the interactive reading."
+    },
+    {
+      "id": "style.chip.height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `height: calc(var(--salt-size-base) - var(--salt-spacing-100))` and `min-height: var(--salt-text-minHeight)` — BYTE-IDENTICAL declarations in Pill.css and Tag.css, the one place Salt's two chips genuinely agree. Both are density scales, so the subtraction moves at every density: 16/20/24/28px height over a 14/16/18/20px floor. M3: `$container-height: 32px`, a hardcoded literal identical in all four files and both editions, with no min-height token — so an M3 chip is TALLER than a Salt pill at every density including touch."
+    },
+    {
+      "id": "style.chip.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: `0 calc(var(--salt-spacing-50) - var(--pill-borderWidth))` = 0 1/3/5/7px — source SUBTRACTS the border so the ink box, not the content box, lands on the spacing step. M3: `0 16px`, AND THE VALUE IS NOT IN THE GENERATED TOKEN SET. None of the four versions/ files carries a single spacing token; all four hand-authored tokens/_md-comp-*-chip.scss wrappers ADD one identically as $new-tokens ('leading-space': 16px, 'trailing-space': 16px). So unlike card — which had to BORROW its 16px from m3.material.io and grade it [R] — this is [S], read from a file in the clone, and flagged as LIBRARY-ADDED rather than generated because the two sources genuinely disagree about whether it exists. The two systems are five times apart: 3px against 16px at Salt's default density."
+    },
+    {
+      "id": "style.chip.padding@with-leading",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-has-leading]",
+      "declarations": {
+        "padding-left": "$"
+      },
+      "note": "M3 only: the wrappers' 'with-leading-icon-leading-space': 8px. The leading inset HALVES from 16px to 8px when a leading icon or avatar is present, so the glyph sits closer to the edge than a bare label would. Salt: OFF — its padding does not react to its contents at all, which is visible as a Salt pill with an icon being wider on the left than an M3 one."
+    },
+    {
+      "id": "style.chip.padding@with-trailing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-has-trailing]",
+      "declarations": {
+        "padding-right": "$"
+      },
+      "note": "M3's filter and input wrappers only: 'with-trailing-icon-trailing-space': 8px. The assist and suggestion wrappers do not declare it, because those families have no trailing part. Salt: OFF — it has no trailing part either, and its closable pattern pushes the glyph right with a CONSUMER margin-left:auto rather than with any component padding."
+    },
+    {
+      "id": "style.chip.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "gap": "$"
+      },
+      "note": "Salt: `gap: var(--salt-spacing-50)` on Pill and `column-gap: var(--salt-spacing-50)` on Tag — the same step reached by two different property names in two files (Tag never wraps, so its row gap is moot). 2/4/6/8px by density. M3: the wrappers' 'icon-label-space': 8px, library-added like the padding."
+    },
+    {
+      "id": "style.chip.border-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "border-width": "$"
+      },
+      "note": "Both columns 1px, from two different scales and with two different meanings. Salt: `--salt-size-fixed-100`, on the FIXED scale and therefore density-invariant BY DESIGN (docs/foundations/sizes.md) — the lesson-7 frozen-token check run and passed. Its colour equals the fill at rest, so it is invisible until hover or press moves it. M3: `$flat-outline-width` (filter: $flat-unselected-outline-width; input: $unselected-outline-width) — a REAL visible hairline, because an M3 chip has no fill behind it. Selecting or elevating an M3 chip drops it to 0."
+    },
+    {
+      "id": "style.chip.border-color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "border-color": "$"
+      },
+      "note": "Salt: `actionable-bold-borderColor` -> palette-neutral -> gray-500, MODE-INVARIANT, and the same colour as the chip's own fill. M3: `outline-variant`, and this is the EDITION-PIN PAYOFF — all four v0.192 files resolved it to `outline` instead, a materially darker role."
+    },
+    {
+      "id": "style.chip.overflow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "overflow": "$"
+      },
+      "note": "Salt only: `overflow: hidden` in BOTH Pill.css and Tag.css. A long Salt chip label is CLIPPED at the chip's own radius, with no ellipsis — the chassis's base gives the label a text-overflow, but the chip's own hidden overflow is what source declares. M3: OFF, a confirmed absence — no overflow, text-overflow or white-space token in any of the four files."
+    },
+    {
+      "id": "style.chip.white-space",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "white-space": "$"
+      },
+      "note": "Salt only: Pill.css declares `white-space: nowrap` and Tag.css does NOT, relying on `min-width: max-content` instead — two files in one component reaching the same intent by two mechanisms. The nowrap reading is carried here because the interactive form is this column's default; the Tag mechanism is recorded rather than modelled. M3: OFF, no token."
+    },
+    {
+      "id": "style.chip.cursor",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "cursor": "$"
+      },
+      "note": "Salt only: `.saltPill-clickable { cursor: var(--salt-cursor-hover) }` = pointer (docs/foundations/cursors.md). Tag declares no cursor, so style.chip.tag-rest resets it to auto. M3: OFF — no cursor token in any of the four files, the same absence card.m3.json recorded; M3 describes the chip as a control through its state layers and focus indicator and never says what the pointer should look like."
+    },
+    {
+      "id": "style.chip.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "transition": "$"
+      },
+      "note": "OFF IN ALL THREE COLUMNS, retained as documentation. Neither Pill.css nor Tag.css declares a transition, animation or --salt-duration-* reference, and none of M3's four files carries a motion token. Every state change in this component is instantaneous in every system — a genuine three-way agreement, and the opposite of card, where Salt declared a transition with a zero duration."
+    },
+    {
+      "id": "style.chip.elevation",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]",
+      "declarations": {
+        "box-shadow": "$"
+      },
+      "note": "M3 only, and deliberately declared rather than left off: `$flat-container-elevation: md-sys-elevation.$level0` is a real sourced value, and the @elevated block needs a base to override. Salt: OFF — CONFIRMED ABSENCE, neither Pill.css nor Tag.css declares a box-shadow or reads any palette/shadow.css token, so Salt's chip has no elevated/flat mechanism axis at all."
+    },
+    {
+      "id": "style.chip.elevation@elevated",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-elevation=\"elevated\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY — THE LESSON-6 MECHANISM ROW, and the same trap card fell into and climbed out of. Elevated is not flat-plus-a-shadow: `$elevated-container-color: surface-container-low` supplies a fill the flat chip does not have, `$elevated-container-elevation: level1` supplies a shadow, and NO elevated outline token exists in any of the four files, so the 1px stroke is DELETED rather than kept. Shadow replaces stroke; the property carrying the separation changes, not just its value. NOT AVAILABLE ON input-chip, which has no elevated family at all — a declared constraint, enforced in the harness. Placed BEFORE style.chip.selected in row order so that a selected elevated chip takes the selected fill (source agrees: $elevated-selected-container-color is the same secondary-container role) while keeping its shadow."
+    },
+    {
+      "id": "style.chip.kind@suggestion",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-kind=\"suggestion\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only. A normalized value diff of _md-comp-suggestion-chip.scss against _md-comp-assist-chip.scss finds the two files IDENTICAL except that every `on-surface` becomes `on-surface-variant` (the label, the hover/focus/pressed/dragged label and state layers, and the flat focus outline) and the icon family is renamed with-icon-* -> with-leading-icon-*. Same height, same shape, same typescale, same icon size, same primary icon colour, same elevated family, same spacing. Two files, one role substitution — which is a large part of why the family collapses to one component with an axis."
+    },
+    {
+      "id": "style.chip.kind@filter",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-kind=\"filter\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only. AT REST, FLAT AND UNSELECTED, A FILTER CHIP AND A SUGGESTION CHIP ARE BYTE-IDENTICAL — stated rather than hidden, because an axis value that discriminates nothing is exactly what lesson 3 forbids. They are discriminated by three real things instead: filter has a SELECTED state (three properties, style.chip.selected), filter has a TRAILING part (structure.trailing), and suggestion has neither. Carried but not modelled, because it needs a compound selector: filter-chip's state-layer roles SWAP ON PRESS — its selected pressed layer is on-surface-variant while its selected hover and focus layers are on-secondary-container, and its unselected pressed layer is on-secondary-container while its unselected hover and focus are on-surface-variant."
+    },
+    {
+      "id": "style.chip.kind@input",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-kind=\"input\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only, and the most divergent of the four. Its UNSELECTED leading icon is `on-surface-variant` where every other family's is `primary`, and its SELECTED leading icon is `primary` where filter's is `on-secondary-container` — the two toggle families invert each other on that one part. It is also the only family with an AVATAR, the only one with NO elevated tokens, and the only one whose selection tokens are unprefixed by `flat-` (because there is no elevated form to distinguish them from). The reassignment uses two separately-named slots (chip-icon-variant, chip-icon-primary) rather than a self-referential var(), which would have been circular."
+    },
+    {
+      "id": "style.chip.tag-rest",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-interaction=\"static\"]",
+      "cellIsDeclarations": true,
+      "note": "THE ROW THAT CARRIES THE WHOLE STATIC FORK, and it is one block rather than six state-qualified rows because in source it is a DIFFERENT COMPONENT and not a state of another. A Salt Tag differs from a Salt Pill in its radius (999px against 1-4px), its padding (spacing-25/spacing-100 against 0/spacing-50-minus-1px), its colour family (categorical against actionable-bold), its border colour (transparent) and its cursor (none, so auto). Emitting it as one gated block keeps every other style row expressing the interactive reading, which is what value[0] of prop.interaction is. M3: OFF — there is no read-only chip in M3; all four families are controls."
+    },
+    {
+      "id": "style.chip.tag-variant@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-tag-variant=\"secondary\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, and only reachable under interaction=\"static\". Tag.css `.saltTag-secondary` takes the categorical colour at FULL strength (cobalt-500, MODE-INVARIANT) with a white label, against primary's weakest wash with a strong label. Note the sourced asymmetry: secondary reads `--salt-content-bold-foreground` DIRECTLY with no per-category indirection, so all twenty secondary tags share one label colour where all twenty primary tags have their own."
+    },
+    {
+      "id": "style.chip.bordered",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-bordered]",
+      "cellIsDeclarations": true,
+      "note": "Salt only. `.saltTag-bordered` restates the same 1px solid and changes only the COLOUR, from the transparent both variants carry by default to `category-1-borderColor` (cobalt-500, mode-invariant). Only the colour is modelled here because the 1px solid is already carried by style.chip.border-width. Note that `bordered` reads the PRIMARY border indirection even when variant=\"secondary\", so a bordered secondary tag draws a cobalt-500 stroke around a cobalt-500 fill — invisible, and sourced."
+    },
+    {
+      "id": "style.chip.elevation@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-elevation=\"elevated\"]:hover",
+      "declarations": {
+        "box-shadow": "$"
+      },
+      "note": "M3 only: `$elevated-hover-container-elevation: level2`. The elevated chip is the only thing in the M3 column that moves on hover other than its state layer. The dp->CSS conversion is CITED, NOT RE-DERIVED, from docs/foundations/elevation.md's canonical table."
+    },
+    {
+      "id": "style.chip.hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]:hover",
+      "cellIsDeclarations": true,
+      "note": "Salt only, reassigning three indirections at once. M3: OFF ON THE CONTAINER, and worth stating rather than leaving blank — every $hover-label-text-color in all four files resolves to the same colour role as the resting label, and there is no hover container-color, hover outline-color or hover border token anywhere. An M3 chip's entire hover response is its state layer. DECLARED APPROXIMATION: Salt's rule is not wrapped in @media (hover: hover) in source either, unlike card's, so nothing is lost here."
+    },
+    {
+      "id": "style.chip.focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]:focus-visible",
+      "cellIsDeclarations": true,
+      "note": "Two source rules per column, combined onto one selector because in source both fire on the same element in the same state. Salt: `.saltPill:focus-visible { outline: var(--salt-focused-outline) }` (2px DOTTED accent-stronger at offset 0) PLUS the hover block, whose selector lists `.saltPill-clickable:focus-visible` alongside `:hover`. M3: the focus-indicator triple (3px solid secondary at the OUTER +2px offset, `latest` only) PLUS `$flat-focus-outline-color`, which recolours the 1px stroke — invisible on an elevated chip whose border-width is 0, which is the correct outcome and the same note card.m3.json made."
+    },
+    {
+      "id": "style.chip.pressed",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-active]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, and it INVERTS the chip — gray-200 fill, BLACK label in light mode. Driven by a data flag as well as :active because `.saltPill-clickable.saltPill-active` and `:active` share one declaration block in source, precisely so a keyboard activation (which never produces :active) still shows. SCOPE TRIM, recorded not modelled: Pill.css declares a FOURTH selector with the identical body — `.saltPill[aria-expanded=\"true\"][aria-haspopup=\"menu\"]` — styling a pill that is currently opening a menu as pressed; that is a `menu` composition and belongs to the menu row. M3: OFF on the container (no pressed container-color and no label-colour move); its pressed response is the state layer plus the elevated chip's return to level1, which equals its resting shadow and therefore needs no rule."
+    },
+    {
+      "id": "style.chip.selected",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-selected]",
+      "cellIsDeclarations": true,
+      "note": "M3 only, and it is THREE properties: fill to secondary-container, label to on-secondary-container, outline-width to ZERO. Selecting an M3 chip swaps the mechanism that separates it from the page, stroke for fill — lesson 6 a second time inside one component. It also reassigns --chip-icon on the CHIP so the leading-icon child inherits the selected icon colour (lesson 2: the var is read on [data-slot=\"chip-leading\"], and declaring it on an ancestor is the correct way to reach it — declaring it on the child's own rule would have had nothing to override). Salt: OFF — CONFIRMED ABSENCE and a real divergence, not a gap; a selected Salt pill is byte-identical to an unselected one and the check icon carries the entire signal."
+    },
+    {
+      "id": "style.chip.disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-disabled]",
+      "cellIsDeclarations": true,
+      "note": "TWO GENUINELY DIFFERENT MECHANISMS. Salt: a blanket `opacity: 0.4` with the three resting colour indirections RESTATED so the hover rule cannot win, plus a not-allowed cursor. The 0.4 is a LITERAL in source, not a token — docs/foundations/state-layers.md records that exact fact and it is confirmed here for a ninth component. M3: 0.38 on the content and 0.12 on the stroke, reproduced as TWO color-mix() expressions rather than one blanket opacity, because a single 0.38 would have put the stroke at 38% instead of 12%. DECLARED APPROXIMATION: M3's selected+disabled case ($flat-disabled-selected-container-opacity 0.12 on the container) is not modelled, because it needs a compound selector the template has no channel for."
+    },
+    {
+      "id": "style.leading.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip-leading\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only: 18px square in all four files, both editions, density-invariant because M3 has no density capability at all (docs/foundations/density.md). Salt: OFF — CONFIRMED ABSENCE. The Salt chip owns the GAP before its leading glyph and nothing else; the glyph is a consumer child sized by Salt's own Icon component through --saltIcon-size. Two systems, two different amounts of the same part."
+    },
+    {
+      "id": "style.leading.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip-leading\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "M3 only: `primary` for assist, suggestion and unselected filter; `on-surface-variant` for unselected input (reassigned in @input). Salt: OFF, and the absence has a visible consequence — a Salt chip's icon inherits the LABEL colour, so it inverts along with the text when the pill is pressed, where an M3 chip's icon holds its own role through every state."
+    },
+    {
+      "id": "style.leading.color@selected",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-selected] [data-slot=\"chip-leading\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "M3 only: `on-secondary-container` for filter, `primary` for input (reassigned in @input). Reads --chip-icon-selected, which style.chip.selected also declares on the chip — carried as its own row so that the two toggle families' inversion of each other on this one part is visible in the matrix rather than buried in a kind block."
+    },
+    {
+      "id": "style.avatar.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip-avatar\"]",
+      "cellIsDeclarations": true,
+      "note": "M3's input-chip only: 24px with `corner-full` = 9999px. Taller than the 18px leading icon and only 8px short of the 32px chip, so an avatar chip is nearly filled edge to edge on the block axis — and it is the ONLY place corner-full appears anywhere in the chip family, inside a container whose own shape is corner-small."
+    },
+    {
+      "id": "style.trailing.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip-trailing\"]",
+      "cellIsDeclarations": true,
+      "note": "M3 only: input-chip declares `$with-trailing-icon-trailing-icon-size: 18px`; filter-chip declares trailing COLOURS but no trailing size of its own and therefore inherits the shared 18px `$with-icon-icon-size` — recorded rather than smoothed."
+    },
+    {
+      "id": "style.trailing.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip-trailing\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "M3 only: `on-surface-variant` unselected on both toggle families. Salt: OFF — there is no trailing part at all, and its closable pattern's CloseIcon inherits the label colour like any other child."
+    },
+    {
+      "id": "style.check.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip-check\"]",
+      "cellIsDeclarations": true,
+      "note": "SALT ONLY, and two details in PillCheckIcon.css are load-bearing and easy to lose. (1) The border declares NO COLOUR — `border: var(--salt-size-fixed-100) var(--salt-borderStyle-solid)` — so it is currentColor and tracks the label through every state, including the pressed inversion where the whole chip flips to a black label on a light fill. (2) `clip-path: border-box` is used INSTEAD of overflow:hidden, with a source comment explaining why: 'Using overflow:hidden here causes a thin white line'. The box is `--salt-size-selectable` square (12/14/16/18 by density — the lesson-7 frozen-token check found this IS on the density scale, so a medium 14px snapshot would have been wrong at three of four densities) at the pill's own corner-weaker radius."
+    },
+    {
+      "id": "style.state-layer.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip-state-layer\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "M3 only: `on-surface` for assist, `on-surface-variant` for the other three (reassigned by the kind blocks, which declare --sl-color on the CHIP so this child inherits it). Salt and shadcn have no state-layer mechanism in any component (docs/foundations/state-layers.md)."
+    },
+    {
+      "id": "style.state-layer.opacity@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]:hover [data-slot=\"chip-state-layer\"]",
+      "declarations": {
+        "opacity": "$"
+      },
+      "note": "M3 only: 0.08, identical in `latest` and v0.192 — the one state-layer opacity that did not move between editions (docs/foundations/state-layers.md, correct as amended)."
+    },
+    {
+      "id": "style.state-layer.opacity@focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"]:focus-visible [data-slot=\"chip-state-layer\"]",
+      "declarations": {
+        "opacity": "$"
+      },
+      "note": "M3 only: 0.1 in `latest`, 0.12 in v0.192 — one of the two edition-dependent pairs. CARRIED WITH A DISOWNMENT: all four hand-authored wrappers list focus-state-layer-color and focus-state-layer-opacity under $unsupported-tokens, so the shipped library draws a focus INDICATOR but no focus state LAYER. The generated value is taken and the disagreement recorded, for the sixth time in this pipeline."
+    },
+    {
+      "id": "style.state-layer.opacity@pressed",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip\"][data-active] [data-slot=\"chip-state-layer\"]",
+      "declarations": {
+        "opacity": "$"
+      },
+      "note": "M3 only: 0.1 in `latest`, 0.12 in v0.192. Driven by the chassis's data-active flag rather than by :active, because M3's pressed state is a ripple the tokens-only clone cannot supply — the VALUE is [S], the TRIGGER is [R]."
+    },
+    {
+      "id": "style.group.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"chip-group\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only: PillGroup.css is `border: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--salt-spacing-50)`. The reset half lives in the chassis base because it is a <fieldset> reset and theme-invariant; only the two real values (the density-scaled gap and the wrap) are carried here. M3: OFF — CONFIRMED ABSENCE, none of the four files and none of the four wrappers declares a chip-set or chip-group spacing token. M3 tokenises the chip and never the row of chips, and the consequence is left visible in the harness rather than borrowed, the same call badge.m3.json made for its missing padding."
+    }
+  ]
+}

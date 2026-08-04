@@ -1,0 +1,154 @@
+{
+  "system": "m3",
+  "component": "alert",
+  "fontFaces": [
+    {
+      "family": "Roboto",
+      "weight": "400",
+      "file": "fonts/roboto-400.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "banner-bg": "#f7f2fa",
+      "banner-fg": "#49454f",
+      "type-body": "400 0.875rem/1.25rem 'Roboto', sans-serif"
+    },
+    "dark": {
+      "banner-bg": "#1d1b20",
+      "banner-fg": "#cac4d0"
+    }
+  },
+  "modeInvariant": [
+    "type-body"
+  ],
+  "provenance": {
+    "edition-pin": "tokens/versions/v0_192/_md-comp-banner.scss. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192. THIS COLUMN LOSES MORE THAN ANY OTHER TO THE PIN, and every loss is declared on its own cell rather than dropped. The previous pin was `latest`, which ships THREE banner files this edition does not have: _md-comp-banners.scss (the standard/vibrant colour roles and the close-button family), _md-comp-banners-basic.scss (the compact layout) and _md-comp-banners-rich.scss (leading icon-or-image + title + body + actions, with the whole spacing set). v0.192 ships ONE file, the older singular _md-comp-banner.scss, and it has TWENTY-TWO keys, of which four are dependency declarations: container-{color,elevation,shape}, six container-height variants (desktop/mobile x single-line/two-lines/three-lines/with-image), supporting-text-{color,font,line-height,size,tracking,type,weight}, and with-image-image-{shape,size}. THAT IS THE ENTIRE COMPONENT UNDER THIS PIN. There is no title token, no actions family, no close-button family, no icon token, no spacing token and no colour axis of any kind — grep confirms the strings 'action', 'divider', 'title', 'icon' and 'close' appear ZERO times in the file. Note that even `latest`'s own singular _md-comp-banner.scss is richer than v0.192's (it adds an action-* family and a divider pair); the pin loses those too, but they were not modelled here in the first place because this column was built on the plural `banners` family.",
+    "unmodelled-but-present": "Declared rather than silently ignored: versions/v0_192/_md-comp-banner.scss also carries 'container-elevation' -> md-sys-elevation.level1 and five container-height variants beyond the one used by style.root.min-height (desktop-with-three-lines 90px, desktop-with-two-lines-with-image 72px, mobile-with-single-line 54px, mobile-with-two-lines 112px, mobile-with-two-lines-with-image 120px). alert.template.json has no elevation row and no responsive/line-count axis, so neither is modelled. They are real, sourced and available if those rows are ever added.",
+    "banner-bg": "versions/v0_192/_md-comp-banner.scss 'container-color' -> md-sys-color.surface-container-low -> versions/v0_192/_md-sys-color.scss values-light() neutral96 / values-dark() neutral10 -> _md-ref-palette.scss #f7f2fa / #1d1b20. VALUE CHANGED BY THE PIN. This slot REPLACES the removed `standard-bg` slot, which carried _md-comp-banners.scss 'standard-color' -> md-sys-color.surface-container -> neutral94 #f3edf7 / neutral12 #211f26. The role moved one step lighter in light mode and one step darker in dark mode: surface-container -> surface-container-low. NOT an edition difference in the colour system itself — surface-container and surface-container-low resolve identically in both editions; it is the banner that cites a different role.",
+    "banner-fg": "versions/v0_192/_md-comp-banner.scss 'supporting-text-color' -> md-sys-color.on-surface-variant -> versions/v0_192/_md-sys-color.scss values-light() neutral-variant30 / values-dark() neutral-variant80 -> _md-ref-palette.scss #49454f / #cac4d0. VALUE CHANGED BY THE PIN. This slot REPLACES the removed `standard-fg` slot, which carried _md-comp-banners.scss 'standard-title/body/icon-text-color' -> md-sys-color.on-surface -> #1d1b20 / #e6e0e9. M3's older banner uses the SECONDARY text role for its one and only text run, where the newer banners family used the primary on-surface role for title, body and icon alike. The consequence is a lower-contrast banner. on-surface-variant resolves identically in both editions.",
+    "removed-slots": "Three slots were REMOVED by the pin, and this entry is their headstone rather than a silent deletion. (1) `vibrant-bg` (#eaddff / #4f378b) carried _md-comp-banners.scss 'vibrant-color' -> primary-container; (2) `vibrant-fg` (#21005d / #eaddff) carried 'vibrant-title/body/icon-text-color' -> on-primary-container; (3) `action` (#6750a4 / #d0bcff) carried 'close-button-color' -> primary. All three cite tokens in _md-comp-banners.scss, which does not exist in versions/v0_192, so nothing in this column can reference them any more. SEPARATELY WORTH RECORDING because it contradicts the assumption that M3 colour is edition-stable: on-primary-container is one of exactly four sys-color roles that DO differ between the editions — versions/v0_192 resolves it to primary10 (#21005d) in light mode where versions/latest/sass resolves it to primary30 (#4f378b). The old `vibrant-fg` value #21005d was therefore already the v0.192 number despite the column claiming a `latest` pin. The other three divergent roles are on-secondary-container, on-tertiary-container and on-error-container, all light-mode-only, all the same 10-vs-30 shift.",
+    "type-body": "versions/v0_192/_md-comp-banner.scss 'supporting-text-{weight,size,line-height,font}' -> md-sys-typescale.body-medium -> weight-regular 400 / 0.875rem / 1.25rem / md-ref-typeface.plain (the literal `Roboto`, self-hosted per existing Calendar/Button precedent). UNCHANGED IN VALUE BY THE PIN: _md-comp-banners-rich.scss's body-text-type resolved to the same body-medium role, and versions/v0_192/_md-sys-typescale.scss is value-identical to versions/latest/sass/_md-sys-typescale.scss across every shared key. The only difference is one of form — v0.192 emits supporting-text-type as a composite value, latest as a @mixin — and this column models the discrete properties, so it is invisible here. 'supporting-text-tracking' -> body-medium-tracking is declared and not modelled (no letter-spacing row in alert.template.json), the same scope trim tooltip.m3.json made.",
+    "removed-font-face": "The Roboto 500 @font-face was removed with the `type-title` slot it served. v0.192's banner has no title token and therefore no medium-weight text run — see structure.title's declared gap. Recorded rather than silently dropped so the removal is not mistaken for an oversight.",
+    "tokens-only-clone": "material-web is a tokens-only clone (CLAUDE.md) — there is no live M3 alert/banner component to grep, in either edition. Every structure and behavior claim here is [R]; every style value is [S] from a token file."
+  },
+  "cells": {
+    "structure.image": {
+      "kind": "value",
+      "value": true,
+      "source": "versions/v0_192/_md-comp-banner.scss 'with-image-image-size' 40px and 'with-image-image-shape' -> md-sys-shape.corner-full — a leading image is the one optional part this edition's banner does describe. VALUES CHANGED BY THE PIN, though alert.template.json has no row that renders them: latest's _md-comp-banners-rich.scss said image.size 80px, image.shape corner-none and image-text-space 8px, i.e. a large square thumbnail; v0.192 says a 40px circle. The row stays ON because the part is sourced in both editions."
+    },
+    "structure.title": {
+      "kind": "off",
+      "note": "DECLARED GAP. In `latest` this row was ON, sourced from _md-comp-banners-rich.scss's title-text-height / -top-space / -bottom-space and its title-text-type mixin — a dedicated, separately-typeset title run. versions/v0_192/_md-comp-banner.scss contains the string 'title' ZERO times. Its only text run is 'supporting-text-*'. WHAT THE CONSUMER LOSES: the bolded first line. An M3 alert under this pin is a single body-medium paragraph with no heading, which means it also loses the structural match to shadcn's AlertTitle and Salt's bolded-first-line — the very reason this column pinned the rich schema in the first place. See also style.title.font and slot.title."
+    },
+    "structure.actions": {
+      "kind": "off",
+      "note": "DECLARED GAP. In `latest` this row was ON, sourced from _md-comp-banners-rich.scss's actions.between/leading/trailing/top/bottom-space family. versions/v0_192/_md-comp-banner.scss contains the string 'action' ZERO times — confirmed by grep, not inferred. WHAT THE CONSUMER LOSES: the trailing button row. Worth recording precisely because it is NOT purely an edition artefact: `latest`'s OWN singular _md-comp-banner.scss does carry an action-* family (action-label-text-* on label-large, plus focus/hover/pressed label and state-layer colours, all -> md-sys-color.primary), and v0.192's singular file does not. So M3 added banner actions to the singular set after v0.192 and this pin predates them."
+    },
+    "structure.close": {
+      "kind": "off",
+      "note": "DECLARED GAP. In `latest` this row was ON, sourced from _md-comp-banners.scss's close-button-color / -focused / -hovered / -pressed family plus _md-comp-banners-basic.scss's actions-close-button-space — a first-class dedicated part, and one of this column's marquee findings against Salt and shadcn. versions/v0_192/_md-comp-banner.scss contains the string 'close' ZERO times. WHAT THE CONSUMER LOSES: the dismiss affordance and, with it, this column's claim that M3 tokenises dismissal where the other two systems do not. Note that behavior.dismiss is a LOCKED info row owned by the template, so the contract still says an alert may be dismissible — M3 simply supplies no token for the control that does it."
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "status",
+      "note": "[R] — no live M3 component in this tokens-only clone, in either edition; treated as role=\"status\" per the general APG live-region/banner convention, not grepped from code. Unaffected by the pin."
+    },
+    "prop.tone": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE, and the pin makes it easier to confirm, not harder. Under `latest` this took a four-file grep (_md-comp-banner.scss, _md-comp-banners.scss, _md-comp-banners-basic.scss, _md-comp-banners-rich.scss) to establish that none defines a semantic status/tone axis. Under the v0.192 pin there is ONE file and it has no colour axis at all — not even the standard/vibrant emphasis axis that used to be the answer to 'M3 does have a colour axis, just not this one'. M3's general sys-color error/error-container roles exist elsewhere in the design system but are not part of the banner token family in either edition, so they are not applied here."
+    },
+    "prop.emphasis": {
+      "kind": "off",
+      "note": "DECLARED GAP. In `latest` this row was ON with [\"standard\",\"vibrant\"], sourced from _md-comp-banners.scss's standard-color / vibrant-color pair — M3's only banner colour axis. versions/v0_192/_md-comp-banner.scss has ONE container-color and no axis of any kind. WHAT THE CONSUMER LOSES: the high-emphasis primary-container-tinted banner. M3 now offers a single appearance, which also empties style.root.background@emphasis (see its own gap note). Consequence for the cross-system matrix: M3 no longer contributes ANY value to the emphasis axis, so that template row is now carried by Salt and shadcn alone."
+    },
+    "style.root.background": {
+      "kind": "alias",
+      "slot": "banner-bg",
+      "note": "LOCKED row, and it survives the pin with a changed value rather than becoming a gap: v0.192's banner does have a container-color, just a different role. surface-container-low #f7f2fa / #1d1b20, where latest's standard-color -> surface-container gave #f3edf7 / #211f26. See provenance.banner-bg."
+    },
+    "style.root.background@emphasis": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was an alias to the removed `vibrant-bg` slot (#eaddff / #4f378b), sourced from _md-comp-banners.scss 'vibrant-color' -> md-sys-color.primary-container. That file does not exist in versions/v0_192 and no replacement token carries a second container colour. WHAT THE CONSUMER LOSES: the vibrant/high-emphasis banner appearance — see prop.emphasis for the axis-level loss."
+    },
+    "style.root.border-color": {
+      "kind": "off",
+      "note": "no border/outline token exists anywhere in the banner token family, in EITHER edition — M3's banners are colour-fill only. Unchanged by the pin; re-verified against versions/v0_192/_md-comp-banner.scss, whose twenty-two keys include no outline entry."
+    },
+    "style.root.border-width": {
+      "kind": "value",
+      "value": "0",
+      "note": "explicitly zeroed, not left off, so the base chassis's cross-system border-style:solid rule cannot produce an unwanted default browser border. Unchanged by the pin."
+    },
+    "style.icon.color": {
+      "kind": "alias",
+      "slot": "banner-fg",
+      "note": "DECLARED SOURCE GAP UNDER A LOCKED ROW — read this before trusting the cell. In `latest` this was [S], sourced from _md-comp-banners.scss 'standard-icon-color' -> md-sys-color.on-surface, a dedicated icon colour token. versions/v0_192/_md-comp-banner.scss HAS NO ICON TOKEN AT ALL — the string 'icon' appears zero times. This row is LOCKED in alert.template.json, so it cannot be switched off without failing the build, and turning it off would in any case be the wrong claim: an M3 banner plainly has a leading icon, the pinned edition just does not colour it separately. The cell therefore takes 'supporting-text-color' -> on-surface-variant, the ONLY content colour v0.192's banner defines, and this note is the declaration that it is a SUBSTITUTION rather than a source. Consumer impact: the icon now matches the body text exactly (it did under `latest` too, since standard-icon-color and standard-body-text-color were both on-surface — so the RELATIONSHIP is unchanged; only the shared value moved, #1d1b20 -> #49454f). FLAGGED FOR THE OWNER as the one place in this pass where a locked row is filled by substitution instead of by source."
+    },
+    "style.root.padding": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was 12px, sourced from _md-comp-banners-rich.scss's top/bottom/leading/trailing-space, which are uniform at 12px. versions/v0_192/_md-comp-banner.scss HAS NO SPACING TOKEN OF ANY KIND — no space, padding, margin, inset or gap entry among its twenty-two keys. WHAT THE CONSUMER LOSES: all interior breathing room. The M3 alert renders flush to its container edges. This is deliberately left visible rather than back-filled with an m3.material.io figure: CLAUDE.md rule 3 forbids a silent fallback, and a borrowed number here would be indistinguishable from a sourced one in the render. The six container-height tokens do survive and are used by style.root.min-height, so the box is at least the right height."
+    },
+    "style.root.gap": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was 4px, sourced from _md-comp-banners-rich.scss 'icon-text-space'. versions/v0_192/_md-comp-banner.scss has no gap or space token — see style.root.padding for the full absence. WHAT THE CONSUMER LOSES: the separation between the leading icon and the text; the two now sit flush against each other."
+    },
+    "style.root.shape": {
+      "kind": "value",
+      "value": "0px",
+      "source": "versions/v0_192/_md-comp-banner.scss 'container-shape' -> md-sys-shape.corner-none -> versions/v0_192/_md-sys-shape.scss 'corner-none' = 0px. VALUE CHANGED BY THE PIN, and it is the most visible single change in this column: latest's _md-comp-banners-rich.scss said shape -> corner-extra-large = 28px. M3's banner was a heavily rounded card in the rich schema and is a square-cornered full-bleed strip in v0.192 — which is what a banner classically is, pinned edge to edge across the top of a surface. corner-none and corner-extra-large both resolve identically in the two editions; it is the banner that cites a different one."
+    },
+    "style.root.min-height": {
+      "kind": "value",
+      "value": "52px",
+      "source": "versions/v0_192/_md-comp-banner.scss 'desktop-with-single-line-container-height': 52px. ROW GAINED BY THE PIN — the one thing this column wins. It was previously OFF, on the sourced grounds that latest's rich schema has no single container height (only the out-of-scope `basic` schema had one, at 56px). v0.192's singular banner carries SIX height tokens; 52px is the desktop single-line baseline, chosen because alert.template.json models neither a viewport axis nor a line-count axis. The other five (desktop-with-three-lines 90px, desktop-with-two-lines-with-image 72px, mobile-with-single-line 54px, mobile-with-two-lines 112px, mobile-with-two-lines-with-image 120px) are recorded in provenance.unmodelled-but-present."
+    },
+    "style.root.font": {
+      "kind": "alias",
+      "slot": "type-body",
+      "note": "unchanged in value by the pin — v0.192's 'supporting-text-*' and latest's rich-schema body-text-type both resolve to md-sys-typescale.body-medium. See provenance.type-body."
+    },
+    "style.root.color": {
+      "kind": "alias",
+      "slot": "banner-fg",
+      "note": "LOCKED row, and it survives the pin with a changed value rather than becoming a gap. 'supporting-text-color' -> on-surface-variant #49454f / #cac4d0, where latest's standard-body-text-color -> on-surface gave #1d1b20 / #e6e0e9. See provenance.banner-fg."
+    },
+    "style.title.font": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was an alias to the removed `type-title` slot (500 0.875rem/1.25rem Roboto), sourced from _md-comp-banners-rich.scss's title-text-type -> md-sys-typescale-emphasized.body-medium — same size and line-height as the body, one weight step heavier. Neither _md-comp-banners-rich.scss nor _md-sys-typescale-emphasized.scss exists in versions/v0_192; the emphasized typescale is a `latest`-only file. WHAT THE CONSUMER LOSES: the weight contrast that made the first line read as a heading. See structure.title for the part-level loss, and provenance.removed-font-face for the webfont that went with it."
+    },
+    "style.description.color": {
+      "kind": "off",
+      "note": "still off, and for a stronger reason than before. Under `latest` the argument was a convergence: body-text-color and title-text-color both resolved to on-surface, so no separate description colour existed. Under v0.192 there is only ONE text colour token in the entire file ('supporting-text-color'), which style.root.color already carries — so a separate description colour is not merely redundant, there is nothing it could cite. Matches style.root.color exactly."
+    },
+    "style.root.tone@error": {
+      "kind": "off",
+      "note": "M3 has NO status/tone axis in its banner token family. Under the v0.192 pin this is a one-file check: versions/v0_192/_md-comp-banner.scss has a single container-color and no colour axis at all. (Under `latest` it took a four-file grep across _md-comp-banner.scss, _md-comp-banners.scss, _md-comp-banners-basic.scss and _md-comp-banners-rich.scss to establish the same thing, and there the answer came with a caveat — M3 did have a standard/vibrant EMPHASIS axis. The pin removes even that; see prop.emphasis.) Explicitly off, not unfilled."
+    },
+    "style.root.tone@warning": {
+      "kind": "off",
+      "note": "M3 has NO status/tone axis in its banner token family. Under the v0.192 pin this is a one-file check: versions/v0_192/_md-comp-banner.scss has a single container-color and no colour axis at all. (Under `latest` it took a four-file grep across _md-comp-banner.scss, _md-comp-banners.scss, _md-comp-banners-basic.scss and _md-comp-banners-rich.scss to establish the same thing, and there the answer came with a caveat — M3 did have a standard/vibrant EMPHASIS axis. The pin removes even that; see prop.emphasis.) Explicitly off, not unfilled."
+    },
+    "style.root.tone@success": {
+      "kind": "off",
+      "note": "M3 has NO status/tone axis in its banner token family. Under the v0.192 pin this is a one-file check: versions/v0_192/_md-comp-banner.scss has a single container-color and no colour axis at all. (Under `latest` it took a four-file grep across _md-comp-banner.scss, _md-comp-banners.scss, _md-comp-banners-basic.scss and _md-comp-banners-rich.scss to establish the same thing, and there the answer came with a caveat — M3 did have a standard/vibrant EMPHASIS axis. The pin removes even that; see prop.emphasis.) Explicitly off, not unfilled."
+    },
+    "style.root.tone@destructive": {
+      "kind": "off",
+      "note": "M3 has NO status/tone axis in its banner token family. Under the v0.192 pin this is a one-file check: versions/v0_192/_md-comp-banner.scss has a single container-color and no colour axis at all. (Under `latest` it took a four-file grep across _md-comp-banner.scss, _md-comp-banners.scss, _md-comp-banners-basic.scss and _md-comp-banners-rich.scss to establish the same thing, and there the answer came with a caveat — M3 did have a standard/vibrant EMPHASIS axis. The pin removes even that; see prop.emphasis.) Explicitly off, not unfilled."
+    },
+    "slot.title": {
+      "kind": "off",
+      "note": "DECLARED GAP, following structure.title. versions/v0_192/_md-comp-banner.scss has no title token, so there is no title part for a consumer to fill. Was implicitly on under the rich schema."
+    },
+    "slot.actions": {
+      "kind": "off",
+      "note": "DECLARED GAP, following structure.actions. versions/v0_192/_md-comp-banner.scss has no actions family, so there is no actions region for a consumer to fill."
+    },
+    "slot.close": {
+      "kind": "off",
+      "note": "DECLARED GAP, following structure.close. versions/v0_192/_md-comp-banner.scss has no close-button family, so there is no close slot for a consumer to fill."
+    }
+  }
+}

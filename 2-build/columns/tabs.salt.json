@@ -1,0 +1,274 @@
+{
+  "system": "salt",
+  "component": "tabs",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" },
+    { "family": "Open Sans", "weight": "600", "file": "fonts/open-sans-600.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "surface-primary": "rgb(255, 255, 255)",
+      "surface-secondary": "rgb(245, 247, 248)",
+      "surface-tertiary": "rgb(250, 248, 242)",
+      "active-color": "var(--surface-primary)",
+      "fg": "rgb(0, 0, 0)",
+      "fg-disabled": "rgba(0, 0, 0, 0.4)",
+      "divider": "rgba(0, 0, 0, 0.3)",
+      "indicator-hover": "rgb(114, 119, 125)",
+      "indicator-active": "rgb(0, 120, 207)",
+      "accent": "rgb(0, 120, 207)",
+      "accent-weakest": "rgb(234, 246, 255)",
+      "focus-outline": "2px dotted rgb(0, 69, 126)",
+      "popup-shadow": "0 6px 10px 0 rgba(0, 0, 0, 0.2)"
+    },
+    "dark": {
+      "surface-primary": "rgb(16, 24, 32)",
+      "surface-secondary": "rgb(26, 34, 41)",
+      "surface-tertiary": "rgb(38, 41, 43)",
+      "fg": "rgb(255, 255, 255)",
+      "fg-disabled": "rgba(255, 255, 255, 0.4)",
+      "divider": "rgba(255, 255, 255, 0.3)",
+      "accent-weakest": "rgb(0, 23, 54)",
+      "focus-outline": "2px dotted rgb(154, 189, 245)",
+      "popup-shadow": "0 6px 10px 0 rgba(0, 0, 0, 0.55)"
+    },
+    "byDensity": {
+      "high": {
+        "tab-min-height": "24px",
+        "tab-padding": "2px 4px",
+        "tab-gap": "4px",
+        "list-gap": "4px",
+        "indicator-height": "2px",
+        "inset-padding": "12px",
+        "icon-size": "12px",
+        "type-tab": "400 11px/14px 'Open Sans', sans-serif",
+        "popup-shape": "3px",
+        "popup-max-height": "120px",
+        "popup-gap": "1px",
+        "overflow-item-padding": "0 4px"
+      },
+      "medium": {
+        "tab-min-height": "36px",
+        "tab-padding": "4px 8px",
+        "tab-gap": "8px",
+        "list-gap": "8px",
+        "indicator-height": "3px",
+        "inset-padding": "24px",
+        "icon-size": "12px",
+        "type-tab": "400 12px/16px 'Open Sans', sans-serif",
+        "popup-shape": "6px",
+        "popup-max-height": "180px",
+        "popup-gap": "1px",
+        "overflow-item-padding": "0 8px"
+      },
+      "low": {
+        "tab-min-height": "48px",
+        "tab-padding": "6px 12px",
+        "tab-gap": "12px",
+        "list-gap": "12px",
+        "indicator-height": "4px",
+        "inset-padding": "36px",
+        "icon-size": "14px",
+        "type-tab": "400 14px/18px 'Open Sans', sans-serif",
+        "popup-shape": "9px",
+        "popup-max-height": "240px",
+        "popup-gap": "1px",
+        "overflow-item-padding": "0 12px"
+      },
+      "touch": {
+        "tab-min-height": "60px",
+        "tab-padding": "8px 16px",
+        "tab-gap": "16px",
+        "list-gap": "16px",
+        "indicator-height": "5px",
+        "inset-padding": "48px",
+        "icon-size": "16px",
+        "type-tab": "400 16px/20px 'Open Sans', sans-serif",
+        "popup-shape": "12px",
+        "popup-max-height": "300px",
+        "popup-gap": "1px",
+        "overflow-item-padding": "0 16px"
+      }
+    }
+  },
+  "modeInvariant": [
+    "indicator-hover",
+    "indicator-active",
+    "accent"
+  ],
+  "provenance": {
+    "canonical-source": "packages/core/src/tabs/{Tabs.tsx,Tabs.css,TabBar.tsx,TabBar.css,TabList.tsx,TabList.css,Tab.tsx,Tab.css,TabTrigger.tsx,TabTrigger.css,TabPanel.tsx,TabPanel.css,TabAction.tsx,index.ts} plus internal/{contexts/*,hooks/*,overflow/*,registry/useCollection.ts} for the behaviour contract and internal/overflow/TabOverflowList.{tsx,css} for the overflow part. site/docs/components/tabs/{index,accessibility}.mdx read for the documented keyboard contract and the component's own description; site/src/examples/tabs/{Appearance,ActiveColor,WithIcon,WithBadge,DisabledTabs,DividerAndInset,Overflow,AddANewTab,DismissibleTabs}.tsx read for defaults and composition.",
+    "core-tabs-not-lab-tabs": "THERE IS NO `tabs-next` DIRECTORY IN THIS CLONE. The brief named one; a `find . -type d -name '*tabs-next*'` over the whole repo returns nothing. What exists is TWO tab implementations: packages/core/src/tabs (Tabs / TabBar / TabList / Tab / TabTrigger / TabPanel / TabAction) and packages/lab/src/tabs (Tabs / Tabstrip / Tab / TabPanel / TabActivationIndicator). THIS COLUMN TAKES CORE, for four independent reasons: (1) site/docs/components/tabs/index.mdx names the package as `@salt-ds/core` and points sourceCodeUrl at .../packages/core/src/tabs; (2) the core set is the compound/context API (Tabs+TabList+Tab+TabTrigger+TabPanel with a value-keyed registry) that the -next generation introduced, i.e. it IS the graduated tabs-next; (3) the lab set is the legacy Tabstrip API with its own useTabstrip/useKeyboardNavigation/useSelection/drag-drop layer and an editable-label dependency, none of which the docs surface; (4) the two disagree structurally, most visibly on the indicator — lab has a MEASURED SLIDING thumb (TabActivationIndicator + useActivationIndicator, `transition: left 0.3s ease`, a getBoundingClientRect diff against the strip and a 50ms setTimeout to survive overflow restores) while core draws a STATIC per-tab ::after with no transition anywhere. Taking lab would have made Salt's cell for structure.indicator-motion `slide` instead of `static` — the single biggest cell in this matrix — so the choice is recorded rather than assumed.",
+    "accent-pin": "--salt-navigable-accent-indicator-active and --salt-selectable-borderColor-selected both resolve through palette-accent, which carries a data-accent axis (blue default, teal alternate; next/palette/accent.css). This column pins BLUE, matching button/input/select/dialog.salt.json; only calendar.salt.json models byAccent. Recorded, not modelled.",
+    "surface-primary / -secondary / -tertiary": "TabList.css .saltTabList-activeColor{Primary,Secondary,Tertiary} { --saltTabList-activeColor: var(--salt-container-{primary,secondary,tertiary}-background) } -> next/characteristics/container.css -> palette-background-{primary,secondary,tertiary} -> next/palette/background.css: snow rgb(255,255,255) / marble rgb(245,247,248) / limestone rgb(250,248,242) light, jet rgb(16,24,32) / granite rgb(26,34,41) / leather rgb(38,41,43) dark (next/foundations/color.css *-rgb triples).",
+    "active-color": "THE SOURCE'S OWN INDIRECTION, reproduced rather than expanded. Salt does not write three background rules; it writes one rule reading --saltTabList-activeColor and three one-line classes that reassign it. Exactly one consumer: `.saltTabList-bordered .saltTab.saltTab-selected { background: var(--saltTabList-activeColor) }`. Its default here is var(--surface-primary), matching activeColor='primary'.",
+    "fg / fg-disabled": "Tab.css color: var(--salt-content-primary-foreground) and .saltTab-disabled color: var(--salt-content-primary-foreground-disabled) -> next/characteristics/content.css -> palette-foreground-primary(-disabled) -> next/palette/foreground.css -> color-black / color-black-40a light, color-white / color-white-40a dark. NOTE the resting colour is FULL-STRENGTH: Salt does not de-emphasise an unselected tab the way shadcn (60%) and M3 (on-surface-variant) do.",
+    "divider": "TabBar.css .saltTabBar-divider::before border-bottom and Tab.css's selected left/right borders are BOTH var(--salt-separable-secondary-borderColor) -> next/characteristics/separable.css -> palette-alpha-contrast-medium -> next/palette/alpha.css black-30a light / white-30a dark. NOTE this is the SECONDARY separable stop (30%), a step stronger than the tertiary (20%) Salt's dialog border and select group divider use. One token, three consumers here (bar divider, selected tab's left border, selected tab's right border).",
+    "indicator-hover": "Tab.css `.saltTab:hover::after, .saltTab-focusVisible::after { background: var(--salt-navigable-indicator-hover) }` -> next/characteristics/navigable.css -> --salt-palette-neutral -> next/palette/neutral.css -> color-gray-500 = rgb(114,119,125), IDENTICAL in the light and dark blocks, hence modeInvariant. This grey preview of the active mark is unique to Salt among the three.",
+    "indicator-active": "Tab.css `.saltTab.saltTab-selected::after { background: var(--salt-navigable-accent-indicator-active) }` -> navigable.css -> --salt-palette-accent -> blue-500 rgb(0,120,207), identical in both mode blocks.",
+    "accent / accent-weakest": "TabOverflowList.css border: ... var(--salt-selectable-borderColor-selected) -> next/characteristics/selectable.css -> palette-accent (blue-500, mode-invariant) — the overflow list is framed in BLUE, the same finding SELECT-MATRIX.md finding 5 recorded for OptionList. The item hover is --salt-selectable-background-hover -> palette-accent-weakest -> blue-100 rgb(234,246,255) light / blue-900 rgb(0,23,54) dark. Values reused verbatim from select.salt.json rather than re-derived.",
+    "focus-outline": "Tab.css `.saltTab-focusVisible { outline: var(--salt-focused-outline) }` and TabPanel.css `:focus-visible { outline: var(--salt-focused-outline) }` -> next/characteristics/focused.css: --salt-focused-outlineWidth (size-fixed-200 = 2px, density-invariant) --salt-focused-outlineStyle (borderStyle-dotted) --salt-focused-outlineColor (palette-accent-stronger) -> next/palette/accent.css: blue-700 rgb(0,69,126) light / blue-300 rgb(154,189,245) dark. Carried as one shorthand slot because the width and style are mode-invariant and only the colour moves.",
+    "popup-shadow": "TabOverflowList.css box-shadow: var(--salt-overlayable-shadow-popout) -> next/characteristics/overlayable.css -> --salt-shadow-mediumLow. Value reused from docs/foundations/elevation.md (0 6px 10px 0 rgba(0,0,0,0.2) light / 0.55 dark), the same reuse tooltip.salt.json and select.salt.json made.",
+    "byDensity.tab-min-height / popup-max-height": "Tab.css AND TabList.css both declare min-height: calc(var(--salt-size-base) + var(--salt-spacing-100)) -> size-base 20/28/36/44 (foundations/size.css) + spacing-100 4/8/12/16 (foundations/spacing.css) = 24/36/48/60px. The overflow list's max-height is the five-row multiple of the same expression, from the size() middleware's `max(calc((var(--salt-size-base) + var(--salt-spacing-100)) * 5), calc(availableHeight - spacing-100))` — only the five-row floor is expressible without a positioning engine, exactly the partial select.salt.json declared for its option list.",
+    "byDensity.tab-padding": "Tab.css padding: var(--salt-spacing-50) var(--salt-spacing-100). spacing-50 = 0.5 x spacing-100 = 2/4/6/8; spacing-100 = 4/8/12/16.",
+    "byDensity.tab-gap / list-gap": "Tab.css gap AND TabTrigger.css gap AND TabList.css gap AND TabBar.css .saltTabBar-strip gap are ALL var(--salt-spacing-100) = 4/8/12/16px. One token, four declarations.",
+    "byDensity.indicator-height": "Tab.css `.saltTab::after { height: var(--salt-size-indicator) }` -> foundations/size.css 2/3/4/5px. FROZEN-TOKEN CHECK: size-indicator is on the DENSITY scale, not the fixed scale, so it genuinely moves; snapshotting the medium 3px would have been wrong at three of four densities. Its siblings in the same rule — left/right: calc(var(--salt-size-fixed-100) * -1) — ARE on the fixed scale (1px, density-invariant by design, docs/foundations/sizes.md), so that -1px literal is correct everywhere.",
+    "byDensity.inset-padding": "TabBar.css .saltTabBar-inset padding-left/right: var(--salt-spacing-300) = 3 x spacing-100 = 12/24/36/48px.",
+    "byDensity.icon-size": "NOT DECLARED IN Tab.css AT ALL. A tab icon is an ordinary @salt-ds/icons glyph and its box comes from packages/icons/src/icon/Icon.css: `--icon-size: max(calc(var(--salt-size-icon) * 1), 12px)`. size-icon is 10/12/14/16, so the rendered value is 12/12/14/16 — the high-density value is CLAMPED by Salt's own documented 12px readability floor, not frozen. Re-verified here rather than copied from SELECT-MATRIX.md finding 9's identical result for the chevron.",
+    "byDensity.type-tab": "Tab.css declares the ramp property by property: font-family var(--salt-text-fontFamily) (typography-fontFamily-openSans), font-weight var(--salt-text-fontWeight) (typography-fontWeight-regular = 400), font-size/line-height var(--salt-text-fontSize)/var(--salt-text-lineHeight) -> next/characteristics/text.css density blocks 11/14 - 12/16 - 14/18 - 16/20, plus letter-spacing var(--salt-text-letterSpacing) = 0 and text-align var(--salt-text-textAlign) = left. SALT IS THE ONLY SYSTEM OF THE THREE THAT LEAVES ITS TAB LABEL AT REGULAR WEIGHT — shadcn uses font-medium and M3 uses title-small, both 500.",
+    "byDensity.popup-shape / popup-gap / overflow-item-padding": "TabOverflowList.css border-radius: var(--salt-palette-corner, 0) -> next/palette/corner.css [data-corner=rounded] -> curve-150 -> foundations/curve.css 3/6/9/12px (the same unsuffixed stop Salt's dialog panel and select popup use); .saltTabOverflowList-listContainer gap: var(--salt-spacing-fixed-100) = 1px, density-invariant by design; the item's padding-left/right: var(--salt-spacing-100) = 4/8/12/16 with no vertical padding at all (the min-height does the work).",
+    "no-transition": "CONFIRMED ABSENCE across the whole component: `grep -n 'transition\\|animation' packages/core/src/tabs/*.css` returns nothing in Tabs.css, TabBar.css, TabList.css, Tab.css, TabTrigger.css or TabPanel.css. A Salt tab's indicator, background and border all change instantly. This is the direct reason structure.indicator-motion is `static` here and `fade` for shadcn.",
+    "no-selected-label-change": "CONFIRMED ABSENCE: `.saltTab.saltTab-selected` and `.saltTabList-bordered .saltTab.saltTab-selected` between them set background, border-left, border-right and the ::after background. Neither touches `color` and neither touches `font-weight`. A selected Salt tab's TEXT is byte-identical to an unselected one's — which is why style.tab.color@selected is off in this column and on in the other two.",
+    "dead-alignment-css": "RECORDED, NOT MODELLED: TabList.css defines `.saltTabList-center { justify-content: center }` and `.saltTabList-right { justify-content: flex-end }`, but TabList.tsx composes only withBaseName(), withBaseName(appearance), withBaseName('horizontal') and withBaseName(`activeColor${...}`) — there is no `align` prop and nothing applies either class. Dead CSS in this revision. No prop row was invented for it.",
+    "horizontal-only": "TabList.tsx hard-codes withBaseName('horizontal') and TabList.css contains no `.saltTabList-horizontal` rule and no vertical counterpart. Salt tabs are horizontal-only; the ONLY vertical tablist in the component is the overflow popup's inner div (role=tablist aria-orientation=vertical), which is a different element with different keys.",
+    "overflow-declared-gap": "TabOverflowList.tsx composes @floating-ui/react (offset(1), size() writing maxHeight inline, flip(), shift({padding:8})), useClick + useDismiss, a FloatingComponent with focusManagerProps {initialFocus: 0, returnFocus: false, modal: false, closeOnFocusOut: true}, a ResizeObserver that closes the menu on any strip resize, and a portal render mode that MOVES each tab's display:contents host element between measure/main/overflow slots rather than re-rendering it. The skeleton reproduces the observable contract only — see the template's behavior.overflow-navigation note. Style cells cover the list box, the restyled item and its hover; the positioning engine is a DECLARED GAP.",
+    "tab-action-composition": "TabAction.tsx renders <Button appearance=\"transparent\" sentiment=\"neutral\"> with tabIndex={focused || selected ? undefined : -1}, an aria-labelledby chaining the tab id and its own, and a registerAction callback so TabTrigger can publish aria-actions (feature-detected) and an aria-description of '<n> actions available'. Every visual property belongs to the composed Button. DECLARED COMPOSITION; no style cell is modelled and the skeleton renders a neutral placeholder."
+  },
+  "cells": {
+    "structure.tab-bar": { "kind": "value", "value": true, "source": "TabBar.tsx — a separate exported component rendering .saltTabBar wrapping .saltTabBar-strip, with divider and inset boolean props" },
+    "structure.tab-shell": { "kind": "value", "value": "wrapper", "source": "Tab.tsx renders a role=\"presentation\" div carrying every box style; TabTrigger.tsx renders the role=\"tab\" button inside it with `all: unset` and a ::before full-size hit area" },
+    "structure.active-indicator": { "kind": "value", "value": true, "source": "Tab.css .saltTab::after" },
+    "structure.indicator-motion": { "kind": "value", "value": "static", "source": "Tab.css's ::after is a per-tab pseudo-element with NO transition or animation rule anywhere in the component's CSS — the mark appears and disappears instantly. (The legacy packages/lab/src/tabs implementation DOES slide, via TabActivationIndicator's `transition: left 0.3s ease`; that is the other implementation, see the core-tabs-not-lab-tabs note.)" },
+    "structure.tab-icon": { "kind": "value", "value": true, "source": "site/src/examples/tabs/WithIcon.tsx — <TabTrigger><Icon aria-hidden /> {label}</TabTrigger>" },
+    "structure.tab-actions": { "kind": "value", "value": true, "source": "TabAction.tsx, exported from packages/core/src/tabs/index.ts" },
+    "structure.tab-badge": { "kind": "value", "value": true, "source": "site/src/examples/tabs/WithBadge.tsx composes <Badge value={n} aria-hidden/> inside the TabTrigger; DECLARED COMPOSITION to the future badge component" },
+    "structure.overflow-menu": { "kind": "value", "value": true, "source": "internal/overflow/TabOverflowList.tsx + useOverflow.ts + useRenderedTabWidth.ts + widthMeasurement.ts" },
+    "structure.panel": { "kind": "value", "value": true, "source": "TabPanel.tsx" },
+
+    "behavior.roving-tabindex": { "kind": "value", "value": true, "source": "TabTrigger.tsx: isTabStop = !hidden && (focused || selected || active || fallbackTabStop), where fallbackTabStop = !hasSelectedTab && location === 'main' && order === 0" },
+    "behavior.arrow-keys": { "kind": "value", "value": "horizontal", "source": "TabList.tsx handleKeyDown actionMap = { ArrowRight: getNext, ArrowLeft: getPrevious, Home: getFirst, End: getLast } — no Up/Down branch on the strip. accessibility.mdx: 'Left arrow / Right arrow — moves focus between tab items in tab bar'; 'Up arrow / Down arrow — moves focus between tab items in an overflow menu list'." },
+    "behavior.home-end": { "kind": "value", "value": true, "source": "TabList.tsx actionMap Home/End; documented in accessibility.mdx" },
+    "behavior.wrap": { "kind": "value", "value": true, "source": "Tabs.tsx useCollection({ targetWindow, wrap: true }); getNext does (index + 1) % items.length, getPrevious does (index - 1 + len) % len" },
+    "behavior.activation-mode": { "kind": "value", "value": ["manual"], "source": "MANUAL, and it is explicit on both sides. TabList's arrow handler only calls nextItem.element?.focus({ preventScroll: true }); TabTrigger's handleFocus records activeTab and scrolls, and does NOT call setSelected. Selection happens in handleClick and in handleKeyDown's `if (event.key === 'Enter' || event.key === ' ')` branch. accessibility.mdx: 'Enter / Space — selects a tab item'." },
+    "behavior.disabled-navigation": { "kind": "value", "value": "reachable", "source": "Tab.tsx sets aria-disabled, NOT the native disabled attribute; TabTrigger's tabIndex rule never consults `disabled`; and internal/registry/useCollection.ts's getNavigableItems filters only on `item.location === 'hidden'` and `!!item.element`. So arrow keys land on a disabled Salt tab. Activation is blocked separately: onClick is undefined when disabled, and handleKeyDown preventDefaults Enter/Space and returns." },
+    "behavior.pointer-activation": { "kind": "value", "value": "click", "source": "TabTrigger.tsx handleClick -> setSelected(event, value, selectionSource), bound as onClick. onMouseDown exists on Tab.tsx but only records activeTab and the wasMouseDown flag that suppresses the focus ring." },
+    "behavior.panel-focusable": { "kind": "value", "value": "conditional", "source": "TabPanel.tsx tabIndex={hidden || hasFocusableChildren ? undefined : 0}, where hasFocusableChildren comes from tabbable(element).length > 0 re-run behind a rAF-debounced MutationObserver on childList/subtree/attributes" },
+    "behavior.panel-mounting": { "kind": "value", "value": "hidden", "source": "TabPanel.tsx always renders and sets hidden={hidden || undefined}; TabPanel.css .saltTabPanel[hidden] { display: none }" },
+    "behavior.scroll-into-view": { "kind": "value", "value": true, "source": "TabTrigger.tsx handleFocus: event.currentTarget.parentElement?.scrollIntoView({ block: 'nearest', inline: 'nearest' }) — the PARENT (the Tab div), with the source comment 'Ensures the associated tab is in view.'; TabList focuses with preventScroll: true so this is the only scroller" },
+    "behavior.overflow-navigation": { "kind": "value", "value": true, "source": "TabOverflowList.tsx (floating-ui popup, ResizeObserver auto-close, Shift+Tab return-to-button) + TabTrigger.tsx's location === 'overflow' branch handling ArrowDown/ArrowUp/Home/End through tabListLayout.moveOverflowFocus" },
+
+    "prop.appearance": { "kind": "value", "value": ["contained", "plain"], "source": "TabListProps.appearance?: 'bordered' | 'transparent', DEFAULT 'bordered' -> contained. Listed default-first per the select.shadcn.json convention: the skeleton and the harness both take value[0] as the resting state." },
+    "prop.emphasis": { "kind": "off", "note": "no equivalent axis — Salt's two-way axis is appearance (contained/plain), already modelled" },
+    "prop.orientation": { "kind": "value", "value": ["horizontal"], "source": "TabList.tsx hard-codes withBaseName('horizontal'); there is no orientation prop and TabList.css has no vertical rule. See the horizontal-only provenance note." },
+    "prop.active-color": { "kind": "value", "value": ["primary", "secondary", "tertiary"], "source": "TabListProps.activeColor?: 'primary' | 'secondary' | 'tertiary', DEFAULT 'primary'. Listed default-first." },
+    "prop.divider": { "kind": "value", "value": true, "source": "TabBarProps.divider?: boolean — 'Styling variant with a bottom separator. Defaults to false'. Note every site example nevertheless passes it." },
+    "prop.inset": { "kind": "value", "value": true, "source": "TabBarProps.inset?: boolean — 'Styling variant with left and right padding. Defaults to false'" },
+    "prop.disabled": { "kind": "value", "value": [true, false], "source": "TabProps.disabled?: boolean — 'If true, the tab will be disabled'; rendered as aria-disabled on the trigger and a .saltTab-disabled class on the shell" },
+
+    "slot.tab-icon": { "kind": "value", "value": true },
+    "slot.tab-actions": { "kind": "value", "value": true },
+
+    "state.hover": { "kind": "value", "value": true, "source": "Tab.css .saltTab:hover::after — the INDICATOR, not the label" },
+    "state.disabled": { "kind": "value", "value": true, "source": "Tab.css .saltTab.saltTab-disabled plus the explicit .saltTab-disabled:hover::after { background: none } cancellation" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE on the strip — Tab.css has no :active rule. The only :active styling in the whole component is TabOverflowList.css's `.saltTabOverflowList-list .saltTab:active`, which belongs to the overflow menu." },
+    "state.overflowing": { "kind": "value", "value": true, "source": "TabList.tsx data-ismeasuring + Tab.css's @supports-guarded `.saltTabList:has([data-overflowbutton]) .saltTab { max-width: calc(100% - var(--salt-spacing-100) - var(--salt-size-base)) }`" },
+
+    "style.tab-bar.divider": {
+      "kind": "value",
+      "value": { "border-bottom": "1px solid var(--divider)" },
+      "source": "TabBar.css .saltTabBar-divider::before { inset: auto 0 0 0; height: var(--salt-size-fixed-100); border-bottom: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) var(--salt-separable-secondary-borderColor) }. size-fixed-100 = 1px on the FIXED scale, density-invariant by design. Reproduced as a border on the bar itself rather than a pseudo-element, since the pseudo carries no other property."
+    },
+    "style.tab-bar.inset": { "kind": "alias", "slot": "inset-padding" },
+
+    "style.tablist.background": { "kind": "value", "value": "transparent", "source": "TabList.css `background: transparent` — DECLARED, not merely absent" },
+    "style.tablist.background@plain": { "kind": "off", "note": "the strip is transparent in both appearances; nothing changes" },
+    "style.tablist.color": { "kind": "off", "note": "Salt declares colour on the tab (Tab.css), not the list" },
+    "style.tablist.min-height": { "kind": "value", "value": { "min-height": "var(--tab-min-height)" }, "source": "TabList.css min-height: calc(var(--salt-size-base) + var(--salt-spacing-100)) — the identical expression Tab.css uses, so the tab exactly fills the strip" },
+    "style.tablist.gap": { "kind": "alias", "slot": "list-gap" },
+    "style.tablist.gap@plain": { "kind": "off", "note": "the gap does not change with appearance" },
+    "style.tablist.padding": { "kind": "off", "note": "no padding on .saltTabList; horizontal insets belong to the BAR (style.tab-bar.inset)" },
+    "style.tablist.shape": { "kind": "off", "note": "no border-radius in TabList.css — a Salt tab strip is square" },
+    "style.tablist.shape@plain": { "kind": "off" },
+    "style.tablist.orientation@vertical": { "kind": "off", "note": "horizontal-only; see the horizontal-only provenance note" },
+
+    "style.tab.font": { "kind": "alias", "slot": "type-tab" },
+    "style.tab.letter-spacing": { "kind": "value", "value": "0", "source": "Tab.css letter-spacing: var(--salt-text-letterSpacing) -> next/characteristics/text.css: 0" },
+    "style.tab.color": { "kind": "alias", "slot": "fg", "source": "Tab.css color: var(--salt-content-primary-foreground) — full strength, no de-emphasis" },
+    "style.tab.height": { "kind": "value", "value": { "min-height": "var(--tab-min-height)" }, "source": "Tab.css min-height: calc(var(--salt-size-base) + var(--salt-spacing-100))" },
+    "style.tab.min-width": { "kind": "value", "value": "4em", "source": "Tab.css min-width: 4em — a bare em literal with no override variable, the same floor Dropdown.css declares. Em-relative, so it tracks the density-driven font size rather than freezing it." },
+    "style.tab.flex": { "kind": "off", "note": "Salt tabs are content-sized and flex-shrink: 0; only the TabTrigger inside is flex: 1, which is in the template's base" },
+    "style.tab.padding": { "kind": "alias", "slot": "tab-padding" },
+    "style.tab.gap": { "kind": "alias", "slot": "tab-gap", "source": "declared on BOTH .saltTab and .saltTabTrigger in source — one token, two declarations, which the row's doubled selector reproduces" },
+    "style.tab.shape": { "kind": "off", "note": "no border-radius in Tab.css" },
+    "style.tab.border": {
+      "kind": "value",
+      "value": { "border": "none", "border-left": "1px solid transparent", "border-right": "1px solid transparent" },
+      "source": "Tab.css border: none; border-left/border-right: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) transparent. Only the SIDES are reserved, because only the sides gain a colour when the tab is selected under the bordered appearance."
+    },
+    "style.tab.overflow": { "kind": "value", "value": "hidden", "source": "Tab.css overflow: hidden — which clips the ::after's own left/right -1px extension back off. Reproduced as source has it." },
+    "style.tab.cursor": { "kind": "value", "value": "pointer", "source": "Tab.css cursor: var(--salt-cursor-hover) -> foundations/cursor.css: pointer" },
+    "style.tab.transition": { "kind": "off", "note": "CONFIRMED ABSENCE — no transition or animation rule in any of the six CSS files" },
+    "style.tab.orientation@vertical": { "kind": "off" },
+    "style.tab.color@hover": { "kind": "off", "note": "CONFIRMED ABSENCE — Tab.css's only :hover rule targets ::after. A hovered Salt tab's label does not change." },
+    "style.tab.color@selected": { "kind": "off", "note": "CONFIRMED ABSENCE — see the no-selected-label-change provenance note. Neither colour nor weight moves." },
+    "style.tab.selected-fill@contained": {
+      "kind": "value",
+      "value": { "background": "var(--active-color)", "border-left-color": "var(--divider)", "border-right-color": "var(--divider)" },
+      "source": "Tab.css `.saltTabList-bordered .saltTab.saltTab-selected { background: var(--saltTabList-activeColor); border-left: var(--salt-size-fixed-100) solid var(--salt-separable-secondary-borderColor); border-right: ... }`. Modelled as a colour reassignment on the reserved transparent borders so the box does not shift."
+    },
+    "style.tab.state-layer@hover": { "kind": "off", "note": "no state-layer mechanism in Salt; the hover feedback is the indicator preview" },
+    "style.tab.state-layer@focus": { "kind": "off" },
+    "style.tab.state-layer@selected-hover": { "kind": "off" },
+    "style.tab.focus": {
+      "kind": "value",
+      "value": { "outline": "var(--focus-outline)" },
+      "source": "Tab.css .saltTab-focusVisible { outline: var(--salt-focused-outline) } — on the TAB DIV, with TabTrigger.css's `:focus-visible { outline: none }` suppressing the button's own so the ring is drawn once"
+    },
+    "style.tab.disabled": {
+      "kind": "value",
+      "value": { "cursor": "not-allowed", "color": "var(--fg-disabled)" },
+      "source": "Tab.css .saltTab.saltTab-disabled { cursor: var(--salt-cursor-disabled); color: var(--salt-content-primary-foreground-disabled) }. NOTE no pointer-events: none — a disabled Salt tab is still hoverable and still arrow-reachable."
+    },
+    "style.tab.active-color@secondary": { "kind": "value", "value": { "--active-color": "var(--surface-secondary)" }, "source": "TabList.css .saltTabList-activeColorSecondary { --saltTabList-activeColor: var(--salt-container-secondary-background) }" },
+    "style.tab.active-color@tertiary": { "kind": "value", "value": { "--active-color": "var(--surface-tertiary)" }, "source": "TabList.css .saltTabList-activeColorTertiary" },
+    "style.tab.emphasis@secondary": { "kind": "off", "note": "M3-only axis" },
+
+    "style.indicator.size": { "kind": "alias", "slot": "indicator-height", "source": "Tab.css .saltTab::after { height: var(--salt-size-indicator) } -> 2/3/4/5px by density" },
+    "style.indicator.edge": {
+      "kind": "value",
+      "value": { "left": "-1px", "right": "-1px", "bottom": "0" },
+      "source": "Tab.css .saltTab::after { left: calc(var(--salt-size-fixed-100) * -1); right: calc(var(--salt-size-fixed-100) * -1) } plus `.saltTabList-transparent .saltTab::after { bottom: 0 }`. size-fixed-100 is 1px on the fixed scale, density-invariant, so the literal is correct at every density."
+    },
+    "style.indicator.edge@contained": {
+      "kind": "value",
+      "value": { "top": "0", "bottom": "auto" },
+      "source": "Tab.css `.saltTabList-bordered .saltTab::after { top: 0 }` — Salt's DEFAULT appearance marks the TOP edge, not the bottom"
+    },
+    "style.indicator.shape": { "kind": "off", "note": "no border-radius on the ::after — a square mark" },
+    "style.indicator.rest": { "kind": "value", "value": { "background": "transparent" }, "source": "Tab.css's ::after declares content/position/left/right/height and NO background; the fill arrives only from the hover, focus-visible and selected rules" },
+    "style.indicator.background@hover": { "kind": "alias", "slot": "indicator-hover", "source": "Tab.css .saltTab:hover::after { background: var(--salt-navigable-indicator-hover) }" },
+    "style.indicator.background@focus-visible": { "kind": "alias", "slot": "indicator-hover", "source": "Tab.css .saltTab-focusVisible::after — the same rule, the same value; with manual activation this preview is the whole visual feedback of arrowing" },
+    "style.indicator.selected": { "kind": "value", "value": { "background": "var(--indicator-active)" }, "source": "Tab.css .saltTab.saltTab-selected::after { background: var(--salt-navigable-accent-indicator-active) }" },
+    "style.indicator.selected@contained": { "kind": "off", "note": "Salt's contained appearance SHOWS its mark (moved to the top edge); only shadcn hides it" },
+    "style.indicator.transition": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.indicator.emphasis@secondary": { "kind": "off", "note": "M3-only axis" },
+    "style.indicator.orientation@vertical": { "kind": "off" },
+
+    "style.tab-icon.size": { "kind": "value", "value": { "width": "var(--icon-size)", "height": "var(--icon-size)" }, "source": "packages/icons/src/icon/Icon.css --icon-size: max(calc(var(--salt-size-icon) * 1), 12px) -> 12/12/14/16px. NOT declared in Tab.css; the 12px is a live floor, not a snapshot." },
+    "style.tab-icon.color": { "kind": "off", "note": "no .saltIcon-primary/-secondary class is applied inside a tab, so the glyph is currentColor and inherits the tab's colour including the disabled 40% alpha" },
+
+    "style.panel.box": { "kind": "value", "value": { "height": "100%", "width": "100%" }, "source": "TabPanel.css .saltTabPanel { height: 100%; width: 100% }" },
+    "style.panel.outline": { "kind": "off", "note": "Salt does the opposite of suppressing it — see style.panel.focus" },
+    "style.panel.focus": { "kind": "alias", "slot": "focus-outline", "source": "TabPanel.css .saltTabPanel:focus-visible { outline: var(--salt-focused-outline) }" },
+
+    "style.overflow-list.box": {
+      "kind": "value",
+      "value": {
+        "background": "var(--surface-primary)",
+        "border": "1px solid var(--accent)",
+        "border-radius": "var(--popup-shape)",
+        "box-shadow": "var(--popup-shadow)",
+        "max-height": "var(--popup-max-height)",
+        "gap": "var(--popup-gap)",
+        "z-index": "1500"
+      },
+      "source": "TabOverflowList.css .saltTabOverflowList-list { background: var(--salt-container-primary-background); border: var(--salt-size-fixed-100) solid var(--salt-selectable-borderColor-selected); border-radius: var(--salt-palette-corner, 0); box-shadow: var(--salt-overlayable-shadow-popout); z-index: var(--salt-zIndex-flyover) } + .saltTabOverflowList-listContainer { gap: var(--salt-spacing-fixed-100) } + the size() middleware's five-row max-height floor. zIndex-flyover = 1500 (foundations/zindex.css, docs/foundations/layers.md)."
+    },
+    "style.overflow-item.box": {
+      "kind": "value",
+      "value": { "min-height": "var(--tab-min-height)", "padding": "var(--overflow-item-padding)", "background": "transparent", "min-width": "0" },
+      "source": "TabOverflowList.css `.saltTabOverflowList-list .saltTab` re-declares background var(--salt-selectable-background) (color-transparent), min-height calc(size-base + spacing-100), padding-left/right var(--salt-spacing-100), justify-content: flex-start, and `::after { display: none }` — the indicator is switched off inside the menu (reproduced in the template's base). The min-width override `max-width: unset` under the :has() guard is the same rule from the other direction."
+    },
+    "style.overflow-item.background@hover": { "kind": "alias", "slot": "accent-weakest", "source": "TabOverflowList.css .saltTabOverflowList-list .saltTab:hover { background: var(--salt-selectable-background-hover) } -> palette-accent-weakest" }
+  }
+}

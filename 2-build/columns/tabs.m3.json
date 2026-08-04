@@ -1,0 +1,493 @@
+{
+  "system": "m3",
+  "component": "tabs",
+  "fontFaces": [
+    {
+      "family": "Roboto",
+      "weight": "500",
+      "file": "fonts/roboto-500.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "surface": "#fef7ff",
+      "fg": "#1d1b20",
+      "fg-variant": "#49454f",
+      "tab-fg-active": "#6750a4",
+      "indicator-active": "#6750a4",
+      "focus-ring": "#625b71",
+      "layer-hover": "color-mix(in srgb, #1d1b20 8%, transparent)",
+      "layer-focus": "color-mix(in srgb, #1d1b20 12%, transparent)",
+      "layer-active": "color-mix(in srgb, #6750a4 8%, transparent)",
+      "type-tab": "500 0.875rem/1.25rem Roboto, sans-serif"
+    },
+    "dark": {
+      "surface": "#141218",
+      "fg": "#e6e0e9",
+      "fg-variant": "#cac4d0",
+      "tab-fg-active": "#d0bcff",
+      "indicator-active": "#d0bcff",
+      "focus-ring": "#ccc2dc",
+      "layer-hover": "color-mix(in srgb, #e6e0e9 8%, transparent)",
+      "layer-focus": "color-mix(in srgb, #e6e0e9 12%, transparent)",
+      "layer-active": "color-mix(in srgb, #d0bcff 8%, transparent)"
+    }
+  },
+  "modeInvariant": [],
+  "provenance": {
+    "canonical-source": "tokens/versions/v0_192/_md-comp-primary-navigation-tab.scss AND _md-comp-secondary-navigation-tab.scss — BOTH, because as with input's filled/outlined text field and select's filled/outlined select these are not two components but one component with an emphasis axis (prop.emphasis). tokens/versions/latest/sass/_md-comp-{primary,secondary}-navigation-tab.scss read for the edition diff. tokens/_md-comp-primary-tab.scss and tokens/_md-comp-secondary-tab.scss (material-web's own hand-authored wrappers, both of which @use versions/v0_192) read for what the shipped library actually supports, and tokens/_md-comp-focus-ring.scss for the focus ring under this pin. Resolution through versions/v0_192/{_md-sys-color.scss (values-light() and values-dark() in ONE file — v0.192 has no _md-sys-color__dark.scss),_md-ref-palette.scss,_md-sys-state.scss,_md-sys-typescale.scss,_md-ref-typeface.scss,_md-sys-shape.scss,_md-sys-elevation.scss}. versions/latest/sass/_md-sys-state-focus-indicator.scss is NOT used and does not exist in this edition.",
+    "tokens-only-clone": "material-web is a TOKENS-ONLY clone in this checkout — `find . -maxdepth 2 -type d` returns only tokens/. There is no tabs component, no template, no TypeScript. Every STRUCTURE and BEHAVIOR cell in this column is therefore [R], derived from the APG tabs pattern and m3.material.io's published tabs guidance, and is flagged as such. Every STYLE cell that has a token is [S]; the style cells with no token (padding, gap, indicator motion) are [R] and named individually below.",
+    "edition-pin": "PINNED TO tokens/versions/v0_192. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192 — and tokens/_md-comp-primary-tab.scss and _md-comp-secondary-tab.scss both read `@use 'versions/v0_192/md-comp-{primary,secondary}-navigation-tab'`. THE COUNTER-ARGUMENT THIS COLUMN RECORDED IS NOW THE DECISION, and the pin is LOSSY here in two places, both declared on their own cells. A full mechanical key/value diff finds ZERO divergences among the shared keys of either file; `latest` ADDS two families to both and v0.192 has neither. (a) THE DIVIDER PAIR — divider-height 1px / divider-color surface-variant — is gone. It arrived @deprecated in `latest` ('Use standalone divider component instead of nested tokens') but it was the ONLY source for the rule under the tab strip, so structure.tab-bar, prop.divider and style.tab-bar.divider are all declared gaps now. The slot `divider` (#e7e0ec / #49454f) was removed with them. (b) THE FOCUS-INDICATOR FAMILY — focus-indicator-color secondary, focus-indicator-thickness 3px, focus-indicator-outline-offset md-sys-state-focus-indicator.$inner-offset = -3px — is gone, and so is the _md-sys-state-focus-indicator.scss file it resolved through. For a keyboard-navigated component that could not be left as a gap: style.tab.focus is a LOCKED row. IT IS THEREFORE RE-POINTED, NOT DROPPED, to material-web's own hand-authored tokens/_md-comp-focus-ring.scss — the token set the shipped md-focus-ring element consumes, edition-independent because it @use's the top-level md-sys-color/md-sys-shape/md-sys-motion shims, all of which @use versions/v0_192. THE COLOUR AND THICKNESS SURVIVE EXACTLY ($color: md-sys-color.secondary = #625b71 / #ccc2dc; $width: 3px) BUT THE OFFSET CHANGES: focus-ring's $inward-offset is 0px where the tab's focus-indicator-outline-offset was -3px. M3's tab ring used to sit 3px INSIDE the tab edge and now sits flush on it. That is the one visible focus regression of this pin, and it is recorded on style.tab.focus rather than absorbed. WHAT ELSE CHANGES VALUE: the focus state-layer opacity, 0.1 -> 0.12 (see state-layer-opacities-are-edition-dependent). Everything else in this column — the label colours, the active-indicator geometry and colour, the typescale, container-height, elevation, icon size — is byte-identical across the editions.",
+    "state-layer-opacities-are-edition-dependent": "LESSON-9 FLAG, NOW RESOLVED BY THE PIN RATHER THAN BY AN EDIT. docs/foundations/state-layers.md tabulates M3's state-layer opacities as hover 0.08, focus 0.12, pressed 0.12, dragged 0.16 without naming an edition. Those are the v0.192 values (versions/v0_192/_md-sys-state.scss), and v0.192 is now the pinned edition — so the foundations page and this column agree, and the page was never wrong, only unlabelled. VALUE CHANGED IN THIS COLUMN: layer-focus moves from 10% to 12%, because versions/latest/sass/_md-sys-state.scss had $focus-state-layer-opacity: 0.1 and versions/v0_192 has 0.12. hover stays 0.08 and dragged stays 0.16 — identical in both editions. NOTE that versions/v0_192/_md-sys-state.scss has FOUR keys; `latest` adds a fifth, $disabled-state-layer-opacity: 0.38, which this column never used (there is no disabled token on either tab file in either edition — see no-disabled-token). select.m3.json's menu list-item focus layer moves from 0.1 to 0.12 for the same reason.",
+    "primary-vs-secondary": "The complete sourced diff between the two token files, which is prop.emphasis: (1) active-indicator-height 3px vs 2px; (2) active-indicator-shape `3px 3px 0px 0px` on primary and ABSENT from the secondary generated file — material-web's own tokens/_md-comp-secondary-tab.scss supplies it as `'active-indicator-shape': 0` in _add-missing-secondary-tokens(), with the comment that the function exists to 'add missing secondary tokens to match primary variant'; (3) the ACTIVE label colour, with-label-text-active-label-text-color -> primary on primary, active-label-text-color -> on-surface on secondary; (4) the ACTIVE icon colour, with-icon-active-icon-color -> primary vs on-surface; (5) the STATE LAYERS, where primary declares a full active/inactive split (active-* coloured primary, inactive-* coloured on-surface) and secondary declares ONE set coloured on-surface throughout — material-web then synthesises secondary's active-* set from its plain set. Secondary additionally declares container-shadow-color (md-sys-color.$shadow) which primary does not, and which material-web lists under $unsupported-tokens; primary additionally declares with-icon-and-label-text-container-height (64px) which secondary does not. Nothing else differs, in either edition.",
+    "no-source-default-emphasis": "Neither file declares itself the default and there is no md.comp.navigation-tab parent. Listed in the spec's own order (primary, secondary), with the absence of a default recorded — unlike prop.appearance and prop.orientation elsewhere in this matrix, where a source default exists and is listed first.",
+    "surface": "container-color -> md-sys-color.$surface -> md-ref-palette.$neutral98 #fef7ff light / $neutral6 #141218 dark. Applied to the tab STRIP, not to individual tabs — which is why an M3 tab is never a filled pill and prop.appearance is `plain` only in this column.",
+    "fg / fg-variant": "The label colours. Inactive: with-label-text-inactive-label-text-color (primary) / inactive-label-text-color (secondary) -> md-sys-color.$on-surface-variant -> neutral-variant30 #49454f / neutral-variant80 #cac4d0. Hover / focus / pressed: on-surface -> neutral10 #1d1b20 / neutral90 #e6e0e9. Both files agree on all of these.",
+    "tab-fg-active": "with-label-text-active-label-text-color -> md-sys-color.$primary -> md-ref-palette.$primary40 #6750a4 light / $primary80 #d0bcff dark. This is the PRIMARY-emphasis value; style.tab.emphasis@secondary reassigns the property to var(--fg) (on-surface), which is secondary's active-label-text-color.",
+    "indicator-active": "active-indicator-color -> md-sys-color.$primary — the SAME value in both emphases, so the emphasis axis moves the indicator's geometry but never its colour.",
+    "focus-ring": "SOURCE RE-POINTED BY THE v0.192 PIN, AND ONE VALUE CHANGED WITH IT. Previously: focus-indicator-color -> md-sys-color.$secondary, focus-indicator-thickness -> md-sys-state-focus-indicator.$thickness = 3px, focus-indicator-outline-offset -> $inner-offset = -3px, all from versions/latest/sass/_md-comp-{primary,secondary}-navigation-tab.scss. NONE of those tokens exists in versions/v0_192, and neither does _md-sys-state-focus-indicator.scss. NOW SOURCED FROM tokens/_md-comp-focus-ring.scss — material-web's hand-authored token set for the standalone md-focus-ring element, edition-independent (it @use's the top-level md-sys-color/md-sys-shape/md-sys-motion shims, every one of which @use's versions/v0_192): $color: md-sys-color.secondary -> secondary40 #625b71 light / secondary80 #ccc2dc dark, UNCHANGED; $width: 3px, UNCHANGED. THE OFFSET IS THE LOSS: focus-ring declares $inward-offset: 0px and $outward-offset: 2px, and neither is -3px. A tab's ring is drawn inward, so 0px is the correct pick of the two, and the ring now sits flush on the tab's edge instead of 3px inside it. Recorded on style.tab.focus as well. ALSO IN THAT FILE, not modelled: $active-width 8px, $shape corner-full, $duration md-sys-motion.duration-long4. card.m3.json re-points to the same file and keeps its values exactly, because a card takes the OUTWARD offset (+2px) which focus-ring does supply — the tab is the one component whose offset the pin cannot express.",
+    "divider": "DECLARED GAP — this entry is the headstone for a removed slot rather than a live provenance record. The slot `divider` carried divider-color -> md-sys-color.$surface-variant -> neutral-variant90 #e7e0ec light / neutral-variant30 #49454f dark, at divider-height 1px: an OPAQUE tone, not an alpha, unlike Salt's 30% contrast alpha. BOTH TOKENS ARE ABSENT FROM versions/v0_192 ENTIRELY — they exist only in `latest`, where they arrive @deprecated ('Use standalone divider component instead of nested tokens'). Under this pin there is no source at all, so the slot is removed and structure.tab-bar, prop.divider and style.tab-bar.divider are declared gaps. The surface-variant ROLE is unaffected and resolves identically in both editions; it is the tab that stopped citing it. WHAT THE CONSUMER LOSES: the full-width rule beneath the tab strip, and with it this column's mapping onto Salt's TabBar divider — the M3 column now contributes nothing to that template row, which is carried by Salt alone (shadcn was always off).",
+    "layer-hover / layer-focus / layer-active": "M3 state layers, expressed as color-mix so the two source tokens stay visible in the value, and drawn as `background-image: linear-gradient(<layer>, <layer>)` so they composite OVER any background-color rather than replacing it — the mechanism select.m3.json established. layer-hover = hover-state-layer-color (on-surface) at hover-state-layer-opacity 0.08; layer-focus = focus-state-layer-color (on-surface) at focus-state-layer-opacity 0.12 (VALUE CHANGED BY THE PIN — was 0.1 under latest; see the state-layer note); layer-active = active-hover-state-layer-color, which is md-sys-color.$primary on the primary tab and on-surface on the secondary tab, at 0.08 (unchanged — hover is 0.08 in both editions). NOTE material-web's own wrappers list focus-state-layer-color and focus-state-layer-opacity under $unsupported-tokens for BOTH tabs — the generated token's value is taken here and the disownment recorded, the same resolution SELECT-MATRIX.md finding 6 and DIALOG-MATRIX.md finding 8 reached.",
+    "type-tab": "with-label-text-label-text-* (primary) / label-text-* (secondary) -> md-sys-typescale.$title-small-{font,size,weight,line-height} = md-ref-typeface.$plain / 0.875rem / $weight-medium 500 / 1.25rem. FAMILY IS [S], NOT [R]: versions/v0_192/_md-ref-typeface.scss carries `plain: Roboto` and `brand: Roboto` as literals inside its values() map (versions/latest/sass/_md-ref-typeface.scss carries the identical values as plain sass vars) — see the correction already recorded in docs/foundations/typography.md. title-small-tracking is 0.00625rem, carried on style.tab.letter-spacing; NOTE material-web lists label-text-tracking and label-text-type under $unsupported-tokens for both tabs, so the shipped library drops the tracking. Generated token's value taken, disownment recorded.",
+    "no-spacing-token": "CONFIRMED ABSENCE: neither tab file, in either edition, contains a single padding, margin, gap or width token. The only dimensional tokens are container-height (48px), with-icon-and-label-text-container-height (64px, primary only), with-icon-icon-size (24px), active-indicator-height and divider-height. The two layout numbers this column needs — 16px horizontal tab padding and an 8px icon-to-label gap — are therefore [R], taken from m3.material.io's published tabs spec and flagged individually on their cells, exactly as TOOLTIP-MATRIX.md treated M3's plain-tooltip padding and DIALOG-MATRIX.md its eight basic-dialog numbers. NO TOKEN NAME WAS INVENTED FOR EITHER.",
+    "no-motion-token": "CONFIRMED ABSENCE: no duration or easing token on either tab file. style.indicator.transition borrows docs/foundations/motion.md's medium2 (300ms) + standard easing cubic-bezier(0.2,0,0,1) as a principled placeholder, flagged [R] — the same borrow tooltip.m3.json and dialog.m3.json made.",
+    "indicator-motion-is-the-biggest-R-in-this-column": "structure.indicator-motion = `slide` is the single largest inference in this matrix and it is stated here rather than buried. There is NO motion token and NO component in this clone to grep. It is set to `slide` — one measured indicator element that translates between tabs — for two reasons: (a) it is the defining visual behaviour of an M3 tab set, and rendering a static per-tab mark would read as wrong to a Material-trained eye in a way no cell value would explain; (b) collapsing all three systems onto one mechanism is precisely the failure TOOLTIP-MATRIX.md's arrow lesson records. If the owner disagrees, the fix is a ONE-CELL change to `static` plus switching style.indicator.transition off — nothing else in this column depends on it. Flagged for review.",
+    "no-disabled-token": "CONFIRMED ABSENCE, and unusual for an M3 component family: there is no disabled-* token of any kind in either tab file in either edition — no disabled label colour, no disabled opacity, no disabled state layer. prop.disabled, behavior.disabled-navigation and style.tab.disabled are all OFF in this column rather than filled in from M3's 0.38 content convention (docs/foundations/state-layers.md), which would have been fabrication.",
+    "no-panel-token": "CONFIRMED ABSENCE: the token families are named `navigation-tab` and describe the TAB ONLY. There is no panel, no content and no container-for-the-strip token beyond container-color/-elevation/-shape, which sit on the tab itself. structure.panel is locked on for the APG pattern with the absence recorded; style.panel.* are all off.",
+    "elevation-is-zero": "container-elevation -> md-sys-elevation.$level0 = 0px in both files and both editions. An M3 tab strip is deliberately flat — no shadow row is emitted. Secondary additionally declares container-shadow-color -> md-sys-color.$shadow, which material-web lists under $unsupported-tokens; with a level0 elevation there is nothing for it to colour.",
+    "scope-navigation-bar-rail": "_md-comp-navigation-bar.scss and _md-comp-navigation-rail.scss (present in BOTH editions) were NOT read into this matrix and are declared out of scope: docs/COMPONENTS.md puts both on the separate `navigation-menu` row, and they are structurally different — a navigation bar is a bottom-anchored destination switcher with an active-indicator that is a PILL behind the icon (not an edge rule), its own label-text typescale, and no panel relationship at all."
+  },
+  "cells": {
+    "structure.tab-bar": {
+      "kind": "off",
+      "note": "DECLARED GAP. In `latest` this row was ON, and its ON-ness rested entirely on one pair of tokens: divider-height 1px + divider-color surface-variant, which describe exactly a full-width rule beneath the strip ([S] for the tokens, [R] for the element). BOTH ARE ABSENT FROM versions/v0_192. Nothing else in either tab file describes a wrapper around the tablist — provenance.no-panel-token already records that the token families are named `navigation-tab` and address the TAB ONLY, with no container-for-the-strip token beyond container-color/-elevation/-shape which sit on the tab itself. With the divider gone there is no sourced evidence for the part at all, so it is switched off rather than kept on [R]. WHAT THE CONSUMER LOSES: the bar wrapper and its bottom rule. M3 now matches shadcn on this row (also off); Salt is the only column left carrying it. See prop.divider and style.tab-bar.divider."
+    },
+    "structure.tab-shell": {
+      "kind": "value",
+      "value": "single",
+      "note": "[R] — tokens-only clone. Nothing in the token vocabulary implies a wrapper/trigger split; every token addresses one tab surface."
+    },
+    "structure.active-indicator": {
+      "kind": "value",
+      "value": true,
+      "source": "the active-indicator-* family: -height, -shape (primary), -color"
+    },
+    "structure.indicator-motion": {
+      "kind": "value",
+      "value": "slide",
+      "note": "[R], AND THE BIGGEST INFERENCE IN THIS COLUMN — see the indicator-motion-is-the-biggest-R-in-this-column provenance note. No motion token, no component to grep. A one-cell change to `static` reverses it."
+    },
+    "structure.tab-icon": {
+      "kind": "value",
+      "value": true,
+      "source": "with-icon-icon-size 24px plus a full parallel icon-colour family (eight tokens on primary, five on secondary)"
+    },
+    "structure.tab-actions": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no action or trailing-control token"
+    },
+    "structure.tab-badge": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE in the tab files. M3 does have a badge token family, but it is attached to navigation-bar/navigation-rail, which are out of scope."
+    },
+    "structure.overflow-menu": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no overflow or scroll token. M3's scrollable-tabs guidance is spec, not token, and is not claimed here."
+    },
+    "structure.panel": {
+      "kind": "value",
+      "value": true,
+      "note": "[R] — locked by the APG pattern. There is NO panel token in either file; the families are named navigation-tab and describe the tab only."
+    },
+    "behavior.roving-tabindex": {
+      "kind": "value",
+      "value": true,
+      "note": "[R] — APG tabs pattern"
+    },
+    "behavior.arrow-keys": {
+      "kind": "value",
+      "value": "horizontal",
+      "note": "[R] — APG horizontal tablist. There is no orientation token, and M3's vertical destination switcher is navigation-rail, a different component."
+    },
+    "behavior.home-end": {
+      "kind": "value",
+      "value": true,
+      "note": "[R] — APG"
+    },
+    "behavior.wrap": {
+      "kind": "value",
+      "value": true,
+      "note": "[R] — APG makes wrapping optional and recommends it; both live systems wrap, so the registry default is followed rather than a third answer invented"
+    },
+    "behavior.activation-mode": {
+      "kind": "value",
+      "value": [
+        "automatic"
+      ],
+      "note": "[R] — APG recommends automatic activation where panels are cheap to render, which is the M3 tab case. Flagged, not grepped; this is the one behaviour cell in this column a Material engineer might dispute."
+    },
+    "behavior.disabled-navigation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE of any disabled token, so no claim is made — see the no-disabled-token provenance note"
+    },
+    "behavior.pointer-activation": {
+      "kind": "value",
+      "value": "click",
+      "note": "[R] — the pressed-state-layer family implies a press response but says nothing about which event commits; click is the platform default and the majority answer"
+    },
+    "behavior.panel-focusable": {
+      "kind": "value",
+      "value": "conditional",
+      "note": "[R] — APG: 'if the tab panel does not contain any focusable elements, the panel itself should be focusable'. Salt implements exactly this; Radix does not."
+    },
+    "behavior.panel-mounting": {
+      "kind": "value",
+      "value": "hidden",
+      "note": "[R] — no panel token at all; `hidden` is the conservative reading and matches Salt"
+    },
+    "behavior.scroll-into-view": {
+      "kind": "off",
+      "note": "no token and no basis to claim it"
+    },
+    "behavior.overflow-navigation": {
+      "kind": "off"
+    },
+    "prop.appearance": {
+      "kind": "value",
+      "value": [
+        "plain"
+      ],
+      "source": "CONFIRMED ABSENCE of a selected-container fill: neither file has a selected/active container-color token, and container-color (surface) belongs to the whole strip. An M3 tab is never a filled pill, so the contained value is unreachable in this column."
+    },
+    "prop.emphasis": {
+      "kind": "value",
+      "value": [
+        "primary",
+        "secondary"
+      ],
+      "source": "_md-comp-primary-navigation-tab.scss and _md-comp-secondary-navigation-tab.scss — one canonical component with a variant axis, modelled the way button modelled filled/outlined/text and select modelled filled/outlined. No source default is declared between the two; see the no-source-default-emphasis note."
+    },
+    "prop.orientation": {
+      "kind": "value",
+      "value": [
+        "horizontal"
+      ],
+      "note": "[R] — no orientation token; the primary/secondary tab families are the horizontal strip and navigation-rail is the vertical answer (out of scope)"
+    },
+    "prop.active-color": {
+      "kind": "off",
+      "note": "Salt-only axis"
+    },
+    "prop.divider": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was true, sourced from divider-height 1px / divider-color surface-variant — not a prop in M3 but a pair of tokens, so the rule was always on where it existed. NEITHER TOKEN EXISTS IN versions/v0_192; they are `latest`-only and arrive there @deprecated ('Use standalone divider component instead of nested tokens'). WHAT THE CONSUMER LOSES: the divider capability. Salt has a real boolean prop (TabBarProps.divider) and shadcn has none, so with M3 off this row is now a Salt-only capability rather than a two-of-three one."
+    },
+    "prop.inset": {
+      "kind": "off",
+      "note": "no inset or padding token anywhere in either file"
+    },
+    "prop.disabled": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no disabled-* token of any kind in either file in either edition, unusual for an M3 component family and recorded rather than filled in from the 0.38 convention"
+    },
+    "slot.tab-icon": {
+      "kind": "value",
+      "value": true
+    },
+    "slot.tab-actions": {
+      "kind": "off"
+    },
+    "state.hover": {
+      "kind": "value",
+      "value": true,
+      "source": "hover-state-layer-color/-opacity (on-surface @ 0.08), hover-label-text-color (on-surface), with-icon-hover-icon-color (on-surface) — and on the primary tab a SEPARATE active-hover set coloured primary"
+    },
+    "state.disabled": {
+      "kind": "off",
+      "note": "no disabled token"
+    },
+    "state.pressed": {
+      "kind": "value",
+      "value": true,
+      "source": "pressed-state-layer-color/-opacity, pressed-label-text-color, pressed-icon-color. NOTE the oddity on primary: inactive-pressed-state-layer-color is md-sys-color.$primary while inactive-hover and inactive-focus are both on-surface, so an unselected primary tab flashes the accent under the finger. Modelled as an info row only — the skeleton has no press affordance, and this is recorded as a coverage gap rather than approximated."
+    },
+    "state.overflowing": {
+      "kind": "off"
+    },
+    "style.tab-bar.divider": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was {border-bottom: 1px solid var(--divider)}, sourced from divider-height 1px + divider-color -> md-sys-color.$surface-variant (#e7e0ec / #49454f) — an opaque tone rather than Salt's 30% alpha, which was the finding this cell carried. Both tokens are NESTED IN THE TAB NAMESPACE (md.comp.{primary,secondary}-navigation-tab.divider.*), they exist only in `latest`, and they arrive there @deprecated ('Use standalone divider component instead of nested tokens'). versions/v0_192 has neither, so the `divider` slot has been removed (see provenance.divider). WHAT THE CONSUMER LOSES: the 1px rule under the tab strip. AVAILABLE-BUT-UNCLAIMED ALTERNATIVE, recorded precisely so the choice is visible rather than hidden: versions/v0_192/_md-comp-divider.scss DOES exist and is exactly the standalone component `latest`'s deprecation notice points at — 'color' -> md-sys-color.outline-variant (neutral-variant80 #cac4d0 light / neutral-variant30 #49454f dark) and 'thickness' 1px. It is NOT taken here, for one reason: v0.192 never nested a divider inside the tab namespace, so nothing in the pinned edition says a TAB STRIP has a rule beneath it — borrowing the standalone divider would be this registry asserting that, not M3. If the owner wants the rule back it is a three-cell flip (this row, prop.divider, structure.tab-bar) plus a `divider` slot at #cac4d0 / #49454f, and the light value would differ from the old one (outline-variant #cac4d0 against surface-variant #e7e0ec). slot.composes already points at the standalone divider."
+    },
+    "style.tab-bar.inset": {
+      "kind": "off",
+      "note": "no inset token"
+    },
+    "style.tablist.background": {
+      "kind": "alias",
+      "slot": "surface",
+      "source": "container-color -> md-sys-color.$surface. Note this is the tab's OWN container token applied to the strip, since M3 gives every tab the same surface and never fills the selected one."
+    },
+    "style.tablist.background@plain": {
+      "kind": "off",
+      "note": "plain is M3's only appearance; there is nothing to override"
+    },
+    "style.tablist.color": {
+      "kind": "off",
+      "note": "M3 declares colour on the tab, not the strip"
+    },
+    "style.tablist.min-height": {
+      "kind": "value",
+      "value": {
+        "min-height": "48px"
+      },
+      "source": "container-height 48px, identical in both files and both editions. NOTE the sibling primary alone carries, with-icon-and-label-text-container-height 64px, for the stacked icon-above-label layout — recorded, not modelled, because this skeleton lays icon and label in a row for all three systems."
+    },
+    "style.tablist.gap": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE of any gap token — M3 tabs are flush"
+    },
+    "style.tablist.gap@plain": {
+      "kind": "off"
+    },
+    "style.tablist.padding": {
+      "kind": "off",
+      "note": "no strip padding token"
+    },
+    "style.tablist.shape": {
+      "kind": "off",
+      "note": "container-shape is corner-none and is modelled on the tab (style.tab.shape); the strip has no shape token of its own"
+    },
+    "style.tablist.shape@plain": {
+      "kind": "off"
+    },
+    "style.tablist.orientation@vertical": {
+      "kind": "off",
+      "note": "horizontal only"
+    },
+    "style.tab.font": {
+      "kind": "alias",
+      "slot": "type-tab"
+    },
+    "style.tab.letter-spacing": {
+      "kind": "value",
+      "value": "0.00625rem",
+      "source": "title-small-tracking. NOTE material-web's own wrappers list label-text-tracking under $unsupported-tokens for both tabs; the generated token's value is taken and the disownment recorded."
+    },
+    "style.tab.color": {
+      "kind": "alias",
+      "slot": "fg-variant",
+      "source": "with-label-text-inactive-label-text-color / inactive-label-text-color -> md-sys-color.$on-surface-variant"
+    },
+    "style.tab.height": {
+      "kind": "value",
+      "value": {
+        "min-height": "48px"
+      },
+      "source": "container-height 48px"
+    },
+    "style.tab.min-width": {
+      "kind": "off",
+      "note": "no min-width token; m3.material.io's published 90px minimum is spec, not token, and is not claimed"
+    },
+    "style.tab.flex": {
+      "kind": "off",
+      "note": "no token; M3 tabs are equal-width by spec but there is nothing to source that from"
+    },
+    "style.tab.padding": {
+      "kind": "value",
+      "value": "0 16px",
+      "note": "[R] — CONFIRMED ABSENCE of any spacing token in either file in either edition. 16px is m3.material.io's published tab label inset; flagged on the cell, no token name invented. See the no-spacing-token provenance note."
+    },
+    "style.tab.gap": {
+      "kind": "value",
+      "value": "8px",
+      "note": "[R] — the same declared borrow as the padding, for the icon-to-label step"
+    },
+    "style.tab.shape": {
+      "kind": "value",
+      "value": "0",
+      "source": "container-shape -> md-sys-shape.$corner-none = 0px. Declared and zero, which is not the same as absent — M3 states that a tab is square."
+    },
+    "style.tab.border": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no outline or border token; an M3 tab has no edge of its own"
+    },
+    "style.tab.overflow": {
+      "kind": "off"
+    },
+    "style.tab.cursor": {
+      "kind": "off",
+      "note": "no cursor token in any M3 file (docs/foundations/cursors.md: Salt is the only system with a cursor scale)"
+    },
+    "style.tab.transition": {
+      "kind": "off",
+      "note": "no motion token on either tab file"
+    },
+    "style.tab.orientation@vertical": {
+      "kind": "off"
+    },
+    "style.tab.color@hover": {
+      "kind": "alias",
+      "slot": "fg",
+      "source": "with-label-text-inactive-hover-label-text-color / hover-label-text-color -> md-sys-color.$on-surface, agreed by both files"
+    },
+    "style.tab.color@selected": {
+      "kind": "value",
+      "value": "var(--tab-fg-active)",
+      "source": "with-label-text-active-label-text-color -> md-sys-color.$primary on the primary tab; style.tab.emphasis@secondary reassigns the property to on-surface, which is secondary's active-label-text-color"
+    },
+    "style.tab.selected-fill@contained": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no selected container colour, which is why prop.appearance is plain-only here"
+    },
+    "style.tab.state-layer@hover": {
+      "kind": "value",
+      "value": {
+        "background-image": "linear-gradient(var(--layer-hover), var(--layer-hover))"
+      },
+      "source": "hover-state-layer-color -> on-surface at hover-state-layer-opacity 0.08. Drawn as a gradient so it composites over any background-color, the mechanism select.m3.json established."
+    },
+    "style.tab.state-layer@focus": {
+      "kind": "value",
+      "value": {
+        "background-image": "linear-gradient(var(--layer-focus), var(--layer-focus))"
+      },
+      "source": "focus-state-layer-color -> on-surface at focus-state-layer-opacity, which versions/v0_192/_md-sys-state.scss gives as 0.12. VALUE CHANGED BY THE PIN — was 0.1, from versions/latest/sass/_md-sys-state.scss. docs/foundations/state-layers.md already tabulates 0.12 for M3, so the foundations page and this cell now agree. material-web lists both tokens under $unsupported-tokens for both tabs; the generated value is taken and the disownment recorded, unchanged by the pin."
+    },
+    "style.tab.state-layer@selected-hover": {
+      "kind": "value",
+      "value": {
+        "background-image": "linear-gradient(var(--layer-active), var(--layer-active))"
+      },
+      "source": "active-hover-state-layer-color at active-hover-state-layer-opacity 0.08 — md-sys-color.$primary on the primary tab, on-surface on the secondary tab (material-web synthesises secondary's from its plain hover set). The sharpest primary/secondary divergence after the indicator geometry."
+    },
+    "style.tab.focus": {
+      "kind": "value",
+      "value": {
+        "outline": "3px solid var(--focus-ring)",
+        "outline-offset": "0px"
+      },
+      "source": "tokens/_md-comp-focus-ring.scss $width: 3px solid $color: md-sys-color.secondary, at $inward-offset: 0px. SOURCE RE-POINTED AND ONE VALUE CHANGED BY THE v0.192 PIN. Previously: focus-indicator-thickness -> md-sys-state-focus-indicator.$thickness 3px, focus-indicator-color -> md-sys-color.$secondary, focus-indicator-outline-offset -> $inner-offset -3px — an INSET ring drawn 3px inside the tab. The whole family, and the _md-sys-state-focus-indicator.scss it resolved through, are absent from versions/v0_192. This row is LOCKED, so it could not become a declared gap; it is re-pointed to the edition-independent focus-ring token set that material-web's own md-focus-ring element consumes (see provenance.focus-ring). Colour and thickness survive exactly. THE OFFSET DOES NOT: focus-ring offers $inward-offset 0px and $outward-offset 2px, and neither is -3px, so the ring now sits FLUSH on the tab's edge instead of 3px inside it. Inward (0px) is taken rather than outward (2px) because a tab's ring is drawn inside — the direction is preserved even though the magnitude is lost. DECLARED, NOT ABSORBED: this is a real, visible focus regression and the only one in this pass."
+    },
+    "style.tab.disabled": {
+      "kind": "off",
+      "note": "no disabled token — see the no-disabled-token provenance note"
+    },
+    "style.tab.active-color@secondary": {
+      "kind": "off",
+      "note": "Salt-only axis"
+    },
+    "style.tab.active-color@tertiary": {
+      "kind": "off",
+      "note": "Salt-only axis"
+    },
+    "style.tab.emphasis@secondary": {
+      "kind": "value",
+      "value": {
+        "--tab-fg-active": "var(--fg)",
+        "--layer-active": "var(--layer-hover)"
+      },
+      "source": "secondary's active-label-text-color -> on-surface (against primary's primary), with-icon-active-icon-color -> on-surface (against primary), and its single on-surface state-layer set (against primary's primary-coloured active set). One rule reassigning two properties the base rows already consume, rather than three duplicated rules — the source's own indirection pattern. Both replacements are plain theme-scope slot references, so the SELECT-MATRIX.md finding-14 substitution trap does not apply: nothing here is measured at runtime."
+    },
+    "style.indicator.size": {
+      "kind": "value",
+      "value": "3px",
+      "source": "active-indicator-height 3px on the primary tab; the emphasis row reassigns it to 2px for secondary. Note this equals Salt's medium-density size-indicator by coincidence of two unrelated scales."
+    },
+    "style.indicator.edge": {
+      "kind": "value",
+      "value": {
+        "left": "0",
+        "right": "0",
+        "bottom": "0"
+      },
+      "note": "[R] for the flush inset — there is no offset token; the indicator sits on the bottom edge of the tab per m3.material.io. NOTE the skeleton's base gives the slide mechanism `right: auto` at higher specificity so the measured inline width wins."
+    },
+    "style.indicator.edge@contained": {
+      "kind": "off",
+      "note": "no contained appearance"
+    },
+    "style.indicator.shape": {
+      "kind": "value",
+      "value": "3px 3px 0px 0px",
+      "source": "active-indicator-shape on the primary tab — the mark's TOP corners are rounded to its own height, which only reads correctly because the mark sits at the bottom of the tab. The secondary file has NO such token; material-web's tokens/_md-comp-secondary-tab.scss supplies `'active-indicator-shape': 0` in _add-missing-secondary-tokens(), carried by style.indicator.emphasis@secondary."
+    },
+    "style.indicator.rest": {
+      "kind": "value",
+      "value": {
+        "background": "transparent"
+      },
+      "note": "[R] — with the slide mechanism there is one indicator element and it is painted only while a tab is selected"
+    },
+    "style.indicator.background@hover": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — M3's hover feedback is a state layer on the tab, not a preview of the mark. Salt is alone in previewing it."
+    },
+    "style.indicator.background@focus-visible": {
+      "kind": "off"
+    },
+    "style.indicator.selected": {
+      "kind": "value",
+      "value": {
+        "background": "var(--indicator-active)"
+      },
+      "source": "active-indicator-color -> md-sys-color.$primary, the same value in both emphases"
+    },
+    "style.indicator.selected@contained": {
+      "kind": "off",
+      "note": "no contained appearance"
+    },
+    "style.indicator.transition": {
+      "kind": "value",
+      "value": "left 300ms cubic-bezier(0.2, 0, 0, 1), width 300ms cubic-bezier(0.2, 0, 0, 1)",
+      "note": "[R] — CONFIRMED ABSENCE of any motion token on either tab file. Borrowed from docs/foundations/motion.md's medium2 (300ms) + standard easing, the same principled placeholder tooltip.m3.json and dialog.m3.json used. Depends on structure.indicator-motion = slide; if that cell flips to static this one switches off."
+    },
+    "style.indicator.emphasis@secondary": {
+      "kind": "value",
+      "value": {
+        "height": "2px",
+        "border-radius": "0"
+      },
+      "source": "secondary's active-indicator-height 2px [S, generated token] and active-indicator-shape 0 [S, material-web's own _add-missing-secondary-tokens()]"
+    },
+    "style.indicator.orientation@vertical": {
+      "kind": "off"
+    },
+    "style.tab-icon.size": {
+      "kind": "value",
+      "value": {
+        "width": "24px",
+        "height": "24px"
+      },
+      "source": "with-icon-icon-size 24px, identical in both files and both editions — half again the size of shadcn's 16px and twice Salt's medium 12px"
+    },
+    "style.tab-icon.color": {
+      "kind": "off",
+      "note": "M3 DOES declare a full parallel icon-colour family — eight tokens on primary, five on secondary — but every one resolves to the same role as the label colour in the same state (on-surface-variant inactive, primary/on-surface active, on-surface hovered/focused/pressed). A currentColor glyph is therefore not an approximation but the identical output, and thirteen duplicate rows are avoided. Recorded so a future reader does not add them."
+    },
+    "style.panel.box": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no panel token in either file; see the no-panel-token provenance note"
+    },
+    "style.panel.outline": {
+      "kind": "off"
+    },
+    "style.panel.focus": {
+      "kind": "off"
+    },
+    "style.overflow-list.box": {
+      "kind": "off"
+    },
+    "style.overflow-item.box": {
+      "kind": "off"
+    },
+    "style.overflow-item.background@hover": {
+      "kind": "off"
+    },
+    "state.focus-visible": {
+      "kind": "value",
+      "value": true,
+      "note": "VALUES CHANGED BY THE v0.192 PIN. The ring is now 3px solid md-sys-color.secondary at outline-offset 0px, sourced from tokens/_md-comp-focus-ring.scss ($width / $color / $inward-offset) rather than from the tab's own focus-indicator family, which is `latest`-only — the offset moved from -3px (inset) to 0px (flush). The focus state layer moved from 10% to 12% (versions/v0_192/_md-sys-state.scss focus-state-layer-opacity). See style.tab.focus and provenance.focus-ring."
+    }
+  }
+}

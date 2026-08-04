@@ -1,0 +1,162 @@
+{
+  "system": "shadcn",
+  "component": "tooltip",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "surface": "oklch(0% 0 0)",
+      "on-surface": "oklch(1 0 0)",
+      "radius-control": "calc(0.625rem * 0.8)"
+    },
+    "dark": {
+      "surface": "oklch(0.985 0 0)",
+      "on-surface": "oklch(0.145 0 0)"
+    }
+  },
+  "provenance": {
+    "surface": "tooltip.tsx TooltipContent className: bg-foreground -> globals.css --foreground: oklch(0% 0 0) light / oklch(0.985 0 0) dark (docs/foundations/colors.md) — an INVERTED role: the ambient foreground token becomes this component's background",
+    "on-surface": "tooltip.tsx: text-background -> globals.css --background: oklch(1 0 0) light / oklch(0.145 0 0) dark — the inverse swap's other half",
+    "radius-control": "tooltip.tsx: rounded-md -> --radius-md = calc(var(--radius) * 0.8), var(--radius) = 0.625rem (docs/foundations/shape.md), same derivation as Button's radius-control",
+    "structure": "tooltip.tsx: TooltipPrimitive.Root/Trigger/Content/Arrow from the radix-ui package, wrapped in a Portal. TooltipProvider overrides Radix's own delayDuration default (700ms, primitives/packages/react/tooltip/src/tooltip.tsx:30) down to 0.",
+    "font": "tooltip.tsx: text-xs (0.75rem/1rem); no font-family utility set on this component, so it inherits the ambient body font — cited as the generic Tailwind stack per Button's own precedent for the same situation",
+    "padding": "tooltip.tsx: px-3 py-1.5",
+    "z-index": "tooltip.tsx: z-50 (a bare Tailwind stacking index, not a token)",
+    "arrow": "tooltip.tsx TooltipPrimitive.Arrow className: size-2.5 (10x10px) rotate-45 rounded-[2px] bg-foreground fill-foreground translate-y-[calc(-50%_-_2px)]",
+    "duration/easing": "tooltip.tsx className includes animate-in/animate-out/fade-in-0/zoom-in-95/slide-in-from-* utility classes from the tw-animate-css package (package.json: \"tw-animate-css\": \"^1.4.0\"), confirming entrance/exit motion exists, but the package's own CSS is not vendored in this clone (no matching file found under this checkout) — duration/easing values below are REGISTRY RENDERING APPROXIMATIONS (the plugin's commonly documented default), not grepped"
+  },
+  "cells": {
+    "structure.arrow": {
+      "kind": "value",
+      "value": true,
+      "source": "tooltip.tsx: TooltipContent always composes TooltipPrimitive.Arrow"
+    },
+    "structure.status-icon": {
+      "kind": "off",
+      "note": "no icon concept on shadcn's tooltip"
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "tooltip",
+      "source": "Radix TooltipContent: role=\"tooltip\" (the ariaLabel-override VisuallyHidden path is unused — shadcn's own file never passes that prop)"
+    },
+    "behavior.supplementary-announce": {
+      "kind": "off",
+      "note": "native ARIA wiring only, no supplementary live-region mechanism"
+    },
+    "behavior.enter-delay": {
+      "kind": "value",
+      "value": 0,
+      "source": "tooltip.tsx TooltipProvider: delayDuration = 0 (explicitly overriding Radix's own 700ms package default)"
+    },
+    "behavior.leave-delay": {
+      "kind": "value",
+      "value": 0,
+      "note": "Radix closes immediately on blur/pointerleave, no distinct close-delay prop. skipDelayDuration (300ms, Radix default, not overridden) is a different mechanism (cross-trigger grace window) and is NOT represented by this value."
+    },
+    "prop.status": {
+      "kind": "off",
+      "note": "no tone/status axis on shadcn's tooltip"
+    },
+    "prop.placement": {
+      "kind": "value",
+      "value": [
+        "top",
+        "right",
+        "bottom",
+        "left"
+      ],
+      "note": "ordered with the real default (\"top\") first; a separate `align` prop (start/center/end) exists and is not modeled (scope trim)",
+      "source": "primitives/packages/react/tooltip/src/tooltip.tsx: TooltipContent side default 'top' (overriding Popper.Content's own 'bottom' default)"
+    },
+    "style.root.background": {
+      "kind": "alias",
+      "slot": "surface"
+    },
+    "style.root.color": {
+      "kind": "alias",
+      "slot": "on-surface"
+    },
+    "style.root.border": {
+      "kind": "off",
+      "note": "no border utility class on TooltipContent"
+    },
+    "style.root.status@error": {
+      "kind": "off",
+      "note": "no status axis"
+    },
+    "style.root.shape": {
+      "kind": "alias",
+      "slot": "radius-control"
+    },
+    "style.root.padding": {
+      "kind": "value",
+      "value": "6px 12px",
+      "source": "tooltip.tsx: py-1.5 px-3"
+    },
+    "style.root.font": {
+      "kind": "value",
+      "value": "400 0.75rem/1rem ui-sans-serif, system-ui, sans-serif",
+      "source": "tooltip.tsx: text-xs; family inherited (no explicit font-sans utility), cited as the generic Tailwind stack per Button's own precedent"
+    },
+    "style.root.shadow": {
+      "kind": "off",
+      "note": "no shadow utility on TooltipContent"
+    },
+    "style.root.max-width": {
+      "kind": "off",
+      "note": "w-fit — content-sized, no explicit cap besides Popper collision (out of scope, see positioning-engine gap)"
+    },
+    "style.root.z-index": {
+      "kind": "value",
+      "value": "50",
+      "source": "tooltip.tsx: z-50"
+    },
+    "style.root.duration": {
+      "kind": "value",
+      "value": "150ms",
+      "note": "REGISTRY RENDERING APPROXIMATION — tw-animate-css isn't vendored in this clone; 150ms is the plugin's commonly documented default utility duration, not a grepped value"
+    },
+    "style.root.easing": {
+      "kind": "value",
+      "value": "ease-out",
+      "note": "same unvendored-package caveat as duration"
+    },
+    "style.arrow.size": {
+      "kind": "value",
+      "value": {
+        "width": "10px",
+        "height": "10px"
+      },
+      "source": "tooltip.tsx: size-2.5 (0.625rem = 10px), rotate-45 — the skeleton's neutral rotated-square arrow matches this shape closely (unlike Salt's true triangle)"
+    },
+    "style.arrow.color": {
+      "kind": "value",
+      "value": {
+        "background": "var(--surface)",
+        "border": "none"
+      },
+      "source": "tooltip.tsx: bg-foreground fill-foreground — same token as the panel background, no separate stroke"
+    },
+    "style.icon.margin": {
+      "kind": "off",
+      "note": "no icon"
+    },
+    "style.root.status@info": {
+      "kind": "off",
+      "note": "no tone/status axis on tooltip in this system (see prop.status)"
+    },
+    "style.root.status@warning": {
+      "kind": "off",
+      "note": "no tone/status axis on tooltip in this system (see prop.status)"
+    },
+    "style.root.status@success": {
+      "kind": "off",
+      "note": "no tone/status axis on tooltip in this system (see prop.status)"
+    },
+    "structure.arrow-shape": {
+      "kind": "value",
+      "value": "diamond",
+      "source": "tooltip.tsx TooltipPrimitive.Arrow className=\"size-2.5 rotate-45 bg-foreground fill-foreground\" - a rotated square, no border"
+    }
+  }
+}

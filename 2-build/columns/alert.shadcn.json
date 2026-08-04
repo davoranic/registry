@@ -1,0 +1,66 @@
+{
+  "system": "shadcn",
+  "component": "alert",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "card-bg": "oklch(1 0 0)",
+      "card-fg": "oklch(0% 0 0)",
+      "muted-fg": "oklch(0.556 0 0)",
+      "destructive": "oklch(0.577 0.245 27.325)",
+      "border": "oklch(0.922 0 0)",
+      "content-active": "var(--card-fg)",
+      "description-active": "var(--muted-fg)"
+    },
+    "dark": {
+      "card-bg": "oklch(0.205 0 0)",
+      "card-fg": "oklch(0.985 0 0)",
+      "muted-fg": "oklch(0.708 0 0)",
+      "destructive": "oklch(0.704 0.191 22.216)",
+      "border": "oklch(1 0 0 / 10%)"
+    }
+  },
+  "provenance": {
+    "card-bg / card-fg": "alert.tsx alertVariants: variant=default -> \"bg-card text-card-foreground\" -> globals.css --card/--card-foreground. Background is IDENTICAL for variant=destructive (still bg-card) — a real non-variation, not a missing cell.",
+    "destructive": "alert.tsx variant=destructive -> \"text-destructive\" (root/title) and \"*:data-[slot=alert-description]:text-destructive/90\" (description, 90% opacity of the same color) -> globals.css --destructive",
+    "muted-fg": "AlertDescription: \"text-sm text-muted-foreground\" -> globals.css --muted-foreground, used regardless of variant EXCEPT destructive (which overrides via the *:data-[slot] selector above)",
+    "border": "alertVariants base class: \"border\" (no per-variant border-color override anywhere in alert.tsx) -> globals.css --border, Tailwind's undeclared default border color",
+    "structure": "alert.tsx: relative grid w-full grid-cols-[0_1fr] ... has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current — a 2-column CSS grid (icon col collapses to 0 width with no icon), rendered here as an approximated flex layout, declared not silent",
+    "radius": "rounded-lg -> globals.css --radius-lg: var(--radius) = 0.625rem = 10px",
+    "padding": "px-4 py-3 = 16px 12px",
+    "gap": "has-[>svg]:gap-x-3 = 12px (icon-to-content column gap, only when an icon child is present)",
+    "font": "text-sm on the root (0.875rem/1.25rem); AlertTitle adds font-medium tracking-tight (no independent size); AlertDescription adds text-sm text-muted-foreground [&_p]:leading-relaxed. shadcn has no type-scale foundation file (foundations/typography.md) — sizes read directly off these Tailwind classes."
+  },
+  "cells": {
+    "structure.image": { "kind": "off", "note": "no image-leading-element concept" },
+    "structure.title": { "kind": "value", "value": true, "source": "alert.tsx AlertTitle: col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight" },
+    "structure.actions": { "kind": "value", "value": true, "note": "new-york-v4 canonical has no dedicated actions wrapper (arbitrary children only, no data-slot); the sibling shadcn 'radix' base variant (registry/bases/radix/ui/alert.tsx) DOES ship a dedicated data-slot=\"alert-action\" element, used by examples/radix/alert-action.tsx — cited as supplementary evidence this is a real shadcn-family pattern, not fabricated by this registry", "source": "registry/bases/radix/ui/alert.tsx AlertAction" },
+    "structure.close": { "kind": "off", "note": "no dedicated close part in any shadcn base variant checked (new-york-v4 or radix) — dismiss would be an ordinary composed button with no distinct data-slot hook" },
+
+    "behavior.role": { "kind": "value", "value": "alert", "source": "alert.tsx: role=\"alert\" hardcoded, always, not a prop" },
+
+    "prop.tone": { "kind": "value", "value": ["default", "destructive"], "source": "alert.tsx alertVariants variants.variant enum" },
+    "prop.emphasis": { "kind": "off", "note": "no separate emphasis/intensity axis — variant (default/destructive) is entirely the tone axis; background never changes with it (see style.root.background)" },
+
+    "style.root.background": { "kind": "alias", "slot": "card-bg", "note": "variant=default; IDENTICAL for variant=destructive — background does not vary by tone in shadcn, unlike Salt" },
+    "style.root.background@emphasis": { "kind": "off", "note": "no separate emphasis axis to demonstrate — see prop.emphasis" },
+    "style.root.border-color": { "kind": "alias", "slot": "border", "note": "fixed regardless of variant — no per-tone border-color override anywhere in alertVariants, a real non-variation vs Salt" },
+    "style.root.border-width": { "kind": "value", "value": "1px", "source": "alertVariants base class: \"border\" -> Tailwind default border-width (undeclared token, per foundations/border-style.md)" },
+    "style.icon.color": { "kind": "alias", "slot": "content-active", "note": "[&>svg]:text-current — no separate icon color token, inherits the root's own color (same value as style.root.color), so it follows the same tone indirection" },
+
+    "style.root.tone@error": { "kind": "off", "note": "not a shadcn variant name — shadcn's two-value enum is default/destructive (see prop.tone)" },
+    "style.root.tone@warning": { "kind": "off", "note": "not a shadcn variant name; no warning tone exists at all — the same tone-coverage gap vs Salt's four values already recorded for Button" },
+    "style.root.tone@success": { "kind": "off", "note": "not a shadcn variant name; no success tone exists at all" },
+    "style.root.tone@destructive": { "kind": "value", "value": { "--content-active": "var(--destructive)", "--description-active": "color-mix(in oklab, var(--destructive) 90%, transparent)" }, "source": "alert.tsx variant=destructive: \"text-destructive\" (root/title/icon, via [&>svg]:text-current) and \"*:data-[slot=alert-description]:text-destructive/90\" (description at 90% alpha). Background deliberately NOT included — bg-card is identical in both variants, a real non-variation" },
+
+    "style.root.padding": { "kind": "value", "value": "12px 16px", "source": "px-4 py-3" },
+    "style.root.gap": { "kind": "value", "value": "12px", "source": "has-[>svg]:gap-x-3" },
+    "style.root.shape": { "kind": "value", "value": "10px", "source": "rounded-lg -> --radius-lg = var(--radius) = 0.625rem" },
+    "style.root.min-height": { "kind": "off", "note": "content-driven, no min-height token anywhere in alert.tsx — a real gap, not fabricated" },
+    "style.root.font": { "kind": "value", "value": "400 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif", "source": "text-sm on the root; family follows --font-sans's Next.js next/font resolution (foundations/typography.md flag — literal family string lives in font-loader config, not CSS)" },
+    "style.root.color": { "kind": "alias", "slot": "content-active", "note": "defaults to card-fg; variant=destructive reassigns the indirection to --destructive (see style.root.tone@destructive)" },
+
+    "style.title.font": { "kind": "value", "value": "500 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif", "source": "AlertTitle: font-medium (500), no independent font-size (inherits the root's text-sm)" },
+    "style.description.color": { "kind": "alias", "slot": "description-active", "note": "AlertDescription: text-muted-foreground — the only system with a distinct description color, separate from the title/root color. Defaults to muted-fg; variant=destructive reassigns it to destructive/90" }
+  }
+}

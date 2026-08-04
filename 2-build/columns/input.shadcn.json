@@ -1,0 +1,159 @@
+{
+  "system": "shadcn",
+  "component": "input",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "field-bg": "transparent",
+      "fg": "oklch(0% 0 0)",
+      "placeholder-fg": "oklch(0.556 0 0)",
+      "border-base": "oklch(0.922 0 0)",
+      "focus": "oklch(0.708 0 0)",
+      "danger": "oklch(0.577 0.245 27.325)",
+      "shadow-color": "rgb(0 0 0 / 0.05)",
+      "radius-control": "calc(0.625rem * 0.8)",
+      "type-body": "400 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif",
+      "ring-alpha": "50%",
+      "ring-alpha-invalid": "20%",
+      "bg-current": "var(--field-bg)",
+      "border-current": "var(--border-base)",
+      "border-current-active": "var(--focus)",
+      "ring-current": "var(--focus)",
+      "ring-alpha-current": "var(--ring-alpha)"
+    },
+    "dark": {
+      "field-bg": "color-mix(in oklab, oklch(1 0 0 / 15%) 30%, transparent)",
+      "fg": "oklch(0.985 0 0)",
+      "placeholder-fg": "oklch(0.708 0 0)",
+      "border-base": "oklch(1 0 0 / 15%)",
+      "focus": "oklch(0.556 0 0)",
+      "danger": "oklch(0.704 0.191 22.216)",
+      "ring-alpha-invalid": "40%"
+    }
+  },
+  "modeInvariant": [
+    "shadow-color",
+    "field-bg"
+  ],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/input.tsx — a bare <input data-slot=\"input\"> with a single cn() class list and no wrapper element. Cross-checked (not canonical): apps/v4/registry/bases/radix/ui/input.tsx, which moves the same visual set behind a `cn-input` class token but keeps the identical structure (one element, placeholder/disabled/file: handling, no hover and no read-only rule) — same conclusions.",
+    "field-bg": "class `bg-transparent` (light) + `dark:bg-input/30`. Tailwind v4 compiles the /30 modifier to color-mix(in oklab, var(--input) 30%, transparent); --input in dark is itself oklch(1 0 0 / 15%) (globals.css:161), so the dark background is a 30% mix of an already-15%-alpha white. shadcn is the only one of the three whose input is fully transparent in light mode.",
+    "fg": "input.tsx sets NO text-colour class at all — this is the ambient --foreground from globals.css:102 (light, pure black in this checkout) / :145 (dark). Recorded as an ambient inheritance, not as a component token, the same honesty tooltip.shadcn.json used for its font family.",
+    "placeholder-fg": "class `placeholder:text-muted-foreground` -> --muted-foreground, globals.css:112 / :155",
+    "border-base": "class `border border-input` -> --input, globals.css:118 / :161. The bare `border` utility supplies the 1px width, which Tailwind does not tokenise (docs/foundations/border-style.md).",
+    "focus": "classes `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50` -> --ring, globals.css:119 / :162. The /50 modifier is carried by the ring-alpha slot so the aria-invalid override below can change ONLY the alpha, per mode.",
+    "danger": "classes `aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40` -> --destructive, globals.css:115 / :158. The two different alphas (20% light, 40% dark) are why ring-alpha-invalid is a per-mode slot rather than a literal in the status cell.",
+    "radius-control": "class `rounded-md` -> --radius-md = calc(var(--radius) * 0.8), globals.css:51, with --radius: 0.625rem (globals.css:100) = 8px. Same derivation button.shadcn.json already extracted.",
+    "shadow-color": "class `shadow-xs` = 0 1px 2px 0 rgb(0 0 0 / 0.05). Tailwind is not vendored in this clone; the value is reused verbatim from button.shadcn.json's already-extracted style.root.elevation rather than re-derived.",
+    "type-body": "classes `text-base md:text-sm`. DECLARED GENERATOR GAP: this is a RESPONSIVE value — 1rem/1.5rem below 768px, 0.875rem/1.25rem at and above — and this generator emits flat rules with no @media channel. The slot carries the >=768px value because that is what the desktop validation harness and shadcn's own docs site render; the <768px value (400 1rem/1.5rem, same family) is recorded here so it is not lost. Family read as the generic Tailwind sans stack per button.shadcn.json / tooltip.shadcn.json precedent — input.tsx sets no font-family utility, so it inherits the ambient body font.",
+    "no-hover": "CONFIRMED ABSENCE, not an unfound value: every class in input.tsx was read and there is no hover: rule of any kind. A shadcn input does not react to the pointer until it is focused.",
+    "no-readonly-style": "CONFIRMED ABSENCE: input.tsx has no read-only: variant, and content/docs/components/radix/input.mdx documents Disabled and Invalid sections with no read-only section at all. The native attribute works (the skeleton sets it), but nothing changes visually — a sourced non-variation, the same class of finding as alert.shadcn.json's background-never-varies-by-tone.",
+    "no-warning-no-success": "shadcn's entire validation axis is the single boolean aria-invalid. No warning and no success state exists — the same tone-coverage gap already recorded for button and alert.",
+    "file-input-scope-trim": "input.tsx carries a `file:` utility group (file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground) styling the ::file-selector-button of type=\"file\" inputs. Declared out of scope: it applies to one input type only and has no counterpart in Salt or M3.",
+    "selection-scope-trim": "`selection:bg-primary selection:text-primary-foreground` styles the text-selection highlight. Not modelled — a micro-property scope trim, consistent with prior components not modelling every one (cf. tooltip's letter-spacing note). Recorded rather than dropped.",
+    "transition-defaults": "class `transition-[color,box-shadow]` — the property list is sourced [S], but no duration/easing utility is present so Tailwind's own defaults apply, and Tailwind is not vendored in this clone. 150ms / cubic-bezier(0.4,0,0.2,1) are therefore [R], the same unvendored-package caveat TOOLTIP-MATRIX.md recorded for tw-animate-css."
+  },
+  "cells": {
+    "structure.root-wrapper": {
+      "kind": "value",
+      "value": "control",
+      "source": "input.tsx renders a bare <input data-slot=\"input\"> — there is no wrapper element, so every box style (border, background, padding, radius, height, shadow) sits on the input element itself"
+    },
+    "structure.indicator": {
+      "kind": "value",
+      "value": ["box"],
+      "note": "structurally always a full border — not a runtime prop and not a variant. There is no underline/activation-indicator mechanism anywhere in shadcn's input.",
+      "source": "input.tsx: `border border-input`"
+    },
+    "structure.start-adornment": { "kind": "off", "note": "no adornment slot on the bare input; adornments are the separate `input-group` component (docs/COMPONENTS.md), out of scope" },
+    "structure.end-adornment": { "kind": "off", "note": "same as structure.start-adornment" },
+    "structure.status-adornment": { "kind": "off", "note": "no icon concept on input at all" },
+
+    "behavior.status-inheritance": { "kind": "off", "note": "no context channel. shadcn's Field marks itself data-invalid; the input's own aria-invalid is set per instance by the consumer (content/docs/components/radix/input.mdx Invalid section)" },
+    "behavior.empty-readonly-marker": { "kind": "off", "note": "no equivalent — an empty read-only shadcn input renders empty" },
+
+    "prop.variant": { "kind": "off", "note": "no background-intensity axis" },
+    "prop.validation-status": { "kind": "value", "value": ["error"], "note": "a single boolean (aria-invalid) rather than an enum — no warning, no success", "source": "input.tsx aria-invalid:border-destructive aria-invalid:ring-destructive/20" },
+    "prop.text-align": { "kind": "off" },
+    "prop.disabled": { "kind": "value", "value": [true, false], "source": "input.tsx disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50; examples/input-disabled.tsx" },
+    "prop.read-only": { "kind": "value", "value": [true, false], "note": "the native attribute is supported and the skeleton sets it, but NO visual state exists — see the no-readonly-style provenance entry. The read-only instance in the harness renders identically to rest by design, not by omission.", "source": "examples/input-group-button.tsx uses readOnly on an InputGroupInput; input.tsx has no read-only: variant" },
+
+    "slot.start-adornment": { "kind": "off" },
+    "slot.end-adornment": { "kind": "off" },
+    "state.read-only": { "kind": "off", "note": "no distinct visual state — see prop.read-only" },
+
+    "style.root.background": { "kind": "alias", "slot": "bg-current" },
+    "style.root.background@box": { "kind": "off", "note": "box is shadcn's only mode; already covered by style.root.background" },
+    "style.root.color": { "kind": "alias", "slot": "fg", "note": "ambient --foreground; input.tsx sets no text-colour class" },
+    "style.root.font": { "kind": "alias", "slot": "type-body", "note": "the >=768px value — see the type-body provenance entry's declared generator gap" },
+    "style.root.letter-spacing": { "kind": "off", "note": "no tracking utility on the element" },
+    "style.root.height": { "kind": "value", "value": "36px", "source": "input.tsx h-9; density-invariant (shadcn has no density capability — docs/foundations/density.md)" },
+    "style.root.min-width": { "kind": "value", "value": "0", "source": "input.tsx min-w-0" },
+    "style.root.padding": { "kind": "value", "value": "4px 12px", "source": "input.tsx py-1 px-3" },
+    "style.root.gap": { "kind": "off", "note": "no adornments and no wrapper for a gap to live on" },
+    "style.root.shape": { "kind": "alias", "slot": "radius-control" },
+    "style.root.shape@box": { "kind": "off", "note": "box is the only mode; already covered by style.root.shape" },
+    "style.root.cursor": { "kind": "off", "note": "no cursor class at rest — the native <input> default applies" },
+    "style.root.shadow": { "kind": "value", "value": "0 1px 2px 0 var(--shadow-color)", "source": "input.tsx shadow-xs" },
+    "style.root.transition": { "kind": "value", "value": "color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1)", "note": "property list [S]; duration and easing [R] — Tailwind defaults, package not vendored", "source": "input.tsx transition-[color,box-shadow]" },
+
+    "style.control.placeholder": { "kind": "value", "value": { "color": "var(--placeholder-fg)" }, "source": "input.tsx placeholder:text-muted-foreground — colour only, no weight change" },
+    "style.control.caret-color": { "kind": "off", "note": "no caret-color utility — the platform default applies" },
+
+    "style.root.border@box": {
+      "kind": "value",
+      "value": { "border-width": "1px", "border-style": "solid", "border-color": "var(--border-current)" },
+      "source": "input.tsx `border border-input`; the 1px width is Tailwind's undeclared default (docs/foundations/border-style.md)"
+    },
+    "style.indicator.border@underline": { "kind": "off", "note": "no underline mechanism of any kind" },
+    "style.root.border@box-hover": { "kind": "off", "note": "CONFIRMED ABSENCE — there is no hover: class anywhere in input.tsx" },
+    "style.indicator.border@underline-hover": { "kind": "off" },
+    "style.root.border@box-focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--border-current-active)" },
+      "source": "input.tsx focus-visible:border-ring — recolour only, width unchanged"
+    },
+    "style.indicator.border@underline-focus": { "kind": "off" },
+    "style.indicator.border@box-focus": { "kind": "off" },
+    "style.root.focus": {
+      "kind": "value",
+      "value": { "outline": "none", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--ring-current) var(--ring-alpha-current), transparent), 0 1px 2px 0 var(--shadow-color)" },
+      "source": "input.tsx outline-none + focus-visible:ring-[3px] focus-visible:ring-ring/50 — a translucent ring drawn as a box-shadow. The alpha is read through ring-alpha-current so the aria-invalid rule can change only the alpha (20% light / 40% dark) without duplicating the whole shadow. The shadow-xs layer is repeated after the ring because Tailwind v4 composes box-shadow as `var(--tw-ring-shadow), var(--tw-shadow)` — a focused shadcn input keeps its shadow-xs, and a single-layer box-shadow here would silently delete it."
+    },
+
+    "style.root.background@readonly": { "kind": "off", "note": "no read-only style — see the no-readonly-style provenance entry" },
+    "style.root.border-color@readonly": { "kind": "off" },
+    "style.indicator.border-color@readonly": { "kind": "off" },
+
+    "style.root.background@disabled": { "kind": "off", "note": "one blanket opacity:0.5 on the element does the whole job — see style.control.disabled" },
+    "style.root.color@disabled": { "kind": "off", "note": "same — opacity, not a recolour" },
+    "style.root.border-color@disabled": { "kind": "off", "note": "same" },
+    "style.indicator.border-color@disabled": { "kind": "off" },
+    "style.control.disabled": {
+      "kind": "value",
+      "value": { "opacity": "0.5", "cursor": "not-allowed", "pointer-events": "none" },
+      "source": "input.tsx disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
+      "note": "50%, NOT Salt's 40% — the same cross-system value difference button.shadcn.json already recorded. Because shadcn's control IS its box, this one declaration dims border, background and text together, which is exactly why the four colour rows above are off."
+    },
+
+    "style.adornment.size": { "kind": "off" },
+    "style.status-adornment.size": { "kind": "off" },
+    "style.status-adornment.color": { "kind": "off" },
+
+    "style.root.variant@secondary": { "kind": "off", "note": "no variant axis" },
+    "style.root.variant@tertiary": { "kind": "off", "note": "no variant axis" },
+
+    "style.root.status@error": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--danger)",
+        "--border-current-active": "var(--danger)",
+        "--ring-current": "var(--danger)",
+        "--ring-alpha-current": "var(--ring-alpha-invalid)"
+      },
+      "source": "input.tsx aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40. Background is deliberately untouched — the same 'the tone axis does not move the background' non-variation alert.shadcn.json found."
+    },
+    "style.root.status@warning": { "kind": "off", "note": "no warning state exists at all — shadcn's whole validation axis is the single aria-invalid boolean" },
+    "style.root.status@success": { "kind": "off", "note": "no success state exists at all — see style.root.status@warning" }
+  }
+}

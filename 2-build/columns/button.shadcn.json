@@ -1,0 +1,71 @@
+{
+  "system": "shadcn",
+  "component": "button",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "action-bg": "oklch(0% 0 0)",
+      "action-fg": "oklch(0.985 0 0)",
+      "secondary-bg": "oklch(0.97 0 0)",
+      "secondary-fg": "oklch(0.205 0 0)",
+      "outline-bg": "oklch(1 0 0)",
+      "outline-border": "oklch(0.922 0 0)",
+      "ghost-hover-bg": "oklch(0.97 0 0)",
+      "focus": "oklch(0.708 0 0)",
+      "radius-control": "calc(0.625rem * 0.8)",
+      "type-label": "500 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif",
+      "shadow-color": "rgb(0 0 0 / 0.05)"
+    },
+    "dark": {
+      "action-bg": "oklch(0.922 0 0)",
+      "action-fg": "oklch(0.205 0 0)",
+      "secondary-bg": "oklch(0.269 0 0)",
+      "secondary-fg": "oklch(0.985 0 0)",
+      "outline-bg": "oklch(1 0 0 / 10%)",
+      "outline-border": "oklch(1 0 0 / 15%)",
+      "ghost-hover-bg": "oklch(0.371 0 0 / 50%)",
+      "focus": "oklch(0.556 0 0)"
+    }
+  },
+  "modeInvariant": ["shadow-color"],
+  "provenance": {
+    "action-bg": "button.tsx variant=default: bg-primary -> globals.css --primary (pure black light / oklch 0.922 dark, this checkout)",
+    "danger-bg": "variant=destructive: bg-destructive -> --destructive",
+    "secondary-bg": "variant=secondary: bg-secondary -> --secondary",
+    "outline-bg": "variant=outline: bg-background + border (dark: bg-input/30, border-input)",
+    "ghost-hover-bg": "variant=ghost: hover:bg-accent (dark: bg-accent/50)",
+    "focus": "focus-visible:ring-ring/50 -> --ring",
+    "radius-control": "rounded-md class -> --radius-md = --radius(0.625rem) * 0.8, base.css @theme derivation",
+    "type-label": "text-sm font-medium"
+  },
+  "cells": {
+    "prop.tone": { "kind": "value", "value": ["default"], "note": "destructive variant exists (bg-destructive) but its color cells are out of this matrix's scope (default/neutral tone only, per Calendar-precedent scoping) — coverage gap vs Salt's 5 sentiments either way", "source": "button.tsx variant enum: default, destructive" },
+    "prop.emphasis": { "kind": "value", "value": ["default", "outline", "secondary", "ghost", "link"], "source": "button.tsx variant enum" },
+    "prop.size": { "kind": "value", "value": ["xs", "sm", "default", "lg"], "source": "button.tsx size enum (default/xs/sm/lg + icon/icon-xs/icon-sm/icon-lg for icon-only)" },
+    "prop.icon-only": { "kind": "value", "value": true, "source": "button.tsx size: icon/icon-xs/icon-sm/icon-lg — square variants, size-9/6/8/10" },
+
+    "behavior.loading": { "kind": "off", "note": "no built-in loading variant; composed by consumer" },
+
+    "style.root.height": { "kind": "value", "value": "36px", "note": "DECLARED DEFERRAL: shown at size=default only. Per-prop-value style resolution (height also = 24/32/40px at xs/sm/lg) needs a generator extension — cells keyed by prop value, analogous to byDensity but for the size prop — not yet built. Full values: xs 24px, sm 32px, default 36px, lg 40px.", "source": "button.tsx h-6/h-8/h-9/h-10" },
+    "style.root.padding": { "kind": "value", "value": "16px", "source": "size=default: px-4; has-[>svg]:px-3 when carrying an icon" },
+    "style.root.gap": { "kind": "value", "value": "8px", "source": "buttonVariants base: gap-2" },
+    "style.root.shape": { "kind": "alias", "slot": "radius-control", "source": "rounded-md on every size variant" },
+    "style.root.border-width": { "kind": "off" },
+    "style.root.font": { "kind": "alias", "slot": "type-label" },
+    "style.root.text-transform": { "kind": "off", "note": "no text-transform — shadcn buttons are sentence/label case as typed, unlike Salt's forced uppercase" },
+
+    "style.root.background": { "kind": "alias", "slot": "action-bg" },
+    "style.root.color": { "kind": "alias", "slot": "action-fg" },
+    "style.root.border-color": { "kind": "off" },
+    "style.root.background@hover": { "kind": "value", "value": "color-mix(in oklab, var(--action-bg) 90%, transparent)", "source": "hover:bg-primary/90" },
+    "style.root.background@active": { "kind": "off", "note": "no distinct active-state background; hover/active share the same treatment (no :active rule in source)" },
+    "style.root.opacity@disabled": { "kind": "value", "value": { "opacity": "0.5" }, "source": "disabled:opacity-50 — 50%, NOT Salt's 40%; a real cross-system value difference" },
+    "style.root.focus": { "kind": "value", "value": { "outline": "none", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--focus) 50%, transparent)" }, "source": "focus-visible:ring-[3px] ring-ring/50" },
+    "style.root.elevation": { "kind": "value", "value": "0 1px 2px 0 var(--shadow-color)", "source": "variant=outline only: shadow-xs; default/destructive/secondary/ghost/link carry no shadow" },
+    "style.root.elevation@hover": { "kind": "off" },
+
+    "style.root.background@secondary": { "kind": "value", "value": { "background": "var(--outline-bg)", "border": "1px solid var(--outline-border)", "color": "inherit" }, "source": "variant=outline: bg-background border shadow-xs hover:bg-accent" },
+
+    "style.icon.size": { "kind": "value", "value": "16px", "source": "[&_svg:not([class*='size-'])]:size-4 = 1rem = 16px (default size); xs variant drops to size-3=12px" }
+  }
+}

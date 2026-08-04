@@ -1,0 +1,412 @@
+{
+  "system": "salt",
+  "component": "calendar",
+  "fontFaces": [
+    {
+      "family": "Open Sans",
+      "weight": "400",
+      "file": "fonts/open-sans-400.woff2"
+    },
+    {
+      "family": "Open Sans",
+      "weight": "600",
+      "file": "fonts/open-sans-600.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "surface": "rgb(255, 255, 255)",
+      "on-surface": "rgb(0, 0, 0)",
+      "content-secondary": "rgb(76, 81, 87)",
+      "interaction-hover": "rgb(234, 246, 255)",
+      "interaction-selected": "rgb(199, 222, 255)",
+      "on-interaction-selected": "rgb(0, 0, 0)",
+      "selected-border": "rgb(0, 120, 207)",
+      "accent": "rgb(0, 120, 207)",
+      "focus": "rgb(0, 69, 126)",
+      "cursor-interactive": "pointer",
+      "cursor-disabled": "not-allowed",
+      "focus-width": "2px",
+      "space-fixed-100": "1px",
+      "space-fixed-200": "2px",
+      "space-fixed-400": "4px",
+      "field-border": "rgb(114, 119, 125)"
+    },
+    "dark": {
+      "surface": "rgb(16, 24, 32)",
+      "on-surface": "rgb(255, 255, 255)",
+      "content-secondary": "rgb(177, 181, 185)",
+      "interaction-hover": "rgb(0, 23, 54)",
+      "interaction-selected": "rgb(0, 45, 89)",
+      "on-interaction-selected": "rgb(255, 255, 255)",
+      "selected-border": "rgb(0, 120, 207)",
+      "accent": "rgb(0, 120, 207)",
+      "focus": "rgb(154, 189, 245)",
+      "field-border": "rgb(114, 119, 125)"
+    },
+    "byDensity": {
+      "high": {
+        "control-size": "20px",
+        "inset": "var(--space-100)",
+        "indicator-size": "2px",
+        "type-body": "400 11px/14px 'Open Sans', sans-serif",
+        "type-label": "400 10px/13px 'Open Sans', sans-serif",
+        "corner-weak": "2px",
+        "inset-half": "calc(var(--space-100) / 2)",
+        "space-100": "4px"
+      },
+      "medium": {
+        "control-size": "28px",
+        "inset": "var(--space-100)",
+        "indicator-size": "3px",
+        "type-body": "400 12px/16px 'Open Sans', sans-serif",
+        "type-label": "400 11px/14px 'Open Sans', sans-serif",
+        "corner-weak": "4px",
+        "inset-half": "calc(var(--space-100) / 2)",
+        "space-100": "8px"
+      },
+      "low": {
+        "control-size": "36px",
+        "inset": "var(--space-100)",
+        "indicator-size": "4px",
+        "type-body": "400 14px/18px 'Open Sans', sans-serif",
+        "type-label": "400 12px/16px 'Open Sans', sans-serif",
+        "corner-weak": "6px",
+        "inset-half": "calc(var(--space-100) / 2)",
+        "space-100": "12px"
+      },
+      "touch": {
+        "control-size": "44px",
+        "inset": "var(--space-100)",
+        "indicator-size": "5px",
+        "type-body": "400 16px/20px 'Open Sans', sans-serif",
+        "type-label": "400 14px/18px 'Open Sans', sans-serif",
+        "corner-weak": "8px",
+        "inset-half": "calc(var(--space-100) / 2)",
+        "space-100": "16px"
+      }
+    },
+    "byAccent": {
+      "teal": {
+        "light": {
+          "interaction-hover": "rgb(219, 245, 247)",
+          "interaction-selected": "rgb(175, 224, 237)",
+          "selected-border": "rgb(27, 127, 158)",
+          "accent": "rgb(27, 127, 158)",
+          "focus": "rgb(9, 74, 96)"
+        },
+        "dark": {
+          "interaction-hover": "rgb(0, 37, 56)",
+          "interaction-selected": "rgb(3, 49, 66)",
+          "selected-border": "rgb(27, 127, 158)",
+          "accent": "rgb(27, 127, 158)",
+          "focus": "rgb(131, 192, 214)"
+        }
+      }
+    }
+  },
+  "provenance": {
+    "surface": "next/characteristics container-primary-background -> palette-background-primary -> background-snow rgb(255,255,255) / background-jet rgb(16,24,32)",
+    "on-surface": "next content-primary-foreground -> foreground-primary -> black / white",
+    "content-secondary": "next foreground-secondary -> gray-700 rgb(76,81,87) / gray-300 rgb(177,181,185)",
+    "interaction-hover": "next selectable-background-hover -> palette-accent-weakest -> blue-100 rgb(234,246,255) light / blue-900 dark; teal-100 / teal-900 under data-accent=teal",
+    "interaction-selected": "next selectable-background-selected -> accent-weaker -> blue-200 / blue-800; teal-200 / teal-800",
+    "selected-border": "next selectable-borderColor-selected -> palette-accent -> blue-500 rgb(0,120,207); teal-500",
+    "accent": "next sentiment-accent-borderColor -> palette-accent (today marker)",
+    "focus": "next focused-outlineColor -> accent-stronger -> blue-700 light / blue-300 dark; teal-700 / teal-300",
+    "byDensity": "foundations/size.css size-base+indicator, spacing.css spacing-100, characteristics/text.css body+label ramps",
+    "fonts": "foundations/typography.css fontFamily-openSans 'Open Sans'",
+    "corner-weak": "EDITION PIN: salt-theme-next data-corner=rounded (official site default) -> palette-corner-weak = curve-100 = 2/4/6/8px by density (next/palette/corner.css + foundations/curve.css). Legacy theme is sharp; corner is a Salt capability, control deferred.",
+    "inset-half": "spacing-50 = 0.5 x spacing-100 (foundations/spacing.css)",
+    "EDITION": "salt-theme-next, data-corner=rounded, data-accent default blue (official saltdesignsystem.com configuration). Full re-extraction 2026-08-02; legacy-theme values removed.",
+    "space-100": "FOUNDATION: foundations/spacing.css --salt-spacing-100 (4/8/12/16 by density); derived slots reference it instead of re-declaring values \u2014 mirrors Salt's own foundations->characteristics chain",
+    "field-border": "Dropdown default underline: editable-borderColor -> palette-neutral -> gray-500 rgb(114,119,125), both modes (next/characteristics/editable.css, next/palette)"
+  },
+  "cells": {
+    "structure.nav.variant": {
+      "kind": "value",
+      "value": "month-year-dropdowns",
+      "source": "CalendarNavigation.tsx: month Dropdown + year Dropdown + prev/next buttons; owner reference screenshot 2026-08-01"
+    },
+    "structure.header": {
+      "kind": "off"
+    },
+    "structure.input-toggle": {
+      "kind": "off"
+    },
+    "structure.actions": {
+      "kind": "off"
+    },
+    "structure.today-marker": {
+      "kind": "value",
+      "value": true,
+      "source": "internal/CalendarDay.css -today span::after bar"
+    },
+    "behavior.selection-commit": {
+      "kind": "value",
+      "value": "immediate"
+    },
+    "behavior.range-selection": {
+      "kind": "value",
+      "value": true,
+      "source": "Calendar selectionVariant=range"
+    },
+    "prop.density": {
+      "kind": "value",
+      "value": [
+        "high",
+        "medium",
+        "low",
+        "touch"
+      ],
+      "source": "core/src/theme/Density.ts (mobile pending upstream stabilization)"
+    },
+    "slot.weekday-format": {
+      "kind": "value",
+      "value": "narrow",
+      "source": "CalendarWeekHeader.tsx daysOfWeek(dateAdapter, 'narrow')"
+    },
+    "slot.day-format": {
+      "kind": "value",
+      "value": "2-digit",
+      "source": "owner reference screenshot: 01, 02... zero-padded"
+    },
+    "slot.outside-days": {
+      "kind": "value",
+      "value": "muted",
+      "source": "Calendar.tsx hideOutOfRangeDates is opt-in (default shows); CalendarDay.css -outOfRange muted; owner screenshot confirms"
+    },
+    "style.root.background": {
+      "kind": "alias",
+      "slot": "surface"
+    },
+    "style.root.color": {
+      "kind": "alias",
+      "slot": "on-surface"
+    },
+    "style.root.padding": {
+      "kind": "alias",
+      "slot": "inset",
+      "source": "Calendar.css padding --salt-spacing-100"
+    },
+    "style.root.shape": {
+      "kind": "value",
+      "value": "0",
+      "source": "Salt sharp; palette-corner fallback 0"
+    },
+    "style.root.width": {
+      "kind": "off",
+      "note": "emergent from cell sizes"
+    },
+    "style.day.size": {
+      "kind": "alias",
+      "slot": "control-size",
+      "source": "Calendar.css --calendar-day-size: var(--salt-size-base)"
+    },
+    "style.day.cell-padding": {
+      "kind": "value",
+      "value": "0 var(--space-fixed-100) var(--space-fixed-100) 0",
+      "source": "Calendar.css --calendar-gap: spacing-fixed-100"
+    },
+    "style.day.shape": {
+      "kind": "alias",
+      "slot": "corner-weak",
+      "source": "CalendarDay.css:43 border-radius palette-corner-weak; rounded edition"
+    },
+    "style.day.font": {
+      "kind": "alias",
+      "slot": "type-body"
+    },
+    "style.day.background@hover": {
+      "kind": "alias",
+      "slot": "interaction-hover",
+      "source": "CalendarDay.css selectable-background-hover"
+    },
+    "style.day.selected": {
+      "kind": "value",
+      "value": {
+        "background": "var(--interaction-selected)",
+        "color": "var(--on-interaction-selected)",
+        "border": "1px solid var(--selected-border)"
+      },
+      "source": "CalendarDay.css selectable-background-selected + selectable-borderColor-selected"
+    },
+    "style.day.range-middle": {
+      "kind": "value",
+      "value": {
+        "background": "transparent",
+        "border": "none",
+        "border-radius": "0",
+        "color": "var(--on-surface)"
+      },
+      "source": "span day button carries no own box; the cell carries the band"
+    },
+    "style.day.today": {
+      "kind": "value",
+      "value": {
+        "position": "relative"
+      },
+      "note": "today carried by the marker element"
+    },
+    "style.day.today-marker": {
+      "kind": "value",
+      "value": {
+        "content": "\"\"",
+        "position": "absolute",
+        "inset-inline": "var(--inset-half)",
+        "inset-block-end": "var(--inset-half)",
+        "block-size": "var(--indicator-size)",
+        "background": "var(--accent)",
+        "border-radius": "var(--corner-weak)"
+      },
+      "source": "CalendarDay.css:305-313: width 100%-2xspacing-50, bottom spacing-50, height size-indicator, radius palette-corner-weak, bg sentiment-accent-borderColor"
+    },
+    "style.day.outside": {
+      "kind": "value",
+      "value": {
+        "color": "var(--content-secondary)"
+      },
+      "source": "CalendarDay.css -outOfRange; owner screenshot: shown muted, not hidden"
+    },
+    "style.day.disabled": {
+      "kind": "value",
+      "value": {
+        "color": "var(--content-secondary)",
+        "opacity": "0.4",
+        "cursor": "var(--cursor-disabled)"
+      },
+      "source": "Salt disabled = 40% (states doc); selectable disabled"
+    },
+    "style.day.focus": {
+      "kind": "value",
+      "value": {
+        "outline": "var(--focus-width) dotted var(--focus)",
+        "outline-offset": "calc(-1 * var(--focus-width))"
+      },
+      "source": "characteristics/focused.css: outlineStyle = borderStyle-dotted, width size-fixed-200"
+    },
+    "style.nav.button.size": {
+      "kind": "alias",
+      "slot": "control-size",
+      "source": "composes Button height size-base"
+    },
+    "style.nav.button.shape": {
+      "kind": "alias",
+      "slot": "corner-weak",
+      "source": "Button.css border-radius palette-corner-weak fallback"
+    },
+    "style.nav.button.background@hover": {
+      "kind": "alias",
+      "slot": "interaction-hover"
+    },
+    "style.caption.font": {
+      "kind": "alias",
+      "slot": "type-body",
+      "source": "Salt Dropdown value text uses body ramp; owner screenshot: dropdown text matches day-number size"
+    },
+    "style.dropdowns": {
+      "kind": "value",
+      "value": {
+        "min-block-size": "var(--control-size)",
+        "padding": "0 var(--space-100)",
+        "background": "var(--surface)",
+        "border-block-end": "1px solid var(--field-border)",
+        "border-radius": "var(--corner-weak) var(--corner-weak) 0 0",
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "var(--space-fixed-400)"
+      },
+      "source": "core/src/dropdown/Dropdown.css: min-height size-base, padding 0 spacing-100, inline-flex align center, corner-weak radius, default-variant border-bottom 1px editable-borderColor; bg editable-primary-background -> surface",
+      "note": "COMPOSITION PLACEHOLDER for registry component 'dropdown' \u2014 now source-exact on box, padding, underline; previous -4px height was an unsourced invention, removed"
+    },
+    "style.weekday.font": {
+      "kind": "alias",
+      "slot": "type-label"
+    },
+    "style.weekday.color": {
+      "kind": "alias",
+      "slot": "content-secondary"
+    },
+    "style.header.label": {
+      "kind": "off"
+    },
+    "style.header.headline": {
+      "kind": "off"
+    },
+    "style.header.divider": {
+      "kind": "off"
+    },
+    "style.actions.button": {
+      "kind": "off"
+    },
+    "slot.grid-weeks": {
+      "kind": "value",
+      "value": "fixed-6",
+      "source": "owner reference screenshot Jul 2026 (trailing 02-08 week shown); salt storybook CalendarGrid"
+    },
+    "style.day.today-marker@outside": {
+      "kind": "value",
+      "value": {
+        "background": "var(--content-secondary)"
+      },
+      "source": "CalendarDay.css:240: outOfRange today marker uses content-secondary-foreground"
+    },
+    "style.day.range-start": {
+      "kind": "value",
+      "value": {
+        "border-radius": "var(--corner-weak) 0 0 var(--corner-weak)"
+      },
+      "source": "CalendarDay.css:115"
+    },
+    "style.day.range-end": {
+      "kind": "value",
+      "value": {
+        "border-radius": "0 var(--corner-weak) var(--corner-weak) 0"
+      },
+      "source": "CalendarDay.css:122"
+    },
+    "prop.accent": {
+      "kind": "value",
+      "value": [
+        "blue",
+        "teal"
+      ],
+      "source": "next/palette/accent.css: [data-accent=blue|teal] \u2014 Salt's two color themes"
+    },
+    "style.day.range-middle-cell": {
+      "kind": "value",
+      "value": {
+        "background": "var(--interaction-hover)",
+        "border-block": "1px solid var(--selected-border)"
+      },
+      "source": "CalendarDay.css:84-96 selectedSpan ::before: bg selectable-background-hover, top/bottom borders selectable-borderColor-selected, inset -gap (continuous band)"
+    },
+    "style.nav.layout": {
+      "kind": "value",
+      "value": {
+        "display": "grid",
+        "grid-template-columns": "min-content auto min-content",
+        "gap": "var(--space-fixed-200)",
+        "align-items": "center"
+      },
+      "source": "CalendarNavigation.css: grid min-content auto min-content, grid-gap spacing-fixed-200 (2px)"
+    },
+    "style.caption.layout": {
+      "kind": "value",
+      "value": {
+        "display": "grid",
+        "grid-template-columns": "1fr 1fr",
+        "gap": "var(--space-fixed-400)"
+      },
+      "source": "CalendarNavigation.css -dropdowns: grid 1fr 1fr, gap spacing-fixed-400 (4px) \u2014 each dropdown fills half the nav width"
+    },
+    "style.nav.spacing": {
+      "kind": "value",
+      "value": {
+        "padding-block-end": "var(--space-100)",
+        "margin-block-end": "0"
+      },
+      "source": "CalendarNavigation.css padding-bottom: var(--salt-spacing-100)"
+    }
+  }
+}

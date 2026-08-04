@@ -1,0 +1,237 @@
+{
+  "system": "shadcn",
+  "component": "select",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "field-bg": "transparent",
+      "field-bg-hover": "transparent",
+      "fg": "oklch(0% 0 0)",
+      "fg-secondary": "oklch(0.556 0 0)",
+      "border-base": "oklch(0.922 0 0)",
+      "popup-border": "oklch(0.922 0 0)",
+      "popup-bg": "oklch(1 0 0)",
+      "popup-fg": "oklch(0% 0 0)",
+      "accent-bg": "oklch(0.97 0 0)",
+      "accent-fg": "oklch(0.205 0 0)",
+      "focus": "oklch(0.708 0 0)",
+      "danger": "oklch(0.577 0.245 27.325)",
+      "shadow-color": "rgb(0 0 0 / 0.05)",
+      "popup-shadow": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      "radius-control": "calc(0.625rem * 0.8)",
+      "radius-popup": "calc(0.625rem * 0.8)",
+      "radius-option": "calc(0.625rem * 0.6)",
+      "type-body": "400 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif",
+      "type-group-label": "400 0.75rem/1rem ui-sans-serif, system-ui, sans-serif",
+      "ring-alpha": "50%",
+      "ring-alpha-invalid": "20%",
+      "bg-current": "var(--field-bg)",
+      "bg-current-hover": "var(--field-bg-hover)",
+      "border-current": "var(--border-base)",
+      "border-current-active": "var(--focus)",
+      "ring-current": "var(--focus)",
+      "ring-alpha-current": "var(--ring-alpha)"
+    },
+    "dark": {
+      "field-bg": "color-mix(in oklab, oklch(1 0 0 / 15%) 30%, transparent)",
+      "field-bg-hover": "color-mix(in oklab, oklch(1 0 0 / 15%) 50%, transparent)",
+      "fg": "oklch(0.985 0 0)",
+      "fg-secondary": "oklch(0.708 0 0)",
+      "border-base": "oklch(1 0 0 / 15%)",
+      "popup-border": "oklch(1 0 0 / 10%)",
+      "popup-bg": "oklch(0.205 0 0)",
+      "popup-fg": "oklch(0.985 0 0)",
+      "accent-bg": "oklch(0.371 0 0)",
+      "accent-fg": "oklch(0.985 0 0)",
+      "focus": "oklch(0.556 0 0)",
+      "danger": "oklch(0.704 0.191 22.216)",
+      "ring-alpha-invalid": "40%"
+    }
+  },
+  "modeInvariant": [
+    "shadow-color",
+    "popup-shadow"
+  ],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/select.tsx — ten exported parts (Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator, SelectScrollUpButton, SelectScrollDownButton) over radix-ui's Select primitive. Every STYLE value below comes from this file. primitives/packages/react/select/src/select.tsx was read for BEHAVIOR only (role vocabulary, OPEN_KEYS/SELECTION_KEYS, the 1000ms typeahead reset, the item-aligned vs popper position modes, data-highlighted/data-state/data-placeholder), never for a style cell. Examples cross-checked: examples/select-demo.tsx, select-scrollable.tsx, field-select.tsx; docs content/docs/components/radix/select.mdx (its 'Align Item With Trigger', 'Groups', 'Disabled' and 'Invalid' sections).",
+    "scroll-buttons-scope-trim": "SelectScrollUpButton / SelectScrollDownButton (flex cursor-default items-center justify-center py-1, each holding a size-4 chevron) are a SCROLL AFFORDANCE unique to shadcn/Radix — Salt scrolls the list natively (overflow-y: auto) and M3 has no such token. Declared out of scope rather than modelled as a part, the same trim TOOLTIP-MATRIX.md made for floating-ui placement values.",
+    "field-bg": "class `bg-transparent` (light) + `dark:bg-input/30`. Tailwind v4 compiles the /30 modifier to color-mix(in oklab, var(--input) 30%, transparent); --input in dark is oklch(1 0 0 / 15%) (globals.css:161). Identical derivation to input.shadcn.json.",
+    "field-bg-hover": "class `dark:hover:bg-input/50`. THIS IS THE ROW WHERE SELECT DIVERGES FROM SHADCN'S OWN INPUT: input.tsx has no hover: class of any kind (input.shadcn.json's no-hover provenance entry, INPUT-MATRIX.md finding 5), but select.tsx does — in dark mode only. The light value is recorded as `transparent`, i.e. the sourced non-change, so the mode split lives in the slots block rather than being smuggled into a cell.",
+    "fg": "SelectTrigger sets no text-colour class, so the value text is the ambient --foreground (globals.css:102 light / :145 dark). Recorded as an ambient inheritance, not as a component token.",
+    "fg-secondary": "--muted-foreground (globals.css:112 / :155). THREE consumers in this one file: data-[placeholder]:text-muted-foreground on the trigger, [&_svg:not([class*='text-'])]:text-muted-foreground (which the chevron matches), and SelectLabel's text-muted-foreground.",
+    "border-base": "class `border border-input` on the trigger -> --input (globals.css:118 / :161). The bare `border` utility supplies the 1px width, which Tailwind does not tokenise (docs/foundations/border-style.md).",
+    "popup-border": "SelectContent's bare `border` utility with NO colour class -> --border (globals.css:117 / :160). Deliberately a different slot from border-base: --border and --input are the same value in light (oklch(0.922 0 0)) but DIFFERENT in dark (10% vs 15% white), so a shadcn popup's frame is fainter than its trigger's in dark mode. Also the SelectSeparator's bg-border.",
+    "popup-bg / popup-fg": "SelectContent `bg-popover text-popover-foreground` -> --popover / --popover-foreground (globals.css:105-106 / :148-149). A dedicated popover role, distinct from --background.",
+    "accent-bg / accent-fg": "SelectItem `focus:bg-accent focus:text-accent-foreground` -> --accent / --accent-foreground (globals.css:113-114 / :156-157). Reached through :focus, not :hover, because Radix moves real DOM focus onto the item on pointermove and on arrow keys.",
+    "focus": "trigger classes focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 -> --ring (globals.css:119 / :162). The /50 modifier is carried by ring-alpha so the aria-invalid override can change only the alpha.",
+    "danger": "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 -> --destructive (globals.css:115 / :158). Same two-alpha structure as input.shadcn.json.",
+    "radius-control / radius-popup / radius-option": "rounded-md on both the trigger and SelectContent -> --radius-md = calc(var(--radius) * 0.8) = 8px; rounded-sm on SelectItem -> --radius-sm = calc(var(--radius) * 0.6) = 6px (globals.css:50-51, --radius: 0.625rem at :100). shadcn is the ONLY system that rounds an individual option.",
+    "shadow-color": "trigger class shadow-xs = 0 1px 2px 0 rgb(0 0 0 / 0.05). Reused verbatim from button.shadcn.json / input.shadcn.json rather than re-derived; Tailwind is not vendored in this clone.",
+    "popup-shadow": "SelectContent class shadow-md. [R] — Tailwind's documented default two-layer value; the package is not vendored, so this is the same unvendored-package caveat as shadow-xs, and it is the first shadow-md this registry has needed (docs/foundations/elevation.md records only that shadcn uses bare utility classes, undeclared).",
+    "type-body": "trigger class `text-sm` = 0.875rem/1.25rem, and SelectItem carries the same `text-sm`. NOTE this is a FLAT text-sm, not the responsive `text-base md:text-sm` shadcn's Input uses — so the missing-@media generator gap INPUT-MATRIX.md finding 9 declared does not apply to select. Family read as the generic Tailwind sans stack per button/input/tooltip precedent (no font-family utility is set anywhere in select.tsx).",
+    "type-group-label": "SelectLabel class `text-xs` = 0.75rem/1rem with NO font-weight utility, so the ambient 400 applies — a shadcn group label is smaller than its options but not bolder, the exact inverse of Salt's semiBold label.",
+    "size-prop": "SelectTrigger takes `size?: \"sm\" | \"default\"` (default \"default\"), writes data-size, and drives data-[size=default]:h-9 (36px) / data-[size=sm]:h-8 (32px). shadcn's Input has NO size prop — this is a real select-only axis.",
+    "item-aligned-default": "SelectContent's `position` defaults to \"item-aligned\", Radix's native-select-like mode in which the popup is placed so the SELECTED item lands over the trigger. The popper (below-the-trigger) mode is opt-in and brings its own translate-y-1 offsets and the min-w-[var(--radix-select-trigger-width)] viewport rule. The docs page states this explicitly in its 'Align Item With Trigger' section.",
+    "no-hover-on-item": "CONFIRMED ABSENCE: SelectItem has no hover: class of any kind. Its highlight is focus:bg-accent, because Radix focuses the item element on pointermove — the appearance of a hover, produced by a focus rule.",
+    "no-selected-background": "CONFIRMED ABSENCE: there is no data-[state=checked] class anywhere in select.tsx. A selected shadcn item is marked ONLY by the CheckIcon inside SelectPrimitive.ItemIndicator; its background is unchanged. This is the mechanism split structure.selected-marker exists to carry.",
+    "no-readonly-no-variant-no-status-beyond-invalid": "Radix's Select has no readOnly prop; shadcn adds no background-intensity variant; and the whole validation axis is the single aria-invalid boolean — no warning, no success. The same coverage gap already recorded for button, alert and input.",
+    "disabled-has-no-pointer-events-none": "select.tsx's trigger carries `disabled:cursor-not-allowed disabled:opacity-50` and NOT the `disabled:pointer-events-none` its own input.tsx carries. Recorded as a sourced difference, not normalised away.",
+    "transition-defaults": "class transition-[color,box-shadow] — property list sourced [S]; 150ms / cubic-bezier(0.4,0,0.2,1) are Tailwind's defaults and Tailwind is not vendored, so [R].",
+    "animation-defaults": "SelectContent composes tw-animate-css: data-[state=open]:animate-in fade-in-0 zoom-in-95 (+ per-side slide-in-from-*) and the closing mirror. The package is listed as a dependency but its CSS is not vendored in this clone, so 150ms / ease-out are [R] — the same caveat TOOLTIP-MATRIX.md recorded. The keyframe select-popup-in is appended to page/chrome.css."
+  },
+  "cells": {
+    "structure.indicator": {
+      "kind": "value",
+      "value": ["box"],
+      "note": "structurally always a full border — not a runtime prop and not a variant. There is no underline/activation-indicator mechanism anywhere in select.tsx.",
+      "source": "select.tsx SelectTrigger: `rounded-md border border-input`"
+    },
+    "structure.start-adornment": { "kind": "off", "note": "SelectTrigger renders {children} followed by a fixed SelectPrimitive.Icon and has no leading slot. A consumer can put an icon inside SelectValue's children, but that is consumer content, not a component part." },
+    "structure.status-adornment": { "kind": "off", "note": "no validation glyph concept at all" },
+    "structure.toggle-icon": { "kind": "value", "value": "static", "source": "select.tsx <SelectPrimitive.Icon asChild><ChevronDownIcon className=\"size-4 opacity-50\" /></SelectPrimitive.Icon> — one glyph, never swapped, never conditional" },
+    "structure.option-group": { "kind": "value", "value": true, "source": "select.tsx SelectGroup (Radix Group, role=\"group\") + SelectLabel" },
+    "structure.separator": { "kind": "value", "value": true, "source": "select.tsx SelectSeparator — `pointer-events-none -mx-1 my-1 h-px bg-border`" },
+    "structure.selected-marker": { "kind": "value", "value": "check", "source": "select.tsx SelectItem renders <span data-slot=\"select-item-indicator\" class=\"absolute right-2 flex size-3.5 …\"><SelectPrimitive.ItemIndicator><CheckIcon className=\"size-4\"/></SelectPrimitive.ItemIndicator></span>, and every item reserves pr-8 for it" },
+    "structure.popup-anchor": { "kind": "value", "value": "overlay", "source": "select.tsx SelectContent `position = \"item-aligned\"` default — see the item-aligned-default provenance entry and the docs page's 'Align Item With Trigger' section" },
+
+    "behavior.pointer-activates-option": { "kind": "value", "value": true, "source": "Radix select.tsx focuses the item element on pointermove, which is precisely why shadcn styles the highlight with focus: rather than hover:" },
+    "behavior.status-inheritance": { "kind": "off", "note": "no context channel — the docs' Invalid section tells the consumer to put data-invalid on Field AND aria-invalid on SelectTrigger by hand" },
+    "behavior.empty-readonly-marker": { "kind": "off", "note": "no equivalent" },
+    "behavior.readonly-suppresses-popup": { "kind": "off", "note": "Radix's Select has no readOnly prop at all — unlike shadcn's Input, where the native attribute at least exists with no styling" },
+    "behavior.multiselect": { "kind": "off", "note": "Radix's Select is single-choice only; there is no `multiple` prop" },
+
+    "prop.size": { "kind": "value", "value": ["default", "sm"], "source": "select.tsx SelectTrigger size?: \"sm\" | \"default\" = \"default\" -> data-size -> data-[size=default]:h-9 / data-[size=sm]:h-8" },
+    "prop.variant": { "kind": "off", "note": "no background-intensity axis" },
+    "prop.validation-status": { "kind": "value", "value": ["error"], "note": "a single boolean (aria-invalid), not an enum — no warning, no success", "source": "select.tsx aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40" },
+    "prop.disabled": { "kind": "value", "value": [true, false], "source": "select.tsx disabled:cursor-not-allowed disabled:opacity-50 on the trigger; data-[disabled]:pointer-events-none data-[disabled]:opacity-50 on the item" },
+    "prop.read-only": { "kind": "off", "note": "no readOnly prop exists" },
+
+    "slot.start-adornment": { "kind": "off" },
+    "slot.group-label": { "kind": "value", "value": true },
+    "state.read-only": { "kind": "off" },
+
+    "style.trigger.background": { "kind": "alias", "slot": "bg-current" },
+    "style.trigger.background@box": { "kind": "off", "note": "box is shadcn's only mode; already covered by style.trigger.background" },
+    "style.trigger.color": { "kind": "alias", "slot": "fg", "note": "ambient --foreground; SelectTrigger sets no text-colour class" },
+    "style.trigger.font": { "kind": "alias", "slot": "type-body" },
+    "style.trigger.letter-spacing": { "kind": "off", "note": "no tracking utility" },
+    "style.trigger.width": { "kind": "value", "value": "fit-content", "source": "select.tsx SelectTrigger `w-fit` — shadcn's trigger is sized to its content, not to its container; every example that wants a fixed width passes className=\"w-[180px]\"" },
+    "style.trigger.min-height": { "kind": "value", "value": "36px", "source": "select.tsx data-[size=default]:h-9; density-invariant (shadcn has no density capability)" },
+    "style.trigger.min-height@sm": { "kind": "value", "value": "32px", "source": "select.tsx data-[size=sm]:h-8" },
+    "style.trigger.min-width": { "kind": "off", "note": "no min-width utility — w-fit alone sizes the trigger" },
+    "style.trigger.padding": { "kind": "value", "value": "8px 12px", "source": "select.tsx px-3 py-2 — note py-2, where shadcn's own Input is py-1" },
+    "style.trigger.gap": { "kind": "value", "value": "8px", "source": "select.tsx gap-2, a real flex gap (Salt uses margins for the same job)" },
+    "style.trigger.shape": { "kind": "alias", "slot": "radius-control" },
+    "style.trigger.shape@box": { "kind": "off", "note": "box is the only mode; already covered by style.trigger.shape" },
+    "style.trigger.cursor": { "kind": "off", "note": "no cursor utility at rest — a <button> already shows the platform default" },
+    "style.trigger.shadow": { "kind": "value", "value": "0 1px 2px 0 var(--shadow-color)", "source": "select.tsx shadow-xs" },
+    "style.trigger.transition": { "kind": "value", "value": "color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1)", "note": "property list [S]; duration and easing [R] — Tailwind defaults, package not vendored", "source": "select.tsx transition-[color,box-shadow]" },
+
+    "style.trigger.border@box": {
+      "kind": "value",
+      "value": { "border-width": "1px", "border-style": "solid", "border-color": "var(--border-current)" },
+      "source": "select.tsx `border border-input`; the 1px width is Tailwind's undeclared default"
+    },
+    "style.indicator.border@underline": { "kind": "off", "note": "no underline mechanism of any kind" },
+    "style.trigger.background@hover": { "kind": "alias", "slot": "bg-current-hover", "source": "select.tsx dark:hover:bg-input/50 — a DARK-MODE-ONLY hover, and the one place shadcn's select reacts to the pointer where its input does not at all" },
+    "style.trigger.border@box-hover": { "kind": "off", "note": "CONFIRMED ABSENCE — the only hover: utility in select.tsx is the dark background above; the border never changes on hover" },
+    "style.indicator.border@underline-hover": { "kind": "off" },
+    "style.trigger.border@box-focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--border-current-active)" },
+      "source": "select.tsx focus-visible:border-ring — recolour only, width unchanged"
+    },
+    "style.indicator.border@underline-focus": { "kind": "off" },
+    "style.indicator.border@box-focus": { "kind": "off" },
+    "style.trigger.focus": {
+      "kind": "value",
+      "value": { "outline": "none", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--ring-current) var(--ring-alpha-current), transparent), 0 1px 2px 0 var(--shadow-color)" },
+      "source": "select.tsx outline-none + focus-visible:ring-[3px] focus-visible:ring-ring/50. The shadow-xs layer is repeated after the ring because Tailwind v4 composes box-shadow as `var(--tw-ring-shadow), var(--tw-shadow)` — a single-layer box-shadow here would silently delete the trigger's shadow."
+    },
+
+    "style.trigger.background@readonly": { "kind": "off" },
+    "style.trigger.border-color@readonly": { "kind": "off" },
+    "style.indicator.border-color@readonly": { "kind": "off" },
+
+    "style.trigger.background@disabled": { "kind": "off", "note": "one blanket opacity:0.5 does the whole job" },
+    "style.trigger.background@box-disabled": { "kind": "off" },
+    "style.trigger.color@disabled": { "kind": "off", "note": "opacity, not a recolour" },
+    "style.trigger.border-color@disabled": { "kind": "off" },
+    "style.indicator.border-color@disabled": { "kind": "off" },
+    "style.trigger.disabled": {
+      "kind": "value",
+      "value": { "opacity": "0.5", "cursor": "not-allowed" },
+      "source": "select.tsx disabled:opacity-50 disabled:cursor-not-allowed",
+      "note": "NOTE the absence of pointer-events:none, which shadcn's own input.tsx does carry — a sourced difference between two shadcn components, recorded rather than normalised"
+    },
+
+    "style.value.placeholder": { "kind": "value", "value": { "color": "var(--fg-secondary)" }, "source": "select.tsx data-[placeholder]:text-muted-foreground — colour only, and stamped by Radix on the TRIGGER (data-placeholder), not on the value span" },
+    "style.toggle-icon.size": { "kind": "value", "value": { "width": "16px", "height": "16px" }, "source": "select.tsx ChevronDownIcon className=\"size-4\" = 16px, density-invariant" },
+    "style.toggle-icon.color": { "kind": "value", "value": { "color": "var(--fg-secondary)", "opacity": "0.5" }, "source": "select.tsx: the chevron's only classes are size-4 and opacity-50, so it matches the trigger's [&_svg:not([class*='text-'])]:text-muted-foreground group rule AND carries its own opacity-50 — two dimming mechanisms stacked" },
+    "style.adornment.size": { "kind": "off", "note": "no leading slot" },
+    "style.status-adornment.size": { "kind": "off" },
+    "style.status-adornment.color": { "kind": "off" },
+
+    "style.popup.background": { "kind": "alias", "slot": "popup-bg", "source": "select.tsx SelectContent bg-popover" },
+    "style.popup.color": { "kind": "alias", "slot": "popup-fg", "source": "select.tsx SelectContent text-popover-foreground; the item inherits it" },
+    "style.popup.border": {
+      "kind": "value",
+      "value": { "border-width": "1px", "border-style": "solid", "border-color": "var(--popup-border)" },
+      "source": "select.tsx SelectContent bare `border` -> --border, NOT the --input token its trigger uses; the two diverge in dark mode (10% vs 15% white)"
+    },
+    "style.popup.shape": { "kind": "alias", "slot": "radius-popup", "source": "select.tsx SelectContent rounded-md — the same 8px as its trigger, unlike Salt which uses a rounder stop for the popup" },
+    "style.popup.shadow": { "kind": "alias", "slot": "popup-shadow", "source": "select.tsx SelectContent shadow-md; [R] value, see the popup-shadow provenance entry" },
+    "style.popup.padding": { "kind": "value", "value": "4px", "source": "select.tsx SelectPrimitive.Viewport className=\"p-1\" — the inset that gives the rounded item highlight somewhere to sit" },
+    "style.popup.gap": { "kind": "off", "note": "no gap utility — shadcn's items stack flush" },
+    "style.popup.min-width": { "kind": "value", "value": "8rem", "source": "select.tsx SelectContent min-w-[8rem] = 128px, a fixed floor independent of the trigger (the trigger-width variable is applied only in position=\"popper\", which is not the default)" },
+    "style.popup.max-height": { "kind": "off", "note": "max-h-(--radix-select-content-available-height) is entirely Popper-computed — the positioning-engine gap, not a token" },
+    "style.popup.z-index": { "kind": "value", "value": "50", "source": "select.tsx SelectContent z-50 — a bare Tailwind stacking index, not a declared token" },
+    "style.popup.animation": { "kind": "value", "value": "select-popup-in 150ms ease-out", "note": "duration and easing [R] — tw-animate-css is a declared dependency but its CSS is not vendored in this clone; the utility list (animate-in fade-in-0 zoom-in-95 + per-side slide-in) IS sourced", "source": "select.tsx SelectContent data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95" },
+
+    "style.option.background": { "kind": "value", "value": "transparent", "source": "select.tsx SelectItem has no background class at rest" },
+    "style.option.color": { "kind": "off", "note": "inherits the popup's text-popover-foreground; no separate token" },
+    "style.option.font": { "kind": "alias", "slot": "type-body", "source": "select.tsx SelectItem text-sm — the same size as its trigger" },
+    "style.option.letter-spacing": { "kind": "off" },
+    "style.option.min-height": { "kind": "off", "note": "CONFIRMED ABSENCE — SelectItem has no height class; 6px + 6px padding around a 20px line box makes it content-driven" },
+    "style.option.padding": { "kind": "value", "value": "6px 32px 6px 8px", "source": "select.tsx SelectItem py-1.5 pr-8 pl-2 — the asymmetric right padding is the reserved lane for the checkmark and exists only because of structure.selected-marker" },
+    "style.option.gap": { "kind": "value", "value": "8px", "source": "select.tsx SelectItem gap-2" },
+    "style.option.shape": { "kind": "alias", "slot": "radius-option", "source": "select.tsx SelectItem rounded-sm — shadcn is the only system that rounds an individual option" },
+    "style.option.cursor": { "kind": "value", "value": "default", "source": "select.tsx SelectItem `cursor-default` — explicitly NOT a pointer, the native-menu convention; Salt uses pointer for the same element" },
+    "style.option.background@hover": { "kind": "off", "note": "CONFIRMED ABSENCE — there is no hover: class on SelectItem. Radix focuses the item on pointermove, so the focus rule below produces the hover appearance." },
+    "style.option.active": { "kind": "value", "value": { "background-color": "var(--accent-bg)", "color": "var(--accent-fg)" }, "source": "select.tsx SelectItem focus:bg-accent focus:text-accent-foreground — the only system that also changes the TEXT colour when an option is highlighted" },
+    "style.option.focus-visible": { "kind": "off", "note": "SelectItem carries outline-hidden and relies entirely on the background swap" },
+    "style.option.disabled": { "kind": "value", "value": { "opacity": "0.5", "pointer-events": "none" }, "source": "select.tsx SelectItem data-[disabled]:opacity-50 data-[disabled]:pointer-events-none" },
+    "style.option.selected": { "kind": "off", "note": "CONFIRMED ABSENCE — no data-[state=checked] class exists anywhere in select.tsx. A selected shadcn item is marked ONLY by the checkmark; its background is identical to an unselected one. This is the whole point of structure.selected-marker." },
+    "style.selected-marker.box": {
+      "kind": "value",
+      "value": { "right": "8px", "width": "14px", "height": "14px" },
+      "source": "select.tsx <span data-slot=\"select-item-indicator\" className=\"absolute right-2 flex size-3.5 items-center justify-center\"> holding a size-4 (16px) CheckIcon — a 14px box around a 16px glyph, as written"
+    },
+
+    "style.group-label.font": { "kind": "alias", "slot": "type-group-label", "source": "select.tsx SelectLabel text-xs with no weight utility" },
+    "style.group-label.color": { "kind": "alias", "slot": "fg-secondary", "source": "select.tsx SelectLabel text-muted-foreground — the same token as its placeholder" },
+    "style.group-label.padding": { "kind": "value", "value": { "padding": "6px 8px" }, "source": "select.tsx SelectLabel px-2 py-1.5 — half an item's vertical size; a caption, not a row" },
+    "style.group-label.background": { "kind": "off", "note": "no background utility on SelectLabel" },
+    "style.group.border-top": { "kind": "off", "note": "shadcn divides groups with a dedicated SelectSeparator element, not a border on the group — see style.separator" },
+    "style.separator": {
+      "kind": "value",
+      "value": { "height": "1px", "margin": "4px -4px", "background-color": "var(--popup-border)", "pointer-events": "none" },
+      "source": "select.tsx SelectSeparator `pointer-events-none -mx-1 my-1 h-px bg-border` — the negative inline margins make the rule bleed through the viewport's own 4px padding so it touches both edges"
+    },
+
+    "style.trigger.variant@secondary": { "kind": "off", "note": "no variant axis" },
+    "style.trigger.variant@tertiary": { "kind": "off", "note": "no variant axis" },
+    "style.trigger.status@error": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--danger)",
+        "--border-current-active": "var(--danger)",
+        "--ring-current": "var(--danger)",
+        "--ring-alpha-current": "var(--ring-alpha-invalid)"
+      },
+      "source": "select.tsx aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 — border and ring only; background, popup and options are untouched"
+    },
+    "style.trigger.status@warning": { "kind": "off", "note": "no warning state exists at all" },
+    "style.trigger.status@success": { "kind": "off", "note": "no success state exists at all" }
+  }
+}

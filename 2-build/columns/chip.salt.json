@@ -1,0 +1,519 @@
+{
+  "system": "salt",
+  "component": "chip",
+  "fontFaces": [
+    {
+      "family": "Open Sans",
+      "weight": "400",
+      "file": "fonts/open-sans-400.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "chip-bg": "rgb(114, 119, 125)",
+      "chip-fg": "rgb(255, 255, 255)",
+      "chip-border": "rgb(114, 119, 125)",
+      "chip-bg-hover": "linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)) rgb(114, 119, 125)",
+      "chip-fg-hover": "rgb(255, 255, 255)",
+      "chip-border-hover": "rgba(0, 0, 0, 0.3)",
+      "chip-bg-active": "rgb(211, 213, 216)",
+      "chip-fg-active": "rgb(0, 0, 0)",
+      "chip-border-active": "rgb(114, 119, 125)",
+      "chip-focus-outline": "2px dotted rgb(0, 69, 126)",
+      "tag-bg": "rgb(237, 244, 255)",
+      "tag-fg": "rgb(53, 95, 161)",
+      "tag-bg-secondary": "rgb(70, 118, 191)",
+      "tag-fg-secondary": "rgb(255, 255, 255)",
+      "tag-border": "rgb(70, 118, 191)",
+      "chip-border-width": "1px",
+      "chip-letter-spacing": "0",
+      "chip-cursor": "pointer",
+      "chip-cursor-disabled": "not-allowed",
+      "chip-disabled-opacity": "0.4",
+      "tag-radius": "999px"
+    },
+    "dark": {
+      "chip-border-hover": "rgba(255, 255, 255, 0.3)",
+      "chip-bg-active": "rgb(58, 63, 68)",
+      "chip-fg-active": "rgb(255, 255, 255)",
+      "chip-focus-outline": "2px dotted rgb(154, 189, 245)",
+      "tag-bg": "rgb(0, 31, 79)",
+      "tag-fg": "rgb(118, 148, 207)"
+    },
+    "byDensity": {
+      "high": {
+        "chip-height": "16px",
+        "chip-min-height": "14px",
+        "chip-radius": "1px",
+        "chip-padding": "0 1px",
+        "tag-padding": "1px 4px",
+        "chip-gap": "2px",
+        "check-size": "12px",
+        "group-gap": "2px",
+        "chip-font": "400 11px/14px 'Open Sans', sans-serif"
+      },
+      "medium": {
+        "chip-height": "20px",
+        "chip-min-height": "16px",
+        "chip-radius": "2px",
+        "chip-padding": "0 3px",
+        "tag-padding": "2px 8px",
+        "chip-gap": "4px",
+        "check-size": "14px",
+        "group-gap": "4px",
+        "chip-font": "400 12px/16px 'Open Sans', sans-serif"
+      },
+      "low": {
+        "chip-height": "24px",
+        "chip-min-height": "18px",
+        "chip-radius": "3px",
+        "chip-padding": "0 5px",
+        "tag-padding": "3px 12px",
+        "chip-gap": "6px",
+        "check-size": "16px",
+        "group-gap": "6px",
+        "chip-font": "400 14px/18px 'Open Sans', sans-serif"
+      },
+      "touch": {
+        "chip-height": "28px",
+        "chip-min-height": "20px",
+        "chip-radius": "4px",
+        "chip-padding": "0 7px",
+        "tag-padding": "4px 16px",
+        "chip-gap": "8px",
+        "check-size": "18px",
+        "group-gap": "8px",
+        "chip-font": "400 16px/20px 'Open Sans', sans-serif"
+      }
+    }
+  },
+  "modeInvariant": [
+    "chip-bg",
+    "chip-fg",
+    "chip-border",
+    "chip-bg-hover",
+    "chip-fg-hover",
+    "chip-border-active",
+    "tag-bg-secondary",
+    "tag-fg-secondary",
+    "tag-border"
+  ],
+  "provenance": {
+    "canonical-source": "TWO exported components on ONE docs/COMPONENTS.md row (line 111, `tag / pill`). packages/core/src/pill/{Pill.tsx,Pill.css,PillGroup.tsx,PillGroup.css,PillGroupContext.ts,PillCheckIcon.tsx,PillCheckIcon.css,index.ts} and packages/core/src/tag/{Tag.tsx,Tag.css,index.ts}. Pill is CANONICAL and source says so literally: site/docs/components/pill/index.mdx declares `alsoKnownAs: [\"Chip\", \"Badge\"]` — Salt itself calls a Pill a Chip. Tag declares `alsoKnownAs: []` and is carried as the `static` value of prop.interaction rather than dropped, because COMPONENTS.md puts both on this row. Read for defaults and composition: packages/core/stories/pill/{pill.stories.tsx,pill-group.stories.tsx,pill.qa.stories.tsx}, packages/core/stories/tag/{tag.stories.tsx,tag.qa.stories.tsx}; site/docs/components/{pill,tag}/{index,usage,examples,accessibility}.mdx. Resolution through packages/theme/css/next/characteristics/{actionable,category,content,focused,text}.css, next/palette/{neutral,categorical,foreground,alpha,accent,corner}.css, next/foundations/color.css, foundations/{size,spacing,curve,alpha,color,cursor,borderStyle,typography}.css. Reused rather than re-derived: docs/foundations/{typography,sizes,spacing,shape,colors,density,cursors,border-style,state-layers}.md.",
+    "chip-bg": "Pill.css `.saltPill-clickable { --pill-background: var(--salt-actionable-bold-background) }` -> next/characteristics/actionable.css:41 --salt-actionable-bold-background: var(--salt-palette-neutral) -> next/palette/neutral.css --salt-palette-neutral: var(--salt-color-gray-500) in BOTH the light block (line 2) and the dark block (line 13) -> next/foundations/color.css --salt-color-gray-500-rgb: 114, 119, 125. MODE-INVARIANT.",
+    "chip-fg": "Pill.css `--pill-color: var(--salt-actionable-bold-foreground)` -> actionable.css:48 -> --salt-palette-foreground-primary-alt -> next/palette/foreground.css, --salt-color-white in BOTH modes (lines 4 and 13) -> rgb(255,255,255). MODE-INVARIANT, and identical to badge.salt.json's pill-fg for the same reason.",
+    "chip-border": "Pill.css `--pill-borderColor: var(--salt-actionable-bold-borderColor)` -> actionable.css:44 -> --salt-palette-neutral -> gray-500, both modes. MODE-INVARIANT. So a resting Salt pill's 1px border is the same colour as its own fill — invisible at rest, and it exists so the hover and active rules have something to move.",
+    "chip-bg-hover": "actionable.css:40 `--salt-actionable-bold-background-hover: linear-gradient(var(--salt-palette-alpha-dark-low), var(--salt-palette-alpha-dark-low)) var(--salt-palette-neutral)` — a two-value background: a flat 15%-black gradient layer composited over the neutral fill. alpha-dark-low -> next/palette/alpha.css lines 28 AND 60 -> --salt-color-black-15a -> foundations/alpha.css `rgba(var(--salt-color-black-rgb), 0.15)` = rgba(0,0,0,0.15), declared identically in the light and dark alpha blocks. MODE-INVARIANT. Salt darkens its hover in dark mode too, where most systems lighten.",
+    "chip-fg-hover": "actionable.css:47 --salt-actionable-bold-foreground-hover: var(--salt-palette-foreground-primary-alt) — the SAME token as the resting foreground (actionable.css:48). A declared recolour that recolours nothing, the same class of source self-contradiction CARD-MATRIX.md finding 6 recorded for LinkCard's focus accent. Carried as its own slot so the identity is visible in the matrix rather than silently collapsed.",
+    "chip-border-hover": "actionable.css:43 -> --salt-palette-alpha-contrast-medium -> next/palette/alpha.css:16 (light) --salt-color-black-30a = rgba(0,0,0,0.3) / line 48 (dark) --salt-color-white-30a = rgba(255,255,255,0.3). THIS one inverts, where the fill and the label do not.",
+    "chip-bg-active": "actionable.css:39 --salt-actionable-bold-background-active: var(--salt-palette-neutral-weaker) -> neutral.css line 9 (light) gray-200 = rgb(211,213,216) / line 20 (dark) gray-800 = rgb(58,63,68).",
+    "chip-fg-active": "actionable.css:46 --salt-actionable-bold-foreground-active: var(--salt-palette-foreground-primary) -> foreground.css line 2 (light) --salt-color-black = rgb(0,0,0) / line 11 (dark) --salt-color-white = rgb(255,255,255). A pressed Salt pill inverts to a light chip with dark text in light mode — the largest single state change in this component.",
+    "chip-border-active": "actionable.css:42 -> --salt-palette-neutral -> gray-500, both modes. MODE-INVARIANT.",
+    "chip-focus-outline": "Pill.css `.saltPill:focus-visible { outline: var(--salt-focused-outline) }` -> next/characteristics/focused.css: --salt-focused-outline: var(--salt-focused-outlineWidth) var(--salt-focused-outlineStyle) var(--salt-focused-outlineColor) = size-fixed-200 (2px, FIXED scale) + borderStyle-dotted + palette-accent-stronger -> next/palette/accent.css line 5 (light) blue-700 = rgb(0,69,126) / line 17 (dark) blue-300 = rgb(154,189,245). outlineOffset and outlineInset are both 0. ACCENT SCOPE TRIM: palette-accent has a data-accent axis (blue default, teal alternate); this column pins blue, matching button/input/select/dialog/tabs/card/badge.salt.json.",
+    "tag-bg": "Tag.css `.saltTag-primary { background: var(--tag-primary-background, var(--salt-category-1-background)) }` -> next/characteristics/category.css:3 --salt-category-1-background: var(--salt-palette-categorical-1-weakest) -> next/palette/categorical.css line 4 (light) --salt-color-cobalt-100 = rgb(237,244,255) / line 86 (dark) --salt-color-cobalt-900 = rgb(0,31,79). CATEGORY SCOPE TRIM: Tag.css enumerates categories 1-20, each a four-property block reassigning the same four indirections; this column pins CATEGORY 1 (the source default, `category = 1` in Tag.tsx), the same treatment the accent scope trim gives palette-accent. The other 19 are recorded, not modelled.",
+    "tag-fg": "category.css:2 --salt-category-1-foreground: var(--salt-palette-categorical-1-strong) -> categorical.css line 3 (light) cobalt-600 = rgb(53,95,161) / line 85 (dark) cobalt-400 = rgb(118,148,207).",
+    "tag-bg-secondary": "Tag.css `.saltTag-secondary { background: var(--tag-secondary-background, var(--salt-category-1-bold-background)) }` -> category.css:6 -> --salt-palette-categorical-1 -> categorical.css line 2 (light) AND line 84 (dark) both --salt-color-cobalt-500 = rgb(70,118,191). MODE-INVARIANT.",
+    "tag-fg-secondary": "Tag.css `.saltTag-secondary { color: var(--salt-content-bold-foreground) }` — note the ASYMMETRY: secondary reads a content characteristic directly and has NO per-category indirection, where primary reads --tag-primary-foreground. So all 20 secondary tags share one label colour. -> next/characteristics/content.css -> --salt-palette-foreground-primary-alt -> white in both modes. MODE-INVARIANT.",
+    "tag-border": "Tag.css `.saltTag-bordered { border: ... var(--tag-primary-borderColor, var(--salt-category-1-borderColor)) }` -> category.css:4 -> --salt-palette-categorical-1 -> cobalt-500, both modes. MODE-INVARIANT. Note that `bordered` reads the PRIMARY border indirection even when variant=\"secondary\", so a bordered secondary tag draws a cobalt-500 stroke around a cobalt-500 fill.",
+    "chip-border-width": "Pill.css `--pill-borderWidth: var(--salt-size-fixed-100)` and Tag.css `border: var(--salt-size-fixed-100) ...` -> foundations/size.css:47 --salt-size-fixed-100: 1px, declared once for ALL FIVE density blocks. FROZEN-TOKEN CHECK (lesson 7): this is on the FIXED scale and is density-invariant BY DESIGN per docs/foundations/sizes.md — carried as a plain 1px rather than per density, the same call card.salt.json made for its border.",
+    "chip-letter-spacing": "Pill.css `letter-spacing: var(--salt-text-letterSpacing)` -> next/characteristics/text.css:3 --salt-text-letterSpacing: 0, density-invariant. Tag.css declares NO letter-spacing at all — one of the small asymmetries between Salt's two chips.",
+    "chip-cursor": "Pill.css `.saltPill-clickable { cursor: var(--salt-cursor-hover) }` -> foundations/cursor.css --salt-cursor-hover: pointer. Tag declares no cursor (docs/foundations/cursors.md).",
+    "chip-cursor-disabled": "Pill.css `.saltPill:disabled { cursor: var(--salt-cursor-disabled) }` -> foundations/cursor.css: not-allowed.",
+    "chip-disabled-opacity": "Pill.css `.saltPill:disabled { opacity: 0.4 }` — a LITERAL 0.4 in source, not a token. docs/foundations/state-layers.md records this exact fact: Salt's 40% disabled opacity 'recurs across Salt component states but is not declared as a named foundation token'. Confirmed here for a ninth component.",
+    "tag-radius": "Tag.css `border-radius: var(--saltTag-borderRadius, var(--salt-palette-corner-strongest, 9999px))` -> next/palette/corner.css: corner-strongest -> --salt-curve-999 under BOTH [data-corner=\"rounded\"] (line 7) and [data-corner=\"sharp\"] (line 15) -> foundations/curve.css --salt-curve-999: 999px in all four density blocks. Density-invariant AND corner-edition-invariant, exactly as badge.salt.json found. NOTE the DOUBLE var() fallback in source; the generated output uses none (lesson 1).",
+    "byDensity.chip-height": "Pill.css AND Tag.css both declare `height: calc(var(--salt-size-base) - var(--salt-spacing-100))` — byte-identical in the two files. -> foundations/size.css --salt-size-base: 20/28/36/44px (high/medium/low/touch) minus foundations/spacing.css --salt-spacing-100: 4/8/12/16px = 16/20/24/28px. Both scales are DENSITY scales, so the subtraction moves at every density.",
+    "byDensity.chip-min-height": "Pill.css AND Tag.css both `min-height: var(--salt-text-minHeight)` -> next/characteristics/text.css density blocks: touch 20px (line 161), low 18px (197), medium 16px (233), high 14px (269). The min-height is below the height at every density, so it only bites when a consumer overrides the height.",
+    "byDensity.chip-radius": "Pill.css `border-radius: var(--salt-palette-corner-weaker, 0)` -> next/palette/corner.css:2 corner-weaker -> --salt-curve-50 -> foundations/curve.css 1/2/3/4px by density. THE HEADLINE OF THIS COLUMN: Salt's PILL is nearly square (1-4px) and Salt's TAG is a full 999px pill. The names are the wrong way round, and under [data-corner=\"sharp\"] the gap widens to 0px vs 999px because corner-weaker collapses to curve-0 while corner-strongest does not.",
+    "byDensity.chip-padding": "Pill.css `padding: 0 calc(var(--salt-spacing-50) - var(--pill-borderWidth))` -> spacing-50 = calc(0.5 * spacing-100) = 2/4/6/8px, minus the 1px border = 1/3/5/7px. Source subtracts the border so the ink box, not the content box, lands on the spacing step.",
+    "byDensity.tag-padding": "Tag.css `padding: var(--salt-spacing-25) var(--salt-spacing-100)` -> spacing-25 = 0.25 x spacing-100 = 1/2/3/4px block, spacing-100 = 4/8/12/16px inline. A Salt tag is FOUR TIMES the horizontal padding of a Salt pill at every density.",
+    "byDensity.chip-gap": "Pill.css `gap: var(--salt-spacing-50)` and Tag.css `column-gap: var(--salt-spacing-50)` — the same step reached by two different property names (gap vs column-gap; Tag never wraps, so the row gap is moot). 2/4/6/8px by density.",
+    "byDensity.check-size": "PillCheckIcon.css `--checkbox-size: var(--salt-size-selectable)` consumed as width/min-width/height/min-height -> foundations/size.css --salt-size-selectable: 12/14/16/18px by density (lines 7/17/27/38). FROZEN-TOKEN CHECK: this is on the DENSITY scale, so snapshotting the medium 14px would have been wrong at three of four densities. Matches docs/foundations/sizes.md.",
+    "byDensity.group-gap": "PillGroup.css `gap: var(--salt-spacing-50)` = 2/4/6/8px by density. PillGroup also sets `display: flex; flex-wrap: wrap; border: none; padding: 0; margin: 0` — it is a <fieldset> stripped of every native fieldset style.",
+    "byDensity.chip-font": "Pill.css and Tag.css declare the same four font properties from the same tokens: --salt-text-fontFamily (-> --salt-typography-fontFamily-openSans = 'Open Sans'), --salt-text-fontWeight (-> --salt-typography-fontWeight-regular = 400, foundations/typography.css:7), --salt-text-fontSize and --salt-text-lineHeight -> next/characteristics/text.css density blocks: high 11/14, medium 12/16, low 14/18, touch 16/20. REGULAR 400 body type at the standard body size — Salt's chip is NOT small type, unlike its badge (600 at 10px). Matches docs/foundations/typography.md line 9's primary/body family row.",
+    "no-elevation": "CONFIRMED ABSENCE: neither Pill.css nor Tag.css declares box-shadow, and neither reads --salt-overlayable-shadow or any palette/shadow.css token. Salt's chip has no elevated/flat mechanism axis at all, so prop.elevation is off in this column — the shadow-vs-stroke fork (lesson 6) is M3's alone here.",
+    "no-transition": "CONFIRMED ABSENCE: no transition, animation or --salt-duration-* reference in either file. Every state change is instantaneous.",
+    "no-trailing-part": "CONFIRMED ABSENCE, and it is the a11y fork of this component. Pill exports no close/delete/dismiss subcomponent and Pill.css has no trailing rule. Its documented closable pattern puts a bare <CloseIcon style={{ marginLeft: 'auto' }} /> INSIDE the button as a child and makes the WHOLE PILL the remove control (stories/pill/pill.stories.tsx `Closable`, `onClick={() => removeColor(color)}`), and examples.mdx describes it exactly that way: 'A pill can be indicated as closable by adding a close icon on the right side of the pill.' So Salt ships ZERO nested focusables inside a chip.",
+    "no-delete-keys": "CONFIRMED ABSENCE: no Delete or Backspace handler anywhere in packages/core/src/pill or /tag. Salt DOES have one — PillInput.tsx lines 225 and 253 (`event.key === 'Backspace' && lastPill`, `event.key === 'Delete' || event.key === 'Backspace'`) and lab/tokenized-input — but that is the chip-INSIDE-A-FIELD pattern, out of scope for this row by the brief's own structural exclusion and by docs/COMPONENTS.md line 45, which puts pill-input on the `input-group` row."
+  },
+  "cells": {
+    "structure.element": {
+      "kind": "value",
+      "value": "button (Pill) / div (Tag)",
+      "source": "Pill.tsx returns <button type=\"button\"> — Salt's chip is a real button element, not a div with a role. Tag.tsx returns a bare <div> with no role and no tabindex. Two exports, two elements, one COMPONENTS.md row"
+    },
+    "structure.leading-icon": {
+      "kind": "off",
+      "note": "CORRECTED in the owner-validation pass. This was `true`, which is not what Salt ships. `PillProps extends ComponentPropsWithoutRef<\"button\">` and adds exactly one member, `value?: string` (Pill.tsx:21-23); the render body is `{insideSelectableGroup && <PillCheckIcon .../>}{children}` (Pill.tsx:149-151). There is no leading-icon slot, no adornment prop and no icon rule anywhere in Pill.css. Salt's ONLY icon is the selection check, which is the separate structure.selection-check row (correctly on). A consumer may of course pass an icon inside `children`, but that is the label slot's content, not a distinct part the system defines."
+    },
+    "structure.avatar": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no avatar rule, no avatar sizing and no round-image treatment in Pill.css or Tag.css. Salt ships an `avatar` component on its own COMPONENTS.md row and never composes it into a pill"
+    },
+    "structure.selection-check": {
+      "kind": "value",
+      "value": true,
+      "source": "PillCheckIcon.tsx/.css — a real, component-OWNED part, not a consumer child: Pill.tsx renders `{insideSelectableGroup && <PillCheckIcon checked={selected} active={combinedActive} />}` as the FIRST child. It is a square box with its own border and radius that fills with a checkmark, i.e. a visible CHECKBOX, and examples.mdx says so: 'A visible checkbox provides the user with a clear visual cue that the accompanying pill is selectable'"
+    },
+    "structure.trailing": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-trailing-part provenance entry. Salt's closable pill is a close ICON inside the button, not a nested control, and the pill's own onClick is the remove handler"
+    },
+    "structure.state-layer": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — Salt moves the fill, the label and the border colour directly; there is no overlay element and no opacity scale (docs/foundations/state-layers.md: 'Salt's hover/selected states are pre-composed solid colors')"
+    },
+    "structure.selection-scope": {
+      "kind": "value",
+      "value": "group",
+      "source": "SELECTION LIVES IN THE GROUP, NOT THE CHIP. Pill.tsx reads `usePillGroup()` and computes `insideSelectableGroup = pillGroupContext.selectionVariant === \"multiple\"`; a Pill outside a group, or inside a group with the default selectionVariant=\"none\", has NO role, NO aria-checked and NO check icon, and passing `value` to it does nothing. PillGroup owns the controlled/uncontrolled `selected: string[]` and the toggle"
+    },
+    "prop.interaction": {
+      "kind": "value",
+      "value": [
+        "action",
+        "toggle",
+        "static"
+      ],
+      "source": "SOURCE-DEFAULT-FIRST. `action` = a bare <Pill onClick>, which is what the Default story and index.mdx open with and what PillGroup's own `selectionVariant = \"none\"` default produces. `toggle` = the same Pill inside selectionVariant=\"multiple\" (role=checkbox, aria-checked, the check icon). `static` = Tag, a div with no interaction of any kind. An action-first list matters: a toggle-first list would have put a checkbox glyph on every unqualified Salt chip in the harness against source"
+    },
+    "prop.kind": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — Salt has no assist/filter/input/suggestion axis. PillProps is exactly `{ value?: string }` on top of the native button props; the job of the chip is decided by the group it is in, not by a kind prop"
+    },
+    "prop.elevation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-elevation provenance entry"
+    },
+    "prop.tag-variant": {
+      "kind": "value",
+      "value": [
+        "primary",
+        "secondary"
+      ],
+      "source": "Tag.tsx `variant = \"primary\"` is the literal declared default, so the list is SOURCE-DEFAULT-FIRST. Only meaningful when interaction=\"static\"; a Pill has no variant"
+    },
+    "prop.bordered": {
+      "kind": "value",
+      "value": [
+        false,
+        true
+      ],
+      "source": "Tag.tsx `bordered?: boolean` destructured with NO default, i.e. undefined/false. CAPABILITY LIST, not an ordered enum: false is the base rendering and the skeleton reads the per-instance prop, never value[0] — the same declaration card.salt.json made for `disabled` and `hoverable`"
+    },
+    "prop.selected": {
+      "kind": "value",
+      "value": [
+        false,
+        true
+      ],
+      "source": "CAPABILITY LIST. Not a Pill prop at all — `selected` is derived in Pill.tsx from `pillGroupContext.selected.includes(value)`, so the chassis takes it as an instance prop and the column declares only that the capability exists"
+    },
+    "prop.disabled": {
+      "kind": "value",
+      "value": [
+        false,
+        true
+      ],
+      "source": "CAPABILITY LIST. Pill inherits `disabled` from ComponentPropsWithoutRef<\"button\"> and PillGroup has its own `disabled` that ORs into it (`const disabled = pillGroupContext.disabled || buttonDisabled`). Tag has no disabled state at all"
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "none as an action pill; role=\"checkbox\" + aria-checked inside a selectable group; none at all for a Tag",
+      "source": "Pill.tsx `groupProps = insideSelectableGroup ? { \"aria-checked\": selected, role: \"checkbox\", value } : {}` — the ARIA is written ONLY inside a multiple-selection group. An action pill relies on the native <button> semantics and writes no ARIA of its own. Tag.tsx writes className and spreads rest and nothing else. PillGroup renders a <fieldset> and writes aria-labelledby / aria-describedby from the FormField context, but NO role=\"group\" and NO role=\"radiogroup\""
+    },
+    "behavior.tab-stop": {
+      "kind": "value",
+      "value": "0 on every pill, including every pill of a group; -1 when disabled; none for a Tag",
+      "source": "Pill.tsx deliberately DISCARDS useButton's tabIndex — `const { tabIndex: _tabIndex, disabled: buttonDisabled, ...restButtonProps } = buttonProps` with the comment 'we do not want to spread tab index in this case because the button element does not require tabindex=\"0\" attribute'. So the native button's own tab stop is used, there is NO roving tabindex, and accessibility.mdx confirms the consequence: Tab moves to the FIRST pill of a group and Shift+Tab to the LAST — every pill is its own tab stop"
+    },
+    "behavior.keyboard-activation": {
+      "kind": "value",
+      "value": "Enter and Space natively for an action pill; SPACE ONLY inside a selectable group — Enter is explicitly preventDefault-ed",
+      "source": "Pill.tsx handleKeyDown: `if (event.key === \"Enter\" && insideSelectableGroup) { /* Prevent selection on enter key for selectable pill. */ event.preventDefault(); return; }`. accessibility.mdx states both halves in two separate KeyboardControls blocks: 'Enter / Space' for a Pill, and 'Space' alone for a pill within a selectable group. A boolean interactive flag would have destroyed this fork exactly as CARD-MATRIX.md finding 4 warned"
+    },
+    "behavior.selection": {
+      "kind": "value",
+      "value": "multi-select only, owned by the group, toggling on click",
+      "source": "PillGroup.tsx `selectionVariant?: \"none\" | \"multiple\"` — there is NO single-select mode, which is why the pill's role is `checkbox` and never `radio`. `select` filters the value out if present and concatenates it if not, so every click is a toggle; the group is controlled-or-uncontrolled through useControlled"
+    },
+    "behavior.delete-affordance": {
+      "kind": "value",
+      "value": "THE WHOLE PILL IS THE DELETE CONTROL — no nested focusable exists",
+      "source": "stories/pill/pill.stories.tsx `Closable`: `<Pill onClick={() => removeColor(color)}>{color} <CloseIcon style={{ marginLeft: \"auto\" }} /></Pill>`. The close glyph is a decorative child of the button, pushed right by a consumer inline style; there is no second tab stop and no second click target. examples.mdx describes it the same way. Salt therefore answers the nested-focusable a11y fork with 'do not nest'"
+    },
+    "behavior.delete-keys": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-delete-keys provenance entry. Because the whole pill is the delete control, the delete key IS Enter/Space, and no Delete or Backspace handler exists in pill/ or tag/. Salt's Backspace/Delete contract lives entirely in pill-input and tokenized-input, which are on a different COMPONENTS.md row"
+    },
+    "behavior.disabled-handling": {
+      "kind": "value",
+      "value": "the NATIVE disabled attribute, plus a group-level disabled that ORs into it",
+      "source": "Pill.tsx `disabled = pillGroupContext.disabled || buttonDisabled` written straight onto <button disabled>, and useButton returns `disabled: disabled && !focusableWhenDisabled` (Pill never passes focusableWhenDisabled, so it is always the native attribute) with `tabIndex: -1`. Note the divergence from card: an InteractableCard uses aria-disabled and stays focusable; a Pill uses the native attribute and leaves the tab order. Pill.tsx also guards its own pointer handler separately: `handlePointerDown` returns early `if (disabledProp)`"
+    },
+    "behavior.pressed-flag": {
+      "kind": "value",
+      "value": "TWO independent pressed flags, combined differently depending on whether the pill is selectable",
+      "source": "Pill.tsx holds `pressActive` (set on pointerdown, cleared by a window-level pointerup/pointercancel listener in a useEffect) and `spaceActive` (set on Space keydown, cleared on Space keyup) alongside useButton's own `active`. `combinedActive = insideSelectableGroup ? pressActive || spaceActive : pressActive || active` — a selectable pill deliberately drops useButton's `active` so that Enter, which the browser reports as both a key and a click, cannot flash it. useButton's own comment names the same two browser quirks card.salt.json recorded"
+    },
+    "behavior.group-navigation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — PillGroup binds NO arrow-key handler. Every pill is a tab stop (see behavior.tab-stop), so navigation is Tab and Shift+Tab only. This is the opposite of InteractableCardGroup, which is a roving-tabindex radiogroup with arrow navigation — two groups in one design system with two different navigation contracts"
+    },
+    "slot.label": {
+      "kind": "value",
+      "value": "arbitrary children in both components",
+      "note": "Neither Pill nor Tag formats or clamps anything, in deliberate contrast to Badge's `value`/`max`. usage.mdx handles length in prose instead: 'Content should be succinct, often one or a couple of words' (Pill) and 'limiting to one or two words' (Tag)"
+    },
+    "slot.leading": {
+      "kind": "off",
+      "note": "CORRECTED alongside structure.leading-icon, same evidence: no leading slot exists in PillProps or Pill.tsx's render body."
+    },
+    "slot.trailing": {
+      "kind": "off",
+      "note": "no trailing part; the closable pattern's CloseIcon is a leading-slot sibling pushed right with a consumer margin-left: auto"
+    },
+    "slot.composes": {
+      "kind": "value",
+      "value": "form-field, icon set, combo-box, badge",
+      "note": "DECLARED COMPOSITION: (a) FORM-FIELD — PillGroup calls useFormFieldProps() and merges the field's aria-labelledby/aria-describedby and disabled state, and examples.mdx recommends wrapping selectable groups in one; (b) an ICON SET — the leading glyph and the closable pattern's CloseIcon; (c) COMBO-BOX — examples.mdx routes the closable pill 'within an input control such as ComboBox'; (d) BADGE, already built, which points here from the other side (badge/usage.mdx sends status colour and immediate actions to Pill)"
+    },
+    "state.rest": {
+      "kind": "value",
+      "value": "Pill: gray-500 fill, white label, a same-colour 1px border, nearly square. Tag: cobalt-100 fill, cobalt-600 label, a fully round 999px pill",
+      "note": "Two components on one row and they share nothing but their height, their gap and their type"
+    },
+    "state.hover": {
+      "kind": "value",
+      "value": "Pill only — a 15% black wash over the same fill, the SAME label colour, and a border that recolours to a 30% contrast alpha",
+      "source": "Pill.css `.saltPill-clickable:hover, .saltPill-clickable:focus-visible` — hover and focus-visible share ONE declaration block, so a keyboard-focused Salt pill is styled as hovered and additionally gets the focus outline. Tag has no hover"
+    },
+    "state.focus": {
+      "kind": "value",
+      "value": "2px dotted accent-stronger at offset 0, PLUS the whole hover treatment",
+      "source": "Pill.css declares the outline on `.saltPill:focus-visible` (the unqualified class, so it would apply to a non-clickable pill too — but every Pill is rendered with saltPill-clickable, so the distinction is unreachable). Tag is never focusable"
+    },
+    "state.pressed": {
+      "kind": "value",
+      "value": "the pill INVERTS — a gray-200 fill with a BLACK label in light mode",
+      "source": "Pill.css `.saltPill-clickable.saltPill-active, .saltPill-clickable:active` share one block, exactly as InteractableCard does and for the same reason: a keyboard activation never produces :active"
+    },
+    "state.selected": {
+      "kind": "value",
+      "value": "NO SELECTED STYLE AT ALL on the chip — the entire selected signal is the check icon",
+      "note": "THE FINDING OF THIS COLUMN'S STATE SEGMENT. Pill.css contains no `-selected` selector, no `[aria-checked]` selector and no `selectable-*` characteristic reference; a selected Salt pill's fill, label and border are byte-identical to an unselected one. The only difference is that PillCheckIcon renders a CheckmarkSolidIcon inside its box. Compare M3, where selection swaps the container colour, the label colour AND the outline width"
+    },
+    "state.disabled": {
+      "kind": "value",
+      "value": "40% opacity on the whole pill, the RESTING colours restated, and a not-allowed cursor",
+      "source": "Pill.css `.saltPill:disabled, .saltPill:disabled:hover` re-declares all three resting indirections inside the disabled block so the hover rule cannot win — the same defensive restatement card.salt.json recorded. Tag has no disabled state"
+    },
+    "style.chip.background": {
+      "kind": "alias",
+      "slot": "chip-bg"
+    },
+    "style.chip.color": {
+      "kind": "alias",
+      "slot": "chip-fg"
+    },
+    "style.chip.font": {
+      "kind": "alias",
+      "slot": "chip-font"
+    },
+    "style.chip.letter-spacing": {
+      "kind": "alias",
+      "slot": "chip-letter-spacing"
+    },
+    "style.chip.shape": {
+      "kind": "alias",
+      "slot": "chip-radius"
+    },
+    "style.chip.height": {
+      "kind": "value",
+      "value": {
+        "height": "var(--chip-height)",
+        "min-height": "var(--chip-min-height)"
+      },
+      "source": "Pill.css and Tag.css both `height: calc(var(--salt-size-base) - var(--salt-spacing-100)); min-height: var(--salt-text-minHeight)` — byte-identical declarations in the two files"
+    },
+    "style.chip.padding": {
+      "kind": "alias",
+      "slot": "chip-padding"
+    },
+    "style.chip.gap": {
+      "kind": "alias",
+      "slot": "chip-gap"
+    },
+    "style.chip.border-width": {
+      "kind": "alias",
+      "slot": "chip-border-width"
+    },
+    "style.chip.border-color": {
+      "kind": "alias",
+      "slot": "chip-border"
+    },
+    "style.chip.overflow": {
+      "kind": "value",
+      "value": "hidden",
+      "source": "Pill.css `overflow: hidden` and Tag.css `overflow: hidden` — both. A long Salt chip label is CLIPPED, with no ellipsis, at the chip's own radius"
+    },
+    "style.chip.white-space": {
+      "kind": "value",
+      "value": "nowrap",
+      "source": "Pill.css `white-space: nowrap`. Tag.css does NOT declare it and relies on `min-width: max-content` instead — two files, two mechanisms for the same intent"
+    },
+    "style.chip.cursor": {
+      "kind": "alias",
+      "slot": "chip-cursor"
+    },
+    "style.chip.transition": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-transition provenance entry"
+    },
+    "style.chip.elevation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — see the no-elevation provenance entry"
+    },
+    "style.chip.elevation@hover": {
+      "kind": "off"
+    },
+    "style.chip.hover": {
+      "kind": "value",
+      "value": {
+        "background": "var(--chip-bg-hover)",
+        "color": "var(--chip-fg-hover)",
+        "border-color": "var(--chip-border-hover)"
+      },
+      "source": "Pill.css `.saltPill-clickable:hover, .saltPill-clickable:focus-visible { --pill-color/-background/-borderColor: ...-hover }`. Reassigns three indirections; note that --pill-color-hover resolves to the same value as the resting colour"
+    },
+    "style.chip.focus": {
+      "kind": "value",
+      "value": {
+        "outline": "var(--chip-focus-outline)",
+        "outline-offset": "0",
+        "background": "var(--chip-bg-hover)",
+        "color": "var(--chip-fg-hover)",
+        "border-color": "var(--chip-border-hover)"
+      },
+      "source": "Two source rules combined onto one selector: `.saltPill:focus-visible { outline: var(--salt-focused-outline) }` plus the hover block, which lists `.saltPill-clickable:focus-visible` alongside `:hover`. Combining them is faithful because in source both fire on the same element in the same state"
+    },
+    "style.chip.pressed": {
+      "kind": "value",
+      "value": {
+        "background": "var(--chip-bg-active)",
+        "color": "var(--chip-fg-active)",
+        "border-color": "var(--chip-border-active)"
+      },
+      "source": "Pill.css `.saltPill-clickable.saltPill-active, .saltPill-clickable:active`. SCOPE TRIM, recorded not modelled: Pill.css declares a fourth selector with the identical body — `.saltPill[aria-expanded=\"true\"][aria-haspopup=\"menu\"]` — which styles a pill that is currently opening a menu as pressed. That is a `menu` composition and belongs to the menu row"
+    },
+    "style.chip.selected": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE, and it is a real divergence rather than a gap — see state.selected. Selection is signalled by the check icon alone"
+    },
+    "style.chip.disabled": {
+      "kind": "value",
+      "value": {
+        "background": "var(--chip-bg)",
+        "color": "var(--chip-fg)",
+        "border-color": "var(--chip-border)",
+        "cursor": "var(--chip-cursor-disabled)",
+        "opacity": "var(--chip-disabled-opacity)"
+      },
+      "source": "Pill.css `.saltPill:disabled, .saltPill:disabled:hover` — the resting values are RESTATED so the hover rule cannot win, then dimmed to 0.4"
+    },
+    "style.chip.elevation@elevated": {
+      "kind": "off"
+    },
+    "style.chip.kind@suggestion": {
+      "kind": "off"
+    },
+    "style.chip.kind@filter": {
+      "kind": "off"
+    },
+    "style.chip.kind@input": {
+      "kind": "off"
+    },
+    "style.chip.tag-variant@secondary": {
+      "kind": "value",
+      "value": {
+        "background": "var(--tag-bg-secondary)",
+        "color": "var(--tag-fg-secondary)"
+      },
+      "source": "Tag.css `.saltTag-secondary { background: var(--tag-secondary-background, var(--salt-category-1-bold-background)); color: var(--salt-content-bold-foreground) }`. The border is transparent in both variants unless `bordered` is set"
+    },
+    "style.chip.bordered": {
+      "kind": "value",
+      "value": {
+        "border-color": "var(--tag-border)"
+      },
+      "source": "Tag.css `.saltTag-bordered { border: var(--salt-size-fixed-100) var(--salt-borderStyle-solid) var(--tag-primary-borderColor, ...) }`. Only the colour is modelled here because the 1px solid is already carried by style.chip.border-width; the static variant's own border is `1px solid transparent`, so `bordered` really does change one property"
+    },
+    "style.chip.tag-rest": {
+      "kind": "value",
+      "value": {
+        "background": "var(--tag-bg)",
+        "color": "var(--tag-fg)",
+        "border-radius": "var(--tag-radius)",
+        "padding": "var(--tag-padding)",
+        "border-color": "transparent",
+        "cursor": "auto"
+      },
+      "source": "Tag.css `.saltTag` + `.saltTag-primary`. THE ROW THAT CARRIES THE WHOLE STATIC FORK: a Tag is a different radius (999px against the Pill's 1-4px), a different padding (spacing-25/spacing-100 against 0/spacing-50-1px), a different colour family (categorical against actionable-bold) and a transparent border. Emitted as one block gated on [data-interaction=\"static\"] rather than as six state-qualified rows, because in source it is one component and not a state of another"
+    },
+    "style.leading.box": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — the leading glyph is a consumer child sized by Salt's own Icon component (--saltIcon-size), not by the chip. The chip owns only the gap"
+    },
+    "style.leading.color": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE — no icon colour rule; the glyph inherits the label colour, which is why a pressed Salt pill's icon inverts with its text"
+    },
+    "style.leading.color@selected": {
+      "kind": "off"
+    },
+    "style.avatar.box": {
+      "kind": "off"
+    },
+    "style.trailing.box": {
+      "kind": "off"
+    },
+    "style.trailing.color": {
+      "kind": "off"
+    },
+    "style.check.box": {
+      "kind": "value",
+      "value": {
+        "width": "var(--check-size)",
+        "min-width": "var(--check-size)",
+        "height": "var(--check-size)",
+        "min-height": "var(--check-size)",
+        "border-width": "var(--chip-border-width)",
+        "border-style": "solid",
+        "border-color": "currentColor",
+        "border-radius": "var(--chip-radius)",
+        "position": "relative",
+        "clip-path": "border-box"
+      },
+      "source": "PillCheckIcon.css in full. Two details are load-bearing and easy to lose: the border declares NO colour (`border: var(--salt-size-fixed-100) var(--salt-borderStyle-solid)`), so it is currentColor and tracks the label through every state including the pressed inversion; and `clip-path: border-box` is used INSTEAD of overflow:hidden, with a source comment saying why — 'Using overflow:hidden here causes a thin white line'. The radius is corner-weaker, the same step as the pill's own"
+    },
+    "style.state-layer.color": {
+      "kind": "off"
+    },
+    "style.state-layer.opacity@hover": {
+      "kind": "off"
+    },
+    "style.state-layer.opacity@focus": {
+      "kind": "off"
+    },
+    "style.state-layer.opacity@pressed": {
+      "kind": "off"
+    },
+    "style.group.box": {
+      "kind": "value",
+      "value": {
+        "gap": "var(--group-gap)",
+        "flex-wrap": "wrap"
+      },
+      "source": "PillGroup.css in full: `border: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--salt-spacing-50)`. The reset half lives in the chassis base because it is a <fieldset> reset and theme-invariant; only the two real values are carried here"
+    }
+  }
+}

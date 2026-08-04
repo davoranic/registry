@@ -1,0 +1,387 @@
+{
+  "component": "alert",
+  "openUiAnatomy": "no published Open UI alert anatomy — union of shadcn Alert/AlertTitle/AlertDescription, salt-ds Banner/BannerContent/BannerActions (composes StatusIndicator), M3's 'banners' token family (basic + rich variants, standard/vibrant color roles). Canonical name is shadcn's 'alert'; Salt and M3 both call the same component 'banner' (docs/COMPONENTS.md Feedback & status table).",
+  "behavior": {
+    "pattern": "non-modal, non-dismissing-by-default status message region. No source system implements built-in open/close state or an auto-dismiss timer — dismissal, if any, is always a consumer-composed onClick on a close/action button (Salt's own 'Dismissible' story manages open state with external useState). The only cross-system behavior axis is WHICH ARIA role announces it, mirroring Spinner's role finding but with a twist: Salt has NO default role at all (a real, sourced absence, not a gap in our research) while shadcn hardcodes one.",
+    "chassis": "skeleton/alert.tsx — written from the template's part union; inherits from no design system"
+  },
+  "skeletonParams": {
+    "image": [
+      true,
+      false
+    ],
+    "title": [
+      true,
+      false
+    ],
+    "actions": [
+      true,
+      false
+    ],
+    "close": [
+      true,
+      false
+    ],
+    "role": [
+      "alert",
+      "status"
+    ],
+    "tone": [
+      "info",
+      "error",
+      "warning",
+      "success",
+      "default",
+      "destructive"
+    ],
+    "emphasis": [
+      "primary",
+      "secondary",
+      "standard",
+      "vibrant"
+    ]
+  },
+  "base": {
+    "[data-slot=\"alert\"]": {
+      "position": "relative",
+      "display": "flex",
+      "align-items": "flex-start",
+      "box-sizing": "border-box",
+      "width": "100%",
+      "border-style": "solid"
+    },
+    "[data-slot=\"alert-icon\"], [data-slot=\"alert-image\"]": {
+      "display": "inline-flex",
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"alert-content\"]": {
+      "display": "flex",
+      "flex": "1 1 auto",
+      "flex-direction": "column",
+      "min-width": "0"
+    },
+    "[data-slot=\"alert-title\"]": {
+      "display": "block"
+    },
+    "[data-slot=\"alert-description\"]": {
+      "display": "block"
+    },
+    "[data-slot=\"alert-actions\"]": {
+      "display": "flex",
+      "align-items": "center",
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"alert-close\"]": {
+      "appearance": "none",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex": "0 0 auto",
+      "background": "none",
+      "border": "none",
+      "padding": "0",
+      "cursor": "pointer",
+      "color": "inherit"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.image",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "image",
+      "note": "M3 rich only (_md-comp-banners-rich.scss image.size 80dp, image.shape corner-none) — a leading image is an alternative to the leading icon. Salt (icon only, via StatusIndicator) and shadcn (icon-only, arbitrary <svg> child) have no image-leading-element concept at all."
+    },
+    {
+      "id": "structure.title",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "title",
+      "note": "shadcn: dedicated AlertTitle part (col-start-2, font-medium, line-clamp-1). M3 rich: dedicated title-text token family (title-text-height/top-space/bottom-space, emphasized body-medium typescale). Salt: NO dedicated title part — Banner/BannerContent expose no title subcomponent; a bold first line is achieved purely by consumer content formatting (<Text><strong>...</strong></Text> inside BannerContent, see banner.stories.tsx 'Issue'/'MultipleLines' stories) — same class of finding as Calendar's today-marker: three systems, three different answers to 'how do I emphasize the headline,' one of them (Salt) not a structural answer at all."
+    },
+    {
+      "id": "structure.actions",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "actions",
+      "note": "Salt: dedicated BannerActions wrapper (optional). shadcn (new-york-v4 canonical): NO dedicated actions wrapper — action buttons are placed as arbitrary children with no distinct data-slot hook (all new-york-v4 demo/example files only show icon+title+description, never an action button). Supplementary evidence this is still a real shadcn-family pattern: the sibling 'radix' base variant in the SAME monorepo (registry/bases/radix/ui/alert.tsx) ships a dedicated `data-slot=\"alert-action\"` element, used in examples/radix/alert-action.tsx. M3: basic + rich both have an actions token family (leading/trailing/top/bottom spacing, between-space)."
+    },
+    {
+      "id": "structure.close",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "close",
+      "note": "M3 only has a FIRST-CLASS dedicated close affordance: _md-comp-banners.scss close-button-color/-focused/-hovered/-pressed tokens plus _md-comp-banners-basic.scss actions-close-button-space (8px, 4px mobile) — a distinct part, not folded into the generic actions group. Salt and shadcn both achieve dismiss by placing an ordinary close-labeled Button/icon-button INSIDE the generic actions area (Salt: banner.stories.tsx 'Dismissible'/'Interactive' stories put <Button aria-label=\"close\"><CloseIcon/></Button> inside BannerActions; shadcn: same composition convention, no dedicated part) — a real structural difference in how the same dismiss capability is expressed, not a coverage gap."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION (same pattern as calendar.template.json's slot.composes): alert's action buttons and close button compose the registry's own `button` component (already built) — Salt literally renders a Button in BannerActions, shadcn's sibling AlertAction wraps a Button, M3's actions are token-described as buttons. The status/leading icon composes a future registry icon-set component. Both render as neutral placeholders in this skeleton (a plain SVG glyph for the icon, a plain <button> for actions/close) rather than importing skeleton/button.tsx directly, keeping this component's build self-contained — the composed components' own matrices will replace these approximations."
+    },
+    {
+      "id": "behavior.non-interactive-root",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "the alert/banner ROOT itself has no keyboard pattern, no tabindex, no click handler in any source — identical across all three. Only its composed action/close buttons are interactive (Tab moves focus through them per Salt's own accessibility.mdx keyboard-interactions doc); their states belong to the composed button component, out of scope here."
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "role",
+      "note": "Salt: NO default role attribute at all — Banner.tsx sets none; Salt's own accessibility.mdx instructs the consumer to apply role=\"alert\" (to interrupt) or role=\"status\" (to notify) THEMSELVES per use case, with a documented caveat that role=\"status\" has known screen-reader announcement issues for dynamically-inserted content. This is a real, sourced absence, not a research gap — recorded as switched OFF for Salt. shadcn: role=\"alert\" hardcoded in alert.tsx, always, not a prop. M3: [R] no live component in this tokens-only clone; treated as role=\"status\" per the general APG banner/live-region convention, not grepped from code."
+    },
+    {
+      "id": "behavior.dismiss",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant: no source system implements built-in open/close state or an auto-dismiss timer. Salt's own 'Dismissible' banner.stories.tsx example manages `open` with an external useState + onClick on the composed close Button — the same consumer-owned pattern any shadcn/M3 build would need. Nothing to switch per column; recorded once."
+    },
+    {
+      "id": "prop.tone",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "tone",
+      "note": "Salt: 4-value ValidationStatus enum (info/error/warning/success), Banner's `status` prop, default \"info\". shadcn: 2-value variant enum (default/destructive) — the same tone-coverage gap already found in Button. M3: OFF — confirmed by direct grep of every banner-family token file (_md-comp-banner.scss, _md-comp-banners.scss, _md-comp-banners-basic.scss, _md-comp-banners-rich.scss): none defines a semantic status/tone axis at all, only a standard/vibrant EMPHASIS axis (see prop.emphasis). M3 has a general sys-color `error`/`error-container` role elsewhere in the design system, but it is not part of the banner component's own token family, so mapping it here would exceed this matrix's sourcing discipline — a real structural divergence, the marquee finding of this matrix (see ALERT-MATRIX.md Findings)."
+    },
+    {
+      "id": "prop.emphasis",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "emphasis",
+      "note": "Salt: `variant` prop, primary (default, always-neutral container) / secondary (tone-tinted background). shadcn: OFF — new-york-v4's alert has no separate emphasis/intensity axis; its `variant` prop IS the tone axis (default/destructive), and background never changes regardless of variant (see style.root.background finding) — a real non-variation, not an omission. M3: standard (surface-container, on-surface text) / vibrant (primary-container, on-primary-container text), _md-comp-banners.scss — a pure decorative-intensity choice, notably NOT status-driven since M3 has no status axis to begin with."
+    },
+    {
+      "id": "slot.icon",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "consumer-owned glyph content (status icon or arbitrary icon); Salt fixes it to the status via StatusIndicator, shadcn/M3 leave the specific icon fully up to the consumer"
+    },
+    {
+      "id": "slot.title",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned headline text, where the system has a title part (see structure.title)"
+    },
+    {
+      "id": "slot.description",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned body content; all three sources accept arbitrary children/nodes here (Salt: BannerContent's required children; shadcn: AlertDescription, optional per-instance but structurally always available; M3: supporting/body-text)"
+    },
+    {
+      "id": "slot.actions",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned action buttons, where the system has an actions part (see structure.actions)"
+    },
+    {
+      "id": "slot.close",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned close affordance, first-class only in M3 (see structure.close)"
+    },
+    {
+      "id": "state.rest-only",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant: the alert/banner root has no hover/focus/active/disabled rule anywhere in any source — confirmed no such rule in Banner.css or alert.tsx's cva variants, and no interaction-state tokens in any M3 banner token file. Any interactive states belong entirely to the composed action/close buttons, owned by the future button component's own matrix, not this one."
+    },
+    {
+      "id": "style.root.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "shown at emphasis=primary/default/standard (each system's least-emphasized container). DECLARED DEFERRAL, same limitation as Spinner's size/Button's tone grid: only the default emphasis level resolves here; the tone-tinted / vibrant levels are the extra style.root.background@emphasis row below, the same 'one representative non-default axis cell' pattern button.template.json established."
+    },
+    {
+      "id": "style.root.background@emphasis",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"][data-emphasis=\"secondary\"], [data-slot=\"alert\"][data-emphasis=\"vibrant\"]",
+      "declarations": {
+        "background": "$"
+      },
+      "note": "the emphasis axis's non-default value, at the default tone (Salt: info; M3 has no tone so 'vibrant' is tone-agnostic by definition). shadcn is OFF here deliberately — new-york-v4's alert background never changes regardless of variant, a real non-variation (see prop.emphasis note), not a missing cell. Selector unions each system's own attribute vocabulary for its non-default emphasis value, same generalized-selector pattern as button.template.json's style.root.background@secondary row (never a bare hardcoded single-system selector)."
+    },
+    {
+      "id": "style.root.border-color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "border-color": "$"
+      },
+      "note": "shown at the default tone. Salt's border color is status-driven (border-color = the SAME palette-{status} value used for the icon, see style.icon.color — Banner.css: --banner-borderColor -> status-{status}-borderColor). shadcn's border color is a FIXED neutral `border` token that never varies by variant/tone — Alert's cva classes never touch border-color, a real non-variation confirmed by reading alertVariants directly. M3 is OFF: no border/outline token exists anywhere in the banner token family (_md-comp-banner*.scss) — M3's banners are color-fill only, a genuine structural absence, not a gap."
+    },
+    {
+      "id": "style.root.border-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "border-width": "$"
+      },
+      "note": "Salt: --salt-size-fixed-100 = 1px, density-invariant. shadcn: Tailwind's default `border` = 1px (undeclared token, per foundations/border-style.md). M3: explicitly set to 0 (not left off) — since `base` sets border-style:solid for cross-system layout convenience, leaving M3's width truly absent would let the browser's initial `medium` (~3px) border-width render an unwanted visible border; 0 is the honest way to express 'no border' without that side effect."
+    },
+    {
+      "id": "style.icon.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"alert-icon\"], [data-slot=\"alert-image\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "shown at the default tone. Salt is the ONLY system where the icon's color is genuinely distinct from (and independent of) the body text's color — StatusIndicator resolves to palette-{status}, while the root's own text stays a neutral content-primary-foreground regardless of status. shadcn ([&>svg]:text-current, i.e. inherits the root's own color) and M3 (standard-icon-color/vibrant-icon-color both equal that variant's own text color role) both tie icon color to the SAME role as the body text — aliased here to the same slot as style.root.color for those two systems, not a separate token, and that convergence is recorded as a finding."
+    },
+    {
+      "id": "style.root.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "padding": "$"
+      },
+      "note": "Salt: spacing-50 (block) spacing-100 (inline), by density. shadcn: py-3 px-4 = 12px 16px, fixed. M3: rich schema's top/bottom/leading/trailing-space = 12px uniformly (the with-image-leading-space=20px override is out of scope, same style of scope trim as Calendar's locale row)."
+    },
+    {
+      "id": "style.root.gap",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "gap": "$"
+      },
+      "note": "gap between the leading icon/image and the content column. Salt: spacing-75, by density. shadcn: has-[>svg]:gap-x-3 = 12px (rendered here as a flex gap; shadcn's real layout is CSS grid columns, a structural approximation declared, not silent). M3 rich: icon-text-space = 4px."
+    },
+    {
+      "id": "style.root.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "border-radius": "$"
+      },
+      "note": "Salt: palette-corner (rounded-edition pin, same as Calendar/Button) = curve-150, by density. shadcn: --radius-lg = 10px. M3: corner-extra-large = 28px (rich schema's `shape` token; the 'basic' variant's square option, corner-none, is out of scope under this matrix's rich-schema pin — see ALERT-MATRIX.md Edition pin)."
+    },
+    {
+      "id": "style.root.min-height",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "min-height": "$"
+      },
+      "note": "Salt: calc(size-base + spacing-100), by density (Banner.css). shadcn: OFF — content-driven, no min-height token anywhere in alert.tsx, a real gap. M3: OFF under the rich-schema pin (rich has no single container min-height token); the 'basic' schema DOES define one (height: 56px, two-lines: 64px) but basic is out of scope here — declared, not silently dropped."
+    },
+    {
+      "id": "style.root.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "font": "$"
+      },
+      "note": "the body/description type. Salt: --salt-text-* body role, by density (Open Sans, weight-regular). shadcn: text-sm (0.875rem/1.25rem), no shadcn type-scale foundation exists (per foundations/typography.md) so this is read directly off the component's own Tailwind classes. M3: body-medium (0.875rem/1.25rem, weight-regular, Roboto — self-hosted per this pipeline's existing Calendar/Button precedent for M3's 'plain' typeface role, which this tokens-only clone never spells out as a literal family string)."
+    },
+    {
+      "id": "style.root.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "shown at the default emphasis/tone. Salt: content-primary-foreground (neutral, does NOT vary by status — a real non-variation). shadcn: text-card-foreground (default variant). M3: on-surface (standard variant)."
+    },
+    {
+      "id": "style.title.font",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert-title\"]",
+      "declarations": {
+        "font": "$"
+      },
+      "note": "shadcn: font-medium (weight 500), same 0.875rem/1.25rem size as the body (AlertTitle sets no independent font-size). M3 rich: title-text uses the EMPHASIZED body-medium typescale (md-sys-typescale-emphasized, weight-medium=500, same 0.875rem/1.25rem size/line-height as regular body-medium — the emphasis here is a real, CSS-expressible weight difference, 500 vs 400, not merely a variable-font-axis effect). Salt is OFF — no distinct title font, because there is no distinct title part (see structure.title)."
+    },
+    {
+      "id": "style.description.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert-description\"]",
+      "declarations": {
+        "color": "$"
+      },
+      "note": "shadcn is the ONLY system with a distinct (muted) description color, separate from the title/root color — text-muted-foreground on AlertDescription vs text-card-foreground on the root/title. Salt and M3 are both OFF here: neither tokenizes a separate description color — Salt's BannerContent sets no color of its own (inherits content-primary-foreground from the root, same value as style.root.color) and M3's rich body-text-color resolves to the SAME on-surface role as its title-text-color in the standard variant — both real convergences, not gaps."
+    },
+    {
+      "id": "style.root.tone@error",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"][data-tone=\"error\"]",
+      "cellIsDeclarations": true,
+      "note": "Non-default tone. Mirrors Salt's OWN mechanism exactly: Banner.css declares `border-color: var(--banner-borderColor)` once and then reassigns that one custom property per status (`.saltBanner-error { --banner-borderColor: var(--salt-status-error-borderColor) }`), including the secondary-emphasis background (`.saltBanner-secondary.saltBanner-error`). Modelled here as an indirection slot the base rows consume, rather than duplicating every tone-varying property as its own row. ADDED IN VALIDATION: the first generated pass declared prop.tone with four values but shipped no CSS that varied by tone, so three of Salt's four tones rendered identically to info - a silent fallback (CLAUDE.md rule 3), caught in the render check, not by the generator."
+    },
+    {
+      "id": "style.root.tone@warning",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"][data-tone=\"warning\"]",
+      "cellIsDeclarations": true,
+      "note": "Non-default tone - see style.root.tone@error."
+    },
+    {
+      "id": "style.root.tone@success",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"][data-tone=\"success\"]",
+      "cellIsDeclarations": true,
+      "note": "Non-default tone - see style.root.tone@error."
+    },
+    {
+      "id": "style.root.tone@destructive",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"alert\"][data-tone=\"destructive\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn's only non-default tone. Unlike Salt (border + icon) and unlike its own background (bg-card is IDENTICAL in both variants), shadcn's destructive variant recolours TEXT: `text-destructive` on the root/title/icon plus `*:data-[slot=alert-description]:text-destructive/90` on the description. Same indirection approach as the Salt tone rows above."
+    }
+  ]
+}

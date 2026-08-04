@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Component template + theme column, v2",
+  "description": "v2 lesson baked in: character lives in structure and content formatting, not only CSS. Rows carry a channel: 'css' rows compile to stylesheet rules; 'config' rows compile to the skeleton component's per-theme configuration and are VALIDATED against the skeleton's declared parameter enums — a cell value the skeleton cannot express fails the build; 'info' rows exist for the panel (behavior, slots, states documentation). No component may inherit its skeleton from any design system: the skeleton implements this template's union.",
+  "definitions": {
+    "template": {
+      "type": "object",
+      "required": ["component", "behavior", "skeletonParams", "rows"],
+      "properties": {
+        "component": { "type": "string" },
+        "openUiAnatomy": { "type": "string" },
+        "behavior": {
+          "type": "object",
+          "required": ["pattern", "chassis"],
+          "properties": { "pattern": { "type": "string" }, "chassis": { "type": "string" } }
+        },
+        "skeletonParams": {
+          "type": "object",
+          "description": "The skeleton's declared parameters and their allowed values. config-row cells must match, or the generator fails: this is the expressibility gate.",
+          "additionalProperties": { "type": "array", "items": {} }
+        },
+        "base": {
+          "type": "object",
+          "description": "Theme-invariant layout CSS only (selector -> declarations).",
+          "additionalProperties": { "type": "object", "additionalProperties": { "type": "string" } }
+        },
+        "rows": { "type": "array", "items": { "$ref": "#/definitions/row" } }
+      }
+    },
+    "row": {
+      "type": "object",
+      "required": ["id", "piece", "policy", "channel"],
+      "description": "NAMING RULE: one row is one ATTRIBUTE — an addressable characteristic of a part, in a state, belonging to one of the six pieces. 'Attribute' is the term for the row itself (do not say 'token' — that means a resolved value; do not say 'attribute' when you mean a DOM data-* hook — always say 'data attribute' for those to avoid collision).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z]+\\.[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)*(@[a-z][a-z0-9-]*)?$",
+          "description": "Grammar: <piece>.<part>[.<subpart>].<property>[@state]. Examples: style.day.font, style.day.background@hover, structure.today-marker, behavior.range-selection, prop.density. piece = which of the six sections; part(s) = anatomy location, narrowest last; optional @state narrows to one interaction state."
+        },
+        "piece": { "enum": ["structure", "behavior", "prop", "slot", "state", "style"] },
+        "policy": { "enum": ["locked", "switchable", "default"] },
+        "channel": { "enum": ["css", "config", "info"] },
+        "param": { "type": "string", "description": "config rows: which skeletonParams key this row sets" },
+        "selector": { "type": "string" },
+        "declarations": { "type": "object", "additionalProperties": { "type": "string" } },
+        "cellIsDeclarations": { "type": "boolean" },
+        "note": { "type": "string" }
+      }
+    },
+    "column": {
+      "type": "object",
+      "required": ["system", "component", "slots", "cells"],
+      "properties": {
+        "system": { "type": "string" },
+        "component": { "type": "string" },
+        "fontFaces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["family", "weight", "file"],
+            "properties": { "family": { "type": "string" }, "weight": { "type": "string" }, "file": { "type": "string" } }
+          }
+        },
+        "slots": {
+          "type": "object",
+          "properties": {
+            "light": { "type": "object", "additionalProperties": { "type": "string" } },
+            "dark": { "type": "object", "additionalProperties": { "type": "string" } },
+            "byDensity": { "type": "object", "description": "density name -> slot -> value; only for systems with a density capability" }
+          }
+        },
+        "provenance": { "type": "object", "additionalProperties": { "type": "string" }, "description": "slot or cell id -> source file/token in the DS clone" },
+        "cells": { "type": "object", "additionalProperties": { "$ref": "#/definitions/cell" } }
+      }
+    },
+    "cell": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["value", "alias", "expression", "native", "off", "inherit"] },
+        "value": {},
+        "slot": { "type": "string" },
+        "token": { "type": "string" },
+        "source": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

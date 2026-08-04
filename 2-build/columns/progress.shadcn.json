@@ -1,0 +1,83 @@
+{
+  "system": "shadcn",
+  "component": "progress",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "indicator-bg": "oklch(0% 0 0)",
+      "groove-bg": "color-mix(in oklab, oklch(0% 0 0) 20%, transparent)",
+      "track-radius": "9999px"
+    },
+    "dark": {
+      "indicator-bg": "oklch(0.922 0 0)",
+      "groove-bg": "color-mix(in oklab, oklch(0.922 0 0) 20%, transparent)"
+    }
+  },
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/progress.tsx — 31 lines, the SOLE source for every style cell. It is two elements and two class strings: Root `relative h-2 w-full overflow-hidden rounded-full bg-primary/20`, Indicator `h-full w-full flex-1 bg-primary transition-all` plus an inline transform. There is no cva, no variants object, no size axis and no props of its own beyond what it forwards. Token values from apps/v4/app/globals.css. Examples read for composition: registry/new-york-v4/examples/progress-demo.tsx, apps/v4/examples/radix/{progress-demo,progress-label,progress-rtl,progress-controlled}.tsx. Read ONLY to fix the boundary (no style value taken from them): registry/bases/{radix,base,aria}/ui/progress.tsx and apps/v4/content/docs/components/radix/progress.mdx.",
+    "behaviour-source": "primitives/packages/react/progress/src/progress.tsx (the Radix clone) — BEHAVIOUR AND ARIA ONLY, per the brief. It supplies role=\"progressbar\", aria-valuemax={max}, aria-valuemin={0} (HARDCODED — there is no min prop), aria-valuenow={isNumber(value) ? value : undefined}, aria-valuetext={valueLabel} from a getValueLabel prop defaulting to `${Math.round((value / max) * 100)}%`, and data-state / data-value / data-max on BOTH the Root and the Indicator. DEFAULT_MAX = 100; an invalid max or value is console.error'd and coerced.",
+    "indicator-bg": "class `bg-primary` -> globals.css:107 --primary: oklch(0% 0 0) (light) / :150 oklch(0.922 0 0) (dark). Near-black in light and near-white in dark — a shadcn progress INVERTS, where Salt's accent holds still.",
+    "groove-bg": "class `bg-primary/20` on the ROOT. Tailwind v4 compiles the /20 modifier to color-mix(in oklab, var(--primary) 20%, transparent) — the same derivation input.shadcn.json, select.shadcn.json and badge.shadcn.json used for their /30, /50, /60 and /90 modifiers, written out per mode rather than as an expression over another slot so no custom property has to resolve across a mode boundary (lesson 2). THE ONLY TRACK OF THE THREE DERIVED FROM THE INDICATOR'S OWN COLOUR.",
+    "track-radius": "class `rounded-full`. [R] concrete 9999px — a bare Tailwind utility with no shadcn token behind it, per docs/foundations/shape.md line 10, the same [S/R] treatment badge.shadcn.json's shape row recorded.",
+    "track-height": "class `h-2` = 8px, density-invariant (shadcn has no density capability at all — docs/foundations/density.md).",
+    "transition": "class `transition-all` on the Indicator — property list [S]; duration 150ms and cubic-bezier(0.4, 0, 0.2, 1) are [R] because Tailwind is not vendored in this clone, the same caveat input/select/dialog/tabs/badge.shadcn.json all carry. Unlike Salt's, this transition DOES cover the property the component animates.",
+    "indeterminate": "SOURCED ABSENCE WITH A VISIBLE CONSEQUENCE. Radix fully supports indeterminate (value null -> data-state=\"indeterminate\", aria-valuenow and aria-valuetext both omitted), but progress.tsx's style line is `transform: translateX(-${100 - (value || 0)}%)`, so null coerces to 0 and an indeterminate shadcn progress renders as a MOTIONLESS EMPTY BAR. Its indeterminate support is ARIA-only. Confirmed by grep: no keyframe, no `animate-` utility and no `data-[state=indeterminate]:` rule anywhere in the file.",
+    "rtl": "apps/v4/examples/radix/progress-rtl.tsx adds `className=\"rtl:rotate-180\"` to the whole bar — the consumer flipping a physical-axis transform by hand, because translateX is not direction-aware. Recorded as evidence for structure.fill-mechanism; not modelled."
+  },
+  "cells": {
+    "structure.shape": { "kind": "value", "value": ["linear"], "source": "CONFIRMED ABSENCE — progress.tsx is a horizontal bar and there is no circular progress file anywhere in the clone. shadcn's circular loading affordance is the separate Spinner component (lucide Loader2Icon), already matrixed." },
+    "structure.fill-mechanism": { "kind": "value", "value": "translate", "source": "progress.tsx: style={{ transform: `translateX(-${100 - (value || 0)}%)` }} inline on a full-width indicator inside an overflow-hidden track" },
+    "structure.buffer": { "kind": "off", "note": "CONFIRMED ABSENCE — neither progress.tsx nor the Radix primitive has a second value of any kind" },
+    "structure.stop-indicator": { "kind": "off", "note": "no end marker; and see state.complete, which is the same idea expressed as a data attribute nothing styles" },
+    "structure.label": { "kind": "off", "note": "CONFIRMED ABSENCE in the component. Its own examples supply one by COMPOSITION — progress-label.tsx wraps the bar in Field + FieldLabel and hand-writes <span className=\"ml-auto\">66%</span>, i.e. consumer-owned text the component neither formats nor keeps in sync." },
+    "structure.indeterminate-band": { "kind": "off", "note": "See provenance.indeterminate — the mode exists in ARIA and renders as an empty bar. A sourced absence, not an omission." },
+    "structure.indeterminate-circular": { "kind": "off", "note": "no circular form at all; the indeterminate circular case is shadcn's Spinner, owned by docs/SPINNER-MATRIX.md" },
+
+    "behavior.role": { "kind": "value", "value": "progressbar", "source": "primitives/packages/react/progress/src/progress.tsx: role=\"progressbar\" on Primitive.div" },
+    "behavior.value-range": { "kind": "value", "value": "max-only", "source": "Radix takes `max` (DEFAULT_MAX = 100) and hardcodes aria-valuemin={0}; there is NO min prop, so a non-zero floor is unreachable" },
+    "behavior.determinacy-detection": { "kind": "value", "value": "inferred, three-state", "source": "getProgressState(value, max) returns 'indeterminate' | 'loading' | 'complete', published as data-state on BOTH the Root and the Indicator" },
+    "behavior.value-now": { "kind": "value", "value": "raw, omitted when indeterminate", "source": "aria-valuenow={isNumber(value) ? value : undefined} — NOT rounded, unlike Salt" },
+    "behavior.value-text": { "kind": "value", "value": true, "source": "aria-valuetext={valueLabel}, from getValueLabel defaulting to `${Math.round((value / max) * 100)}%` — announced but never drawn, the exact inverse of Salt" },
+    "behavior.label-formatting": { "kind": "off", "note": "no visible label to format; the percentage exists only in aria-valuetext" },
+    "behavior.buffer-visibility": { "kind": "off" },
+
+    "prop.shape": { "kind": "value", "value": ["linear"], "note": "single-valued, so nothing to discriminate" },
+    "prop.determinacy": { "kind": "value", "value": ["determinate", "indeterminate"], "note": "CAPABILITY LIST. Both values are real at the ARIA level (Radix distinguishes them) and only one is real visually (structure.indeterminate-band is off), which is precisely the divergence worth carrying." },
+    "prop.hide-label": { "kind": "off" },
+    "prop.max": { "kind": "value", "value": 100, "source": "Radix DEFAULT_MAX = 100, applied through isValidMaxNumber with a console.error on an invalid value" },
+    "prop.min": { "kind": "off", "note": "A CEILING, NOT AN OMISSION — Radix has no min prop and hardcodes aria-valuemin={0}." },
+
+    "slot.label": { "kind": "value", "value": "consumer-owned", "note": "DECLARED COMPOSITION to `field` / `label`, both unbuilt — progress-label.tsx and progress-rtl.tsx both build the visible percentage out of Field + FieldLabel." },
+    "slot.composes": { "kind": "value", "value": "field, label, card", "note": "DECLARED COMPOSITION: `field`/`label` (its own labelled examples) and `card` (registry/bases/*/blocks/preview-02/cards/savings-progress.tsx puts a progress inside a card). Neutral placeholders in the harness." },
+
+    "state.rest": { "kind": "value", "value": "bg-primary over bg-primary/20 — the track is the fill at 20%", "source": "progress.tsx class strings" },
+    "state.indeterminate": { "kind": "value", "value": "ARIA-only: data-state=indeterminate, no valuenow, no valuetext, EMPTY BAR", "source": "Radix + the (value || 0) coercion in progress.tsx" },
+    "state.complete": { "kind": "value", "value": true, "source": "getProgressState returns 'complete' when value === max, written as data-state on both elements — and NOTHING in progress.tsx selects on it, so a finished bar looks like a 99% one" },
+    "state.interaction-states": { "kind": "value", "value": "none", "source": "grepped: progress.tsx carries none of the focus-visible:/aria-invalid: groups its sibling components paste in, and has no disabled handling" },
+
+    "style.root.min-width": { "kind": "off", "note": "`w-full` only — a shadcn progress takes whatever width its parent gives it, where a Salt one demands 400px" },
+    "style.root.color": { "kind": "off" },
+    "style.track.height": { "kind": "value", "value": "8px", "source": "class h-2" },
+    "style.track.shape": { "kind": "alias", "slot": "track-radius" },
+    "style.groove.height": { "kind": "value", "value": "100%", "note": "in source the groove IS the track element (bg-primary/20 sits on the Root); the chassis paints it on a full-bleed child, which is byte-equivalent here — declared approximation" },
+    "style.groove.offset": { "kind": "off" },
+    "style.groove.color": { "kind": "alias", "slot": "groove-bg" },
+    "style.groove.shape": { "kind": "off", "note": "the radius lives on the track element (style.track.shape), which in source is the same element" },
+    "style.indicator.thickness": { "kind": "value", "value": "100%", "source": "class h-full" },
+    "style.indicator.color": { "kind": "alias", "slot": "indicator-bg" },
+    "style.indicator.shape": { "kind": "off", "note": "the indicator is clipped by the track's own rounded-full + overflow-hidden rather than carrying a radius" },
+    "style.indicator.trailing-space": { "kind": "off" },
+    "style.indicator.transition": { "kind": "value", "value": "all 150ms cubic-bezier(0.4, 0, 0.2, 1)", "note": "class `transition-all` — property list [S], duration/easing [R] (Tailwind not vendored). Unlike Salt's, it covers the property that actually moves." },
+    "style.indeterminate.duration": { "kind": "off" },
+    "style.indeterminate.easing": { "kind": "off" },
+    "style.buffer.color": { "kind": "off" },
+    "style.buffer.z-index": { "kind": "off" },
+    "style.stop-indicator.size": { "kind": "off" },
+    "style.stop-indicator.paint": { "kind": "off" },
+    "style.label.font": { "kind": "off" },
+    "style.label.gap": { "kind": "off" },
+    "style.circular.size": { "kind": "off" },
+    "style.circular.track": { "kind": "off" },
+    "style.circular.indicator": { "kind": "off" }
+  }
+}

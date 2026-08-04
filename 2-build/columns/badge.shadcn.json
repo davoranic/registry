@@ -1,0 +1,167 @@
+{
+  "system": "shadcn",
+  "component": "badge",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "primary": "oklch(0% 0 0)",
+      "primary-fg": "oklch(0.985 0 0)",
+      "secondary": "oklch(0.97 0 0)",
+      "secondary-fg": "oklch(0.205 0 0)",
+      "danger": "oklch(0.577 0.245 27.325)",
+      "danger-fg": "#fff",
+      "border-base": "oklch(0.922 0 0)",
+      "fg-base": "oklch(0% 0 0)",
+      "accent-bg": "oklch(0.97 0 0)",
+      "accent-fg": "oklch(0.205 0 0)",
+      "focus": "oklch(0.708 0 0)",
+      "pill-bg-default-hover": "color-mix(in oklab, oklch(0% 0 0) 90%, transparent)",
+      "pill-bg-secondary-hover": "color-mix(in oklab, oklch(0.97 0 0) 90%, transparent)",
+      "pill-bg-danger": "oklch(0.577 0.245 27.325)",
+      "pill-bg-danger-hover": "color-mix(in oklab, oklch(0.577 0.245 27.325) 90%, transparent)",
+      "ring-alpha": "50%",
+      "ring-alpha-danger": "20%",
+      "pill-radius": "9999px",
+      "pill-padding": "2px 8px",
+      "pill-gap": "4px",
+      "pill-border-width": "1px",
+      "icon-size": "12px",
+      "type-label": "500 0.75rem/1rem ui-sans-serif, system-ui, sans-serif",
+      "transition-props": "color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+      "pill-bg": "var(--primary)",
+      "pill-fg": "var(--primary-fg)",
+      "pill-border": "transparent",
+      "pill-bg-hover": "var(--pill-bg-default-hover)",
+      "pill-fg-hover": "var(--primary-fg)",
+      "pill-decoration-hover": "none",
+      "ring-current": "var(--focus)",
+      "ring-alpha-current": "var(--ring-alpha)"
+    },
+    "dark": {
+      "primary": "oklch(0.922 0 0)",
+      "primary-fg": "oklch(0.205 0 0)",
+      "secondary": "oklch(0.269 0 0)",
+      "secondary-fg": "oklch(0.985 0 0)",
+      "danger": "oklch(0.704 0.191 22.216)",
+      "border-base": "oklch(1 0 0 / 10%)",
+      "fg-base": "oklch(0.985 0 0)",
+      "accent-bg": "oklch(0.371 0 0)",
+      "accent-fg": "oklch(0.985 0 0)",
+      "focus": "oklch(0.556 0 0)",
+      "pill-bg-default-hover": "color-mix(in oklab, oklch(0.922 0 0) 90%, transparent)",
+      "pill-bg-secondary-hover": "color-mix(in oklab, oklch(0.269 0 0) 90%, transparent)",
+      "pill-bg-danger": "color-mix(in oklab, oklch(0.704 0.191 22.216) 60%, transparent)",
+      "pill-bg-danger-hover": "color-mix(in oklab, oklch(0.704 0.191 22.216) 90%, transparent)",
+      "ring-alpha-danger": "40%"
+    }
+  },
+  "modeInvariant": ["danger-fg"],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/badge.tsx — ONE element, one cva with six variants, sole source for every style cell. Token values from apps/v4/app/globals.css (light block from line 100, dark from line 144). Examples read for composition and for the numeric case: apps/v4/registry/new-york-v4/examples/badge-{demo,secondary,destructive,outline}.tsx and apps/v4/examples/radix/badge-{variants,icon,link,rtl,colors}.tsx. Read only to fix the boundary (NOT canonical): apps/v4/registry/bases/{radix,base,aria}/ui/badge.tsx, which move the identical structure and the identical six-variant list behind `cn-badge-variant-*` class tokens — same conclusions, no extra capability; and apps/v4/content/docs/components/{radix,base,aria}/badge.mdx.",
+    "six-variants-not-four": "badge.tsx's cva ships SIX variants — default, secondary, destructive, outline, ghost, link — with `defaultVariants: { variant: \"default\" }`. The docs' own badge-demo.tsx renders only the first four, and `ghost` and `link` appear only in apps/v4/examples/radix/badge-variants.tsx (ghost) and badge-link.tsx. Found by reading the cva object rather than the demo, which is why they are modelled.",
+    "hover-is-link-only": "THE AXIS THIS COLUMN NEARLY LOST. Every hover declaration in badge.tsx is written with Tailwind's `[a&]:` arbitrary variant — `[a&]:hover:bg-primary/90`, `[a&]:hover:bg-accent`, `[a&]:hover:underline` — which compiles to a selector that only matches when the element is an <a>. Since the component renders a <span> unless `asChild` is passed, a default shadcn badge has NO hover response at all. Modelled as prop.interaction with a real element branch, exactly as card.template.json modelled its static/button/link fork, rather than as an unconditional hover.",
+    "primary / primary-fg": "classes `bg-primary text-primary-foreground` -> --primary globals.css:107 / :150 and --primary-foreground :108 / :151. Note the INVERSION: light is near-black on near-white, dark is near-white on near-black. Contrast Salt, whose badge is mode-invariant.",
+    "secondary / secondary-fg": "classes `bg-secondary text-secondary-foreground` -> --secondary globals.css:109 / :152, --secondary-foreground :110 / :153.",
+    "danger / danger-fg / pill-bg-danger": "class `bg-destructive` -> --destructive globals.css:115 / :158, with `dark:bg-destructive/60` compiling to color-mix(in oklab, var(--destructive) 60%, transparent) — so the dark destructive fill is a 60% mix rather than the raw colour. The label is `text-white`, a LITERAL Tailwind colour and not a token, identical in both modes, which is why danger-fg is declared modeInvariant. --destructive-foreground exists in globals.css and this component does not use it.",
+    "pill-bg-*-hover": "classes `[a&]:hover:bg-{primary,secondary,destructive}/90`. Tailwind v4 compiles the /90 modifier to color-mix(in oklab, <color> 90%, transparent), the same derivation input.shadcn.json used for its /30 and /50 modifiers. Written out per mode rather than as an expression over another slot, so no custom property has to resolve across a mode boundary (lesson 2).",
+    "accent-bg / accent-fg": "classes `[a&]:hover:bg-accent [a&]:hover:text-accent-foreground` on the outline and ghost variants -> --accent globals.css:113 / :156 and --accent-foreground :114 / :157. A DIFFERENT hover mechanism from the three filled variants' 90% self-darken, which is why style.badge.hover reads indirection slots rather than restating a formula.",
+    "border-base": "class `border-border` on the outline variant -> --border globals.css:117 / :160. The 1px WIDTH comes from the cva base's bare `border` utility, which Tailwind does not tokenise (docs/foundations/border-style.md).",
+    "fg-base": "class `text-foreground` on the outline variant -> --foreground globals.css:102 / :145 (pure black in this checkout).",
+    "focus / ring-alpha / ring-alpha-danger": "classes `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50` from the cva BASE -> --ring globals.css:119 / :162, plus the destructive variant's `focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40`. The alpha is a slot so the destructive override changes only the alpha, per mode — the same shape input.shadcn.json used for aria-invalid.",
+    "pill-radius": "class `rounded-full`. Tailwind v4 renders this as calc(infinity * 1px); Tailwind is NOT vendored in this clone, so the concrete 9999px is [R] — visually identical, and the same value M3's corner-full carries. docs/foundations/shape.md already records that shadcn has no pill token of its own: 'components use rounded-full, a bare Tailwind utility'.",
+    "pill-padding / pill-gap": "classes `px-2 py-0.5` and `gap-1` against Tailwind's default --spacing: 0.25rem -> 8px inline, 2px block, 4px gap.",
+    "icon-size": "class `[&>svg]:size-3` = 0.75rem = 12px, paired with `[&>svg]:pointer-events-none`. Density-invariant because shadcn has no density capability at all (docs/foundations/density.md).",
+    "type-label": "classes `text-xs font-medium` = 0.75rem/1rem at weight 500. Matches docs/foundations/typography.md line 58's caption/notation row for shadcn. badge.tsx sets no font-family utility, so the family is the ambient Tailwind sans stack — recorded as an ambient inheritance rather than a component token, the same honesty tooltip.shadcn.json and input.shadcn.json used.",
+    "transition-props": "class `transition-[color,box-shadow]`. The property list is [S]; 150ms / cubic-bezier(0.4,0,0.2,1) are Tailwind's own defaults and Tailwind is not vendored in this clone, so the timing is [R] — the identical caveat input/select/dialog/tabs.shadcn.json recorded.",
+    "no-dot-no-anchoring": "CONFIRMED ABSENCE, and it is a double one. badge.tsx has no dot form and no positioning utility. The anchored dot shadcn DOES ship is `AvatarBadge`, exported from the avatar component (apps/v4/examples/*/avatar-badge.tsx imports it from ui/avatar) — a part of a different canonical component on a different docs/COMPONENTS.md row. And the NUMERIC badge in shadcn's own badge-demo.tsx is not a component capability either: it is `className=\"h-5 min-w-5 rounded-full px-1 font-mono tabular-nums\"` applied per instance, i.e. the counter shape is consumer CSS. Recorded rather than modelled.",
+    "no-size-token": "CONFIRMED ABSENCE: badge.tsx declares no height, min-height, min-width or width beyond `w-fit`, so a shadcn badge's height is entirely emergent — 2px padding + 1rem line-height + 2px padding + 2 x 1px border = 22px. Salt and M3 both pin a height; shadcn does not.",
+    "aria-invalid-scope-trim": "The cva base carries `aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40` — shadcn's shared focus/invalid block, pasted verbatim into a component that is never a form control. Declared out of scope rather than modelled: a badge has no validation state in any of the three systems, and there is no cross-system row to hang it on. The same class of scope trim input.shadcn.json made for its `file:` and `selection:` groups.",
+    "base-layout-into-chassis": "`inline-flex items-center justify-center shrink-0 w-fit` are promoted to the template's `base` block as chassis layout, because Salt's pill declares the identical set (display: inline-flex, align-items: center, justify-content: center, flex-shrink: 0) and M3 has no layout token to contradict them. Declared rather than modelled as a row."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "single", "source": "badge.tsx returns one <Comp data-slot=\"badge\">; there is no wrapper element anywhere in the file" },
+    "structure.label-format": { "kind": "value", "value": "children", "source": "badge.tsx spreads {...props}; the label is whatever the consumer nests. There is no value or max prop" },
+    "structure.dot": { "kind": "off", "note": "CONFIRMED ABSENCE — see the no-dot-no-anchoring provenance entry. The anchored dot lives on `avatar` as AvatarBadge" },
+    "structure.anchoring": { "kind": "off", "note": "CONFIRMED ABSENCE — no position, inset, absolute or translate utility in badge.tsx" },
+    "structure.icon": { "kind": "value", "value": true, "source": "cva base `gap-1 [&>svg]:pointer-events-none [&>svg]:size-3` — the component sizes and neutralises any SVG child; exercised by examples/radix/badge-icon.tsx and by badge-demo.tsx's Verified badge" },
+
+    "prop.content": { "kind": "value", "value": ["label"], "source": "single-valued: there is no dot form" },
+    "prop.placement": { "kind": "value", "value": ["inline"], "source": "single-valued: there is no anchored form" },
+    "prop.variant": { "kind": "value", "value": ["default", "secondary", "destructive", "outline", "ghost", "link"], "source": "badge.tsx cva variants object, listed SOURCE-DEFAULT-FIRST per `defaultVariants: { variant: \"default\" }`. A secondary-first or ghost-first list would have made every unqualified shadcn badge in the harness render as the wrong fill" },
+    "prop.interaction": { "kind": "value", "value": ["static", "link"], "source": "badge.tsx `asChild = false` is the declared default, so static is value[0]; `const Comp = asChild ? Slot.Root : \"span\"`. The `link` value is not cosmetic — every [a&]:hover rule in the component is unreachable without it (see the hover-is-link-only provenance entry)" },
+    "prop.max": { "kind": "off", "note": "no value prop, so nothing to clamp" },
+
+    "behavior.role": { "kind": "value", "value": "none — data-slot and data-variant only", "source": "badge.tsx writes data-slot=\"badge\", data-variant and className, and spreads the rest. No role, no aria-label, no aria-live" },
+    "behavior.dot-detection": { "kind": "off", "note": "no dot form to detect" },
+    "behavior.anchor-detection": { "kind": "off", "note": "no anchored form to detect" },
+    "behavior.value-clamping": { "kind": "off", "note": "CONFIRMED ABSENCE — the label is arbitrary children; a long one is clipped by `overflow-hidden` rather than clamped" },
+    "behavior.activation": { "kind": "value", "value": "delegated via asChild", "source": "badge.tsx binds no handler of its own; `asChild` replaces the span with the consumer's element via Slot.Root, and examples/radix/badge-link.tsx supplies <a href>. Activation is then the platform's, and the [a&]:hover styling becomes reachable at the same moment" },
+    "behavior.live-region": { "kind": "off", "note": "CONFIRMED ABSENCE — no aria-live, aria-atomic or role=status" },
+
+    "slot.label": { "kind": "value", "value": "arbitrary children", "note": "including an icon: badge-demo.tsx puts <BadgeCheckIcon /> and a text node side by side" },
+    "slot.host": { "kind": "off" },
+    "slot.icon": { "kind": "value", "value": true, "source": "DECLARED COMPOSITION to a future icon-set component; shadcn's examples use lucide's BadgeCheckIcon and BookmarkIcon" },
+
+    "state.rest": { "kind": "value", "value": "--primary fill with --primary-foreground text, INVERTING by mode", "note": "near-black on near-white in light, near-white on near-black in dark" },
+    "state.hover": { "kind": "value", "value": "link-gated; three mechanisms across six variants", "source": "[a&]:hover:bg-{primary,secondary,destructive}/90 (self-darken), [a&]:hover:bg-accent + text-accent-foreground (outline, ghost), [a&]:hover:underline (link)" },
+    "state.focus": { "kind": "value", "value": "border-ring + a 3px ring/50 shadow, from the cva BASE", "note": "declared on an element that cannot take focus unless asChild supplies a focusable one — reproduced as source has it and flagged. The destructive variant narrows the alpha to 20% light / 40% dark" },
+
+    "style.badge.background": { "kind": "alias", "slot": "pill-bg", "note": "variant=default (value[0]), read through the indirection the five variant rows reassign" },
+    "style.badge.color": { "kind": "alias", "slot": "pill-fg" },
+    "style.badge.font": { "kind": "alias", "slot": "type-label" },
+    "style.badge.letter-spacing": { "kind": "off", "note": "CONFIRMED ABSENCE — no tracking utility" },
+    "style.badge.shape": { "kind": "alias", "slot": "pill-radius" },
+    "style.badge.size": { "kind": "off", "note": "CONFIRMED ABSENCE — see the no-size-token provenance entry; a shadcn badge is sized by its padding and line-height alone" },
+    "style.badge.padding": { "kind": "alias", "slot": "pill-padding" },
+    "style.badge.gap": { "kind": "alias", "slot": "pill-gap" },
+    "style.badge.border-width": { "kind": "alias", "slot": "pill-border-width", "note": "cva base `border border-transparent` — every variant carries the 1px, so switching to outline changes only a colour" },
+    "style.badge.border-color": { "kind": "alias", "slot": "pill-border" },
+    "style.badge.overflow": { "kind": "value", "value": "hidden", "source": "cva base `overflow-hidden` — a long label is clipped to the pill's full radius" },
+    "style.badge.white-space": { "kind": "value", "value": "nowrap", "source": "cva base `whitespace-nowrap`" },
+    "style.badge.z-index": { "kind": "off", "note": "CONFIRMED ABSENCE — shadcn has no shared z-index scale (docs/foundations/layers.md) and this component sets none" },
+    "style.badge.margin": { "kind": "off" },
+    "style.badge.font-smoothing": { "kind": "off" },
+    "style.badge.transition": { "kind": "alias", "slot": "transition-props" },
+    "style.badge.hover": {
+      "kind": "value",
+      "value": { "background": "var(--pill-bg-hover)", "color": "var(--pill-fg-hover)", "text-decoration-line": "var(--pill-decoration-hover)" },
+      "source": "the [a&]:hover group, expressed once over three indirection slots the variant rows reassign, so one rule carries the self-darken, the accent-pair and the underline mechanisms without restating the selector six times"
+    },
+    "style.badge.focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--focus)", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--ring-current) var(--ring-alpha-current), transparent)" },
+      "source": "cva base `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50`, drawn as a translucent box-shadow ring, the rendering input.shadcn.json established. NOTE: badge.tsx does NOT carry `outline-none`, unlike input.tsx, so the native outline is left alone and none is emitted here"
+    },
+    "style.badge.dot": { "kind": "off" },
+    "style.badge.anchor": { "kind": "off" },
+    "style.badge.anchor@dot": { "kind": "off" },
+
+    "style.badge.variant@secondary": {
+      "kind": "value",
+      "value": { "--pill-bg": "var(--secondary)", "--pill-fg": "var(--secondary-fg)", "--pill-bg-hover": "var(--pill-bg-secondary-hover)", "--pill-fg-hover": "var(--secondary-fg)" },
+      "source": "badge.tsx `secondary: \"bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90\"`"
+    },
+    "style.badge.variant@destructive": {
+      "kind": "value",
+      "value": { "--pill-bg": "var(--pill-bg-danger)", "--pill-fg": "var(--danger-fg)", "--pill-bg-hover": "var(--pill-bg-danger-hover)", "--pill-fg-hover": "var(--danger-fg)", "--ring-current": "var(--danger)", "--ring-alpha-current": "var(--ring-alpha-danger)" },
+      "source": "badge.tsx `destructive: \"bg-destructive text-white focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90\"` — the only variant that touches the focus ring, and the only one whose label colour is a literal rather than a token"
+    },
+    "style.badge.variant@outline": {
+      "kind": "value",
+      "value": { "--pill-bg": "transparent", "--pill-fg": "var(--fg-base)", "--pill-border": "var(--border-base)", "--pill-bg-hover": "var(--accent-bg)", "--pill-fg-hover": "var(--accent-fg)" },
+      "source": "badge.tsx `outline: \"border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground\"` — no bg-* class at all, so the fill falls back to the base's transparent; an outline badge is see-through, not white"
+    },
+    "style.badge.variant@ghost": {
+      "kind": "value",
+      "value": { "--pill-bg": "transparent", "--pill-fg": "inherit", "--pill-bg-hover": "var(--accent-bg)", "--pill-fg-hover": "var(--accent-fg)" },
+      "source": "badge.tsx `ghost: \"[a&]:hover:bg-accent [a&]:hover:text-accent-foreground\"` — the whole variant is its hover pair. No background, no border colour, no text colour: at rest it is a transparent box with an inherited colour, visible only once it is a link and hovered"
+    },
+    "style.badge.variant@link": {
+      "kind": "value",
+      "value": { "--pill-bg": "transparent", "--pill-fg": "var(--primary)", "--pill-bg-hover": "transparent", "--pill-fg-hover": "var(--primary)", "--pill-decoration-hover": "underline", "text-underline-offset": "4px" },
+      "source": "badge.tsx `link: \"text-primary underline-offset-4 [a&]:hover:underline\"` — the one variant whose hover moves text-decoration rather than a colour"
+    },
+
+    "style.icon.box": { "kind": "value", "value": { "width": "var(--icon-size)", "height": "var(--icon-size)", "pointer-events": "none" }, "source": "cva base `[&>svg]:size-3 [&>svg]:pointer-events-none`" }
+  }
+}

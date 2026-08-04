@@ -1,0 +1,255 @@
+{
+  "system": "m3",
+  "component": "progress",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "action": "#6750a4",
+      "x-m3-surface-container-highest": "#e6e0e9",
+      "shape-corner-none": "0px"
+    },
+    "dark": {
+      "action": "#d0bcff",
+      "x-m3-surface-container-highest": "#36343b"
+    }
+  },
+  "provenance": {
+    "canonical-source": "tokens/versions/v0_192/_md-comp-linear-progress-indicator.scss AND tokens/versions/v0_192/_md-comp-circular-progress-indicator.scss — the PRE-MERGE singular pair, which is what the pinned edition ships. Under v0.192 M3 files its progress tokens BY COMPONENT (one file per shape), not by concern; the merged md.comp.progress-indicator family that filed them by concern is a `latest` invention and does not exist here. Read for the edition diff and the boundary: versions/latest/sass/_md-comp-progress-indicator.scss and _md-comp-progress-indicator-{linear,circular}.scss, and the hand-authored, edition-independent tokens/_md-comp-{linear,circular}-progress.scss wrappers (which are the shipped library and both @use the v0.192 singular files directly). Colour roles resolved through versions/v0_192/{_md-sys-color.scss (values-light() and values-dark() in ONE file — v0.192 has no _md-sys-color__dark.scss),_md-ref-palette.scss,_md-sys-shape.scss}. material-web is a TOKENS-ONLY clone (CLAUDE.md), so every structure and behavior row here is [R] and every style cell is [S].",
+    "edition-pin": "PINNED TO versions/v0_192. OWNER DECISION: every M3 column pins the v0.192 edition, because material-web's own wrappers @use versions/v0_192 — and for this component that is literal: tokens/_md-comp-linear-progress.scss reads `@use 'versions/v0_192/md-comp-linear-progress-indicator'` and tokens/_md-comp-circular-progress.scss reads `@use 'versions/v0_192/md-comp-circular-progress-indicator'`. THIS IS THE MOST DESTRUCTIVE PIN IN THE REGISTRY, and every loss is declared on its own cell rather than dropped. The previous pin was `latest`, and it was load-bearing in the other direction. What is LOST, exactly: (1) THE WHOLE STOP INDICATOR. The merged family supplied stop-indicator-color / -shape and the linear file supplied $stop-indicator-size 4px / $stop-indicator-trailing-space 0px. v0.192 contains the string 'stop' ZERO times in either progress file. structure.stop-indicator, style.stop-indicator.size and style.stop-indicator.paint are therefore declared gaps — the end dot marking 100% is gone. (2) THE WAVE GEOMETRY. $active-indicator-wave-amplitude, -wavelength, $indeterminate-active-indicator-wave-wavelength, $with-wave-height/-size: none of them exist in v0.192. (3) $track-active-indicator-space, the gap between the end of the fill and the start of the remaining track — style.indicator.trailing-space is a declared gap. (4) THE CIRCULAR TRACK ENTIRELY. v0.192's circular file has ten keys and not one is a track token, so style.circular.track is a declared gap. WHAT CHANGES VALUE: (a) linear track-color is md-sys-color.surface-container-highest (#e6e0e9 / #36343b) in v0.192 where the merged family said secondary-container (#e8def8 / #4a4458) — a real, visible recolour of the groove from tinted-purple to neutral; (b) linear active-indicator-shape and track-shape are BOTH corner-none = 0px in v0.192 where the merged family said corner-full = 9999px — square-ended bar, square-ended groove; (c) circular size is 48px in v0.192 where latest said 40px. In short: M3's rounded, tinted, dotted progress bar is a `latest`-era redesign, and the pinned edition is the square-ended neutral bar that preceded it. That is also, exactly, what material-web actually ships.",
+    "action": "versions/v0_192/_md-comp-linear-progress-indicator.scss 'active-indicator-color' -> md-sys-color.primary (identically in _md-comp-circular-progress-indicator.scss) -> versions/v0_192/_md-sys-color.scss values-light() primary40 / values-dark() primary80 -> _md-ref-palette.scss #6750a4 / #d0bcff. UNCHANGED BY THE PIN — the merged latest family resolves active-indicator-color to primary too, and the palette entries are byte-identical across editions. Same slot spinner.m3.json uses. NOTE the stop indicator, which shared this colour, no longer exists (see edition-pin).",
+    "linear-geometry": "versions/v0_192/_md-comp-linear-progress-indicator.scss: 'active-indicator-height' 4px, 'track-height' 4px. That is the WHOLE geometry set — six keys plus the four four-color-* entries. Latest's separate _md-comp-progress-indicator-linear.scss carried seventeen, including the thick and wave families and the stop indicator; none of that exists here. Density-invariant because M3 has no density capability at all (docs/foundations/density.md).",
+    "circular-geometry": "versions/v0_192/_md-comp-circular-progress-indicator.scss: 'size' 48px, 'active-indicator-width' 4px. NO TRACK TOKEN OF ANY KIND — see style.circular.track's declared gap. Latest's _md-comp-progress-indicator-circular.scss said $size 40px with $track-thickness 4px and $track-active-indicator-space 4px.",
+    "circular-radius": "DERIVED, AND NOW IN AGREEMENT WITH spinner.m3.json RATHER THAN DELIBERATELY DIVERGENT FROM IT — the v0.192 pin closed that disagreement by removing the token that caused it. r = (size - active-indicator-width) / 2 = (48 - 4) / 2 = 22px, the same figure spinner.m3.json now derives from the same two tokens in the same file. The old conflict was about $track-active-indicator-space: this column read it as an angular gap and spinner read it radially. v0.192 has no such token, and no circular track for it to separate, so there is nothing left to disagree about. Recorded so the trap is not re-sprung if the pin is ever moved back.",
+    "out-of-scope": "Declared, not dropped, and MUCH SHORTER under this pin because the pinned edition simply never had most of it: (a) the `thick` families do not exist in v0.192 at all (they were latest-only, and every member there was @deprecated with `No longer tokenized as a variant, but rather a sample configuration in code`); (b) the `wave` families likewise do not exist in v0.192 — see edition-pin loss (2); (c) the `four-color-active-indicator-{one,two,three,four}-color` family DOES exist in v0.192, in both files, and material-web's wrappers list all four under $supported-tokens. It resolves to primary / primary-container / tertiary / tertiary-container. It is the one indeterminate-adjacent family that survives the pin and it is carried as evidence on structure.indeterminate-band, but it is not modelled as a style row: no other column in this registry has a four-colour cycling indicator, so there is no template row for it. Declared here rather than silently ignored.",
+    "structure-behavior": "[R] throughout — no element exists in this clone. structure.stop-indicator, structure.indeterminate-band and structure.shape are TOKEN-SOURCED (the tokens only exist because those things exist); role, determinacy detection and the value attributes are APG convention, flagged as [R] rather than presented as [S].",
+    "x-m3-surface-container-highest": "versions/v0_192/_md-comp-linear-progress-indicator.scss 'track-color' -> md-sys-color.surface-container-highest -> versions/v0_192/_md-sys-color.scss values-light() neutral90 = #e6e0e9 / values-dark() neutral22 = #36343b. VALUE CHANGED BY THE PIN, and it is the most visible change in this column: the groove was #e8def8 / #4a4458 (secondary-container, from latest's merged family). This slot REPLACES the removed x-m3-secondary-container slot, which had no source left once the merged family went away. The surface-container-highest role itself is edition-stable — it is the same role input.m3.json and select.m3.json already resolve to these two hexes; only the progress track's citation of it is new.",
+    "shape-corner-none": "versions/v0_192/_md-comp-linear-progress-indicator.scss 'active-indicator-shape' AND 'track-shape', both -> md-sys-shape.corner-none -> versions/v0_192/_md-sys-shape.scss 'corner-none' = 0px. VALUE CHANGED BY THE PIN: the merged latest family gave all three parts (indicator, track, stop indicator) corner-full = 9999px. This slot REPLACES the removed shape-full slot. The circular file's 'active-indicator-shape' also says corner-none, and material-web's own tokens/_md-comp-circular-progress.scss lists it under $unsupported-tokens with the comment `// must be circular` — so the shipped library ignores it there in any case."
+  },
+  "cells": {
+    "structure.shape": {
+      "kind": "value",
+      "value": [
+        "linear",
+        "circular"
+      ],
+      "source": "versions/v0_192/_md-comp-linear-progress-indicator.scss and versions/v0_192/_md-comp-circular-progress-indicator.scss — TWO SEPARATE FILES under this pin, one per shape, rather than latest's merged family with linear/circular sub-namespaces. The evidence for the axis is if anything stronger (two whole token sets exist) even though the filing changed; what is lost is the merged family's argument that M3 itself considers them one component. No source default between the two."
+    },
+    "structure.fill-mechanism": {
+      "kind": "value",
+      "value": "scale",
+      "source": "material-web tokens/_md-comp-linear-progress.scss $unsupported-tokens: 'active-indicator-shape', above the comment `// can only control track since scaling is used on buffer/progress` — the shipped library scales the indicator, which is exactly why it cannot honour a corner radius on it. UNAFFECTED BY THE PIN: this is the hand-authored top-level wrapper, not an edition file, and it @use's versions/v0_192/md-comp-linear-progress-indicator — so under this pin the wrapper and the token source finally agree on an edition."
+    },
+    "structure.buffer": {
+      "kind": "off",
+      "note": "no buffer token in any of the five progress files in either edition. The word appears once, in material-web's own scaling comment, naming something the token set does not describe."
+    },
+    "structure.stop-indicator": {
+      "kind": "off",
+      "note": "DECLARED GAP, and the headline loss of this pin. In `latest` this row was ON, sourced from the merged md.comp.progress-indicator family's $stop-indicator-color / $stop-indicator-shape plus _md-comp-progress-indicator-linear.scss's $stop-indicator-size 4px and $stop-indicator-trailing-space 0px — four real, non-deprecated tokens. THE PINNED EDITION HAS NONE OF THEM: the string 'stop' appears ZERO times in versions/v0_192/_md-comp-linear-progress-indicator.scss and zero times in the circular file. WHAT THE CONSUMER LOSES: the small primary-coloured dot that sits at the far end of the track marking where 100% is — M3's distinctive determinate-progress affordance and the only part of this component that distinguishes an M3 bar from a generic one at a glance. It was claimed here in the first place because docs/SPINNER-MATRIX.md finding 6 explicitly deferred it to this matrix; that deferral is now void, and this note is its cancellation."
+    },
+    "structure.label": {
+      "kind": "off",
+      "note": "no typescale, label or text token in any of the five progress files in either edition"
+    },
+    "structure.indeterminate-band": {
+      "kind": "value",
+      "value": true,
+      "source": "DECLARED SOURCE SUBSTITUTION, WITH AN EVIDENCE DOWNGRADE — read this before trusting the cell. Under the previous `latest` pin the source was $indeterminate-active-indicator-wave-wavelength: 20px in _md-comp-progress-indicator-linear.scss, the only explicitly indeterminate-qualified token in M3's whole progress family. THAT TOKEN DOES NOT EXIST IN v0.192. What survives in versions/v0_192/_md-comp-linear-progress-indicator.scss is the 'four-color-active-indicator-{one,two,three,four}-color' family (-> primary / primary-container / tertiary / tertiary-container), which material-web's tokens/_md-comp-linear-progress.scss lists under $supported-tokens: a four-colour CYCLE has no meaning for a static determinate fill, so it evidences a moving indicator. That is weaker evidence than a token with 'indeterminate' in its name, and it is flagged [R]-qualified rather than presented as [S]. The row is left ON rather than switched off because the CAPABILITY is not what the pin removed — only the wave GEOMETRY is (see style.indeterminate.* and provenance.edition-pin loss 2). FLAGGED FOR THE OWNER as a judgment call: if the owner wants strict [S]-only evidence, this row becomes a declared gap and M3's indeterminate linear progress renders nothing."
+    },
+    "structure.indeterminate-circular": {
+      "kind": "off",
+      "note": "M3's merged family DOES cover indeterminate circular — and docs/SPINNER-MATRIX.md already claims that reading of exactly these tokens. Turning it on here would be double-ownership. Cross-referenced, not re-modelled: spinner owns the rotation and the value-less arc; progress owns the determinate arc and the stop indicator."
+    },
+    "behavior.role": {
+      "kind": "value",
+      "value": "progressbar",
+      "note": "[R] — APG convention; tokens-only clone, no element to grep. Agrees with the two grepped columns, which is itself the finding."
+    },
+    "behavior.value-range": {
+      "kind": "value",
+      "value": "min-max",
+      "note": "CORRECTED alongside behavior.value-now, same reasoning: 0-100, the range both grepped columns use and the one APG's progressbar pattern assumes. [R] — no M3 element exists to grep."
+    },
+    "behavior.determinacy-detection": {
+      "kind": "value",
+      "value": "unanswerable",
+      "note": "[R] — the mode demonstrably exists (structure.indeterminate-band) and there is no element to say how it is selected"
+    },
+    "behavior.value-now": {
+      "kind": "value",
+      "value": "raw, omitted when indeterminate",
+      "note": "CORRECTED during the owner-validation pass. This cell previously read \"unanswerable\" [R], which rendered every M3 bar — including the determinate ones at 0/37/100% — as role=\"progressbar\" with NO aria-valuenow. That is not a declared absence, it is a false assertion: role=progressbar without a value means INDETERMINATE to assistive tech, so a determinate M3 bar announced as indeterminate. The inconsistency was internal to this column: behavior.role already accepted 'APG convention' as its [R] source, and the SAME APG progressbar pattern specifies valuenow/valuemin/valuemax for the determinate case. Accepting that source for the role and refusing it for the values was arbitrary. It is further triangulated by the two GREPPED columns, which independently agree on the identical contract (valuenow present when determinate, omitted when indeterminate, over a 0-100 range) — see progress.salt.json and progress.shadcn.json. Still [R]: there is no M3 element to grep, and this is flagged so a future canary re-checks it if a live M3 component is ever added to the clone."
+    },
+    "behavior.value-text": {
+      "kind": "off",
+      "note": "[R]"
+    },
+    "behavior.label-formatting": {
+      "kind": "off",
+      "note": "no label"
+    },
+    "behavior.buffer-visibility": {
+      "kind": "off"
+    },
+    "prop.shape": {
+      "kind": "value",
+      "value": [
+        "linear",
+        "circular"
+      ],
+      "note": "two sub-namespaces, no source default between them"
+    },
+    "prop.determinacy": {
+      "kind": "value",
+      "value": [
+        "determinate",
+        "indeterminate"
+      ],
+      "note": "CAPABILITY LIST, WITH ITS EVIDENCE REBUILT BY THE PIN. Determinate was evidenced by the stop indicator (a dot marking 100% only makes sense against a value); THAT EVIDENCE IS GONE — versions/v0_192 has no stop-indicator token (see structure.stop-indicator's declared gap). Indeterminate was evidenced by the wave-wavelength token; that is gone too. What remains in versions/v0_192/_md-comp-linear-progress-indicator.scss is a single active indicator whose length is the value (determinate, and the shipped tokens/_md-comp-linear-progress.scss scales it — see structure.fill-mechanism) and the four-color-active-indicator-* family (indeterminate). Both values are therefore retained but both are now [R]-qualified rather than [S]. Declared, not quietly kept."
+    },
+    "prop.hide-label": {
+      "kind": "off"
+    },
+    "prop.max": {
+      "kind": "off",
+      "note": "no element, no prop"
+    },
+    "prop.min": {
+      "kind": "off"
+    },
+    "slot.label": {
+      "kind": "off",
+      "note": "no label part and no composition example — a tokens-only clone has neither"
+    },
+    "slot.composes": {
+      "kind": "off",
+      "note": "no element to compose with"
+    },
+    "state.rest": {
+      "kind": "value",
+      "value": "primary indicator over a surface-container-highest track, two unrelated colour roles",
+      "source": "versions/v0_192/_md-comp-linear-progress-indicator.scss 'active-indicator-color' / 'track-color'. VALUE CHANGED BY THE PIN: the track role was secondary-container under latest's merged family, so the sentence used to read 'over a secondary-container track'. The 'two unrelated colour roles' observation survives the change — if anything it is starker now, primary against a neutral surface tone."
+    },
+    "state.indeterminate": {
+      "kind": "value",
+      "value": "mode exists [R], no geometry token, no duration token",
+      "source": "DOWNGRADED BY THE PIN. Was sourced from $indeterminate-active-indicator-wave-wavelength 20px, which v0.192 does not have. The surviving evidence is the four-color-active-indicator-* family — see structure.indeterminate-band for the full substitution note and its [R] qualification."
+    },
+    "state.complete": {
+      "kind": "off",
+      "note": "no state attribute — but the stop indicator is the same idea expressed as GEOMETRY: a dot marking where 100% is"
+    },
+    "state.interaction-states": {
+      "kind": "value",
+      "value": "none",
+      "source": "grepped: no state-layer, focus-indicator, hover, pressed, dragged or disabled family in either of the two v0.192 progress files (nor in any of latest's three). Under this pin the observation is cleaner than before — card.m3.json, chip.m3.json and tabs.m3.json all LOSE their focus-indicator family to the v0.192 pin, so progress is no longer the odd one out for lacking one; nothing in M3 v0.192 has a focus-indicator family, because md-sys-state-focus-indicator does not exist in that edition."
+    },
+    "style.root.min-width": {
+      "kind": "off"
+    },
+    "style.root.color": {
+      "kind": "off"
+    },
+    "style.track.height": {
+      "kind": "value",
+      "value": "4px",
+      "source": "versions/v0_192/_md-comp-linear-progress-indicator.scss 'track-height': 4px. Unchanged in value by the pin — latest's _md-comp-progress-indicator-linear.scss $height was also 4px; only the token name moved (height -> track-height)."
+    },
+    "style.track.shape": {
+      "kind": "alias",
+      "slot": "shape-corner-none",
+      "note": "VALUE CHANGED BY THE PIN: 'track-shape' -> md-sys-shape.corner-none = 0px in versions/v0_192/_md-comp-linear-progress-indicator.scss, where latest's merged family said corner-full = 9999px. The bar's container is square-cornered in the pinned edition. See provenance.shape-corner-none."
+    },
+    "style.groove.height": {
+      "kind": "value",
+      "value": "100%",
+      "note": "'track-height' 4px equals the container height (there is no separate container-height token in v0.192 — 'track-height' IS the bar), so the groove is the full container; expressed as 100% so it follows style.track.height."
+    },
+    "style.groove.offset": {
+      "kind": "off"
+    },
+    "style.groove.color": {
+      "kind": "alias",
+      "slot": "x-m3-surface-container-highest",
+      "note": "VALUE CHANGED BY THE PIN: 'track-color' -> md-sys-color.surface-container-highest (#e6e0e9 / #36343b) in versions/v0_192, where latest's merged family said secondary-container (#e8def8 / #4a4458). This row is LOCKED, so it could not have become a gap — and it did not need to: v0.192 has a track colour, just a different one. See provenance.x-m3-surface-container-highest."
+    },
+    "style.groove.shape": {
+      "kind": "alias",
+      "slot": "shape-corner-none",
+      "note": "'track-shape', declared separately from the indicator's — still the only column where the two are distinct tokens, though under this pin they now carry the SAME value (both corner-none 0px) where latest had them both at corner-full. VALUE CHANGED: 9999px -> 0px."
+    },
+    "style.indicator.thickness": {
+      "kind": "value",
+      "value": "4px",
+      "source": "versions/v0_192/_md-comp-linear-progress-indicator.scss 'active-indicator-height': 4px — still tokenised separately from 'track-height', and still equal to it. Unchanged in value by the pin. The 8px-against-8px thick variant that latest carried does not exist in this edition at all."
+    },
+    "style.indicator.color": {
+      "kind": "alias",
+      "slot": "action"
+    },
+    "style.indicator.shape": {
+      "kind": "alias",
+      "slot": "shape-corner-none",
+      "note": "VALUE CHANGED BY THE PIN: 'active-indicator-shape' -> corner-none = 0px in versions/v0_192, where latest's merged family said corner-full = 9999px. CARRIED WITH ITS DISOWNMENT, unchanged: material-web's own tokens/_md-comp-linear-progress.scss lists active-indicator-shape under $unsupported-tokens because it scales the indicator (structure.fill-mechanism). Under the v0.192 pin the disagreement is now harmless in practice — the library refuses to apply a radius, and the pinned token asks for 0px anyway."
+    },
+    "style.indicator.trailing-space": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was 4px, sourced from $track-active-indicator-space in latest's _md-comp-progress-indicator-linear.scss. versions/v0_192/_md-comp-linear-progress-indicator.scss has no such token — its six real keys are active-indicator-{color,height,shape} and track-{color,height,shape}, nothing else. WHAT THE CONSUMER LOSES: the small breathing gap between the end of the filled portion and the start of the remaining groove; the fill now runs flush into the track, which is how M3 drew it before the merged family arrived."
+    },
+    "style.indicator.transition": {
+      "kind": "off",
+      "note": "no motion token in any of the five progress files; M3's _md-sys-motion.scss is never referenced by them"
+    },
+    "style.indeterminate.duration": {
+      "kind": "value",
+      "value": "1.8s",
+      "note": "DECLARED ABSENCE, NOT A FABRICATION. structure.indeterminate-band is ON for this column (the wavelength token proves the mode) and no duration token exists anywhere in the clone for it. Rather than emit a switched-on structure with no motion — the silent fallback CLAUDE.md rule 3 forbids — the REGISTRY DEFAULT is stated here and labelled. 1.8s is Salt's sourced figure, the only one the registry has for a travelling band; it is NOT an M3 value. Same treatment spinner.m3.json's style.root.duration got."
+    },
+    "style.indeterminate.easing": {
+      "kind": "value",
+      "value": "ease-in-out",
+      "note": "DECLARED ABSENCE, as above. M3 does define ten easing tokens (docs/foundations/motion.md), and the progress files reference NONE of them — the same finding spinner made. Naming one here would fabricate a link source does not have, so the registry default is used and labelled."
+    },
+    "style.buffer.color": {
+      "kind": "off"
+    },
+    "style.buffer.z-index": {
+      "kind": "off"
+    },
+    "style.stop-indicator.size": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was {inline-size 4px, block-size 4px, inset-inline-end 0px}, sourced from $stop-indicator-size and $stop-indicator-trailing-space in latest's _md-comp-progress-indicator-linear.scss. Neither token exists in versions/v0_192. Consumer loses the end dot's geometry — see structure.stop-indicator for the full loss."
+    },
+    "style.stop-indicator.paint": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was {background var(--action), border-radius var(--shape-full)}, sourced from $stop-indicator-color -> primary and $stop-indicator-shape -> corner-full in latest's SHARED _md-comp-progress-indicator.scss. That file does not exist in versions/v0_192 in any form. Consumer loses the end dot's paint — see structure.stop-indicator."
+    },
+    "style.label.font": {
+      "kind": "off"
+    },
+    "style.label.gap": {
+      "kind": "off"
+    },
+    "style.circular.size": {
+      "kind": "value",
+      "value": {
+        "inline-size": "48px",
+        "block-size": "48px"
+      },
+      "source": "versions/v0_192/_md-comp-circular-progress-indicator.scss 'size': 48px. VALUE CHANGED BY THE PIN: latest's _md-comp-progress-indicator-circular.scss said $size 40px. This is the same 48px spinner.m3.json now carries, from the same token in the same file, so the two components agree again."
+    },
+    "style.circular.track": {
+      "kind": "off",
+      "note": "DECLARED GAP. Was {stroke var(--x-m3-secondary-container), stroke-width 4px, r 18px}, sourced from latest's merged $track-color -> secondary-container plus _md-comp-progress-indicator-circular.scss's $track-thickness 4px. versions/v0_192/_md-comp-circular-progress-indicator.scss defines exactly ten keys — active-indicator-{color,shape,width}, size, and the four four-color-* entries — and NOT ONE of them is a track token. WHAT THE CONSUMER LOSES: the static tinted ring behind the determinate arc; a circular M3 progress indicator now draws only the filled arc on nothing. This matches material-web's shipped tokens/_md-comp-circular-progress.scss, whose $supported-tokens list has no track entry either. spinner.m3.json's structure.track lost the same ring for the same reason."
+    },
+    "style.circular.indicator": {
+      "kind": "value",
+      "value": {
+        "stroke": "var(--action)",
+        "stroke-width": "4px",
+        "r": "22px"
+      },
+      "source": "versions/v0_192/_md-comp-circular-progress-indicator.scss 'active-indicator-width' 4px and 'active-indicator-color' -> primary; r RE-DERIVED for the new diameter as (48 - 4) / 2 = 22px, where it was (40 - 4) / 2 = 18px under the latest pin. No longer described as CONCENTRIC WITH THE TRACK, because there is no track (see style.circular.track). The $track-active-indicator-space that this cell used to carry as an unmodelled angular gap does not exist in this edition either."
+    }
+  }
+}

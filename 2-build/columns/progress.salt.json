@@ -1,0 +1,178 @@
+{
+  "system": "salt",
+  "component": "progress",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "600", "file": "fonts/open-sans-600.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "accent": "rgb(0, 120, 207)",
+      "root-color": "rgb(0, 0, 0)",
+      "groove-color": "rgba(0, 0, 0, 0.5)",
+      "buffer-fill": "rgb(255, 255, 255)",
+      "buffer-hairline": "1px"
+    },
+    "dark": {
+      "accent": "rgb(0, 120, 207)",
+      "root-color": "rgb(255, 255, 255)",
+      "groove-color": "rgba(255, 255, 255, 0.5)",
+      "buffer-fill": "rgb(16, 24, 32)"
+    },
+    "byDensity": {
+      "high": {
+        "linear-track-height": "4px",
+        "linear-groove-height": "2px",
+        "linear-groove-offset": "1px",
+        "label-type": "600 14px/18px 'Open Sans', sans-serif",
+        "label-gap": "4px",
+        "circular-diameter": "60px",
+        "circular-track-thickness": "2px",
+        "circular-indicator-thickness": "4px",
+        "circular-track-radius": "26px",
+        "circular-indicator-radius": "28px"
+      },
+      "medium": {
+        "linear-track-height": "8px",
+        "linear-groove-height": "4px",
+        "linear-groove-offset": "2px",
+        "label-type": "600 18px/24px 'Open Sans', sans-serif",
+        "label-gap": "8px",
+        "circular-diameter": "84px",
+        "circular-track-thickness": "4px",
+        "circular-indicator-thickness": "8px",
+        "circular-track-radius": "34px",
+        "circular-indicator-radius": "38px"
+      },
+      "low": {
+        "linear-track-height": "12px",
+        "linear-groove-height": "6px",
+        "linear-groove-offset": "3px",
+        "label-type": "600 24px/32px 'Open Sans', sans-serif",
+        "label-gap": "12px",
+        "circular-diameter": "108px",
+        "circular-track-thickness": "6px",
+        "circular-indicator-thickness": "12px",
+        "circular-track-radius": "42px",
+        "circular-indicator-radius": "48px"
+      },
+      "touch": {
+        "linear-track-height": "16px",
+        "linear-groove-height": "8px",
+        "linear-groove-offset": "4px",
+        "label-type": "600 32px/42px 'Open Sans', sans-serif",
+        "label-gap": "16px",
+        "circular-diameter": "132px",
+        "circular-track-thickness": "8px",
+        "circular-indicator-thickness": "16px",
+        "circular-track-radius": "50px",
+        "circular-indicator-radius": "58px"
+      }
+    }
+  },
+  "modeInvariant": ["accent"],
+  "provenance": {
+    "canonical-source": "packages/core/src/progress/ — ONE directory, TWO peer exports. index.tsx: `export * from \"./CircularProgress/CircularProgress\"; export * from \"./LinearProgress/LinearProgress\";`. Files read in full: LinearProgress/{LinearProgress.tsx,LinearProgress.css}, CircularProgress/{CircularProgress.tsx,CircularProgress.css}. Behaviour and defaults cross-checked against packages/core/src/__tests__/__e2e__/progress/{LinearProgress.cy.tsx,CircularProgress.cy.tsx}, packages/core/stories/progress/{linear-progress.stories.tsx,circular-progress.stories.tsx,useProgressingValue.tsx} and site/docs/components/progress/{index,usage,examples,accessibility}.mdx. Reused rather than re-derived: docs/foundations/{sizes,spacing,typography,colors,density,layers,motion}.md.",
+    "accent": "LinearProgress.css .saltLinearProgress-bar { background: var(--salt-sentiment-accent-background) } and CircularProgress.css .saltCircularProgress-bar { border-color: same } -> next/characteristics/sentiment.css --salt-sentiment-accent-background: var(--salt-palette-accent) -> blue-500 rgb(0,120,207), declared identically under [data-mode=\"light\"] and [data-mode=\"dark\"], hence modeInvariant. Same accent family as badge/card/button/calendar; the data-accent teal alternate is recorded and not modelled (see the accent scope trim in docs/PROGRESS-MATRIX.md).",
+    "root-color": "LinearProgress.css .saltLinearProgress { color: var(--salt-content-primary-foreground) } (and CircularProgress.css, twice: on the root and again on the label) -> next/characteristics/content.css --salt-content-primary-foreground: var(--salt-palette-foreground-primary) -> next/palette/foreground.css line 2 --salt-color-black (light) / line 11 --salt-color-white (dark).",
+    "groove-color": "LinearProgress.css .saltLinearProgress-track { background: var(--salt-sentiment-neutral-track) } and CircularProgress.css .saltCircularProgress-track { outline-color: same } -> next/characteristics/sentiment.css line 8 --salt-sentiment-neutral-track: var(--salt-palette-alpha-contrast-high) -> next/palette/alpha.css line 14 --salt-color-black-50a (light) / line 46 --salt-color-white-50a (dark) -> foundations/alpha.css rgba(0,0,0,0.5) / rgba(255,255,255,0.5). NOTE the same token also backs Slider's track (packages/core/src/slider/internal/SliderTrack.css line 2) — a shared FOUNDATION token, which is why slider is declared out of scope structurally rather than merged in.",
+    "buffer-fill": "LinearProgress.css .saltLinearProgress-buffer { background: var(--salt-container-primary-background) } -> next/characteristics/container.css --salt-container-primary-background: var(--salt-palette-background-primary) -> next/palette/background.css --salt-color-background-snow / -jet -> next/foundations/color.css rgb(255,255,255) / rgb(16,24,32). The buffer is painted in the PAGE'S surface colour, not in a tint of the accent.",
+    "buffer-hairline": "LinearProgress.css .saltLinearProgress-buffer { outline: solid var(--salt-size-fixed-100) var(--salt-sentiment-accent-background); outline-offset: calc(var(--salt-size-fixed-100) * -1) } -> foundations/size.css line 47 --salt-size-fixed-100: 1px. FIXED SCALE, DENSITY-INVARIANT BY DESIGN (docs/foundations/sizes.md line 14) — carried as a plain 1px rather than per density, and verified in both directions rather than assumed (lesson 7).",
+    "linear-track-height": "LinearProgress.css .saltLinearProgress-barContainer { height: var(--salt-size-bar-strong) } -> foundations/size.css lines 8/18/28/39 = 4/8/12/16 for high/medium/low/touch. Matches docs/foundations/sizes.md line 10.",
+    "linear-groove-height": "LinearProgress.css .saltLinearProgress-track { height: var(--salt-size-bar) } -> foundations/size.css lines 3/13/23/34 = 2/4/6/8. Matches docs/foundations/sizes.md line 9. HALF the container: the groove is a thin rail and the bar is a fat overlay.",
+    "linear-groove-offset": "LinearProgress.css .saltLinearProgress-track { top: calc((var(--salt-size-bar-strong) - var(--salt-size-bar)) / 2) } = (4−2)/2, (8−4)/2, (12−6)/2, (16−8)/2 = 1/2/3/4. Derived per density from the two slots above rather than snapshotted at medium.",
+    "label-type": "LinearProgress.tsx / CircularProgress.tsx render <Text styleAs=\"h2\" className={withBaseName(\"progressLabel\")}> -> next/characteristics/text.css --salt-text-h2-fontFamily: var(--salt-typography-fontFamily-openSans) (line 56, under [data-heading-font=\"Open Sans\"], which is SaltProvider's DEFAULT_HEADING_FONT — asserted in packages/core/src/__tests__/__e2e__/salt-provider/SaltProvider.cy.tsx lines 373/393), --salt-text-h2-fontWeight: var(--salt-typography-fontWeight-semiBold) = 600 (foundations/typography.css line 9), and --salt-text-h2-fontSize/-lineHeight per density block: high 14/18 (line 255), medium 18/24 (line 219), low 24/32 (line 183), touch 32/42 (line 147). Medium matches docs/foundations/typography.md line 55 exactly.",
+    "label-gap": "LinearProgress.css .saltLinearProgress-progressLabel { padding-left: var(--salt-spacing-100) } -> foundations/spacing.css lines 2/6/10/14 = touch 16, low 12, medium 8, high 4.",
+    "circular-diameter": "CircularProgress.css .saltCircularProgress-track / -bar / -bufferBorder / -bufferBackground all use inline-size and block-size calc(var(--salt-size-base) * 3) -> foundations/size.css --salt-size-base 20/28/36/44 (high/medium/low/touch) x3 = 60/84/108/132.",
+    "circular-track-thickness": "CircularProgress.css .saltCircularProgress-track { outline-width: var(--salt-size-bar) } = 2/4/6/8.",
+    "circular-indicator-thickness": "CircularProgress.css .saltCircularProgress-bar { border-width: var(--salt-size-bar-strong) } = 4/8/12/16 — TWICE the track's, exactly as in the linear form.",
+    "circular-track-radius": "DERIVED from source geometry, not a token. The track is drawn as an `outline` of width size-bar at `outline-offset: calc(var(--salt-size-bar) * -1.5)`, so the outline occupies 1.5*bar .. 2.5*bar in from the box edge and its ring centre sits at diameter/2 − 2*bar: 30−4=26, 42−8=34, 54−12=42, 66−16=50.",
+    "circular-indicator-radius": "DERIVED from source geometry. The bar is a border-box element of the full diameter with `border-width: size-bar-strong`, so its ring centre sits at (diameter − size-bar-strong)/2: (60−4)/2=28, (84−8)/2=38, (108−12)/2=48, (132−16)/2=58. It is therefore OUTSIDE the track's ring, not concentric with it — reproduced rather than collapsed.",
+    "indeterminate": "LinearProgress.css .saltLinearProgress-indeterminate.saltLinearProgress-bar { width: 66%; animation: 1.8s ease-in-out infinite salt-indeterminate-progress-bar } and @keyframes salt-indeterminate-progress-bar { 0% translateX(-100%); 60% translateX(155%); 100% translateX(200%) }, with the source comment `/* 155% is slightly more than moving the bar off screen (with width of 66%) */`. Both 1.8s and ease-in-out are HARDCODED LITERALS, not references to Salt's own duration/animation foundations (docs/foundations/motion.md) — the same pattern spinner's 0.9s showed.",
+    "transition": "LinearProgress.css declares `transition: transform 0.2s linear` on BOTH .saltLinearProgress-bar/-buffer and .saltLinearProgress-track. The component animates `width` (an inline style) and the track never moves at all, so NEITHER declaration can ever fire. Reproduced as source has it and flagged as a source self-contradiction.",
+    "aria": "LinearProgress.tsx: role=\"progressbar\", aria-valuemax={max}, aria-valuemin={min}, aria-valuenow={value === undefined ? undefined : Math.round(value)}. CircularProgress.tsx: identical except aria-valuenow={Math.round(value)} UNCONDITIONALLY, because value defaults to 0 and there is no indeterminate branch. NO aria-valuetext in either. Confirmed by LinearProgress.cy.tsx, which asserts all three attributes on the determinate story and `should(\"not.have.attr\", \"aria-valuenow\")` on the indeterminate one."
+  },
+  "cells": {
+    "structure.shape": { "kind": "value", "value": ["linear", "circular"], "source": "packages/core/src/progress/index.tsx exports both; index.mdx: \"Two variants are available to accommodate different layouts: CircularProgress and LinearProgress.\" NO SOURCE DEFAULT — two peer exports; linear is first as a declared registry ordering choice." },
+    "structure.fill-mechanism": { "kind": "value", "value": "width", "source": "LinearProgress.tsx: const barStyle = { width: isIndeterminate ? undefined : `${progress}%` } applied inline to the bar div" },
+    "structure.buffer": { "kind": "value", "value": true, "source": "LinearProgress.tsx bufferValue prop -> .saltLinearProgress-buffer; CircularProgress.tsx renders four extra overlay divs when buffer > 0" },
+    "structure.stop-indicator": { "kind": "off", "note": "no end marker of any kind in either Salt CSS file" },
+    "structure.label": { "kind": "value", "value": true, "source": "LinearProgress.tsx / CircularProgress.tsx: {!hideLabel && <Text styleAs=\"h2\" …>} with hideLabel = false — ON BY DEFAULT" },
+    "structure.indeterminate-band": { "kind": "value", "value": true, "source": "LinearProgress.css .saltLinearProgress-indeterminate: width 66% + a 1.8s translateX keyframe" },
+    "structure.indeterminate-circular": { "kind": "off", "note": "CircularProgress.tsx has NO indeterminate branch — value defaults to 0 and aria-valuenow is written unconditionally. Salt's usage.mdx sends the indeterminate case to Spinner, which docs/SPINNER-MATRIX.md already owns." },
+
+    "behavior.role": { "kind": "value", "value": "progressbar", "source": "LinearProgress.tsx line 77 and CircularProgress.tsx line 100, both hardcoded role=\"progressbar\"" },
+    "behavior.value-range": { "kind": "value", "value": "min-max", "source": "both exports take min = 0 and max = 100 and write aria-valuemin={min} / aria-valuemax={max}; the percentage is normalised as ((value - min) / (max - min)) * 100" },
+    "behavior.determinacy-detection": { "kind": "value", "value": "inferred-linear-only", "source": "LinearProgress.tsx: const isIndeterminate = value === undefined && bufferValue === undefined. CircularProgress.tsx: no such line — value = 0 default." },
+    "behavior.value-now": { "kind": "value", "value": "rounded, omitted when indeterminate", "source": "aria-valuenow={value === undefined ? undefined : Math.round(value)} (linear); Math.round(value) unconditionally (circular)" },
+    "behavior.value-text": { "kind": "off", "note": "CONFIRMED ABSENCE — neither export writes aria-valuetext. Salt puts the human-readable percentage on screen instead (structure.label), which is the exact inverse of shadcn." },
+    "behavior.label-formatting": { "kind": "value", "value": "percent-spaced", "source": "isIndeterminate ? \"— %\" : `${Math.round(progress)} %` — an EM DASH for the unknown case and a SPACE before the percent sign in both" },
+    "behavior.buffer-visibility": { "kind": "value", "value": "truthy-and-positive", "source": "linear: {bufferValue && bufferValue > 0 ? <div …/> : null}; circular: {buffer > 0 && …} on the normalised figure. The buffer never enters the label or any ARIA attribute — examples.mdx: \"The buffer is a pending value so will not affect the progress label.\"" },
+
+    "prop.shape": { "kind": "value", "value": ["linear", "circular"], "source": "two peer exports, no default between them" },
+    "prop.determinacy": { "kind": "value", "value": ["determinate", "indeterminate"], "note": "CAPABILITY LIST, not an ordered default — determinacy is inferred from the value (behavior.determinacy-detection). Indeterminate is reachable on the LINEAR shape only." },
+    "prop.hide-label": { "kind": "value", "value": [false, true], "source": "hideLabel = false, and the JSDoc says so in words: \"Whether to hide the text label within the progress. Defaults to `false`.\" Capability list, written default-first." },
+    "prop.max": { "kind": "value", "value": 100, "source": "max = 100 in both exports" },
+    "prop.min": { "kind": "value", "value": 0, "source": "min = 0 in both exports, written to aria-valuemin" },
+
+    "slot.label": { "kind": "value", "value": "component-owned", "note": "Salt formats the string itself and renders it through its own Text component at styleAs=\"h2\" — DECLARED COMPOSITION to a future `text` component." },
+    "slot.composes": { "kind": "value", "value": "text, button", "note": "DECLARED COMPOSITION: `text` (the label is a <Text>), and `button` (every story in packages/core/stories/progress drives the value with Start/Stop/Reset Buttons via useProgressingValue.tsx). Neutral placeholders in the harness." },
+
+    "state.rest": { "kind": "value", "value": "accent bar over a 50%-alpha groove, bar 2x the groove's thickness", "source": "LinearProgress.css: bar height = barContainer height = size-bar-strong; track height = size-bar" },
+    "state.indeterminate": { "kind": "value", "value": "66% band, 1.8s sweep, label \"— %\", no aria-valuenow", "source": "LinearProgress.css/.tsx" },
+    "state.complete": { "kind": "off", "note": "no terminal state concept — Salt has no data-state and no rule for value === max" },
+    "state.interaction-states": { "kind": "value", "value": "none", "source": "grepped: no :hover, :focus, :focus-visible, :active or disabled selector in LinearProgress.css or CircularProgress.css; no disabled prop in either interface" },
+
+    "style.root.min-width": { "kind": "value", "value": "400px", "source": "LinearProgress.css .saltLinearProgress { min-width: 400px } — a hardcoded pixel literal with no token behind it" },
+    "style.root.color": { "kind": "alias", "slot": "root-color" },
+    "style.track.height": { "kind": "alias", "slot": "linear-track-height" },
+    "style.track.shape": { "kind": "value", "value": "0", "note": "CONFIRMED ABSENCE — no border-radius anywhere in LinearProgress.css. A Salt linear progress has square ends." },
+    "style.groove.height": { "kind": "alias", "slot": "linear-groove-height" },
+    "style.groove.offset": { "kind": "alias", "slot": "linear-groove-offset" },
+    "style.groove.color": { "kind": "alias", "slot": "groove-color" },
+    "style.groove.shape": { "kind": "off" },
+    "style.indicator.thickness": { "kind": "value", "value": "100%", "source": ".saltLinearProgress-bar { top: 0; bottom: 0 } — fills the whole (fat) container" },
+    "style.indicator.color": { "kind": "alias", "slot": "accent" },
+    "style.indicator.shape": { "kind": "off" },
+    "style.indicator.trailing-space": { "kind": "off" },
+    "style.indicator.transition": { "kind": "value", "value": "transform 0.2s linear", "note": "DEAD AS DECLARED — the component animates `width`, not `transform`. Reproduced as source has it and flagged." },
+    "style.indeterminate.duration": { "kind": "value", "value": "1.8s", "source": "animation: 1.8s ease-in-out infinite salt-indeterminate-progress-bar — hardcoded, not a duration token" },
+    "style.indeterminate.easing": { "kind": "value", "value": "ease-in-out", "source": "same declaration; matches --salt-animation-timing-function in value but is written as a literal" },
+    "style.buffer.color": {
+      "kind": "value",
+      "value": {
+        "background": "var(--buffer-fill)",
+        "outline": "solid var(--buffer-hairline) var(--accent)",
+        "outline-offset": "calc(var(--buffer-hairline) * -1)"
+      },
+      "source": ".saltLinearProgress-buffer { background: var(--salt-container-primary-background); outline: solid var(--salt-size-fixed-100) var(--salt-sentiment-accent-background); outline-offset: calc(var(--salt-size-fixed-100) * -1) }"
+    },
+    "style.buffer.z-index": { "kind": "value", "value": "1", "source": ".saltLinearProgress-buffer { z-index: var(--salt-zIndex-default) } = 1, against the bar's calc(var(--salt-zIndex-default) * 2) = 2" },
+    "style.stop-indicator.size": { "kind": "off" },
+    "style.stop-indicator.paint": { "kind": "off" },
+    "style.label.font": { "kind": "alias", "slot": "label-type" },
+    "style.label.gap": { "kind": "alias", "slot": "label-gap" },
+    "style.circular.size": {
+      "kind": "value",
+      "value": { "inline-size": "var(--circular-diameter)", "block-size": "var(--circular-diameter)" },
+      "source": "CircularProgress.css: inline-size / block-size calc(var(--salt-size-base) * 3)"
+    },
+    "style.circular.track": {
+      "kind": "value",
+      "value": {
+        "stroke": "var(--groove-color)",
+        "stroke-width": "var(--circular-track-thickness)",
+        "r": "var(--circular-track-radius)"
+      },
+      "source": ".saltCircularProgress-track { outline-style: solid; outline-width: var(--salt-size-bar); outline-offset: calc(var(--salt-size-bar) * -1.5); outline-color: var(--salt-sentiment-neutral-track) }"
+    },
+    "style.circular.indicator": {
+      "kind": "value",
+      "value": {
+        "stroke": "var(--accent)",
+        "stroke-width": "var(--circular-indicator-thickness)",
+        "r": "var(--circular-indicator-radius)"
+      },
+      "source": ".saltCircularProgress-bar { border-color: var(--salt-sentiment-accent-background); border-style: solid; border-width: var(--salt-size-bar-strong) }"
+    }
+  }
+}
