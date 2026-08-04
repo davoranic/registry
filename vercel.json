@@ -1,0 +1,37 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "//": [
+    "The docs site is GENERATED from markdown at build time — 1-intro/site is",
+    "gitignored on purpose, so Vercel must build it rather than serve a commit.",
+    "",
+    "Only the docs build runs here, never build.sh: the gates need 3-source/,",
+    "the six design-system clones (~600MB), which are deliberately not in this",
+    "repo. Gate results come from 2-build/out/gates.json, written by the last",
+    "local run and committed, and the page says so rather than implying they",
+    "were re-checked."
+  ],
+
+  "framework": null,
+  "installCommand": "echo 'no dependencies — the generator is stdlib Python'",
+  "buildCommand": "python3 1-intro/build/build-docs.py",
+  "outputDirectory": "1-intro/site",
+  "cleanUrls": true,
+  "trailingSlash": false,
+
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
+}

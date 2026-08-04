@@ -52,6 +52,24 @@ Three folders, three verbs: **read**, **build**, **explain**. Nothing in
 `2-build/columns/` cite paths inside them; renaming `ui/` would silently
 invalidate every one of those citations.
 
+## Deploying
+
+The site is **generated at build time**, so `1-intro/site/` is gitignored and
+Vercel builds it from source:
+
+| | |
+|---|---|
+| build command | `python3 1-intro/build/build-docs.py` |
+| output directory | `1-intro/site` |
+| dependencies | none — the generator is stdlib Python |
+| domain | `registry.davoranic.com` |
+
+**`build.sh` is never run in CI.** The gates need `3-source/`, the six clones
+(~600MB), which are deliberately not in this repo. Gate results shown on the
+*Where we are* page come from `2-build/out/gates.json` — written by the last
+local `./build.sh`, timestamped and committed on purpose — and the page states
+that they were not re-checked rather than implying they were.
+
 ## State, measured 2026-08-04
 
 | | |
