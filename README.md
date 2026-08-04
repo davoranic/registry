@@ -71,6 +71,7 @@ cd 1-intro/site && npx vercel deploy --prod --yes
 | published | `1-intro/site/index.html` — one self-contained file |
 | domain | `registry.davoranic.com` |
 | built on the host | **no** — Vercel receives a folder, not a build |
+| deploys on git push | **no** — git integration is disconnected on purpose |
 
 A Vercel project already owns `registry.davoranic.com` — it answers
 `x-vercel-error: NOT_FOUND`, meaning the hostname is attached but nothing is
