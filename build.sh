@@ -25,7 +25,10 @@ gate check-provenance "every citation resolves to a real file"   python3 2-build
 gate check-values     "tokens still resolve to our stored values" python3 2-build/gates/check-values.py
 gate check-structure  "cascade order and unsized parts"           python3 2-build/gates/check-structure.py
 gate check-anatomy    "the three systems render different parts"  node    2-build/gates/check-anatomy.mjs
-python3 -c "import json,sys;print(json.dumps([json.loads(l) for l in open('/tmp/_gates.jsonl')],indent=1))" \
+RAN_AT="$(date -u +%Y-%m-%dT%H:%MZ)" python3 -c "
+import json, os
+rows = [json.loads(l) for l in open('/tmp/_gates.jsonl')]
+print(json.dumps({'ranAt': os.environ['RAN_AT'], 'gates': rows}, indent=1))" \
   > 2-build/out/gates.json
 
 step "Generate CSS from every template x column"

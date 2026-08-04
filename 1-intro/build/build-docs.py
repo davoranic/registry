@@ -323,11 +323,15 @@ def build_status():
         })
 
     # gate results, written by build.sh on its last run
-    gates = []
+    gates, ran_at = [], ""
     gp = os.path.join(BUILD, "out", "gates.json")
     if os.path.exists(gp):
         try:
-            gates = json.load(open(gp, encoding="utf-8"))
+            rec = json.load(open(gp, encoding="utf-8"))
+            if isinstance(rec, dict):
+                gates, ran_at = rec.get("gates", []), rec.get("ranAt", "")
+            else:
+                gates = rec          # older flat format
         except Exception:
             gates = []
 
@@ -344,6 +348,10 @@ def build_status():
                % (len(comps), covered, total, rows_total, dis_total, slots_total - slots_cited))
 
     out.append('<h2 id="gates">Gates, last run</h2>')
+    if ran_at:
+        out.append('<p class="muted small">Run locally at <b>%s</b>. CI cannot re-run these \u2014 '
+                   "they need the design-system clones, which are not in this repo \u2014 so this "
+                   "is the last real result, not a fresh one.</p>" % html.escape(ran_at))
     if gates:
         out.append('<div class="table-wrap"><table><thead><tr><th>gate</th><th>what it watches</th>'
                    "<th>result</th></tr></thead><tbody>")
@@ -671,8 +679,9 @@ def build():
                           slugs=repr([p["slug"] for p in pages]))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w", encoding="utf-8").write(doc)
-    print("built dist/docs.html — %d pages, %d sections, %d bytes"
-          % (len(pages), sum(len(p["toc"]) for p in pages), len(doc)))
+    print("built %s — %d pages, %d sections, %d bytes"
+          % (os.path.relpath(OUT, WORK),
+             len(pages), sum(len(p["toc"]) for p in pages), len(doc)))
     for p in pages:
         print("  %-10s %-16s %d sections" % (p["slug"], p["file"], len(p["toc"])))
     return 0
