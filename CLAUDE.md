@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **14 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **15 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -59,7 +59,13 @@ unsized parts, 3 phantom focus failures. A new gate's own bugs are
 indistinguishable from the defects it hunts. **Calibrate a gate by deliberately
 breaking the thing it watches before trusting its output.**
 
-### Known-open work
+### Known-open work — the running list
+
+Found faster than they're fixed; each item names the component it lives in,
+so a future session can jump straight to the file instead of re-discovering
+it. Nothing here blocks the next component — per the pipeline rule, declared
+gaps and found-but-out-of-scope bugs queue for later rather than stopping the
+loop.
 
 - **250 slots carry values but no provenance entry** — invisible to the tier-2
   canary. Concentrated in select (73) and input (42).
@@ -69,7 +75,36 @@ breaking the thing it watches before trusting its output.**
   Needs a `@secondary-hover` row.
 - **`dialog` shadcn=m3 identical part-set** — flagged by check-anatomy, not yet
   explained.
-- 65 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
+- **`tabs`'s shadcn column fails conformance**: `behavior.activation-mode`
+  reports "automatic: selection held" — focusing a tab does not select it
+  even though `activationMode` defaults to automatic. Found 2026-08-04 when
+  fixing checkbox's conformance build (see next item unblocked it). Not yet
+  root-caused.
+- **Every `build-<name>-check.mjs` harness script has a broken font path.**
+  Each references `fonts/*.woff2` relative to `out/`, but the self-hosted
+  webfonts live at `2-build/fonts/`, not `2-build/out/fonts/` — every
+  harness's Open Sans / Roboto fidelity check has silently been rendering
+  in fallback sans-serif since these scripts were first written. Affects
+  badge/chip/dialog/tabs/card/progress/select/spinner/tooltip/input/alert/
+  button, not just checkbox. Fix once, centrally (either copy fonts/ into
+  out/ as a build.sh step, or rewrite each script's font URL to `../fonts/`)
+  rather than patching each script.
+- **`harness/conformance.tsx` + `tools/build-conformance.mjs` read from a
+  `dist/gen/` path that has never existed in this checkout** (fixed
+  2026-08-04, during the checkbox build) — was silently swallowing every
+  generated stylesheet via a try/catch, so conformance ran with NO real CSS
+  applied, for any component, since inception. Now points at `out/gen/`.
+  Worth re-auditing every PASS this gate ever reported before this fix —
+  they proved less than they claimed.
+- **`3-source/` (the design-system clones) is not part of this repo and does
+  not exist in a fresh remote/CI environment** — it's gitignored and
+  normally lives beside the repo on the owner's local machine. A session
+  starting from a fresh clone must re-clone the three public origins before
+  grepping anything: `shadcn-ui/ui` → `3-source/ui`, `jpmorganchase/salt-ds`
+  → `3-source/salt-ds`, `material-components/material-web` →
+  `3-source/material-web`. Folder names must match exactly — provenance
+  strings across every matrix doc cite paths inside them.
+- 64 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
 
 ### Method notes that cost real time to learn
 
@@ -371,25 +406,28 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: rewrote this file, and pointed `2-build/out/index.html` at
-`1-intro/content/04-component-map.md` so it reports 14/79 instead of counting only itself.
+Last action: built `checkbox` (component 14, row 15/79). Committed and pushed
+to `claude/next-component-7e5dex` (commit `54dbeda`). The owner chose "keep
+going, track gaps in a running list" over stopping to clear the queue below —
+see "Known-open work" for the full list, now including two checkbox-specific
+finds (a dead-CSS selector bug affecting checked/indeterminate/focus/pressed/
+validation in ALL THREE columns, and M3's never-implemented mark geometry —
+both fixed, see CHECKBOX-MATRIX.md findings 10–12) plus two infrastructure
+bugs (conformance's `dist/gen` path, the fonts/ path in every check-harness
+script) found while verifying it.
 
-Everything regenerates clean; all five gates green; conformance 38/38. Nothing
-is committed — the working tree holds the entire session.
+Everything regenerates clean; all five gates green; conformance 52/53 (the
+one failure is `tabs`, pre-existing, unrelated — see Known-open work).
 
-**Do these in order:**
+**Standing priority order — still true, still not done, all deferred by
+explicit owner choice on 2026-08-04:**
 
-1. **Fix `button`'s missing secondary hover.** Salt's `--secondary-bg-hover` is
-   defined in both modes and referenced by NO rule. Add a
-   `style.root.background@secondary-hover` row with a selector of higher
-   specificity than the plain `@secondary` row, then fill all three columns.
-   Found by `check-structure.py` gate A.
-2. **Explain or fix `dialog`'s shadcn=m3 identical part-set**, flagged by
-   `check-anatomy.mjs`. Either justify the convergence in DIALOG-MATRIX.md or
-   find the missing part.
-3. **Backfill 250 uncited slots** (select 73, input 42, badge, card). They carry
-   values with no provenance, so tier-2 cannot see them.
-4. **Continue components** — 65 canonical rows remain, order per
+1. Fix `button`'s missing secondary hover (`style.root.background@secondary-hover`).
+2. Explain or fix `dialog`'s shadcn=m3 identical part-set.
+3. Backfill 250 uncited slots (select 73, input 42, badge, card).
+4. Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure.
+5. Fix the fonts/ path bug across every `build-<name>-check.mjs`.
+6. **Continue components** — 64 canonical rows remain, order per
    `1-intro/content/04-component-map.md`: rows with real cross-system character first.
 
 ## Working with this user
