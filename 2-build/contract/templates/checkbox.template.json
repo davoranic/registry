@@ -1,0 +1,286 @@
+{
+  "component": "checkbox",
+  "openUiAnatomy": "no published Open UI checkbox anatomy consulted directly — union built from the three clones: Salt's Checkbox (a single <label> wrapping a real, visually-hidden native <input type=\"checkbox\"> plus a CheckboxIcon box plus the label text as a sibling child — the label IS the whole clickable region), shadcn's Checkbox (a bare Radix CheckboxPrimitive.Root with no owned label — id/htmlFor association is entirely the consumer's job via a separate Label/FieldLabel component on a different canonical row), and M3's <md-checkbox> (a Lit custom element whose shadow DOM renders a real native <input type=\"checkbox\"> UNDER three separately-opacity-animated layers — .outline, .background, .icon — plus a shared md-focus-ring and md-ripple, and no label of its own either).",
+  "behavior": {
+    "pattern": "A tri-state (checked / unchecked / indeterminate) toggle for an independent choice, per the W3C APG checkbox pattern (https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/), which Salt's own usage.mdx cites directly. All three systems build it on a REAL native <input type=\"checkbox\">, visually hidden and layered under a styled box — Salt and M3 confirmed by reading their component source [S]; shadcn/Radix is [R], reasoned from shadcn's own aria-checked selector usage (checkbox-demo.tsx's `has-[[aria-checked=true]]`) and the linked Radix docs, since primitives/ was not cloned (behavior-reference only, never a style source). The cross-system axes are: (1) who owns the label — Salt owns it as a `label` prop rendered INSIDE its own <label> element (so the whole label, icon included, is one native clickable region); shadcn and M3 own no label at all, and compose with the separate `label`/`field` canonical rows; (2) how the tri-state prop is shaped — Salt and M3 expose two independent booleans (`checked`, `indeterminate`, and a checkbox CAN receive both at once even though only one renders); shadcn/Radix collapses them into one `checked: boolean | \"indeterminate\"` prop, which is a real, sourced API-shape difference, not a cosmetic one; (3) whether a multi-checkbox GROUP construct exists at all — Salt ships `CheckboxGroup` (a <fieldset> with NO roving tabindex, confirmed absence of any keydown handler); shadcn and M3 have no dedicated group primitive (shadcn's own docs say to compose multiple `Field`s instead); (4) the validation/error tone — all three actually have one (a genuine cross-system rarity in this pipeline), but Salt alone has TWO tones (error, warning).",
+    "chassis": "skeleton/checkbox.tsx — written from the template's part union: a root (a real <label> when structure.shell=\"label-wrap\", a plain wrapper otherwise), a real native <input type=\"checkbox\"> (always — the input IS the interactive/focusable/keyboard element in every column, matching Salt and M3 exactly and a declared, reasonable approximation for shadcn/Radix per the behavior note above), a visual box, and an icon/mark rendered according to structure.mark (three different strategies — see that row). Every behavior row below is implemented and asserted by scripts/check-checkbox-behavior.mjs. THE ONE DECLARED STRUCTURAL SIMPLIFICATION: M3's real three-independently-animated-layer box (.outline / .background / .icon as three separate absolutely-positioned elements with their own opacity/scale transitions) is COLLAPSED onto one box element carrying border-color + background-color + color directly — see structure.outline-layer and 'Declared approximations' below. Nothing else is retrofit from one system onto another: the shell fork, the mark fork, and the group fork are all real DOM/config branches, not shared CSS with a coat of paint. SELECTOR CORRECTION (found during orchestrator review, not caught by any of the five gates or by the building agent's own gate run): checkbox-box WRAPS checkbox-input as a child (`<span checkbox-box><input checkbox-input/><span checkbox-icon/></span>`), it is never checkbox-input's sibling. The first draft of style.box.checked/indeterminate/dash/focus/pressed and style.box.validation(@warning) used the adjacent-sibling combinator `input:checked + [checkbox-box]`, which cannot match a parent, so NONE of those seven rules ever applied in any of the three columns — every checked/indeterminate/focus/active/validation box recolour was silently inert; only the JS-driven icon presence (for single-icon/svg-plus-pseudo-dash) and the useLayoutEffect-driven native input state made anything look state-dependent at all. Rewritten to `[checkbox-box]:has([checkbox-input]:checked)` etc. (matching the already-correct pattern style.box.disabled used from the start). No gate catches this class of defect: check-structure.py checks cascade ORDER and sizing, not whether a selector can match its own component's DOM at all — a real gap in gate coverage, flagged rather than silently patched over."
+  },
+  "skeletonParams": {
+    "shell": ["label-wrap", "unwrapped"],
+    "markStyle": ["svg-plus-pseudo-dash", "single-icon", "dual-rect"],
+    "group": [true, false],
+    "valueShape": ["two-boolean", "tri-value"],
+    "validation": ["off", "error", "warning"],
+    "disabled": [false, true],
+    "readOnly": [false, true],
+    "required": [false, true]
+  },
+  "base": {
+    "[data-slot=\"checkbox-root\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "align-items": "center",
+      "position": "relative",
+      "width": "fit-content"
+    },
+    "[data-slot=\"checkbox-input\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "opacity": "0",
+      "margin": "0",
+      "padding": "0",
+      "appearance": "none",
+      "z-index": "1"
+    },
+    "[data-slot=\"checkbox-box\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "position": "relative",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"checkbox-icon\"]": {
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"checkbox-icon\"] svg": {
+      "display": "block",
+      "width": "100%",
+      "height": "100%"
+    },
+    "[data-slot=\"checkbox-label\"]": {
+      "display": "inline"
+    },
+    "[data-slot=\"checkbox-group\"]": {
+      "box-sizing": "border-box",
+      "border": "none",
+      "margin": "0",
+      "padding": "0",
+      "display": "flex",
+      "flex-direction": "column"
+    }
+  },
+  "rows": [
+    { "id": "structure.shell", "piece": "structure", "policy": "locked", "channel": "config", "param": "shell",
+      "note": "Salt = \"label-wrap\": Checkbox.tsx returns ONE <label> whose children are the native <input>, the CheckboxIcon box, and the `label` prop's ReactNode, in that order [S]. Because it is a real <label>, clicking ANYWHERE inside it — including the label text — toggles the input via native browser semantics; this is not JS, it is what a <label> does. shadcn = \"unwrapped\" [R]: the rendered root owns no label at all; checkbox-demo.tsx pairs it with a SEPARATE <Label htmlFor> element on a different canonical row. M3 = \"unwrapped\" [S]: checkbox.ts's render() has no label anywhere in the shadow DOM; the component explicitly anticipates being placed INSIDE a consumer-authored <label> instead (see behavior.label-click-target). Rendering a <label> wrapper for all three would silently give shadcn and M3 label semantics neither actually has; rendering a bare wrapper for all three would destroy Salt's native click-target." },
+
+    { "id": "structure.native-input", "piece": "structure", "policy": "switchable", "channel": "info",
+      "note": "Salt [S] and M3 [S] both build on a REAL native <input type=\"checkbox\">, visually hidden (opacity 0, absolutely positioned over the visual box) rather than simulated — Checkbox.tsx's <input ... type=\"checkbox\" .../> and checkbox.ts's <input type=\"checkbox\" .../> inside the shadow root are byte-legible. M3 additionally expands the input's hit area to a 48x48 INVISIBLE touch target when `touch-target=\"wrapper\"` (`:host([touch-target='wrapper']) { margin: max(0px, ((48px - container-size) / 2)) }`, and the input itself is always 48x48 unless `touch-target=\"none\"`) [S] — not modelled as its own row for scope reasons (a config axis with no cross-system counterpart to compare against; Salt's input is sized to the box itself with no separate touch-target concept). shadcn/Radix is [R]: its public API documents a hidden native `<input>` \"bubble\" for HTML form participation behind a styled non-input root, but primitives/ was not cloned to confirm the exact element, so this cell is an inference from Radix's published docs (linked directly from checkbox.mdx) rather than a grep." },
+
+    { "id": "structure.outline-layer", "piece": "structure", "policy": "switchable", "channel": "info",
+      "note": "M3 ONLY, and it is the one real structural fact this chassis does NOT fully reproduce (declared, not silent — see 'Declared approximations'). checkbox.ts's render() puts THREE separate absolutely-positioned <div>s inside `.container`: `.outline` (the 2px/0px border ring), `.background` (the primary-colour fill), and `.icon` (the mark) — each with its OWN opacity/transform transition, so the fill fades and scales in independently of the outline recolouring instantly [S, internal/_checkbox.scss lines ~99-148]. Salt's box is ONE element carrying border + background + icon-child together (CheckboxIcon.css has no equivalent layering) [S]. shadcn's box is likewise one element (the cva string puts border/bg classes directly on the root) [S]. The chassis renders one box element for all three; M3's independent fade-in is the thing lost." },
+
+    { "id": "structure.mark", "piece": "structure", "policy": "locked", "channel": "config", "param": "markStyle",
+      "note": "THREE DIFFERENT STRATEGIES for the same two glyphs (a checkmark, a dash), and this is character, not decoration (CLAUDE.md law 3). Salt = \"svg-plus-pseudo-dash\": CheckboxIcon.tsx renders a REAL SolidCheckmark <svg> only when `checked && !indeterminate`, and a SEPARATE, lighter CheckmarkIcon svg when `checked && !indeterminate && readOnly` — TWO different checkmark assets depending on read-only — while the indeterminate dash is not an SVG at all, it is a plain CSS `::before` bar (`.saltCheckboxIcon-indeterminate::before { content:''; width: calc(size - 6px); height: 2px; background: currentColor }`) [S]. shadcn = \"single-icon\": Radix's `Indicator` renders its ONE child (a lucide CheckIcon) whenever `checked` is truthy — which includes the STRING \"indeterminate\" — so shadcn shows the IDENTICAL checkmark glyph for both checked and indeterminate; there is no dash anywhere in this component [S] — see state.indeterminate and finding 3. M3 = \"dual-rect\": checkbox.ts always renders `<svg class=\"icon\"><rect class=\"mark short\"/><rect class=\"mark long\"/></svg>` UNCONDITIONALLY in the DOM, and CSS classes (`.checked` vs `.indeterminate`, both driven by the SAME two <rect> elements) rotate/scale them into either a checkmark or a flat dash via `transform` — one asset, two shapes, entirely CSS-driven [S, internal/_checkbox.scss lines 238-276]." },
+
+    { "id": "structure.group", "piece": "structure", "policy": "switchable", "channel": "config", "param": "group",
+      "note": "Salt ONLY: `CheckboxGroup` (packages/core/src/checkbox/CheckboxGroup.tsx) renders a <fieldset> providing `disabled`/`readOnly`/`validationStatus`/`name`/`checkedValues` context to every child Checkbox — and NO roving tabindex: `useCheckboxGroup.ts` and `CheckboxGroupContext.ts` bind no keydown handler of any kind, so every checkbox in a Salt group keeps its own tab stop and only Tab/Shift+Tab move between them (accessibility.mdx confirms) [S]. `direction` (\"horizontal\"|\"vertical\", default vertical) is a real prop but not modelled as its own row for scope (a single Salt-only layout axis with no cross-system counterpart) [S]. shadcn: OFF, confirmed absence — no group component exists anywhere in this clone; the checkbox docs literally say \"Use multiple fields to create a checkbox list\" [S]. M3: OFF, confirmed absence — no group/set token family exists in _md-comp-checkbox.scss in either edition, and no companion navigation-style file references one [S]. There is no separate \"checkbox-group\" row in 04-component-map.md to send this to (unlike chip's pill-input, which had one) — it is Salt's own package's answer to the SAME canonical row's \"many checkboxes\" concern, so it is modelled here rather than dropped." },
+
+    { "id": "behavior.role", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "APG's checkbox pattern (https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/, cited directly by Salt's own usage.mdx References section) specifies `role=\"checkbox\"` with `aria-checked` true/false/mixed. Salt [S] and M3 [S] get this role IMPLICITLY and for free — it is a real native `<input type=\"checkbox\">`, so the browser supplies the role and `checked`/`indeterminate` map to the accessibility tree without any explicit `role` or `aria-checked` attribute in source (M3's render() only writes an explicit `aria-checked=\"mixed\"` for the indeterminate case, because native `<input>` semantics do not otherwise expose \"mixed\" — confirmed by checkbox_test.ts asserting exactly `aria-checked` toggles to/from `'mixed'`, and nothing else). shadcn/Radix is [R]: the linked Radix docs and shadcn's own `has-[[aria-checked=true]]` selector in checkbox-demo.tsx together indicate the rendered root exposes `role=\"checkbox\"`/`aria-checked` the same way, but the exact element and its ARIA wiring are not independently confirmable without primitives/ cloned." },
+
+    { "id": "behavior.keyboard-activation", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "SPACE ONLY, in all three — and it is worth stating plainly because it is the OPPOSITE of chip's action pills (Enter+Space) and the exact match of native `<input type=\"checkbox\">` semantics, which none of the three systems override. Salt's accessibility.mdx: \"Space changes the state of the checkbox, select or deselect\" [S], and there is no keydown override anywhere in Checkbox.tsx — the browser does the whole job. M3: same, no keydown handler in checkbox.ts — the native input does it [S]. shadcn/Radix: [R], per the linked Radix docs and the general APG pattern; not independently confirmable without primitives/. Enter does nothing in any column — a real, sourced absence (native `<input type=\"checkbox\">` does not respond to Enter, only Space)." },
+
+    { "id": "behavior.label-click-target", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt: the ENTIRE label — box AND text — is one native click target, because structure.shell=\"label-wrap\" makes it a real <label> [S]. shadcn: only the small box itself toggles; extending the click target to label text requires the CONSUMER'S OWN separate <Label htmlFor> to do it via native label semantics, which is outside this component (declared composition, see slot.composes) [S/R]. M3 does NOT merely lack this — it explicitly ANTICIPATES being wrapped in a consumer-authored <label> and redirects that click to its own internal input: checkbox.ts's constructor adds a click listener that calls `isActivationClick`/`dispatchActivationClick` from `internal/events/form-label-activation.js`, so \"click bubbled from an ancestor <label>\" is a real, sourced code path even though M3 renders no label of its own [S]." },
+
+    { "id": "behavior.tri-state", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "checked / unchecked / indeterminate, and clicking or spacing an INDETERMINATE checkbox resolves to CHECKED in every column — this is native `<input type=\"checkbox\">` behaviour (a user interaction always toggles `.checked` and clears `.indeterminate`, regardless of which was previously true), which Salt and M3 inherit for free by using a real input: Salt's `handleChange` reads `event.target.checked` post-toggle [S] and a `useIsomorphicLayoutEffect` keeps `input.indeterminate` in sync with the `indeterminate` PROP reactively (`inputRef.current.indeterminate = indeterminate ?? false`) rather than driving it through render, because `indeterminate` has no HTML ATTRIBUTE form, only an IDL/DOM-property form [S]. M3's `handleInput` reads BOTH `target.checked` and `target.indeterminate` back off the native element after the browser has already resolved them [S]. shadcn/Radix: [R] — its own `checked` prop accepts `boolean | \"indeterminate\"`, and shadcn's OWN data-table example (`components/cards/payments.tsx`) proves the round-trip: `onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}` receives a plain boolean on click even from an indeterminate header checkbox [S, a real citation, not a doc-only inference]." },
+
+    { "id": "behavior.group-navigation", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt: NO roving tabindex — CONFIRMED ABSENCE. `internal/useCheckboxGroup.ts` and `internal/CheckboxGroupContext.ts` bind no keydown handler of any kind; every checkbox in a group keeps its own tab stop, Tab/Shift+Tab only (accessibility.mdx) [S] — the same answer PillGroup gave in CHIP-MATRIX.md finding 7, and the opposite of InteractableCardGroup's roving-tabindex radiogroup. shadcn/M3: OFF, no group construct to navigate (see structure.group)." },
+
+    { "id": "behavior.validation", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "THE MECHANISM, not the colour (see prop.validation / style.box.validation for those). Salt computes `validationStatus` in JS and DELIBERATELY SUPPRESSES it when disabled: `const validationStatus = !disabled ? (checkboxGroup?.validationStatus ?? formFieldValidationStatus ?? validationStatusProp) : undefined` [S] — a disabled+error Salt checkbox never shows the error tone, by source logic, not by CSS specificity. shadcn exposes `aria-invalid` as a bare boolean the consumer sets [S, checkbox-invalid.tsx passes a literal `aria-invalid` prop with no value]; there is no equivalent JS-level disabled-suppression visible in this file, so the chassis does not invent one for that column. M3 has a full parallel `error-*` token family (state-layer AND outline colours) covering every interaction state, but — being tokens-only for the STYLE half and [R] for the trigger mechanism — there is no element to confirm HOW `error` gets turned on (likely a boolean attribute per the general M3 spec, but not grep-able here)." },
+
+    { "id": "behavior.disabled-handling", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Salt: the native `disabled` attribute on the input (ORed with the group's `disabled`), plus a `.saltCheckbox-disabled` class driving a blanket opacity on the WHOLE label [S]. shadcn: native `disabled`, `disabled:cursor-not-allowed disabled:opacity-50` [S]. M3: native `?disabled` on the input, PLUS a genuinely interesting sourced detail — `:where(.disabled, .prev-disabled) :is(.background, .icon, .mark) { animation-duration: 0s; transition-duration: 0s }` with the source comment \"Don't animate to/from disabled states... Without this, there'd be a FOUC if the checkbox state is programmatically changed while disabled\" [S] — M3 explicitly SUPPRESSES its own transition system around the disabled boundary, a mechanism neither other system has because neither other system animates state changes at all (see style.box.transition)." },
+
+    { "id": "behavior.readonly", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY — and the sourced nuance is that the native HTML `readonly` IDL attribute has NO EFFECT on `type=\"checkbox\"` inputs per the WHATWG HTML spec [R, spec fact, not Salt-specific], so Salt's `readOnly` prop is NOT relying on the browser at all: `handleChange` does its own early return, `if (event.nativeEvent.defaultPrevented || readOnly) { return; }` [S] — Salt implements read-only in application JS, dresses the input with `readOnly`/`aria-readonly` anyway (harmless, browser ignores it), and separately dashes the box border and swaps to a lighter checkmark glyph (`CheckmarkIcon` instead of `CheckmarkSolidIcon`) [S, CheckboxIcon.tsx, CheckboxIcon.css `.saltCheckboxIcon-readOnly`]. shadcn: OFF, confirmed absence — no readOnly/readonly concept anywhere in checkbox.tsx. M3: OFF, confirmed absence — no readonly-* token in either edition of _md-comp-checkbox.scss." },
+
+    { "id": "behavior.form-participation", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "M3 is the most explicit of the three: a full form-associated custom element — `getFormValue` (returns `null` when unchecked OR indeterminate, `value` otherwise), `getFormState`, `formResetCallback`, `formStateRestoreCallback`, and a real `CheckboxValidator` that LAZILY CREATES A REAL native `<input type=\"checkbox\">` purely to borrow its constraint-validation engine (`this.checkboxControl.checked = ...; this.checkboxControl.required = ...; return this.checkboxControl.validity`) [S] — M3 delegates its OWN validity computation to a second, invisible, native checkbox rather than reimplementing the algorithm. Salt: inherits native form participation for free because its own input IS the real form control [S]. shadcn/Radix: [R] — the linked Radix docs describe a hidden native input for the same purpose, not independently confirmable here." },
+
+    { "id": "prop.value-shape", "piece": "prop", "policy": "locked", "channel": "config", "param": "valueShape",
+      "note": "A real API-SHAPE divergence, not a styling one. Salt [S] and M3 [S] both expose `checked?: boolean` and `indeterminate?: boolean` as TWO INDEPENDENT props — you CAN pass `checked={true} indeterminate={true}` simultaneously (both components then choose which one WINS visually: Salt's CheckboxIcon gates the checkmark on `checked && !indeterminate`; M3's render() computes `isChecked = checked && !indeterminate` the same way) — so \"two-boolean\" is the value for both. shadcn/Radix [S, sourced from shadcn's own `payments.tsx`, not merely the linked docs]: ONE `checked` prop typed `boolean | \"indeterminate\"` — the type system makes \"checked AND indeterminate\" literally inexpressible, a different and narrower contract than the other two systems offer. \"two-boolean\" is value[0] because it is the shape TWO of three systems actually use." },
+
+    { "id": "prop.validation", "piece": "prop", "policy": "switchable", "channel": "config", "param": "validation",
+      "note": "Salt [\"off\",\"error\",\"warning\"], SOURCE-DEFAULT-FIRST (`validationStatus?: AdornmentValidationStatus`, undefined/off by default) [S] — and Salt's own prop comment states plainly that \"success\" is accepted by the TYPE but renders no styling at all, which is why it is not listed as a third value here (a capability the type permits but the CSS never expresses is not a real value — see CHIP-MATRIX finding-2's class of defect). shadcn [\"off\",\"error\"]: `aria-invalid` is a bare boolean — there is no \"warning\" concept anywhere in this component [S]. M3 [\"off\",\"error\"]: a full `error-*` token family exists (state-layer AND outline colours, in both the selected and unselected sub-families) [S], but no `warning-*` family exists anywhere in either edition of _md-comp-checkbox.scss — CONFIRMED ABSENCE, grepped directly. Salt is therefore the only column with two validation tones; the other two agree with each other and disagree with Salt." },
+
+    { "id": "prop.disabled", "piece": "prop", "policy": "locked", "channel": "config", "param": "disabled",
+      "note": "[false,true] — CAPABILITY LIST, all three [S]: Salt `disabled?: boolean` (ORed with the group's), shadcn native `disabled` (a real HTML attribute Radix forwards), M3 `@property({type:Boolean}) disabled` (inherited from LitElement's reflected-property convention, native `?disabled=${this.disabled}` on the shadow input)." },
+
+    { "id": "prop.read-only", "piece": "prop", "policy": "switchable", "channel": "config", "param": "readOnly",
+      "note": "Salt ONLY: [false,true] [S] — see behavior.readonly for the sourced nuance that this is Salt's own JS logic, not the native (spec-inert) HTML attribute. shadcn and M3: OFF, confirmed absence." },
+
+    { "id": "prop.required", "piece": "prop", "policy": "switchable", "channel": "config", "param": "required",
+      "note": "M3: [false,true] [S] — `@property({type:Boolean}) required`, wired directly into `CheckboxValidator`'s constraint-validation computation (`this.checkboxControl.required = state.required`). Salt: [false,true] but only reachable THROUGH `inputProps.required` — `CheckboxProps` itself has no top-level `required` field (it extends `Omit<InputHTMLAttributes<HTMLLabelElement>, ...>`, and `required` is not a valid attribute of a <label>), so a consumer must thread it via the escape-hatch `inputProps` object to land it on the real <input> [S] — a genuinely different, more indirect API shape than M3's first-class reflected property, worth carrying as a value rather than smoothing into an identical capability. shadcn: [false,true] [R] — Radix's published API includes `required`, not independently confirmable without primitives/ cloned." },
+
+    { "id": "slot.label", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Salt ONLY owns this slot — `label?: ReactNode`, rendered as the LAST child inside the component's own <label> element, so it participates in native label-click semantics for free (see structure.shell / behavior.label-click-target) [S]. shadcn and M3: OFF — neither renders any label text of its own; the visible label a consumer sees always belongs to a SEPARATE component on the `label`/`field` canonical rows, associated externally via `id`/`htmlFor` (shadcn: `<Checkbox id=\"terms\"/><Label htmlFor=\"terms\">...</Label>` — checkbox-demo.tsx, checkbox-basic.tsx) [S]. This is the same slot-ownership contrast BADGE-MATRIX.md drew for `structure.label-format`: one system formats/owns content the others treat as fully external." },
+
+    { "id": "slot.composes", "piece": "slot", "policy": "default", "channel": "info",
+      "note": "DECLARED COMPOSITION, same convention as badge.template.json's slot.composes: (a) `label` — shadcn's and M3's external label association (both already-scoped canonical rows, `label` and `field` in 04-component-map.md's Forms & inputs section, neither built yet); (b) `field` — shadcn's own FieldDescription/FieldGroup/Field wrapper pattern for helper text and the `data-invalid`/`data-disabled` container styling seen in checkbox-invalid.tsx / checkbox-disabled.tsx, and Salt's `useFormFieldProps()` pulling `aria-describedby`/`aria-labelledby`/disabled/readOnly/validationStatus down from an ancestor form-field [S, both directions]; (c) `radio-group` — the sibling canonical row for the mutually-exclusive case, explicitly NOT this component (Salt's usage.mdx: \"When the checkbox displays a mutually exclusive choice ... Instead, use RadioButton\") [S]. All render as neutral placeholders in the harness rather than importing those skeletons." },
+
+    { "id": "state.rest", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Unchecked, enabled, unfocused. Salt: a neutral gray-500 outline (mode-invariant) on a white/near-black container fill — never filled solid, an outline-style box at every state [S]. shadcn: an --input-coloured 1px border with NO background at all in light mode, and a translucent input-tinted fill ONLY in dark mode (`dark:bg-input/30`, with no light-mode equivalent) — a real light/dark ASYMMETRY, not just a colour inversion [S]. M3: a 2px on-surface-variant outline with the fill layer present in the DOM but opacity:0 [S]." },
+
+    { "id": "state.checked", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "THREE DIFFERENT VISUAL STRATEGIES for the same boolean — the headline finding of this component. Salt: the fill NEVER changes (confirmed: no background rule anywhere keys off checked) — only the OUTLINE recolours to accent blue and a checkmark glyph appears in the same blue. It stays an outline box, permanently [S]. shadcn: a SOLID fill appears (`bg-primary`), the border recolours to match, and the icon becomes `text-primary-foreground` — a genuinely filled box [S]. M3: the fill (already in the DOM at opacity:0) fades AND scales in (`transform: scale(0.6)` → `scale(1)`, 350ms emphasized-decelerate) while the outline's width animates to 0 — fill REPLACES stroke, the identical mechanism CHIP-MATRIX.md documented for M3's `elevation@elevated` and `flat-selected` rows [S]." },
+
+    { "id": "state.indeterminate", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Salt: the box resets to its NEUTRAL (unselected) colours even if `checked` is also true — CheckboxIcon.css's compound `.saltCheckboxIcon-checked.saltCheckboxIcon-indeterminate` rule overrides BACK to the plain `selectable-borderColor`/`-foreground`, so an indeterminate Salt checkbox is grey with a grey dash, never blue [S]. shadcn: NO INDETERMINATE-SPECIFIC RULE EXISTS AT ALL — the cva string only keys off `data-[state=checked]`, never `data-[state=indeterminate]` — so an indeterminate shadcn checkbox renders with the RESTING (unstyled, un-filled) box colours while the Indicator STILL shows the checkmark glyph (Radix's Indicator renders on any truthy `checked`, including the string \"indeterminate\") [S] — a checkmark floating on an unstyled box, a real and slightly surprising defect-shaped finding, see 'Findings' below. M3: SAME visual treatment as checked — `.selected` (which the render() function sets for `isChecked || isIndeterminate`) covers both, and the dash-shaped mark is drawn in the identical primary/on-primary colour pair as the checkmark [S]." },
+
+    { "id": "state.hover", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt: recolours the outline AND icon to the accent-tinted hover variant (`selectable-borderColor-hover`/`-foreground-hover`), keyed off the ROOT's `:hover` — so hovering the label TEXT hovers the box too, consistent with structure.shell [S]. shadcn: OFF — CONFIRMED ABSENCE, no `hover:` class of any kind anywhere in checkbox.tsx, unlike almost every other shadcn component this pipeline has built. M3: an 8%-opacity on-surface-tinted state layer (unselected) or primary-tinted (selected) [S]." },
+
+    { "id": "state.focus", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt: `outline: 2px dotted accent-stronger` at a 1px offset PLUS the whole hover recolour riding along, keyed off the INPUT's `:focus-visible` via an adjacent-sibling selector [S]. shadcn: the familiar translucent 3px `ring-ring/50` box-shadow plus a border recolour [S]. M3: a 2px on-surface (unselected) outline recolour plus a 12%-opacity state layer — AND a SEPARATE `md-focus-ring` element exists in the real DOM that this chassis does not reproduce (declared, see 'Declared approximations') [S]." },
+
+    { "id": "state.pressed", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "M3 ONLY models a true pressed/active state — a 12%-opacity state layer, tinted PRIMARY when the box is CURRENTLY unselected (i.e. the ripple previews the colour you are ABOUT to select into) and tinted ON-SURFACE when the box is currently selected (previewing the colour you are about to lose) — a real, sourced, symmetrical piece of design intent [S, selected-pressed-state-layer-color: on-surface vs unselected-pressed-state-layer-color: primary]. Salt: OFF — CONFIRMED ABSENCE, no `:active` selector anywhere in Checkbox.css or CheckboxIcon.css. shadcn: OFF — same, no `active:` class exists." },
+
+    { "id": "state.disabled", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "THREE DIFFERENT OPACITIES for the same idea — Salt 0.4 (a literal, blanket, on the whole label) [S], shadcn 0.5 (`disabled:opacity-50`) [S], M3 0.38 (`disabled-container-opacity` / `selected-disabled-container-opacity`, both 0.38 in this edition, applied only to the outline/background layers, never the icon) [S]. Three systems, three magnitudes: 0.38 / 0.4 / 0.5, none of them shared." },
+
+    { "id": "style.box.size", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"], [data-slot=\"checkbox-input\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `size-selectable`, 12/14/16/18px by DENSITY — the same token chip's check-box part and badge's dot-detection logic both cite [S]. shadcn: `size-4` = 16px, fixed, no density capability [S]. M3: `container-size` = 18px, a hardcoded literal in both editions [S]. Applied to the input too so the (invisible) hit area always matches the visible box exactly." },
+
+    { "id": "style.box.shape", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: `corner-weaker` → `curve-50` → 1/2/3/4px by DENSITY, collapsing to 0px under the sharp corner edition (the exact CHIP-MATRIX finding-1 token) [S]. shadcn: `rounded-[4px]`, a literal, density-invariant [S]. M3: `container-shape` = 2px, a hardcoded literal in all four logical corners, both editions [S]." },
+
+    { "id": "style.box.border-width", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]",
+      "declarations": { "border-style": "solid", "border-width": "$" },
+      "note": "Salt: `size-fixed-100` = 1px, on the FIXED (density-invariant) scale by design [S]. shadcn: a bare `border` utility = 1px, undeclared width, the same unvendored-Tailwind caveat every prior shadcn column has recorded [S]. M3: `unselected-outline-width` = 2px (this is the REST/unselected value; style.box.checked overrides it to 0 — see that row) [S]." },
+
+    { "id": "style.icon.size", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"checkbox-icon\"]",
+      "declarations": { "width": "$", "height": "$" },
+      "note": "Salt: Icon defaults to `--saltIcon-size: 100%`, filling whatever box it is placed in — Salt sizes its glyph RELATIVE to the box rather than with its own fixed number [S]. shadcn: `size-3.5` = 14px, fixed inside a 16px box [S]. M3: `icon-size` = 18px, EQUAL to `container-size` — the glyph fills the box exactly, no margin [S]." },
+
+    { "id": "style.root.gap", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-root\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt ONLY: `gap: spacing-100` = 4/8/12/16px by density, between the box and the label text [S]. shadcn and M3: OFF — neither owns a label, so neither has anything of its own to space (a consumer's own flex row supplies whatever gap it likes, harness chrome, not a component token)." },
+
+    { "id": "style.root.cursor", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-root\"]",
+      "declarations": { "cursor": "$" },
+      "note": "Salt: `cursor-hover` = pointer, on the whole label [S]. shadcn: OFF — CONFIRMED ABSENCE, no `cursor-pointer` class anywhere at rest (only `disabled:cursor-not-allowed` exists — see style.box.disabled); the resting cursor is whatever the underlying element's UA default is, which is not independently confirmable without primitives/ cloned. M3: `:host { cursor: pointer }`, explicit [S]." },
+
+    { "id": "style.root.font", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"checkbox-root\"]",
+      "declarations": { "font-size": "$fontSize", "line-height": "$lineHeight", "font-family": "$fontFamily", "font-weight": "$fontWeight" },
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY: the body text role — REGULAR weight (400) at 11/14 . 12/16 . 14/18 . 16/20px by density, Open Sans [S] — the label text's own typography, since Salt owns that slot. shadcn and M3: OFF — the label text belongs to an external, not-yet-built component (see slot.composes)." },
+
+    { "id": "style.box.rest", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]",
+      "cellIsDeclarations": true,
+      "note": "The unchecked/enabled/unfocused box. Salt: neutral gray-500 border (MODE-INVARIANT — next/palette/neutral.css declares `--salt-palette-neutral` identically in the light and dark blocks, the same mode-invariance BADGE-MATRIX.md documented for `palette-accent`), on a white/near-black container fill [S]. shadcn: an --input-coloured border with NO background in light mode and a translucent fill ONLY in dark mode — see state.rest [S]. M3: a 2px on-surface-variant outline, transparent/invisible fill (opacity 0 — see structure.outline-layer for the layer this collapses) [S]." },
+
+    { "id": "style.box.checked", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:checked:not(:indeterminate))",
+      "cellIsDeclarations": true,
+      "note": "See state.checked for the three-way narrative. Salt: border-color and icon `color` both move to accent blue-500 (MODE-INVARIANT); the fill is UNTOUCHED [S]. shadcn: `border-primary bg-primary text-primary-foreground` — a real filled box [S]. M3: `border-width: 0` (the outline is removed, not merely recoloured — the CHIP-MATRIX `elevation@elevated` mechanism again), `background-color: primary` at full opacity, icon `on-primary` [S]." },
+
+    { "id": "style.box.indeterminate", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:indeterminate)",
+      "cellIsDeclarations": true,
+      "note": "Salt: RESETS to the plain neutral/unselected colours (see structure.mark and 'Findings' — a real, sourced compound-selector override, reproduced here for free because `:checked:not(:indeterminate)` and `:indeterminate` are mutually exclusive selectors, so no cascade-order trick is needed) [S]. shadcn: OFF — CONFIRMED ABSENCE, no `data-[state=indeterminate]` rule exists anywhere in checkbox.tsx, so the box stays at its RESTING colours while the icon (see structure.mark) still shows a checkmark — see finding 3 [S]. M3: identical treatment to checked — `.selected` covers `isChecked || isIndeterminate` as one class [S]." },
+
+    { "id": "style.box.dash", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:indeterminate)::before",
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY — the ACTUAL glyph that communicates indeterminate, since style.box.indeterminate resets Salt's colours to neutral (making an indeterminate box otherwise indistinguishable from a rest one). CheckboxIcon.css `.saltCheckboxIcon-indeterminate::before { content:''; position:absolute; top:50%; left:50%; width: calc(var(--checkbox-size) - 6px); height:2px; background: currentColor; transform: translate(-50%,-50%) }` — a plain CSS bar, not an svg [S]. shadcn: OFF — no dash of any kind; its indeterminate reuses the checkmark icon (see structure.mark). M3: OFF — its indeterminate glyph is the `.mark` <rect> pair rotated flat by CSS transform (structure.mark), not a separate pseudo-element." },
+
+    { "id": "style.box.hover", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-root\"]:hover [data-slot=\"checkbox-box\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: border-color and icon colour move to the `-hover` variants of whichever base they were already on (selected or not) [S]. shadcn: OFF — CONFIRMED ABSENCE, no hover rule of any kind (see state.hover). M3: an 8%-opacity state-layer tint, primary when selected, on-surface when not [S] — modelled here as a `background-color` mix over the box rather than a separate ripple element, the same declared collapse structure.outline-layer already flags." },
+
+    { "id": "style.box.focus", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:focus-visible)",
+      "cellIsDeclarations": true,
+      "note": "Salt: `outline: 2px dotted accent-stronger`, offset 1px, plus the hover recolour riding along [S]. shadcn: the established translucent `0 0 0 3px ring-ring/50` ring plus a border recolour [S]. M3: a 2px on-surface outline recolour (unselected) plus a 12%-opacity state layer; the box's own outline is the ONLY focus indicator this chassis draws — M3's separate `md-focus-ring` element is not reproduced, see 'Declared approximations' [S]." },
+
+    { "id": "style.box.pressed", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:active)",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY — see state.pressed for the \"ripple previews where you're headed\" finding: primary-tinted at 12% when currently unselected, on-surface-tinted at 12% when currently selected [S]. Salt and shadcn: OFF, confirmed absence, no `:active` rule in either." },
+
+    { "id": "style.box.disabled", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"checkbox-root\"]:has([data-slot=\"checkbox-input\"]:disabled)",
+      "cellIsDeclarations": true,
+      "note": "Applied to the ROOT in all three columns — for Salt this is literally correct (the root IS the whole label) [S]; for shadcn and M3 the root is effectively just the control itself, since neither renders a label of its own, so the same selector is a faithful reproduction rather than a borrowed one. Salt: blanket `opacity: 0.4`, `cursor: not-allowed` [S]. shadcn: `opacity: 0.5`, `cursor: not-allowed` [S]. M3: `opacity: 0.38` on the box only (not the icon — M3 never dims the checkmark itself, only the outline/fill it sits on), `cursor: default` [S]. Three different numbers, see state.disabled." },
+
+    { "id": "style.box.validation", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-root\"][data-validation=\"error\"] [data-slot=\"checkbox-box\"]",
+      "cellIsDeclarations": true,
+      "note": "The common tone all three columns actually have (a real cross-system rarity in this pipeline — badge and chip both had at most one or two systems with any validation axis at all). Salt: border-color and icon colour move to `status-error-borderColor`/`-foreground-decorative` → red-500 [S]. shadcn: `border-destructive`, plus the ring alpha narrows on focus (20% light / 40% dark) — reusing the same indirection-slot pattern input.shadcn.json and badge.shadcn.json established [S]. M3: the whole `error-*` family substitutes for `primary`/`on-surface(-variant)` throughout every state — modelled here as the REST/unselected error outline; the selected-error and hover/focus/pressed-error variants are recorded in the column's provenance but not expanded into their own rows, for scope [S]." },
+
+    { "id": "style.box.validation@warning", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-root\"][data-validation=\"warning\"] [data-slot=\"checkbox-box\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY — `status-warning-borderColor`/`-foreground-decorative` → orange-500 [S]. shadcn: OFF, confirmed absence (aria-invalid is a boolean, error-only). M3: OFF, confirmed absence (no warning-* token family in either edition, grepped directly)." },
+
+    { "id": "style.box.transition", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]",
+      "declarations": { "transition": "$" },
+      "note": "Three different answers. Salt: OFF — CONFIRMED ABSENCE, no transition property anywhere in Checkbox.css or CheckboxIcon.css [S]. shadcn: `transition-shadow` ONLY — the focus ring's box-shadow eases in, but the checked-state fill/border SNAPS instantly, an easy-to-miss asymmetry [S]. M3: a full, CHOREOGRAPHED, two-phase system — 150ms emphasized-accelerate on the way OUT (unchecking), 350ms emphasized-decelerate on the way IN (checking), applied to `transform, opacity` on the background/icon layers AND separately to the mark rectangles' own `width`/`height`/`transform` [S] — modelled here as a single representative transition string on the box; the full multi-property choreography is not reproduced (see 'Declared approximations')." },
+
+    { "id": "style.box.state-layer", "piece": "style", "policy": "switchable", "channel": "info",
+      "note": "M3 ONLY, and NOT rendered as its own element (declared collapse, see structure.outline-layer). Source: `state-layer-size` = 40px, `state-layer-shape` = `corner-full` (9999px) — a full 40px CIRCLE, more than double the 18px box, centred on it — the same invisible-touch-target-sized interaction zone `md-ripple` draws for hover/pressed feedback [S]. This chassis approximates the intent by tinting the 18px box itself on hover/pressed (style.box.hover / style.box.pressed) rather than drawing the larger circle." },
+
+    { "id": "style.mark.short-size", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-icon\"] .mark.short",
+      "cellIsDeclarations": true,
+      "note": "ADDED DURING ORCHESTRATOR REVIEW — structure.mark declares M3's dual-rect strategy but no style row ever gave the two <rect>s a size, so the M3 checkmark/dash was invisible (0x0) in every state; this is the fix, sourced properly rather than declared as a gap. M3: `.mark.short { width: $_mark-stroke; height: $_mark-stroke }` = 2px/2px, the REST size (also the size behind the indeterminate mark) [S, internal/_checkbox.scss ~L195]. Salt/shadcn: OFF — neither strategy renders a <rect>, see structure.mark." },
+
+    { "id": "style.mark.long-size", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-icon\"] .mark.long",
+      "cellIsDeclarations": true,
+      "note": "M3: `.mark.long { width: 10px; height: $_mark-stroke }` — at rest this IS the indeterminate dash shape already (source comment: 'Initially the indeterminate mark') [S, ~L203]. Salt/shadcn: OFF, see style.mark.short-size." },
+
+    { "id": "style.mark.fill", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-icon\"] svg",
+      "cellIsDeclarations": true,
+      "note": "M3: `.icon { fill: selected-icon-color }` [S, ~L182] — NOT reproduced as its own colour token here, because this chassis's checkbox-box already carries the identical colour (on-surface-variant rest / on-primary checked+indeterminate) on its `color` property via style.box.rest/.checked/.indeterminate; `fill: currentColor` inherits it rather than duplicating the value, a structural reuse not a new fact. Paired with `opacity: 0` — M3's `.background, .icon { opacity: 0 }` base rule [S, ~L122] — so the mark is invisible until style.mark.selected-opacity overrides it. Salt/shadcn: OFF, no svg rect to fill." },
+
+    { "id": "style.mark.selected-opacity", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:checked) [data-slot=\"checkbox-icon\"] svg, [data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:indeterminate) [data-slot=\"checkbox-icon\"] svg",
+      "declarations": { "opacity": "$" },
+      "note": "M3: `:where(.selected) :is(.background, .icon) { opacity: 1 }` where `.selected` = `isChecked || isIndeterminate` [S, ~L133] — the CSS `:checked` and `:indeterminate` pseudo-classes are not mutually exclusive the way this row's two comma branches read; a real DOM checkbox can be both at once (state.indeterminate resets colour but the mark must still show), so both branches are listed rather than one being redundant. Salt/shadcn: OFF, see style.mark.fill." },
+
+    { "id": "style.mark.checked-transform", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:checked:not(:indeterminate)) [data-slot=\"checkbox-icon\"] .mark",
+      "declarations": { "transform": "$" },
+      "note": "M3: `.checked .mark { transform: scaleY(-1) translate($_checkmark-bottom-left) rotate(45deg) }`, `$_checkmark-bottom-left: 7px, -14px` — the scaleY(-1) is a documented Safari transform-origin workaround, not decoration (source comment: 'Fix Safari's transform-origin bug from top left to bottom left') [S, ~L241-251]. Salt/shadcn: OFF, see style.mark.fill." },
+
+    { "id": "style.mark.checked-short-size", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:checked:not(:indeterminate)) [data-slot=\"checkbox-icon\"] .mark.short",
+      "declarations": { "height": "$" },
+      "note": "M3: `.checked .mark.short { height: 1px * sqrt(32) }` ≈ 5.657px — the short end's hypotenuse, a 4dp/4dp right triangle (source comment gives the derivation directly) [S, ~L253-258]. Salt/shadcn: OFF." },
+
+    { "id": "style.mark.checked-long-size", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:checked:not(:indeterminate)) [data-slot=\"checkbox-icon\"] .mark.long",
+      "declarations": { "width": "$" },
+      "note": "M3: `.checked .mark.long { width: 1px * sqrt(128) }` ≈ 11.314px — the long end's hypotenuse, an 8dp/8dp right triangle [S, ~L260-265]. Salt/shadcn: OFF." },
+
+    { "id": "style.mark.indeterminate-transform", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"checkbox-box\"]:has([data-slot=\"checkbox-input\"]:indeterminate) [data-slot=\"checkbox-icon\"] .mark",
+      "declarations": { "transform": "$" },
+      "note": "M3: `.indeterminate .mark { transform: scaleY(-1) translate($_indeterminate-bottom-left) rotate(0deg) }`, `$_indeterminate-bottom-left: 4px, -10px` — no size override needed, the rest geometry (style.mark.short-size/long-size) already IS the flat dash shape [S, ~L272-275]. Salt/shadcn: OFF, see style.mark.fill." }
+  ]
+}

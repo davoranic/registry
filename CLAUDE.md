@@ -173,6 +173,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `button` | [`BUTTON-MATRIX.md`](BUTTON-MATRIX.md) | 30 | 19 | 17 | 17 | — |
 | `calendar` | [`CALENDAR-MATRIX.md`](CALENDAR-MATRIX.md) | 58 | 40 | 31 | 36 | — |
 | `card` | [`CARD-MATRIX.md`](CARD-MATRIX.md) | 90 | 62 | 36 | 37 | ✓ |
+| `checkbox` | [`CHECKBOX-MATRIX.md`](CHECKBOX-MATRIX.md) | 55 | 41 | 30 | 46 | ✓ |
 | `chip` | [`CHIP-MATRIX.md`](CHIP-MATRIX.md) | 75 | 45 | 7 | 59 | ✓ |
 | `dialog` | [`DIALOG-MATRIX.md`](DIALOG-MATRIX.md) | 97 | 73 | 47 | 38 | ✓ |
 | `input` | [`INPUT-MATRIX.md`](INPUT-MATRIX.md) | 64 | 50 | 20 | 32 | — |

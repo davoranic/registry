@@ -1,0 +1,121 @@
+{
+  "system": "shadcn",
+  "component": "checkbox",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "input-border": "oklch(0.922 0 0)",
+      "primary": "oklch(0% 0 0)",
+      "primary-fg": "oklch(0.985 0 0)",
+      "destructive": "oklch(0.577 0.245 27.325)",
+      "ring": "oklch(0.708 0 0)",
+      "ring-alpha-error": "20%",
+      "box-bg": "transparent",
+      "shadow-color": "rgb(0 0 0 / 0.05)",
+      "transition-props": "box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "dark": {
+      "input-border": "oklch(1 0 0 / 15%)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-fg": "oklch(0.205 0 0)",
+      "destructive": "oklch(0.704 0.191 22.216)",
+      "ring": "oklch(0.556 0 0)",
+      "ring-alpha-error": "40%",
+      "box-bg": "color-mix(in oklab, oklch(1 0 0 / 15%) 30%, transparent)"
+    }
+  },
+  "modeInvariant": ["shadow-color"],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/checkbox.tsx — ONE element (`CheckboxPrimitive.Root`), no owned label, no owned group, one cva-free literal className string, plus an `Indicator` child holding a lucide `CheckIcon`. Token values from apps/v4/app/globals.css (light block from line 100, dark from line 144) — the SAME --primary/--primary-foreground/--destructive/--ring/--input values every prior shadcn column has resolved from, re-derived here rather than borrowed to keep this column self-contained. Read for the tri-state proof and the group boundary: components/cards/payments.tsx (the ColumnDef `select` column). Read only to fix the boundary (NOT canonical): apps/v4/registry/bases/{radix,base,aria}/ui/checkbox.tsx (all three move an equivalent structure behind `cn-checkbox` class tokens — same conclusions, no extra capability) and apps/v4/content/docs/components/radix/checkbox.mdx, which LINKS to but does not itself document Radix's internal element (primitives/ was not cloned per project convention — Radix is behavior-reference only, never a style source).",
+    "no-primitives-clone": "primitives/ (Radix's own source) was NOT cloned into 3-source/ for this build, matching the project's standing rule that Radix is behaviour-reference only, never a style source. Every cell below that depends on Radix's INTERNAL element/ARIA wiring (structure.native-input, behavior.role, behavior.keyboard-activation, prop.required) is marked [R] and cites the linked docs (https://www.radix-ui.com/docs/primitives/components/checkbox) rather than a grep. Everything that is shadcn's OWN literal source — the className string, the tri-state proof in payments.tsx, the absence of hover/pressed/indeterminate rules — is [S].",
+    "input-border": "class `border-input` -> --input globals.css:118 (light) / :161 (dark).",
+    "primary / primary-fg": "classes `data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground` -> --primary :107/:150, --primary-foreground :108/:151. Same INVERSION badge.shadcn.json recorded: light is near-black on near-white, dark is near-white on near-black.",
+    "destructive": "class `aria-invalid:border-destructive` -> --destructive :115/:158.",
+    "ring / ring-alpha-error": "classes `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50` -> --ring :119/:162; `aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40` — the SAME indirection-slot pattern input.shadcn.json and badge.shadcn.json used so the aria-invalid rule narrows only the alpha.",
+    "box-bg": "THE LIGHT/DARK ASYMMETRY: there is NO background class at all for the unchecked/rest state in light mode (the cva string has no bg-* utility outside `data-[state=checked]:bg-primary`), so the box is genuinely transparent in light mode; `dark:bg-input/30` ADDS a translucent input-tinted fill ONLY in dark mode, compiling to `color-mix(in oklab, var(--input) 30%, transparent)` per Tailwind v4's alpha-modifier convention (the same derivation input.shadcn.json and badge.shadcn.json used for their own /NN modifiers). A resting shadcn checkbox is NOT simply 'unfilled' in both modes — it is unfilled in light and faintly filled in dark, a real asymmetry not a colour inversion.",
+    "shadow-color": "class `shadow-xs` = 0 1px 2px 0 rgb(0 0 0 / 0.05). Tailwind is not vendored in this clone; the value is reused verbatim from button.shadcn.json's already-extracted style.root.elevation rather than re-derived, matching input.shadcn.json's and select.shadcn.json's own citation of the same fact. MODE-INVARIANT — the class carries no dark: variant.",
+    "transition-props": "class `transition-shadow`. The property list is [S] — checkbox.tsx transitions ONLY box-shadow, unlike input/select/badge which transition color+box-shadow together, a real narrower scope worth stating. 150ms / cubic-bezier(0.4,0,0.2,1) are Tailwind's own defaults, [R], the same unvendored-Tailwind caveat every prior shadcn column has recorded.",
+    "no-hover-no-pressed-no-indeterminate-style": "CONFIRMED ABSENCE, checked directly against the literal className string: there is no `hover:`, no `active:`, and — the real finding — NO `data-[state=indeterminate]:` class anywhere. The cva-free string keys ONLY off `data-[state=checked]`. Radix's own Indicator still renders the CheckIcon for `checked=\"indeterminate\"` (state.indeterminate), so an indeterminate shadcn checkbox shows a checkmark on an otherwise UNSTYLED (resting-coloured) box — see the matrix doc's 'Findings'.",
+    "tri-state-proof": "components/cards/payments.tsx: `<Checkbox checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && \"indeterminate\")} onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} .../>` — a real, first-party citation (not merely the linked Radix docs) that `checked` accepts the literal string \"indeterminate\" and that a click/toggle resolves to a plain boolean.",
+    "no-group-construct": "CONFIRMED ABSENCE — no checkbox-group.tsx, no CheckboxGroup export, anywhere in this clone. checkbox.mdx's own prose: 'Use multiple fields to create a checkbox list' — a documented COMPOSITION pattern, not a component capability.",
+    "no-readonly": "CONFIRMED ABSENCE — no readOnly/readonly/aria-readonly reference anywhere in checkbox.tsx."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "unwrapped", "note": "[R] — the rendered root owns no label; checkbox-demo.tsx pairs it with a separate <Label htmlFor>" },
+    "structure.native-input": { "kind": "value", "value": true, "note": "[R] — Radix's published API documents a hidden native <input> for form participation behind the styled root; not independently confirmable without primitives/ cloned" },
+    "structure.outline-layer": { "kind": "off", "note": "CONFIRMED ABSENCE — one element, border and background both live directly on the cva string's root" },
+    "structure.mark": { "kind": "value", "value": "single-icon", "source": "Indicator renders its ONE child (a lucide CheckIcon) whenever `checked` is truthy, INCLUDING the string \"indeterminate\" — see no-hover-no-pressed-no-indeterminate-style" },
+    "structure.group": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-group-construct" },
+
+    "behavior.role": { "kind": "value", "value": "[R] role=checkbox, aria-checked — inferred from checkbox-demo.tsx's own `has-[[aria-checked=true]]` selector plus the linked Radix docs", "note": "not independently confirmable without primitives/ cloned" },
+    "behavior.keyboard-activation": { "kind": "value", "value": "[R] Space only, per the linked Radix docs and the general APG pattern" },
+    "behavior.label-click-target": { "kind": "value", "value": "only the box itself; extending the target requires the consumer's OWN separate <Label htmlFor>", "source": "checkbox-demo.tsx, checkbox-basic.tsx" },
+    "behavior.tri-state": { "kind": "value", "value": "a click/toggle always resolves to a plain boolean, even from an indeterminate header checkbox", "source": "payments.tsx onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} — see tri-state-proof" },
+    "behavior.group-navigation": { "kind": "off", "note": "no group construct to navigate" },
+    "behavior.validation": { "kind": "value", "value": "a bare boolean the consumer sets directly", "source": "checkbox-invalid.tsx passes a literal `aria-invalid` prop with no computed suppression logic visible in this clone" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native disabled + disabled:cursor-not-allowed disabled:opacity-50", "source": "checkbox.tsx cva string" },
+    "behavior.readonly": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-readonly" },
+    "behavior.form-participation": { "kind": "value", "value": "[R] a hidden native bubble input, per the linked Radix docs", "note": "not independently confirmable without primitives/ cloned" },
+
+    "prop.value-shape": { "kind": "value", "value": "tri-value", "source": "payments.tsx's own checked={... || (... && \"indeterminate\")} — ONE prop typed boolean | \"indeterminate\"" },
+    "prop.validation": { "kind": "value", "value": ["off", "error"], "source": "aria-invalid is a bare boolean (SOURCE-DEFAULT-FIRST, off/undefined by default); no warning concept exists" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "native disabled, a real HTML attribute Radix forwards" },
+    "prop.read-only": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "prop.required": { "kind": "value", "value": [false, true], "note": "[R] — Radix's published API includes `required`; not independently confirmable without primitives/ cloned" },
+
+    "slot.label": { "kind": "off", "note": "CONFIRMED ABSENCE — no label text owned; always external (see slot.composes)" },
+    "slot.composes": { "kind": "value", "value": true, "note": "label (id/htmlFor, checkbox-demo.tsx), field (Field/FieldLabel/FieldDescription/FieldGroup, checkbox-basic.tsx/checkbox-description.tsx/checkbox-invalid.tsx/checkbox-disabled.tsx)" },
+
+    "state.rest": { "kind": "value", "value": "an --input-coloured border with NO background in light mode; a translucent input-tinted fill ONLY in dark mode", "note": "a real light/dark ASYMMETRY, not a colour inversion — see box-bg provenance" },
+    "state.checked": { "kind": "value", "value": "a SOLID primary fill appears, border recolours to match, icon becomes primary-foreground", "note": "a genuinely filled box, unlike Salt's permanently-outlined one" },
+    "state.indeterminate": { "kind": "value", "value": "recognized by the API (checked=\"indeterminate\", data-state=\"indeterminate\") but NO CSS reacts to it — the box stays at RESTING colours while the icon still shows a checkmark", "note": "see no-hover-no-pressed-no-indeterminate-style; the state exists, the styling for it does not" },
+    "state.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — no hover: class of any kind" },
+    "state.focus": { "kind": "value", "value": "the established translucent 3px ring-ring/50 box-shadow plus a border recolour", "source": "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — no active: class" },
+    "state.disabled": { "kind": "value", "value": "opacity 0.5, cursor not-allowed", "source": "disabled:cursor-not-allowed disabled:opacity-50" },
+
+    "style.box.size": { "kind": "value", "value": { "width": "16px", "height": "16px" }, "source": "class `size-4` = 1rem = 16px" },
+    "style.box.shape": { "kind": "value", "value": "4px", "source": "class `rounded-[4px]`, a literal" },
+    "style.box.border-width": { "kind": "value", "value": "1px", "source": "bare `border` utility, undeclared width, Tailwind's own default — the same unvendored-Tailwind caveat every prior shadcn column has recorded" },
+    "style.icon.size": { "kind": "value", "value": "14px", "source": "CheckIcon wrapped `size-3.5` = 0.875rem = 14px, inside a 16px box" },
+    "style.root.gap": { "kind": "off", "note": "no owned label, nothing to space" },
+    "style.root.cursor": { "kind": "off", "note": "CONFIRMED ABSENCE — no cursor-pointer class at rest; only disabled:cursor-not-allowed exists" },
+    "style.root.font": { "kind": "off", "note": "no owned label text" },
+    "style.box.rest": {
+      "kind": "value",
+      "value": { "border-color": "var(--input-border)", "background-color": "var(--box-bg)", "box-shadow": "0 1px 2px 0 var(--shadow-color)" },
+      "source": "border border-input shadow-xs, no bg-* class outside data-[state=checked] (see box-bg provenance)"
+    },
+    "style.box.checked": {
+      "kind": "value",
+      "value": { "border-color": "var(--primary)", "background-color": "var(--primary)", "color": "var(--primary-fg)" },
+      "source": "data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+    },
+    "style.box.indeterminate": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-hover-no-pressed-no-indeterminate-style; the box falls through to style.box.rest's colours" },
+    "style.box.dash": { "kind": "off", "note": "no dash of any kind; indeterminate reuses the checkmark icon" },
+    "style.box.hover": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.box.focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--ring)", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent), 0 1px 2px 0 var(--shadow-color)" },
+      "source": "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 — the shadow-xs layer is repeated after the ring because Tailwind v4 composes box-shadow as var(--tw-ring-shadow), var(--tw-shadow), the same layering input.shadcn.json and select.shadcn.json established"
+    },
+    "style.box.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.box.disabled": { "kind": "value", "value": { "opacity": "0.5", "cursor": "not-allowed" }, "source": "disabled:cursor-not-allowed disabled:opacity-50" },
+    "style.box.validation": {
+      "kind": "value",
+      "value": { "border-color": "var(--destructive)", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--destructive) var(--ring-alpha-error), transparent)" },
+      "source": "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 — a PERMANENT ring, not gated on focus"
+    },
+    "style.box.validation@warning": { "kind": "off", "note": "CONFIRMED ABSENCE — aria-invalid is error-only" },
+    "style.box.transition": { "kind": "alias", "slot": "transition-props" },
+    "style.box.state-layer": { "kind": "off" },
+    "style.mark.short-size": { "kind": "off", "note": "markStyle=single-icon — one lucide CheckIcon glyph, no <rect>, see structure.mark" },
+    "style.mark.long-size": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.fill": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.selected-opacity": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.checked-transform": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.checked-short-size": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.checked-long-size": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.indeterminate-transform": { "kind": "off", "note": "see style.mark.short-size" }
+  }
+}

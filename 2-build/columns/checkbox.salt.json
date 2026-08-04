@@ -1,0 +1,153 @@
+{
+  "system": "salt",
+  "component": "checkbox",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "neutral": "rgb(114, 119, 125)",
+      "neutral-fg": "rgb(95, 100, 106)",
+      "accent": "rgb(0, 120, 207)",
+      "box-bg": "rgb(255, 255, 255)",
+      "error": "rgb(229, 33, 53)",
+      "warning": "rgb(199, 83, 0)",
+      "focus-outline": "rgb(0, 69, 126)",
+      "type-fontFamily": "'Open Sans', sans-serif",
+      "type-fontWeight": "400"
+    },
+    "dark": {
+      "neutral-fg": "rgb(145, 149, 154)",
+      "box-bg": "rgb(16, 24, 32)",
+      "focus-outline": "rgb(154, 189, 245)"
+    },
+    "byDensity": {
+      "high":   { "box-size": "12px", "shape-radius": "1px", "root-gap": "4px",  "type-fontSize": "11px", "type-lineHeight": "14px" },
+      "medium": { "box-size": "14px", "shape-radius": "2px", "root-gap": "8px",  "type-fontSize": "12px", "type-lineHeight": "16px" },
+      "low":    { "box-size": "16px", "shape-radius": "3px", "root-gap": "12px", "type-fontSize": "14px", "type-lineHeight": "18px" },
+      "touch":  { "box-size": "18px", "shape-radius": "4px", "root-gap": "16px", "type-fontSize": "16px", "type-lineHeight": "20px" }
+    }
+  },
+  "modeInvariant": ["neutral", "accent", "error", "warning", "type-fontFamily", "type-fontWeight"],
+  "provenance": {
+    "canonical-source": "packages/core/src/checkbox/{Checkbox.tsx,Checkbox.css,CheckboxIcon.tsx,CheckboxIcon.css,CheckboxGroup.tsx,CheckboxGroup.css,internal/useCheckboxGroup.ts,internal/CheckboxGroupContext.ts,index.ts} — the whole component family, seven files. Read for defaults, composition and the documented contract: packages/core/stories/checkbox/{checkbox.stories.tsx,checkbox.qa.stories.tsx}; site/docs/components/checkbox/{index,usage,accessibility,examples}.mdx. Resolution through packages/theme/css/next/characteristics/{selectable,text,status}.css, next/palette/{neutral,accent,negative,warning,background,corner}.css, next/foundations/color.css, packages/theme/css/foundations/{size,spacing,curve,cursor,borderStyle,zindex}.css, next/characteristics/focused.css.",
+    "neutral": "CheckboxIcon.css `border-color: var(--salt-selectable-borderColor)` -> next/characteristics/selectable.css:2 `--salt-selectable-borderColor: var(--salt-palette-neutral)` -> next/palette/neutral.css, which declares `--salt-palette-neutral: var(--salt-color-gray-500)` IDENTICALLY under both [data-mode=\"light\"] (line 2) and [data-mode=\"dark\"] (line 13) -> next/foundations/color.css --salt-color-gray-500-rgb: 114, 119, 125. MODE-INVARIANT, the same fact BADGE-MATRIX.md and CHIP-MATRIX.md both recorded for palette-accent — here it is palette-neutral instead, at the SAME two colour stops.",
+    "neutral-fg": "CheckboxIcon.css's resting `color` is inherited from `--salt-selectable-foreground` -> next/characteristics/selectable.css:8 `var(--salt-palette-neutral-strong)` -> next/palette/neutral.css, which is NOT mode-invariant: gray-600 rgb(95,100,106) under light (line 5), gray-400 rgb(145,149,154) under dark (line 16) — the resting icon-fill colour genuinely inverts by mode even though the border colour beside it does not.",
+    "accent": "CheckboxIcon.css `.saltCheckboxIcon-checked { border-color: var(--salt-selectable-borderColor-selected); color: var(--salt-selectable-foreground-selected) }` -> selectable.css:4,10, BOTH -> `var(--salt-palette-accent)` -> next/palette/accent.css, which declares `--salt-palette-accent: var(--salt-color-blue-500)` identically under [data-mode=\"light\"] (line 2) and [data-mode=\"dark\"] (line 14) -> color.css --salt-color-blue-500-rgb: 0, 120, 207. MODE-INVARIANT. The SAME slot is reused for `-hover`: selectable.css:3 `--salt-selectable-borderColor-hover: var(--salt-palette-accent)` and :9 `--salt-selectable-foreground-hover: var(--salt-palette-accent)` resolve to the IDENTICAL value as `-selected` — hover and selected share one colour, by source, not by this column's simplification. ACCENT SCOPE TRIM: palette-accent has a data-accent axis (blue default, teal alternate); this column pins blue, matching every prior Salt column except calendar.",
+    "box-bg": "CheckboxIcon.css `background: var(--salt-container-primary-background)` -> next/characteristics/container.css `--salt-container-primary-background: var(--salt-palette-background-primary)` -> next/palette/background.css, background-snow (light, rgb 255,255,255) / background-jet (dark, rgb 16,24,32). THE FILL NEVER CHANGES ON CHECK — this is the SAME slot used for style.box.rest AND style.box.checked; see state.checked.",
+    "error": "CheckboxIcon.css `.saltCheckboxIcon-error { color: var(--salt-status-error-foreground-decorative); border-color: var(--salt-status-error-borderColor) }` -> next/characteristics/status.css:4,15 -> `var(--salt-palette-negative)` -> next/palette/negative.css --salt-palette-negative: var(--salt-color-red-500) -> color.css --salt-color-red-500-rgb: 229, 33, 53. MODE-INVARIANT (negative.css declares the same base stop in both mode blocks; only the -stronger/-weaker steps differ by mode).",
+    "warning": "CheckboxIcon.css `.saltCheckboxIcon-warning { color: var(--salt-status-warning-foreground-decorative); border-color: var(--salt-status-warning-borderColor) }` -> status.css -> `var(--salt-palette-warning)` -> next/palette/warning.css --salt-palette-warning: var(--salt-color-orange-500) -> color.css --salt-color-orange-500-rgb: 199, 83, 0. MODE-INVARIANT, same shape as error.",
+    "byDensity.box-size": "CheckboxIcon.css `--checkbox-size: var(--salt-size-selectable); width: var(--checkbox-size); height: var(--checkbox-size)` -> foundations/size.css, DENSITY scale: high 12px / medium 14px / low 16px / touch 18px — the SAME token CHIP-MATRIX.md's check-box part cites.",
+    "byDensity.shape-radius": "CheckboxIcon.css `border-radius: var(--salt-palette-corner-weaker, 0)` -> next/palette/corner.css `--salt-palette-corner-weaker: var(--salt-curve-50)` -> foundations/curve.css, DENSITY scale: 1/2/3/4px (high/medium/low/touch) — the exact token CHIP-MATRIX.md finding-1 used to show Salt's Pill is 'nearly square'; under [data-corner=\"sharp\"] this collapses to curve-0 = 0px (corner.css line 10), the identical edition trap.",
+    "byDensity.root-gap": "Checkbox.css `.saltCheckbox { gap: var(--salt-spacing-100) }` -> foundations/spacing.css, DENSITY scale: 4/8/12/16px (high/medium/low/touch) — the box-to-label gap.",
+    "byDensity.type-fontSize / type-lineHeight": "Checkbox.css `.saltCheckbox { font-size: var(--salt-text-fontSize); line-height: var(--salt-text-lineHeight); font-family: var(--salt-text-fontFamily); font-weight: var(--salt-text-fontWeight) }` -> next/characteristics/text.css, the BODY role (not text-notation, which badge and chip both used) -> DENSITY scale 11/14 . 12/16 . 14/18 . 16/20px (high/medium/low/touch), matching docs/foundations/typography.md's body row. `--salt-text-fontWeight: var(--salt-typography-fontWeight-regular)` (text.css:9) = 400 — REGULAR, unlike badge's SEMIBOLD text-notation role.",
+    "border-width-fixed": "CheckboxIcon.css `border: var(--salt-size-fixed-100) ...` -> foundations/size.css --salt-size-fixed-100: 1px, on the FIXED (density-invariant) scale by design, carried as a plain literal rather than a slot, the same call CHIP-MATRIX.md finding-11 made for the identical token.",
+    "focus-outline": "Checkbox.css `.saltCheckbox-input:focus-visible + .saltCheckboxIcon { outline: var(--saltCheckbox-outline, var(--salt-focused-outline)); outline-offset: var(--salt-spacing-fixed-100) }` -> next/characteristics/focused.css: `--salt-focused-outline: 2px dotted var(--salt-focused-outlineColor)`, `--salt-focused-outlineColor: var(--salt-palette-accent-stronger)` -> palette/accent.css --salt-color-blue-700-rgb: 0, 69, 126 (light) / --salt-color-blue-300-rgb: 154, 189, 245 (dark, since accent-stronger is NOT the mode-invariant base stop) -> outline-offset foundations/spacing.css --salt-spacing-fixed-100: 1px, FIXED scale.",
+    "no-pressed-state": "CONFIRMED ABSENCE, checked directly: neither Checkbox.css nor CheckboxIcon.css contains any `:active` selector.",
+    "no-transition": "CONFIRMED ABSENCE: neither Checkbox.css nor CheckboxIcon.css declares a `transition` property anywhere.",
+    "readonly-not-modelled": "Salt's readOnly visual (a dashed border via `--salt-borderStyle-dashed` and a lighter `CheckmarkIcon` glyph swapped for `CheckmarkSolidIcon`, CheckboxIcon.css `.saltCheckboxIcon-readOnly`) is sourced [S] but NOT expanded into its own style row for scope — see the matrix doc's 'Declared approximations'.",
+    "no-success-styling": "Checkbox.tsx's own JSDoc on `validationStatus`: 'No visual styling will be applied on \"success\" variant' — a capability the TYPE permits (AdornmentValidationStatus includes 'success') that the CSS never expresses, so prop.validation's Salt value list omits it (CHIP-MATRIX finding-2's class of defect, avoided here by reading the type AND the CSS together rather than the type alone)."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "label-wrap", "source": "Checkbox.tsx returns <label className=saltCheckbox>{input}{CheckboxIcon}{label}</label> — one real <label>, three children" },
+    "structure.native-input": { "kind": "value", "value": true, "source": "Checkbox.tsx <input type=\"checkbox\" ... /> — a real native input, opacity:0, position:absolute (Checkbox.css)" },
+    "structure.outline-layer": { "kind": "off", "note": "CONFIRMED ABSENCE — CheckboxIcon.css puts border, background and icon all on the ONE .saltCheckboxIcon element; no separate outline/fill layer exists" },
+    "structure.mark": { "kind": "value", "value": "svg-plus-pseudo-dash", "source": "CheckboxIcon.tsx: CheckmarkSolidIcon (checked, not readOnly) or CheckmarkIcon (checked, readOnly) svg; CheckboxIcon.css `.saltCheckboxIcon-indeterminate::before` draws the dash as a plain CSS bar, not an svg" },
+    "structure.group": { "kind": "value", "value": true, "source": "CheckboxGroup.tsx renders a <fieldset> providing disabled/readOnly/validationStatus/name/checkedValues via CheckboxGroupContext; no keydown handler anywhere in useCheckboxGroup.ts/CheckboxGroupContext.ts" },
+
+    "behavior.role": { "kind": "value", "value": "implicit — role=checkbox from the native <input type=\"checkbox\">, no explicit role attribute anywhere", "source": "Checkbox.tsx — no role prop, no aria-* beyond aria-describedby/aria-labelledby/aria-readonly" },
+    "behavior.keyboard-activation": { "kind": "value", "value": "Space only (native); no keydown override", "source": "accessibility.mdx: 'Space changes the state of the checkbox, select or deselect'; no onKeyDown in Checkbox.tsx" },
+    "behavior.label-click-target": { "kind": "value", "value": "the WHOLE label — box and text both toggle it", "source": "native <label> semantics, since structure.shell=label-wrap" },
+    "behavior.tri-state": { "kind": "value", "value": "native — a click/space always resolves to checked and clears indeterminate", "source": "handleChange reads event.target.checked post-toggle; a useIsomorphicLayoutEffect syncs inputRef.current.indeterminate = indeterminate ?? false reactively, because `indeterminate` has no HTML attribute form" },
+    "behavior.group-navigation": { "kind": "off", "note": "CONFIRMED ABSENCE — useCheckboxGroup.ts and CheckboxGroupContext.ts bind no keydown handler; every checkbox keeps its own tab stop, Tab/Shift+Tab only (accessibility.mdx)" },
+    "behavior.validation": { "kind": "value", "value": "computed in JS and SUPPRESSED when disabled", "source": "Checkbox.tsx `const validationStatus = !disabled ? (checkboxGroup?.validationStatus ?? formFieldValidationStatus ?? validationStatusProp) : undefined`" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native `disabled` on the input (ORed with the group's), plus a blanket opacity class on the whole label", "source": "Checkbox.tsx `const disabled = checkboxGroup?.disabled || formFieldDisabled || disabledProp`; Checkbox.css `.saltCheckbox-disabled { opacity: 0.4 }`" },
+    "behavior.readonly": { "kind": "value", "value": "implemented in JS, NOT relying on the (spec-inert) native readonly attribute", "source": "Checkbox.tsx handleChange: `if (event.nativeEvent.defaultPrevented || readOnly) { return }`; also passes readOnly/aria-readonly to the input and swaps the checkmark glyph + border style (CheckboxIcon.tsx/.css)" },
+    "behavior.form-participation": { "kind": "value", "value": "native — the input IS the real form control", "source": "a real <input type=\"checkbox\" name=... value=... checked=.../>, no custom validity machinery needed" },
+
+    "prop.value-shape": { "kind": "value", "value": "two-boolean", "source": "CheckboxProps: `checked?: boolean; defaultChecked?: boolean; indeterminate?: boolean` — two independent optional booleans" },
+    "prop.validation": { "kind": "value", "value": ["off", "error", "warning"], "source": "CheckboxProps.validationStatus?: AdornmentValidationStatus, undefined/off by default (SOURCE-DEFAULT-FIRST); 'success' is typed but produces no CSS (see no-success-styling), so it is not listed as a value here" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "CheckboxProps.disabled?: boolean, ORed with the group's" },
+    "prop.read-only": { "kind": "value", "value": [false, true], "source": "CheckboxProps.readOnly?: boolean (via the omitted InputHTMLAttributes base, re-destructured explicitly as readOnlyProp)" },
+    "prop.required": { "kind": "value", "value": [false, true], "note": "reachable only via `inputProps.required` (CheckboxProps has no top-level `required` — its base type omits attributes not valid on a <label>), a more indirect API shape than M3's first-class reflected property" },
+
+    "slot.label": { "kind": "value", "value": "label?: ReactNode, rendered as the LAST child inside the component's own <label>", "source": "Checkbox.tsx" },
+    "slot.composes": { "kind": "value", "value": true, "note": "form-field (useFormFieldProps() pulls aria-describedby/aria-labelledby/disabled/readOnly/validationStatus down from an ancestor <FormField> when NOT inside a CheckboxGroup — Checkbox.tsx lines 148-163), and radio-button (the explicitly-excluded mutually-exclusive sibling, usage.mdx)" },
+
+    "state.rest": { "kind": "value", "value": "neutral gray-500 outline (mode-invariant) on a white/near-black container fill, never filled solid", "note": "an outline-style box at EVERY state, including checked — see state.checked" },
+    "state.checked": { "kind": "value", "value": "the fill NEVER changes — only the outline and icon recolour to accent blue", "note": "confirmed: no background rule anywhere keys off checked in CheckboxIcon.css" },
+    "state.indeterminate": { "kind": "value", "value": "RESETS to the plain neutral colours, even when checked is also true", "source": "CheckboxIcon.css `.saltCheckboxIcon-checked.saltCheckboxIcon-indeterminate { border-color: var(--salt-selectable-borderColor); color: var(--salt-selectable-foreground) }` — the compound selector overrides back to neutral" },
+    "state.hover": { "kind": "value", "value": "border and icon recolour to the -hover variant of whichever base they were already on; the root's :hover, not the input's", "source": "Checkbox.css/CheckboxIcon.css `.saltCheckbox:hover .saltCheckboxIcon...`" },
+    "state.focus": { "kind": "value", "value": "2px dotted accent-stronger outline at 1px offset, plus the hover recolour riding along", "source": "Checkbox.css `.saltCheckbox-input:focus-visible + .saltCheckboxIcon`" },
+    "state.pressed": { "kind": "off", "note": "CONFIRMED ABSENCE — no :active selector anywhere" },
+    "state.disabled": { "kind": "value", "value": "blanket opacity 0.4 (a literal) on the whole label, plus not-allowed cursor", "source": "Checkbox.css `.saltCheckbox-disabled { opacity: 0.4; cursor: var(--salt-cursor-disabled) }`" },
+
+    "style.box.size": { "kind": "value", "value": { "width": "var(--box-size)", "height": "var(--box-size)" }, "source": "CheckboxIcon.css --checkbox-size: var(--salt-size-selectable)" },
+    "style.box.shape": { "kind": "alias", "slot": "shape-radius" },
+    "style.box.border-width": { "kind": "value", "value": "1px", "source": "CheckboxIcon.css border: var(--salt-size-fixed-100) solid ... = 1px, FIXED scale" },
+    "style.icon.size": { "kind": "value", "value": "100%", "source": "CheckboxIcon.css --saltIcon-size: 100% — the Icon component's own default, fills whatever box it sits in" },
+    "style.root.gap": { "kind": "alias", "slot": "root-gap" },
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": "Checkbox.css .saltCheckbox { cursor: var(--salt-cursor-hover) } = pointer" },
+    "style.root.font": {
+      "kind": "value",
+      "value": { "font-size": "var(--type-fontSize)", "line-height": "var(--type-lineHeight)", "font-family": "var(--type-fontFamily)", "font-weight": "var(--type-fontWeight)" },
+      "source": "Checkbox.css .saltCheckbox { font-size/line-height/font-family/font-weight: var(--salt-text-*) } — the BODY role, REGULAR (400), not text-notation"
+    },
+    "style.box.rest": {
+      "kind": "value",
+      "value": { "border-color": "var(--neutral)", "background-color": "var(--box-bg)", "color": "var(--neutral-fg)" },
+      "source": "CheckboxIcon.css .saltCheckboxIcon { border-color: selectable-borderColor; background: container-primary-background; color: selectable-foreground }"
+    },
+    "style.box.checked": {
+      "kind": "value",
+      "value": { "border-color": "var(--accent)", "background-color": "var(--box-bg)", "color": "var(--accent)" },
+      "source": "CheckboxIcon.css .saltCheckboxIcon-checked { border-color: selectable-borderColor-selected; color: selectable-foreground-selected } — no background rule; box-bg is UNCHANGED from rest, repeated here deliberately so the 'fill never changes' finding is visible in the generated CSS rather than merely asserted"
+    },
+    "style.box.indeterminate": {
+      "kind": "value",
+      "value": { "border-color": "var(--neutral)", "background-color": "var(--box-bg)", "color": "var(--neutral-fg)" },
+      "source": "CheckboxIcon.css .saltCheckboxIcon-checked.saltCheckboxIcon-indeterminate resets border-color/color BACK to the plain (non-selected) selectable tokens — byte-identical to style.box.rest, which IS the finding"
+    },
+    "style.box.dash": {
+      "kind": "value",
+      "value": { "content": "''", "position": "absolute", "top": "50%", "left": "50%", "width": "calc(var(--box-size) - 6px)", "height": "2px", "background-color": "currentColor", "transform": "translate(-50%, -50%)" },
+      "source": "CheckboxIcon.css .saltCheckboxIcon-indeterminate::before"
+    },
+    "style.box.hover": {
+      "kind": "value",
+      "value": { "border-color": "var(--accent)", "color": "var(--accent)" },
+      "source": "CheckboxIcon.css `.saltCheckbox:hover .saltCheckboxIcon, .saltCheckbox:hover .saltCheckboxIcon-indeterminate { border-color: selectable-borderColor-hover; color: selectable-foreground-hover }` — both resolve to the SAME accent slot as -selected (see provenance)"
+    },
+    "style.box.focus": {
+      "kind": "value",
+      "value": { "outline": "2px dotted var(--focus-outline)", "outline-offset": "1px" },
+      "source": "Checkbox.css .saltCheckbox-input:focus-visible + .saltCheckboxIcon { outline: var(--salt-focused-outline); outline-offset: var(--salt-spacing-fixed-100) }"
+    },
+    "style.box.pressed": { "kind": "off" },
+    "style.box.disabled": {
+      "kind": "value",
+      "value": { "opacity": "0.4", "cursor": "not-allowed" },
+      "source": "Checkbox.css .saltCheckbox-disabled { opacity: 0.4; cursor: var(--salt-cursor-disabled) }"
+    },
+    "style.box.validation": {
+      "kind": "value",
+      "value": { "border-color": "var(--error)", "color": "var(--error)", "outline-color": "var(--error)" },
+      "source": "CheckboxIcon.css .saltCheckboxIcon-error { color: status-error-foreground-decorative; border-color: status-error-borderColor }; Checkbox.css .saltCheckbox-error ...:focus-visible sets outline-color to the same"
+    },
+    "style.box.validation@warning": {
+      "kind": "value",
+      "value": { "border-color": "var(--warning)", "color": "var(--warning)", "outline-color": "var(--warning)" },
+      "source": "CheckboxIcon.css .saltCheckboxIcon-warning { color: status-warning-foreground-decorative; border-color: status-warning-borderColor }"
+    },
+    "style.box.transition": { "kind": "off", "note": "CONFIRMED ABSENCE — no transition property anywhere in Checkbox.css or CheckboxIcon.css" },
+    "style.box.state-layer": { "kind": "off", "note": "CONFIRMED ABSENCE — Salt has no ripple/state-layer concept for checkbox; hover and focus recolour the box directly" },
+    "style.mark.short-size": { "kind": "off", "note": "markStyle=svg-plus-pseudo-dash — no <rect> in this strategy, see structure.mark" },
+    "style.mark.long-size": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.fill": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.selected-opacity": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.checked-transform": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.checked-short-size": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.checked-long-size": { "kind": "off", "note": "see style.mark.short-size" },
+    "style.mark.indeterminate-transform": { "kind": "off", "note": "see style.mark.short-size" }
+  }
+}

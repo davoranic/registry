@@ -1,0 +1,134 @@
+{
+  "system": "m3",
+  "component": "checkbox",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "primary": "#6750a4",
+      "on-primary": "#fff",
+      "on-surface": "#1d1b20",
+      "on-surface-variant": "#49454f",
+      "surface": "#fef7ff",
+      "error": "#b3261e",
+      "on-error": "#fff"
+    },
+    "dark": {
+      "primary": "#d0bcff",
+      "on-primary": "#381e72",
+      "on-surface": "#e6e0e9",
+      "on-surface-variant": "#cac4d0",
+      "surface": "#141218",
+      "error": "#f2b8b5",
+      "on-error": "#601410"
+    }
+  },
+  "provenance": {
+    "canonical-source": "checkbox/internal/checkbox.ts (the Lit component — a REAL, fully-cloned component, not a tokens-only fragment; see the edition-pin note below for what that changes) plus checkbox/internal/_checkbox.scss (the shipped styles.mjs source) and checkbox/checkbox.ts (the <md-checkbox> registration). checkbox/internal/checkbox_test.ts read for the aria-checked=mixed proof. labs/behaviors/validators/checkbox-validator.ts read for the form-participation mechanism. Tokens: tokens/versions/v0_192/_md-comp-checkbox.scss (the edition this column pins, per the owner's registry-wide v0.192 decision — CLAUDE.md 'Decisions the owner has made') and tokens/versions/latest/sass/_md-comp-checkbox.scss (read only for the edition diff, see below). Colour/shape/state resolution through tokens/versions/v0_192/{_md-sys-color.scss,_md-sys-shape.scss,_md-sys-state.scss}. Motion: tokens/versions/v0_192/_md-sys-motion.scss.",
+    "not-tokens-only-this-session": "DEVIATION FROM EVERY PRIOR COLUMN, FOUND AND WORTH FLAGGING LOUDLY: every earlier M3 column in this pipeline states 'material-web is a tokens-only clone... every M3 structure and behaviour row is [R]'. THIS SESSION'S 3-source/material-web CONTAINS THE REAL COMPONENT SOURCE — checkbox/internal/checkbox.ts is 210 lines of real Lit component code (render(), event handlers, form-association mixins), not a tokens fragment. `find 3-source/material-web -maxdepth 1 -type d` lists checkbox/, dialog/, select/, chips/, etc. as real top-level directories, not just tokens/. So for CHECKBOX, and apparently for this whole clone, M3 structure and behaviour rows are [S], grepped directly, rather than [R] inferred from spec convention — a genuinely better evidence grade than every earlier M3 column in this registry had available. Flagged for the owner: either this clone was refreshed with the full repository rather than a tokens-only mirror, or checkbox specifically ships differently; either way, do not assume future components get the same upgrade without checking `find 3-source/material-web -maxdepth 1 -type d` again first.",
+    "edition-pin": "v0.192, per the owner's registry-wide decision (CLAUDE.md: 'M3 pins the v0.192 token edition, everywhere... Decisions the owner has made — do not relitigate'). A mechanical diff of _md-comp-checkbox.scss across editions finds `latest` ADDS a `focus-indicator-*` family (colour/thickness/offset) not present in v0.192 — the same addition CHIP-MATRIX.md and CARD-MATRIX.md recorded for their own components. UNLIKE those components, checkbox does NOT lose its only focus affordance to this pin: v0.192 already carries a component-owned `focus-outline-color`/`focus-outline-width` pair (the box's own outline recolours and, for the unselected case, may widen on focus), because a checkbox's box already IS an outline-bearing element in every state, unlike a chip or a card. No other value differs between editions for this component.",
+    "primary / on-primary / on-surface / on-surface-variant / surface / error / on-error": "md-sys-color.values-light()/values-dark(), v0.192 — the SAME hex pairs badge.m3.json, card.m3.json, chip.m3.json, dialog.m3.json and every other M3 column in this pipeline resolve (#6750a4/#d0bcff primary, #1d1b20/#e6e0e9 on-surface, #49454f/#cac4d0 on-surface-variant, #b3261e/#f2b8b5 error, #fff/#601410 on-error). Re-derived here for a self-contained column, not borrowed.",
+    "state-opacities": "md-sys-state.values(), v0.192: hover-state-layer-opacity 0.08, focus-state-layer-opacity 0.12, pressed-state-layer-opacity 0.12 — the SAME edition-dependent trio CLAUDE.md's foundations note flags ('M3 focus/pressed opacities are edition-dependent'); `latest` carries the identical 0.08/0.12/0.12 for this component specifically, so the pin changes nothing here even though it does elsewhere.",
+    "disabled-opacity": "'disabled-container-opacity' (renamed from 'unselected-disabled-container-opacity') AND 'selected-disabled-container-opacity' are BOTH 0.38 in this token set — a rare case where M3 does NOT split its disabled opacity by selection state (contrast badge.m3.json's disabled-label 0.38 / disabled-container 0.12 split). Applied only to the outline/background layers in real source (`:where(.disabled) .outline { opacity: ... }`, `:where(.selected.disabled) .background { opacity: ... }`) — never to the icon itself, which stays full-opacity even when disabled. This chassis applies the 0.38 at the ROOT level (see the template's style.box.disabled note) rather than per-layer, a declared simplification.",
+    "container-tokens": "container-size: 18px (hardcoded literal, both editions); container-shape: 2px on all four logical corners (hardcoded literal); icon-size: 18px, EQUAL to container-size — the glyph fills the box with no margin. unselected-outline-width: 2px; selected-outline-width / selected-hover-outline-width / selected-pressed-outline-width / selected-focus-outline-width: ALL 0px — the outline is REMOVED, not merely recoloured, the instant the box becomes selected (the same fill-replaces-stroke mechanism CHIP-MATRIX.md documented for elevation@elevated and flat-selected).",
+    "state-layer-size-shape": "state-layer-size: 40px, state-layer-shape: corner-full (9999px) — a full 40px circle centred on an 18px box, drawn by a separate md-ripple element this chassis does not reproduce (see structure.outline-layer / style.box.state-layer).",
+    "pressed-preview-finding": "unselected-pressed-state-layer-color: primary (NOT on-surface, unlike unselected-hover/-focus which both use on-surface) — an unselected, currently-being-pressed checkbox ripples in the colour it is ABOUT TO BECOME. selected-pressed-state-layer-color: on-surface (NOT primary) — the mirror image, previewing the colour it is about to LOSE. A real, sourced, symmetrical piece of intent, not a coincidence.",
+    "real-native-input": "checkbox.ts render(): `<input type=\"checkbox\" id=\"input\" aria-checked=${isIndeterminate ? 'mixed' : nothing} ... .indeterminate=${this.indeterminate} .checked=${this.checked} @input=${this.handleInput} @change=${this.handleChange} />` — a REAL native input, confirmed [S], not inferred. `handleInput` reads BOTH `target.checked` and `target.indeterminate` back off the native element after the browser resolves them.",
+    "form-participation": "getFormValue() returns null when unchecked OR indeterminate, the checked value string otherwise; CheckboxValidator LAZILY instantiates a SECOND, invisible, real <input type=\"checkbox\"> purely to borrow the browser's own constraint-validation engine (`this.checkboxControl.checked = state.checked; this.checkboxControl.required = state.required; return this.checkboxControl.validity`) — M3 delegates validity computation to native code rather than reimplementing it [S].",
+    "label-click-delegation": "checkbox.ts constructor: `this.addEventListener('click', (event) => { if (!isActivationClick(event) || !this.input) return; this.focus(); dispatchActivationClick(this.input) })`, importing `isActivationClick`/`dispatchActivationClick` from `internal/events/form-label-activation.js` — M3 explicitly anticipates being wrapped in a CONSUMER-authored <label> and redirects that click to its internal input, even though it renders no label of its own [S].",
+    "no-warning-family": "CONFIRMED ABSENCE, grepped directly: neither edition of _md-comp-checkbox.scss contains the string 'warning' anywhere. The error-* family is the only validation tone."
+  },
+  "cells": {
+    "structure.shell": { "kind": "value", "value": "unwrapped", "source": "checkbox.ts render() has no label anywhere in the shadow DOM" },
+    "structure.native-input": { "kind": "value", "value": true, "source": "checkbox.ts render() — see real-native-input" },
+    "structure.outline-layer": { "kind": "value", "value": true, "source": "render(): <div class=\"outline\"></div><div class=\"background\"></div>...<svg class=\"icon\">... — THREE separate absolutely-positioned layers, each independently opacity/transform-animated (internal/_checkbox.scss lines 99-148)" },
+    "structure.mark": { "kind": "value", "value": "dual-rect", "source": "render(): <svg class=\"icon\" viewBox=\"0 0 18 18\"><rect class=\"mark short\" /><rect class=\"mark long\" /></svg>, always rendered; CSS classes (.checked vs .indeterminate) rotate/scale the SAME two rects into either shape (internal/_checkbox.scss lines 238-276)" },
+    "structure.group": { "kind": "off", "note": "CONFIRMED ABSENCE — no group/set token family in _md-comp-checkbox.scss in either edition, and no companion file references one" },
+
+    "behavior.role": { "kind": "value", "value": "implicit — role=checkbox from the native <input>; explicit aria-checked=\"mixed\" is written ONLY for the indeterminate case", "source": "checkbox.ts render(); checkbox_test.ts asserts exactly this toggle" },
+    "behavior.keyboard-activation": { "kind": "value", "value": "Space only (native); no keydown override anywhere in checkbox.ts" },
+    "behavior.label-click-target": { "kind": "value", "value": "the box itself, PLUS an explicit redirect from any ancestor <label> click a consumer supplies", "source": "see label-click-delegation" },
+    "behavior.tri-state": { "kind": "value", "value": "native — handleInput reads target.checked/target.indeterminate back off the input post-toggle" },
+    "behavior.group-navigation": { "kind": "off", "note": "no group construct" },
+    "behavior.validation": { "kind": "value", "value": "a full error-* token family exists for every interaction state, but the trigger attribute/property is not visible in this file", "note": "the STYLE half is [S]; the exact activation mechanism is not confirmable from this file alone" },
+    "behavior.disabled-handling": { "kind": "value", "value": "native ?disabled on the input; transitions are EXPLICITLY SUPPRESSED around the disabled boundary to avoid a FOUC", "source": "internal/_checkbox.scss: ':where(.disabled, .prev-disabled) :is(.background, .icon, .mark) { animation-duration: 0s; transition-duration: 0s }', comment: \"Don't animate to/from disabled states... there'd be a FOUC if the checkbox state is programmatically changed while disabled\"" },
+    "behavior.readonly": { "kind": "off", "note": "CONFIRMED ABSENCE — no readonly-* token in either edition" },
+    "behavior.form-participation": { "kind": "value", "value": "a full form-associated custom element delegating validity to a second, invisible, real native input", "source": "see form-participation" },
+
+    "prop.value-shape": { "kind": "value", "value": "two-boolean", "source": "@property({type:Boolean}) checked; @property({type:Boolean}) indeterminate — two independent reflected properties" },
+    "prop.validation": { "kind": "value", "value": ["off", "error"], "source": "a full error-* token family exists; no warning-* family anywhere (see no-warning-family)" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) disabled, inherited LitElement convention" },
+    "prop.read-only": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "prop.required": { "kind": "value", "value": [false, true], "source": "@property({type:Boolean}) required, wired directly into CheckboxValidator's constraint-validation computation" },
+
+    "slot.label": { "kind": "off", "note": "CONFIRMED ABSENCE — no label text owned; always external, see behavior.label-click-target for the click-delegation mechanism that anticipates it" },
+    "slot.composes": { "kind": "value", "value": true, "note": "an external, consumer-authored <label> (behavior.label-click-target); the radio family is the explicitly separate mutually-exclusive canonical row" },
+
+    "state.rest": { "kind": "value", "value": "a 2px on-surface-variant outline; the fill layer exists in the DOM at opacity 0", "note": "see structure.outline-layer for the layer this chassis collapses" },
+    "state.checked": { "kind": "value", "value": "the fill fades AND scales in (350ms emphasized-decelerate) while the outline's width animates to 0", "note": "fill REPLACES stroke — the CHIP-MATRIX elevation@elevated mechanism again" },
+    "state.indeterminate": { "kind": "value", "value": "IDENTICAL treatment to checked — .selected covers isChecked || isIndeterminate as one class", "source": "render(): const containerClasses = classMap({ 'selected': isChecked || isIndeterminate, ... })" },
+    "state.hover": { "kind": "value", "value": "an 8%-opacity state layer, primary-tinted when selected, on-surface-tinted when not" },
+    "state.focus": { "kind": "value", "value": "a 2px on-surface outline recolour (unselected) plus a 12%-opacity state layer; a SEPARATE md-focus-ring element also exists and is not reproduced here" },
+    "state.pressed": { "kind": "value", "value": "a 12%-opacity state layer that previews the colour the box is heading TOWARD, not the one it currently is", "note": "see pressed-preview-finding" },
+    "state.disabled": { "kind": "value", "value": "0.38 opacity, applied to the outline/background layers ONLY in real source — never the icon", "note": "this chassis applies it at the root level, a declared simplification" },
+
+    "style.box.size": { "kind": "value", "value": { "width": "18px", "height": "18px" }, "source": "container-size: 18px, hardcoded literal, both editions" },
+    "style.box.shape": { "kind": "value", "value": "2px", "source": "container-shape: 2px, all four logical corners" },
+    "style.box.border-width": { "kind": "value", "value": "2px", "source": "unselected-outline-width: 2px — the REST value; style.box.checked overrides it to 0" },
+    "style.icon.size": { "kind": "value", "value": "18px", "source": "icon-size: 18px, EQUAL to container-size — no margin" },
+    "style.root.gap": { "kind": "off", "note": "no owned label, nothing to space" },
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": ":host { cursor: pointer }" },
+    "style.root.font": { "kind": "off", "note": "no owned label text" },
+    "style.box.rest": {
+      "kind": "value",
+      "value": { "border-style": "solid", "border-color": "var(--on-surface-variant)", "background-color": "transparent", "color": "var(--on-surface-variant)" },
+      "source": "unselected-outline-color: on-surface-variant; the fill layer is present but opacity:0, collapsed here to a literal transparent (see structure.outline-layer)"
+    },
+    "style.box.checked": {
+      "kind": "value",
+      "value": { "border-width": "0", "background-color": "var(--primary)", "color": "var(--on-primary)" },
+      "source": "selected-outline-width: 0px; selected-container-color: primary; selected-icon-color: on-primary"
+    },
+    "style.box.indeterminate": {
+      "kind": "value",
+      "value": { "border-width": "0", "background-color": "var(--primary)", "color": "var(--on-primary)" },
+      "source": "identical to style.box.checked — see state.indeterminate"
+    },
+    "style.box.dash": { "kind": "off", "note": "the indeterminate glyph is the .mark <rect> pair rotated flat by CSS transform, not a separate pseudo-element — see structure.mark" },
+    "style.box.hover": {
+      "kind": "value",
+      "value": { "background-color": "color-mix(in oklab, var(--on-surface) 8%, transparent)" },
+      "source": "unselected-hover-state-layer-color: on-surface, unselected-hover-state-layer-opacity: 0.08 — modelled as the reachable (unselected) case, see the matrix doc's 'Declared approximations' for why the selected-hover primary-tinted variant is not separately expressed"
+    },
+    "style.box.focus": {
+      "kind": "value",
+      "value": { "border-color": "var(--on-surface)", "background-color": "color-mix(in oklab, var(--on-surface) 12%, transparent)" },
+      "source": "unselected-focus-outline-color: on-surface; unselected-focus-state-layer-color: on-surface, opacity 0.12"
+    },
+    "style.box.pressed": {
+      "kind": "value",
+      "value": { "background-color": "color-mix(in oklab, var(--primary) 12%, transparent)" },
+      "source": "unselected-pressed-state-layer-color: primary, opacity 0.12 — see pressed-preview-finding"
+    },
+    "style.box.disabled": { "kind": "value", "value": { "opacity": "0.38", "cursor": "default" }, "source": "disabled-container-opacity / selected-disabled-container-opacity, both 0.38; :host([disabled]) { cursor: default }" },
+    "style.box.validation": {
+      "kind": "value",
+      "value": { "border-color": "var(--error)", "color": "var(--error)" },
+      "source": "error-outline-color (renamed from unselected-error-outline-color): error"
+    },
+    "style.box.validation@warning": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-warning-family" },
+    "style.box.transition": {
+      "kind": "value",
+      "value": "background-color 350ms cubic-bezier(0.05, 0.7, 0.1, 1), border-width 150ms cubic-bezier(0.3, 0, 0.8, 0.15)",
+      "note": "a single representative transition standing in for the real multi-element, two-phase choreography (150ms emphasized-accelerate exiting / 350ms emphasized-decelerate entering, applied separately to background/icon opacity+scale AND to the mark rectangles' own width/height) — cubic-beziers from tokens/versions/v0_192/_md-sys-motion.scss's easing-emphasized-accelerate/-decelerate, [S] for the curves, [R] for this row's single-property collapse of them"
+    },
+    "style.box.state-layer": { "kind": "value", "value": { "size": "40px", "shape": "9999px" }, "note": "documented, not rendered as its own element — see structure.outline-layer" },
+    "style.mark.short-size": { "kind": "value", "value": { "width": "2px", "height": "2px" }, "source": "_checkbox.scss .mark.short { width: $_mark-stroke; height: $_mark-stroke }, $_mark-stroke: 2px" },
+    "style.mark.long-size": { "kind": "value", "value": { "width": "10px", "height": "2px" }, "source": "_checkbox.scss .mark.long { width: 10px; height: $_mark-stroke }" },
+    "style.mark.fill": { "kind": "value", "value": { "fill": "currentColor", "opacity": "0" }, "source": ".icon { fill: selected-icon-color } reproduced via currentColor (see structure.outline-layer's colour reuse); .background, .icon { opacity: 0 } at rest" },
+    "style.mark.selected-opacity": { "kind": "value", "value": "1", "source": ":where(.selected) :is(.background, .icon) { opacity: 1 }, .selected = isChecked || isIndeterminate" },
+    "style.mark.checked-transform": { "kind": "value", "value": "scaleY(-1) translate(7px, -14px) rotate(45deg)", "source": ".checked .mark { transform: ... }, $_checkmark-bottom-left: 7px, -14px" },
+    "style.mark.checked-short-size": { "kind": "value", "value": "5.657px", "source": ".checked .mark.short { height: 1px * sqrt(32) }" },
+    "style.mark.checked-long-size": { "kind": "value", "value": "11.314px", "source": ".checked .mark.long { width: 1px * sqrt(128) }" },
+    "style.mark.indeterminate-transform": { "kind": "value", "value": "scaleY(-1) translate(4px, -10px) rotate(0deg)", "source": ".indeterminate .mark { transform: ... }, $_indeterminate-bottom-left: 4px, -10px" }
+  }
+}

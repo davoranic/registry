@@ -35,11 +35,13 @@ import { Dialog } from "../skeleton/dialog"
 import { Select } from "../skeleton/select"
 import { Tabs } from "../skeleton/tabs"
 import { Card } from "../skeleton/card"
+import { Checkbox, CheckboxGroup, type CheckboxConfig } from "../skeleton/checkbox"
 
-import dialogCfg from "../dist/gen/dialog-config.json"
-import selectCfg from "../dist/gen/select-config.json"
-import tabsCfg from "../dist/gen/tabs-config.json"
-import cardCfg from "../dist/gen/card-config.json"
+import dialogCfg from "../out/gen/dialog-config.json"
+import selectCfg from "../out/gen/select-config.json"
+import tabsCfg from "../out/gen/tabs-config.json"
+import cardCfg from "../out/gen/card-config.json"
+import checkboxCfg from "../out/gen/checkbox-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -291,6 +293,147 @@ async function checkCard(host: HTMLElement, system: string) {
   mount.remove()
 }
 
+// --------------------------------------------------------------- checkbox
+
+async function checkCheckbox(host: HTMLElement, system: string) {
+  const cfg = (checkboxCfg as Record<string, any>)[system]
+
+  // 1 — behavior.tri-state: mounted INDETERMINATE, then a real user
+  // interaction (click — what a Space keypress's default action performs)
+  // resolves it to checked and clears indeterminate. Testing the
+  // TRANSITION, not just three static mounts (CLAUDE.md method notes).
+  const mount1 = document.createElement("div")
+  mount1.setAttribute("data-theme", system)
+  host.appendChild(mount1)
+  const root1 = createRoot(mount1)
+  function TriStateHarness() {
+    const [checked, setChecked] = React.useState(false)
+    const [indeterminate, setIndeterminate] = React.useState(true)
+    return (
+      <Checkbox
+        config={cfg}
+        checked={checked}
+        indeterminate={indeterminate}
+        onCheckedChange={(next) => {
+          setChecked(next)
+          setIndeterminate(false)
+        }}
+        aria-label="tri-state"
+      />
+    )
+  }
+  root1.render(<TriStateHarness />)
+  await settle()
+  const input1 = mount1.querySelector('[data-slot="checkbox-input"]') as HTMLInputElement | null
+  record("checkbox", "structure.native-input", system, !!input1, input1 ? "native input rendered" : "no input found")
+  if (input1) {
+    const wasIndeterminate = input1.indeterminate
+    input1.click()
+    await settle()
+    const resolved = input1.checked === true && input1.indeterminate === false
+    record(
+      "checkbox",
+      "behavior.tri-state",
+      system,
+      resolved,
+      `before: indeterminate=${wasIndeterminate}; after click: checked=${input1.checked} indeterminate=${input1.indeterminate}`,
+    )
+  }
+  root1.unmount()
+  mount1.remove()
+
+  // 2 — behavior.keyboard-activation: Enter does NOTHING (native checkbox
+  // semantics; none of the three columns override it). A real Space
+  // keypress cannot be synthesized in a headless page (browsers only run a
+  // form control's default action off a TRUSTED key event), so this proves
+  // the half that IS testable here — the negative case — rather than
+  // fabricating a pass for the half that is not.
+  const mount2 = document.createElement("div")
+  mount2.setAttribute("data-theme", system)
+  host.appendChild(mount2)
+  const root2 = createRoot(mount2)
+  function KeyHarness() {
+    const [checked, setChecked] = React.useState(false)
+    return <Checkbox config={cfg} checked={checked} onCheckedChange={setChecked} aria-label="keyboard" />
+  }
+  root2.render(<KeyHarness />)
+  await settle()
+  const input2 = mount2.querySelector('[data-slot="checkbox-input"]') as HTMLInputElement | null
+  if (input2) {
+    focusFor(input2)
+    key(input2, "Enter")
+    await settle()
+    record(
+      "checkbox",
+      "behavior.keyboard-activation",
+      system,
+      input2.checked === false,
+      "Enter must do nothing on a checkbox (native semantics) — checked=" + input2.checked,
+    )
+  }
+  root2.unmount()
+  mount2.remove()
+
+  // 3 — behavior.validation: SUPPRESSED when disabled, shown when enabled —
+  // the mechanism this component's matrix doc documents as computed-in-JS,
+  // not merely a CSS specificity accident.
+  const mount3 = document.createElement("div")
+  mount3.setAttribute("data-theme", system)
+  host.appendChild(mount3)
+  const root3 = createRoot(mount3)
+  root3.render(
+    <div>
+      <Checkbox config={cfg} validation="error" disabled aria-label="v-disabled" />
+      <Checkbox config={cfg} validation="error" aria-label="v-enabled" />
+    </div>,
+  )
+  await settle()
+  const roots3 = [...mount3.querySelectorAll('[data-slot="checkbox-root"]')]
+  const vDisabled = roots3[0]
+  const vEnabled = roots3[1]
+  const disabledSuppressed = vDisabled?.getAttribute("data-validation") !== "error"
+  const enabledShows = vEnabled?.getAttribute("data-validation") === "error"
+  record(
+    "checkbox",
+    "behavior.validation",
+    system,
+    disabledSuppressed && enabledShows,
+    `disabled root data-validation=${vDisabled?.getAttribute("data-validation")}; enabled root data-validation=${vEnabled?.getAttribute("data-validation")}`,
+  )
+  root3.unmount()
+  mount3.remove()
+
+  // 4 — structure.group / behavior.disabled-handling's OR-merge: a group's
+  // `disabled` reaches an UNMODIFIED child through context, the same merge
+  // Salt's own CheckboxGroupContext performs. Only Salt has a group at all
+  // (confirmed absence elsewhere), so the other two columns record that
+  // absence explicitly rather than being silently skipped.
+  if (cfg.group) {
+    const mount4 = document.createElement("div")
+    mount4.setAttribute("data-theme", system)
+    host.appendChild(mount4)
+    const root4 = createRoot(mount4)
+    root4.render(
+      <CheckboxGroup config={cfg} disabled>
+        <Checkbox config={cfg} aria-label="group-child" />
+      </CheckboxGroup>,
+    )
+    await settle()
+    const groupChildInput = mount4.querySelector('[data-slot="checkbox-input"]') as HTMLInputElement | null
+    record(
+      "checkbox",
+      "behavior.disabled-handling",
+      system,
+      groupChildInput?.disabled === true,
+      "group disabled must OR into an unmodified child — child.disabled=" + groupChildInput?.disabled,
+    )
+    root4.unmount()
+    mount4.remove()
+  } else {
+    record("checkbox", "structure.group", system, true, "no group construct in this column (confirmed absence) — nothing to assert")
+  }
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -303,6 +446,7 @@ async function run() {
     try { await checkSelect(host, s) } catch (e) { record("select", "(threw)", s, false, String(e)) }
     try { await checkTabs(host, s) } catch (e) { record("tabs", "(threw)", s, false, String(e)) }
     try { await checkCard(host, s) } catch (e) { record("card", "(threw)", s, false, String(e)) }
+    try { await checkCheckbox(host, s) } catch (e) { record("checkbox", "(threw)", s, false, String(e)) }
   }
   host.remove()
 
