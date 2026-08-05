@@ -597,6 +597,41 @@ Three, all stated rather than smoothed:
     data attributes the CSS selects on, not as a measured value threaded
     through a theme slot.
 
+14. **`check-anatomy.mjs` flags dialog with `⚠ identical part-set:
+    shadcn=m3` — explained here, closing a Known-open-work item, per the
+    gate's own rule that a convergence must be answerable with data, not
+    trust.** The gate counts a `structure.*` row as a rendered "part"
+    whenever its cell is non-`off` with a truthy-ish value, regardless of
+    WHICH value. Two of this component's structure rows —
+    `structure.header-decoration` and `structure.close-button` — are
+    `channel: "config"` enum rows where `"none"` is itself a real,
+    citable STRATEGY VALUE (Salt/shadcn/M3 each pick one of several named
+    options for "what marks the top of a dialog" / "how the close
+    affordance behaves"), not the schema's `kind: "off"` absence marker —
+    so a column whose chosen strategy happens to BE `"none"` still counts
+    as "on" by the gate's binary measure, even though nothing renders for
+    that row. shadcn's `structure.header-decoration` is `"none"`
+    (CONFIRMED ABSENCE, no accent bar/icon/status glyph anywhere in
+    `dialog.tsx`) while its `structure.close-button` is `"default"` (a
+    real, default-rendered X). M3's `structure.header-decoration` is
+    `"icon"` (a real, tokenised glyph) while its `structure.close-button`
+    is `"none"` (CONFIRMED ABSENCE, no close/dismiss token in
+    `_md-comp-dialog.scss` in either edition). shadcn and M3 are
+    STRUCTURALLY OPPOSITE on these two rows — one has a close button and
+    no decoration, the other has decoration and no close button — but
+    because both rows still register as "populated" for both systems
+    (one system's `"none"` cancels a DIFFERENT row than the other
+    system's `"none"` does), the gate's row-populated/row-not-populated
+    measure lands on the same five-row SET for both, masking a real,
+    opposite divergence underneath it. This is the same class of finding
+    SWITCH-MATRIX.md finding 12 and RADIO-GROUP-MATRIX.md finding 4
+    already established for their own coarse convergences — the gate's
+    part-count measure is coarser than the matrix's own row grain by
+    design, and this paragraph existing is what satisfies CLAUDE.md's "an
+    unexplained convergence is the shape rule 1 forbids" requirement. Not
+    a retrofit: the two systems' actual rendered structures diverge more
+    here, not less, than the raw gate output suggests.
+
 ## Correction found by driving the render (owner-validation pass)
 
 **Two behaviour rows were implemented, wired to the checklist gate, and

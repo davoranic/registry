@@ -75,8 +75,15 @@ loop.
   missing too. Added `style.root.background@secondary-hover` (union
   selector, beats the specificity trap) with real, sourced values for all
   three columns — see BUTTON-MATRIX.md finding 1.
-- **`dialog` shadcn=m3 identical part-set** — flagged by check-anatomy, not yet
-  explained.
+- ~~**`dialog` shadcn=m3 identical part-set**~~ — **EXPLAINED 2026-08-05.**
+  A gate blind spot, not a retrofit: `structure.header-decoration` and
+  `structure.close-button` are config-enum rows where `"none"` is a real
+  strategy value, not the schema's `off` marker — so shadcn's real
+  `"none"` decoration and M3's real `"none"` close-button both register
+  as "populated" to the gate's binary measure, even though the two
+  systems are actually structurally OPPOSITE on those two rows (shadcn:
+  close button, no decoration; M3: decoration, no close button). See
+  DIALOG-MATRIX.md finding 14.
 - **`tabs`'s shadcn column fails conformance**: `behavior.activation-mode`
   reports "automatic: selection held" — focusing a tab does not select it
   even though `activationMode` defaults to automatic. Found 2026-08-04 when
@@ -411,47 +418,53 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: fixed `button`'s long-queued secondary-hover defect (priority-
-list item 1, see Known-open work) while a `toast`/`sonner` component build
-(component 18, row 19/79) runs in the background — check whether that
-build has landed yet (look for `2-build/matrices/TOAST-MATRIX.md`) before
-starting a new one; if it has, it still needs the same orchestrator review
-pass (gates, live verification, matrix-doc findings, CLAUDE.md updates,
-commit+push) every prior component in this session got before this file's
-prose can be trusted as current.
+Last action: explained `dialog`'s shadcn=m3 anatomy convergence (priority-
+list item 2, see Known-open work) while a `toast`/`sonner` component build
+(component 18, row 19/79) still runs in the background — check whether
+that build has landed yet (look for `2-build/matrices/TOAST-MATRIX.md`)
+before starting a new one; if it has, it still needs the same orchestrator
+review pass (gates, live verification, matrix-doc findings, CLAUDE.md
+updates, commit+push) every prior component in this session got before
+this file's prose can be trusted as current.
 
-The button fix: Salt's `--secondary-bg-hover` slot existed but was cited
-by no row; fixing it required a union selector (secondary axis + `:hover`)
-to beat a real specificity trap, and re-checking shadcn/M3 while there
-found BOTH of them were ALSO silently missing their own secondary-hover
-treatment, for two different reasons each sourced and fixed — see
-BUTTON-MATRIX.md finding 1 for the full account. Verified live via
-Playwright (a real `:hover`, not a class toggle) on all three columns.
-`button-check.tsx`'s own harness still has the pre-checkbox-era
-`dist/gen/` path bug (predates the checkbox-era fix, was never patched
-since button was built early in the run) — verification for this fix used
-a minimal standalone test page instead of the broken harness; fixing
-`build-button-check.mjs` itself is a separate, still-open task (folded
-into Known-open work's fonts-path item's spirit but not the same bug —
-worth its own line if it keeps blocking verification).
+Items 1 and 2 of the standing priority list are both now closed:
+- **Button's secondary-hover** (item 1): Salt's `--secondary-bg-hover` slot
+  existed but was cited by no row; shadcn and M3 turned out to be silently
+  missing their own secondary-hover treatment too, for two different
+  reasons — see BUTTON-MATRIX.md finding 1. Verified live via Playwright
+  (a real `:hover`, not a class toggle). `button-check.tsx`'s own harness
+  still has the pre-checkbox-era `dist/gen/` path bug (never patched since
+  button was built early in the run); verification used a minimal
+  standalone test page instead — fixing `build-button-check.mjs` is a
+  separate, still-open task, folded into item 5's spirit below.
+- **Dialog's shadcn=m3 anatomy convergence** (item 2): a gate blind spot,
+  not a retrofit. `structure.header-decoration` and `structure.close-button`
+  are config-enum rows where `"none"` is a real strategy value, not the
+  schema's `off` marker, so shadcn's real `"none"` decoration and M3's
+  real `"none"` close-button both register as "populated" to the gate's
+  binary measure — even though the two systems are actually structurally
+  OPPOSITE on those two rows. See DIALOG-MATRIX.md finding 14. No files
+  outside the matrix doc needed to change; this was purely an explanation
+  the running list owed, not a code defect.
 
-`switch`, `radio-group`, and `slider` are all committed and pushed to
-`claude/next-component-7e5dex`; the button fix and (once it lands) `toast`
-follow in their own commits — check `git log` rather than trusting stale
-prose here.
+`switch`, `radio-group`, `slider`, and the button fix are all committed
+and pushed to `claude/next-component-7e5dex`; the dialog finding and (once
+it lands) `toast` follow in their own commits — check `git log` rather
+than trusting stale prose here.
 
 **Standing priority order — deferred by explicit owner choice on
 2026-08-04 ("keep going, track gaps in a running list" over stopping to
 clear the queue), updated as items close:**
 
 1. ~~Fix `button`'s missing secondary hover~~ — **DONE 2026-08-05.**
-2. Explain or fix `dialog`'s shadcn=m3 identical part-set.
+2. ~~Explain or fix `dialog`'s shadcn=m3 identical part-set~~ — **DONE
+   2026-08-05 (explained, no code defect).**
 3. Backfill 250 uncited slots (select 73, input 42, badge, card).
 4. Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure.
 5. Fix the fonts/ path bug across every `build-<name>-check.mjs` (NOTE:
-   `button-check.tsx`'s `dist/gen/` import bug, found today, is a related
-   but distinct issue from the fonts-path one — both live in the same
-   family of "old harnesses never got the checkbox-era fixes" bugs).
+   `button-check.tsx`'s `dist/gen/` import bug is a related but distinct
+   issue from the fonts-path one — both live in the same family of "old
+   harnesses never got the checkbox-era fixes" bugs).
 6. **Continue components** — 60 canonical rows remain after `toast` lands
    (61 before), order per `1-intro/content/04-component-map.md`: rows with
    real cross-system character first.
