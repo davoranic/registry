@@ -107,11 +107,17 @@ loop.
   systems are actually structurally OPPOSITE on those two rows (shadcn:
   close button, no decoration; M3: decoration, no close button). See
   DIALOG-MATRIX.md finding 14.
-- **`tabs`'s shadcn column fails conformance**: `behavior.activation-mode`
-  reports "automatic: selection held" — focusing a tab does not select it
-  even though `activationMode` defaults to automatic. Found 2026-08-04 when
-  fixing checkbox's conformance build (see next item unblocked it). Not yet
-  root-caused.
+- ~~**`tabs`'s shadcn column fails conformance**~~ — **FIXED 2026-08-05,
+  root cause was the TEST, not the skeleton.** `behavior.disabled-navigation`
+  (the assertion immediately before it in `checkTabs()`) already moves real
+  focus to the same tab `behavior.activation-mode` then tries to focus —
+  refocusing an already-focused element fires no new `focus` event in a
+  real browser, so the assertion observed "before === after" and
+  misreported "selection held". Confirmed with an isolated from-scratch
+  repro: the identical skeleton resolves the transition correctly every
+  time when nothing has already consumed the focus move. Fixed by having
+  the assertion return focus to a neutral tab first. See TABS-MATRIX.md
+  finding 15. Conformance now 107/107, zero failures.
 - **Every `build-<name>-check.mjs` harness script has a broken font path.**
   Each references `fonts/*.woff2` relative to `out/`, but the self-hosted
   webfonts live at `2-build/fonts/`, not `2-build/out/fonts/` — every
@@ -441,16 +447,17 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: investigated priority-list item 3 (the uncited-slots backlog)
-while a `toast`/`sonner` component build (component 18, row 19/79) still
-runs in the background — check whether that build has landed yet (look
-for `2-build/matrices/TOAST-MATRIX.md`) before starting a new one; if it
-has, it still needs the same orchestrator review pass (gates, live
+Last action: root-caused and fixed `tabs`'s shadcn `behavior.activation-mode`
+conformance failure (priority-list item 4) while a `toast`/`sonner`
+component build (component 18, row 19/79) still runs in the background —
+check whether that build has landed yet (look for
+`2-build/matrices/TOAST-MATRIX.md`) before starting a new one; if it has,
+it still needs the same orchestrator review pass (gates, live
 verification, matrix-doc findings, CLAUDE.md updates, commit+push) every
 prior component in this session got before this file's prose can be
 trusted as current.
 
-Items 1 and 2 of the standing priority list are closed; item 3 was
+Items 1, 2 and 4 of the standing priority list are closed; item 3 was
 investigated, partly fixed, and mostly RE-SCOPED (see Known-open work for
 the full account):
 - **Button's secondary-hover** (item 1): Salt's `--secondary-bg-hover` slot
@@ -484,10 +491,11 @@ the full account):
   fragments; that's the next action on this item, not more per-slot
   research.
 
-`switch`, `radio-group`, `slider`, the button fix, and the dialog finding
-are all committed and pushed to `claude/next-component-7e5dex`; the
-`select.m3.json` popup-fg fix and (once it lands) `toast` follow in their
-own commits — check `git log` rather than trusting stale prose here.
+`switch`, `radio-group`, `slider`, the button fix, the dialog finding, and
+the uncited-slots re-scope are all committed and pushed to
+`claude/next-component-7e5dex`; the tabs conformance fix and (once it
+lands) `toast` follow in their own commits — check `git log` rather than
+trusting stale prose here.
 
 **Standing priority order — deferred by explicit owner choice on
 2026-08-04 ("keep going, track gaps in a running list" over stopping to
@@ -502,7 +510,13 @@ clear the queue), updated as items close:**
    (`select.m3.json` popup-fg). Next action: teach `check-values.py` to
    match grouped provenance keys, THEN re-measure before any further
    backfill.
-4. Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure.
+4. ~~Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure~~ —
+   **DONE 2026-08-05.** Root cause was `harness/conformance.tsx`'s own
+   `checkTabs()`: the disabled-navigation assertion just before it already
+   moved focus to the same target tab, so re-focusing it was a browser
+   no-op and the assertion misread "no new focus event" as "automatic
+   activation held". Fixed by returning focus to a neutral tab first. See
+   TABS-MATRIX.md finding 15. Conformance now 107/107.
 5. Fix the fonts/ path bug across every `build-<name>-check.mjs` (NOTE:
    `button-check.tsx`'s `dist/gen/` import bug is a related but distinct
    issue from the fonts-path one — both live in the same family of "old

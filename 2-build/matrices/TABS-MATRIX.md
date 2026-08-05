@@ -594,6 +594,35 @@ Four, all stated rather than smoothed:
     navigates, commits and closes. Logged for the owner alongside
     SELECT-MATRIX.md findings 13–16.
 
+15. **A SECOND false positive, found 2026-08-05 in `harness/conformance.tsx`'s
+    later, separate `checkTabs()` — not the same bug as finding 14's hidden-
+    tab focus-event issue, and not a regression of it.** Once `checkbox`
+    wired up the shared conformance harness (see CLAUDE.md's Known-open
+    work), it started reporting `tabs`/shadcn/`behavior.activation-mode` as
+    failing — "automatic: selection held" — and it stayed queued as
+    unexplained for three components. Root cause: the assertion immediately
+    ABOVE it in the same function (`behavior.disabled-navigation`) already
+    moves real DOM focus to `tabs()[2]` for any column whose
+    `disabledNavigation` is `"skipped"` (shadcn's), and for an automatic-
+    activation column that focus move ALSO already committed the selection.
+    The activation-mode assertion then re-focused that SAME already-focused
+    tab — a browser no-op, since refocusing an already-focused element
+    fires no new `focus` event — so `before === after` and the assertion
+    read it as "held", exactly mimicking a real failure. Confirmed with a
+    from-scratch isolated repro (a fresh mount, no prior test): the
+    identical skeleton, identical config, resolves the transition correctly
+    every time when nothing has already consumed the focus move.
+    **The general lesson, distinct from finding 14's:** a shared, multi-
+    assertion test function can silently invalidate a later assertion's own
+    precondition. Testing a transition (CLAUDE.md's own method note) is
+    necessary but not sufficient — the test also has to guarantee it is
+    causing a REAL transition, not observing the tail end of one an earlier
+    assertion already caused. Fixed by having the assertion explicitly
+    return focus to a neutral tab first, so the move to its actual target is
+    always a genuine, event-firing transition regardless of what ran before
+    it. Re-verified: all three columns now correctly discriminate (salt
+    manual: held; shadcn/M3 automatic: moved), conformance 107/107.
+
 ## Validation pass — behaviours driven in a real DOM, and a false positive worth recording
 
 Every keyboard behaviour was exercised against the built harness rather than

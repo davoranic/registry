@@ -253,6 +253,23 @@ async function checkTabs(host: HTMLElement, system: string) {
     "landed on " + landed + " (" + (skips ? "should skip disabled" : "should reach disabled") + ")")
 
   // behavior.activation-mode — automatic selects on focus; manual must NOT.
+  // FIXED 2026-08-05 (see CLAUDE.md's Known-open work / TABS-MATRIX.md
+  // finding): the disabled-navigation assertion just above already moves
+  // real focus to tabs()[2] for any column whose disabledNavigation is
+  // "skipped" (shadcn's config) — and for "automatic" columns, THAT focus
+  // move already committed the selection too. This assertion then used to
+  // re-focus the SAME already-focused tabs()[2], which is a browser no-op
+  // (focusing an already-focused element fires no new "focus" event), so
+  // "before === after" was misreported as "automatic activation held" —
+  // a test-sequencing artifact, not a skeleton defect. Confirmed live: the
+  // exact same skeleton, tested in isolation with a fresh mount and no
+  // prior focus move, resolves the transition correctly every time.
+  // Fixed by explicitly returning focus to a DIFFERENT tab first, so the
+  // subsequent move to the target is always a real, event-firing
+  // transition regardless of what the prior assertion left focus on.
+  const neutral = tabs()[0]
+  if (document.activeElement !== neutral) focusFor(neutral)
+  await settle()
   const before = tabs().find((t) => t.getAttribute("aria-selected") === "true")?.textContent
   const target = tabs()[2]
   focusFor(target)                       // synthetic focusin — see environment rule 1
