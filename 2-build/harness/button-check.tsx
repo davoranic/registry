@@ -7,7 +7,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Button, type ButtonConfig } from "../skeleton/button"
-import configs from "../dist/gen/button-config.json"
+import configs from "../out/gen/button-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

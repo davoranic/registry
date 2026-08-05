@@ -51,7 +51,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Progress, type ProgressConfig } from "../skeleton/progress"
-import configs from "../dist/gen/progress-config.json"
+import configs from "../out/gen/progress-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

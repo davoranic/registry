@@ -18,7 +18,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Input, type InputConfig } from "../skeleton/input"
-import configs from "../dist/gen/input-config.json"
+import configs from "../out/gen/input-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

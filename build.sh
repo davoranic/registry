@@ -37,6 +37,16 @@ for t in 2-build/contract/templates/*.template.json; do
 done
 echo "  $(ls 2-build/out/gen/*.css | wc -l | tr -d ' ') stylesheets"
 
+# Every build-<name>-check.mjs harness's generated HTML references
+# fonts/*.woff2 relative to out/ (i.e. it expects out/fonts/), but the
+# self-hosted webfonts live at 2-build/fonts/ — a mismatch present since
+# the first harness script was written, silently rendering every check
+# page's Open Sans/Roboto fidelity check in fallback sans-serif. Fixed
+# centrally here rather than patching each script's font URL (see
+# CLAUDE.md's Known-open work).
+mkdir -p 2-build/out/fonts
+cp 2-build/fonts/*.woff2 2-build/out/fonts/
+
 step "Sync resolved values into every matrix doc"
 python3 2-build/tools/sync-matrix-values.py
 

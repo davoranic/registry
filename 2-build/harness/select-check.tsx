@@ -22,7 +22,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Select, type SelectConfig, type SelectGroupModel, type SelectOptionModel } from "../skeleton/select"
-import configs from "../dist/gen/select-config.json"
+import configs from "../out/gen/select-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

@@ -9,7 +9,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Tooltip, type TooltipConfig } from "../skeleton/tooltip"
-import configs from "../dist/gen/tooltip-config.json"
+import configs from "../out/gen/tooltip-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

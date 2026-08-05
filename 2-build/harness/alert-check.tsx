@@ -5,7 +5,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Alert, type AlertConfig } from "../skeleton/alert"
-import configs from "../dist/gen/alert-config.json"
+import configs from "../out/gen/alert-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

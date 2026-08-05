@@ -5,7 +5,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Spinner, type SpinnerConfig } from "../skeleton/spinner"
-import configs from "../dist/gen/spinner-config.json"
+import configs from "../out/gen/spinner-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

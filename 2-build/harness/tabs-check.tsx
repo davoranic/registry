@@ -36,7 +36,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Tabs, type TabsConfig, type TabsItemSpec } from "../skeleton/tabs"
-import configs from "../dist/gen/tabs-config.json"
+import configs from "../out/gen/tabs-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

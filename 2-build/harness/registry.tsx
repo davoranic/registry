@@ -7,8 +7,8 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Calendar, type CalendarConfig } from "../skeleton/calendar"
-import configs from "../dist/gen/calendar-config.json"
-import panel from "../dist/gen/calendar-panel.json"
+import configs from "../out/gen/calendar-config.json"
+import panel from "../out/gen/calendar-panel.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 type Theme = (typeof THEMES)[number]

@@ -48,7 +48,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Badge, type BadgeConfig } from "../skeleton/badge"
-import configs from "../dist/gen/badge-config.json"
+import configs from "../out/gen/badge-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

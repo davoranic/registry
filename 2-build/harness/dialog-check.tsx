@@ -33,7 +33,7 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Dialog, type DialogConfig } from "../skeleton/dialog"
-import configs from "../dist/gen/dialog-config.json"
+import configs from "../out/gen/dialog-config.json"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
 

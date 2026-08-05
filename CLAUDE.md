@@ -118,15 +118,19 @@ loop.
   time when nothing has already consumed the focus move. Fixed by having
   the assertion return focus to a neutral tab first. See TABS-MATRIX.md
   finding 15. Conformance now 107/107, zero failures.
-- **Every `build-<name>-check.mjs` harness script has a broken font path.**
-  Each references `fonts/*.woff2` relative to `out/`, but the self-hosted
-  webfonts live at `2-build/fonts/`, not `2-build/out/fonts/` — every
-  harness's Open Sans / Roboto fidelity check has silently been rendering
-  in fallback sans-serif since these scripts were first written. Affects
-  badge/chip/dialog/tabs/card/progress/select/spinner/tooltip/input/alert/
-  button, not just checkbox. Fix once, centrally (either copy fonts/ into
-  out/ as a build.sh step, or rewrite each script's font URL to `../fonts/`)
-  rather than patching each script.
+- ~~**Every `build-<name>-check.mjs` harness script has a broken font
+  path.**~~ — **FIXED 2026-08-05, centrally.** `build.sh` now copies
+  `2-build/fonts/*.woff2` into `2-build/out/fonts/` as a build step, so
+  every harness's existing `fonts/*.woff2` reference (relative to `out/`)
+  resolves without touching any of the 18 individual `build-<name>-
+  check.mjs` scripts. Verified live: `switch-check.html` now loads both
+  webfonts with zero failed requests (previously 404s, silently falling
+  back to sans-serif). ALSO found and fixed the same day, same item: 13
+  harnesses (`alert`, `badge`, `button`, `card`, `chip`, `dialog`,
+  `input`, `progress`, `calendar`'s `registry.tsx`, `select`, `spinner`,
+  `tabs`, `tooltip`) had their own, unrelated `dist/gen/` import bug —
+  built before the checkbox-era `out/gen/` fix and never swept — and
+  couldn't build AT ALL until corrected. All 13 now build clean.
 - **`harness/conformance.tsx` + `tools/build-conformance.mjs` read from a
   `dist/gen/` path that has never existed in this checkout** (fixed
   2026-08-04, during the checkbox build) — was silently swallowing every
@@ -447,17 +451,17 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: root-caused and fixed `tabs`'s shadcn `behavior.activation-mode`
-conformance failure (priority-list item 4) while a `toast`/`sonner`
-component build (component 18, row 19/79) still runs in the background —
-check whether that build has landed yet (look for
-`2-build/matrices/TOAST-MATRIX.md`) before starting a new one; if it has,
-it still needs the same orchestrator review pass (gates, live
-verification, matrix-doc findings, CLAUDE.md updates, commit+push) every
-prior component in this session got before this file's prose can be
-trusted as current.
+Last action: fixed the fonts/ path bug centrally in `build.sh`, and while
+verifying it, found and fixed 13 harnesses' unrelated `dist/gen/` import
+bug too (priority-list item 5) — while a `toast`/`sonner` component build
+(component 18, row 19/79) still runs in the background. Check whether
+that build has landed yet (look for `2-build/matrices/TOAST-MATRIX.md`)
+before starting a new one; if it has, it still needs the same orchestrator
+review pass (gates, live verification, matrix-doc findings, CLAUDE.md
+updates, commit+push) every prior component in this session got before
+this file's prose can be trusted as current.
 
-Items 1, 2 and 4 of the standing priority list are closed; item 3 was
+Items 1, 2, 4 and 5 of the standing priority list are closed; item 3 was
 investigated, partly fixed, and mostly RE-SCOPED (see Known-open work for
 the full account):
 - **Button's secondary-hover** (item 1): Salt's `--secondary-bg-hover` slot
@@ -465,10 +469,9 @@ the full account):
   missing their own secondary-hover treatment too, for two different
   reasons — see BUTTON-MATRIX.md finding 1. Verified live via Playwright
   (a real `:hover`, not a class toggle). `button-check.tsx`'s own harness
-  still has the pre-checkbox-era `dist/gen/` path bug (never patched since
-  button was built early in the run); verification used a minimal
-  standalone test page instead — fixing `build-button-check.mjs` is a
-  separate, still-open task, folded into item 5's spirit below.
+  still had the pre-checkbox-era `dist/gen/` path bug at the time (fixed
+  a few actions later, see item 5) — verification used a minimal
+  standalone test page instead.
 - **Dialog's shadcn=m3 anatomy convergence** (item 2): a gate blind spot,
   not a retrofit. `structure.header-decoration` and `structure.close-button`
   are config-enum rows where `"none"` is a real strategy value, not the
@@ -490,6 +493,19 @@ the full account):
   name. The real fix is teaching the gate to also try grouped-key
   fragments; that's the next action on this item, not more per-slot
   research.
+- **Tabs' shadcn activation-mode conformance failure** (item 4): the test
+  itself, not the skeleton — `behavior.disabled-navigation`'s own
+  assertion already moved focus to the tab `behavior.activation-mode` then
+  tried to focus, and refocusing an already-focused element fires no new
+  `focus` event, so the assertion misread "nothing new happened" as
+  "automatic activation held". Fixed by returning focus to a neutral tab
+  first. See TABS-MATRIX.md finding 15.
+- **The fonts/ path bug, plus a bonus find** (item 5): `build.sh` now
+  copies `2-build/fonts/` into `2-build/out/fonts/` centrally. While
+  verifying it, found 13 harnesses (not just the ones already known)
+  couldn't build AT ALL due to the same `dist/gen/` bug button's own
+  harness had — all 13 corrected to `../out/gen/` and verified building
+  clean.
 
 `switch`, `radio-group`, `slider`, the button fix, the dialog finding, and
 the uncited-slots re-scope are all committed and pushed to
@@ -517,10 +533,17 @@ clear the queue), updated as items close:**
    no-op and the assertion misread "no new focus event" as "automatic
    activation held". Fixed by returning focus to a neutral tab first. See
    TABS-MATRIX.md finding 15. Conformance now 107/107.
-5. Fix the fonts/ path bug across every `build-<name>-check.mjs` (NOTE:
-   `button-check.tsx`'s `dist/gen/` import bug is a related but distinct
-   issue from the fonts-path one — both live in the same family of "old
-   harnesses never got the checkbox-era fixes" bugs).
+5. ~~Fix the fonts/ path bug across every `build-<name>-check.mjs`~~ —
+   **DONE 2026-08-05, plus a related bug swept at the same time.**
+   `build.sh` now copies `2-build/fonts/` into `2-build/out/fonts/`
+   centrally — every harness's existing font URL now resolves, verified
+   live (zero failed requests on `switch-check.html`). While fixing this,
+   found 13 harnesses ALSO couldn't build at all, for the unrelated
+   `dist/gen/` import bug button's own fix had already worked around
+   manually (never systematically checked until now): `alert`, `badge`,
+   `button`, `card`, `chip`, `dialog`, `input`, `progress`, `calendar`
+   (`registry.tsx`), `select`, `spinner`, `tabs`, `tooltip`. All 13
+   corrected to `../out/gen/` and verified to build clean.
 6. **Continue components** — 60 canonical rows remain after `toast` lands
    (61 before), order per `1-intro/content/04-component-map.md`: rows with
    real cross-system character first.
