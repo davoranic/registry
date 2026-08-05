@@ -69,10 +69,12 @@ loop.
 
 - **250 slots carry values but no provenance entry** — invisible to the tier-2
   canary. Concentrated in select (73) and input (42).
-- **`button` has a real defect**: Salt's `--secondary-bg-hover` is defined in
-  both modes and referenced by no rule, so bordered buttons have no hover — and
-  the secondary selector at (0,5,0) would beat `:hover` at (0,4,0) anyway.
-  Needs a `@secondary-hover` row.
+- ~~**`button` has a real defect**~~ — **FIXED 2026-08-05.** Salt's
+  `--secondary-bg-hover` was defined but referenced by no rule; shadcn's and
+  M3's own secondary/outline hover treatments turned out to be silently
+  missing too. Added `style.root.background@secondary-hover` (union
+  selector, beats the specificity trap) with real, sourced values for all
+  three columns — see BUTTON-MATRIX.md finding 1.
 - **`dialog` shadcn=m3 identical part-set** — flagged by check-anatomy, not yet
   explained.
 - **`tabs`'s shadcn column fails conformance**: `behavior.activation-mode`
@@ -205,7 +207,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 |---|---|---|---|---|---|---|
 | `alert` | [`ALERT-MATRIX.md`](ALERT-MATRIX.md) | 33 | 17 | 16 | 9 | — |
 | `badge` | [`BADGE-MATRIX.md`](BADGE-MATRIX.md) | 50 | 29 | 33 | 18 | ✓ |
-| `button` | [`BUTTON-MATRIX.md`](BUTTON-MATRIX.md) | 30 | 19 | 17 | 17 | — |
+| `button` | [`BUTTON-MATRIX.md`](BUTTON-MATRIX.md) | 31 | 20 | 18 | 18 | — |
 | `calendar` | [`CALENDAR-MATRIX.md`](CALENDAR-MATRIX.md) | 58 | 40 | 31 | 36 | — |
 | `card` | [`CARD-MATRIX.md`](CARD-MATRIX.md) | 90 | 62 | 36 | 37 | ✓ |
 | `checkbox` | [`CHECKBOX-MATRIX.md`](CHECKBOX-MATRIX.md) | 55 | 41 | 30 | 46 | ✓ |
@@ -409,50 +411,50 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `slider` (component 17, row 18/79), following
-radio-group. `switch` and `radio-group` are both committed and pushed to
-`claude/next-component-7e5dex`; `slider`'s commit follows this edit —
-check `git log` if in doubt rather than trusting stale prose in this file.
+Last action: fixed `button`'s long-queued secondary-hover defect (priority-
+list item 1, see Known-open work) while a `toast`/`sonner` component build
+(component 18, row 19/79) runs in the background — check whether that
+build has landed yet (look for `2-build/matrices/TOAST-MATRIX.md`) before
+starting a new one; if it has, it still needs the same orchestrator review
+pass (gates, live verification, matrix-doc findings, CLAUDE.md updates,
+commit+push) every prior component in this session got before this file's
+prose can be trusted as current.
 
-slider is architecturally the first non-toggle component in this run (a
-continuous, drag/keyboard-positioned numeric value, not a discrete
-checked/unchecked state), and it held up well against BOTH lessons the
-last three components established: every part (track/fill/thumb/value-
-label/tick/end-label) got its own `data-slot` from the first draft (the
-radio-group finding-8 lesson), and the value-label is absolutely
-positioned out of flow above the thumb rather than squeezed into a flex
-row (avoiding radio-group's exact overlap bug by construction, not by
-luck). Orchestrator review independently confirmed, live: a real 3x
-ArrowRight keypress moves the thumb and resizes the fill identically
-(30→33, +36px) in all three columns; `getBoundingClientRect` showed no
-overlap anywhere, including the tooltip-style value readout; M3's disabled
-opacity fix (found and fixed during the build itself — `style.root.disabled`
-was wrongly `off`, real M3 source applies host-level `opacity:0.38` in
-ADDITION to per-part colour swaps) visually confirmed. No new defect found
-on review this time — the running list of lessons is starting to compound.
+The button fix: Salt's `--secondary-bg-hover` slot existed but was cited
+by no row; fixing it required a union selector (secondary axis + `:hover`)
+to beat a real specificity trap, and re-checking shadcn/M3 while there
+found BOTH of them were ALSO silently missing their own secondary-hover
+treatment, for two different reasons each sourced and fixed — see
+BUTTON-MATRIX.md finding 1 for the full account. Verified live via
+Playwright (a real `:hover`, not a class toggle) on all three columns.
+`button-check.tsx`'s own harness still has the pre-checkbox-era
+`dist/gen/` path bug (predates the checkbox-era fix, was never patched
+since button was built early in the run) — verification for this fix used
+a minimal standalone test page instead of the broken harness; fixing
+`build-button-check.mjs` itself is a separate, still-open task (folded
+into Known-open work's fonts-path item's spirit but not the same bug —
+worth its own line if it keeps blocking verification).
 
-Range-slider (Salt's separate two-thumb component) was folded into this
-component as a `range: [false,true]` config axis rather than built as a
-separate row, since shadcn and M3 both treat range as an axis of the same
-component and Salt's two components share every internal part already
-modelled here — a deliberate scope decision, recorded in SLIDER-MATRIX.md,
-not a silent absorption.
+`switch`, `radio-group`, and `slider` are all committed and pushed to
+`claude/next-component-7e5dex`; the button fix and (once it lands) `toast`
+follow in their own commits — check `git log` rather than trusting stale
+prose here.
 
-Everything regenerates clean; all four automated gates green; conformance
-107/107 minus the one pre-existing, unrelated `tabs` failure (unchanged by
-this build — see Known-open work).
+**Standing priority order — deferred by explicit owner choice on
+2026-08-04 ("keep going, track gaps in a running list" over stopping to
+clear the queue), updated as items close:**
 
-**Standing priority order — still true, still not done, all deferred by
-explicit owner choice on 2026-08-04 ("keep going, track gaps in a running
-list" over stopping to clear the queue):**
-
-1. Fix `button`'s missing secondary hover (`style.root.background@secondary-hover`).
+1. ~~Fix `button`'s missing secondary hover~~ — **DONE 2026-08-05.**
 2. Explain or fix `dialog`'s shadcn=m3 identical part-set.
 3. Backfill 250 uncited slots (select 73, input 42, badge, card).
 4. Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure.
-5. Fix the fonts/ path bug across every `build-<name>-check.mjs`.
-6. **Continue components** — 61 canonical rows remain, order per
-   `1-intro/content/04-component-map.md`: rows with real cross-system character first.
+5. Fix the fonts/ path bug across every `build-<name>-check.mjs` (NOTE:
+   `button-check.tsx`'s `dist/gen/` import bug, found today, is a related
+   but distinct issue from the fonts-path one — both live in the same
+   family of "old harnesses never got the checkbox-era fixes" bugs).
+6. **Continue components** — 60 canonical rows remain after `toast` lands
+   (61 before), order per `1-intro/content/04-component-map.md`: rows with
+   real cross-system character first.
 
 **Standing lessons for the next component's build prompt** (checkbox's two,
 plus radio-group's, all still current): (a) verify a selector actually

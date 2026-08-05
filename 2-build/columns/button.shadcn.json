@@ -65,6 +65,7 @@
     "style.root.elevation@hover": { "kind": "off" },
 
     "style.root.background@secondary": { "kind": "value", "value": { "background": "var(--outline-bg)", "border": "1px solid var(--outline-border)", "color": "inherit" }, "source": "variant=outline: bg-background border shadow-xs hover:bg-accent" },
+    "style.root.background@secondary-hover": { "kind": "value", "value": { "background": "var(--ghost-hover-bg)" }, "note": "button.tsx's outline variant className carries `hover:bg-accent` as its own literal, independent of the default variant's `hover:bg-primary/90` — the SAME accent token ghost's own hover already resolves via ghost-hover-bg, reused rather than re-derived (BUTTON-MATRIX.md finding 1)" },
 
     "style.icon.size": { "kind": "value", "value": "16px", "source": "[&_svg:not([class*='size-'])]:size-4 = 1rem = 16px (default size); xs variant drops to size-3=12px" }
   }

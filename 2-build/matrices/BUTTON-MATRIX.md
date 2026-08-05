@@ -96,13 +96,40 @@ a mechanism difference.
 
 ## Findings
 
-1. **A real defect, still open.** Salt's `--secondary-bg-hover` slot is defined
-   in both light and dark and is referenced by **no rule**. There is no
-   `@secondary-hover` row in the template, so a Salt bordered button has no
-   hover state at all. Worse, the fix is not just adding the row: the
-   `@secondary` selector is specificity (0,5,0) against `:hover`'s (0,4,0), so
-   a naive hover row would still lose. Found by `check-structure.py` gate A,
-   months of renders after the component was "validated".
+1. **A real defect, FIXED during orchestrator review while working the
+   registry's running list (2026-08-05).** Salt's `--secondary-bg-hover` slot
+   was defined in both light and dark and referenced by **no rule**. There
+   was no `@secondary-hover` row in the template, so a Salt bordered button
+   had no hover state at all. Worse, the fix was not just adding the row:
+   `@secondary`'s selector and the generic `@hover`'s selector land at
+   comparable specificity and `@secondary` is emitted later, so a naive
+   hover-only row would still have lost to the resting `@secondary` rule.
+   Fixed by adding `style.root.background@secondary-hover`, whose selector
+   is the UNION of both — the secondary axis's attribute selectors AND
+   `:hover:not(:disabled)` together — strictly higher specificity than
+   either alone, emitted after `@secondary` per rule 5. Re-checking shadcn
+   and M3 while fixing Salt found the SAME row was silently missing from
+   both of them too, for different reasons: shadcn's outline variant
+   carries its own literal `hover:bg-accent hover:text-accent-foreground`
+   class (never at cascade risk the way Salt was, since each shadcn variant
+   is an independent class string, not layered rules) but no row had ever
+   captured it — fixed by reusing the `ghost-hover-bg` slot ghost's own
+   hover row already resolved (`hover:bg-accent`), the same accent token.
+   M3's outlined-button `hover-state-layer-color` is `primary`
+   (`--action-bg`) composited over its own TRANSPARENT container — a
+   different formula from the generic hover row's `action-fg`-over-
+   `action-bg` mix (which assumes the filled button's opaque background),
+   so even without a specificity problem M3's secondary hover would have
+   rendered the wrong colour if it had silently inherited the generic rule.
+   Verified live with Playwright (`getComputedStyle` before/after a real
+   `:hover` on all three columns): Salt `rgba(0,0,0,0)` → `rgb(230,233,235)`,
+   shadcn `oklch(1 0 0)` → `oklch(0.97 0 0)`, M3 `rgba(0,0,0,0)` →
+   `color(srgb 0.4 0.31 0.64 / 0.08)` — all three now change on hover, all
+   three colours sourced, not guessed. Gates re-run clean after the fix.
+   Originally found by `check-structure.py` gate A, months of renders after
+   the component was first "validated" — the lesson that outlived the bug
+   itself: a defect a gate CAN catch still needs someone to act on the
+   finding, not just record it.
 2. **Three bugs were caught during the original build**, recorded in
    `CLAUDE.md`: an undefined-array crash on a system with no `size` prop; a
    conflated capability-vs-instance flag that silently blanked shadcn's labels;
@@ -209,9 +236,10 @@ a mechanism difference.
 | 27 | `style.root.elevation` | style | switchable | **off** | `0 1px 2px 0 var(--shadow-color)` | `none` |
 | 28 | `style.root.elevation@hover` | style | switchable | **off** | **off** | `0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15)` |
 | 29 | `style.root.background@secondary` | style | switchable | `background: var(--secondary-bg); color: var(--secondary-fg); border-color: var(--secondary-border)` | `background: var(--outline-bg); border: 1px solid var(--outline-border); color: inherit` | `background: transparent; border: 1px solid var(--outline-color); color: var(--action-bg)` |
-| 30 | `style.icon.size` | style | switchable | ⟡ `icon-size` | `16px` | `18px` |
+| 30 | `style.root.background@secondary-hover` | style | switchable | `background: var(--secondary-bg-hover)` | `background: var(--ghost-hover-bg)` | `background: color-mix(in srgb, var(--action-bg) 8%, transparent)` |
+| 31 | `style.icon.size` | style | switchable | ⟡ `icon-size` | `16px` | `18px` |
 
-<details><summary>Citations — 52 cells carry a source or note</summary>
+<details><summary>Citations — 55 cells carry a source or note</summary>
 
 | row | system | citation |
 |---|---|---|
@@ -264,6 +292,9 @@ a mechanism difference.
 | `style.root.background@secondary` | salt | actionable-background/foreground/borderColor (bordered/neutral, no -bold suffix) |
 | `style.root.background@secondary` | shadcn | variant=outline: bg-background border shadow-xs hover:bg-accent |
 | `style.root.background@secondary` | m3 | _md-comp-outlined-button.scss: transparent container, outline-color border, primary label |
+| `style.root.background@secondary-hover` | salt | actionable-background-hover (bordered/neutral) -> palette-neutral-weakest -> gray-100 #E6E9EB — the slot was already cited in provenance but never referenced by any row until this fix (BUTTON-MATRIX.md finding 1) |
+| `style.root.background@secondary-hover` | shadcn | button.tsx's outline variant className carries `hover:bg-accent` as its own literal, independent of the default variant's `hover:bg-primary/90` — the SAME accent token ghost's own hover already resolves via ghost-hover-bg, reused rather than re-derived (BUTTON-MATRIX.md finding 1) |
+| `style.root.background@secondary-hover` | m3 | _md-comp-outlined-button.scss hover-state-layer-color: primary (== --action-bg) x hover-state-layer-opacity 0.08, composited over the outlined button's own TRANSPARENT container — NOT the generic style.root.background@hover formula (action-fg over action-bg), which assumes the filled button's opaque background as its base and would be the wrong colour here (BUTTON-MATRIX.md finding 1) |
 | `style.icon.size` | salt | Icon.css --icon-base-size: var(--salt-size-icon), density-scaled, matches Sizes foundations page |
 | `style.icon.size` | shadcn | [&_svg:not([class*='size-'])]:size-4 = 1rem = 16px (default size); xs variant drops to size-3=12px |
 | `style.icon.size` | m3 | with-icon-icon-size: 18px |

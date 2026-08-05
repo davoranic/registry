@@ -221,6 +221,11 @@
       },
       "source": "actionable-background/foreground/borderColor (bordered/neutral, no -bold suffix)"
     },
+    "style.root.background@secondary-hover": {
+      "kind": "value",
+      "value": { "background": "var(--secondary-bg-hover)" },
+      "source": "actionable-background-hover (bordered/neutral) -> palette-neutral-weakest -> gray-100 #E6E9EB — the slot was already cited in provenance but never referenced by any row until this fix (BUTTON-MATRIX.md finding 1)"
+    },
     "style.icon.size": {
       "kind": "alias",
       "slot": "icon-size",

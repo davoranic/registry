@@ -156,6 +156,11 @@
       },
       "source": "_md-comp-outlined-button.scss: transparent container, outline-color border, primary label"
     },
+    "style.root.background@secondary-hover": {
+      "kind": "value",
+      "value": { "background": "color-mix(in srgb, var(--action-bg) 8%, transparent)" },
+      "source": "_md-comp-outlined-button.scss hover-state-layer-color: primary (== --action-bg) x hover-state-layer-opacity 0.08, composited over the outlined button's own TRANSPARENT container — NOT the generic style.root.background@hover formula (action-fg over action-bg), which assumes the filled button's opaque background as its base and would be the wrong colour here (BUTTON-MATRIX.md finding 1)"
+    },
     "style.icon.size": {
       "kind": "value",
       "value": "18px",

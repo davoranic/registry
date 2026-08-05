@@ -319,6 +319,15 @@
       "note": "the outline/bordered emphasis, neutral tone \u2014 one representative non-default axis cell to prove the pattern generalizes; full 20-combination Salt grid documented in provenance, not fully enumerated as separate rows (scope decision, same as Calendar's locale row)"
     },
     {
+      "id": "style.root.background@secondary-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"button\"][data-emphasis=\"bordered\"][data-tone=\"neutral\"]:hover:not(:disabled), [data-slot=\"button\"][data-emphasis=\"outline\"]:hover:not(:disabled), [data-slot=\"button\"][data-emphasis=\"outlined\"]:hover:not(:disabled)",
+      "cellIsDeclarations": true,
+      "note": "REAL DEFECT, FOUND BY check-structure.py gate A months after this component was first validated, FIXED HERE (see BUTTON-MATRIX.md finding 1 and CLAUDE.md's Known-open work). Salt's own `--secondary-bg-hover` slot was defined in both modes and cited in provenance from the start but never referenced by any row \u2014 a bordered Salt button had no hover response at all. The missing row alone would not have been enough: `style.root.background@secondary`'s selector (3 attribute selectors) and the generic `style.root.background@hover`'s selector (`:hover:not(:disabled)` on the bare slot) land at comparable specificity, and @secondary is emitted LATER, so a naive `@hover`-only fix would still lose to the resting @secondary rule on a bordered button. This row's selector is the UNION of both \u2014 the secondary axis's attribute selectors AND :hover:not(:disabled) together \u2014 giving it strictly higher specificity than either alone, and it is emitted after @secondary per rule 5 (state rows after axis rows). shadcn: re-checked while fixing this \u2014 button.tsx's own outline variant class string carries `hover:bg-accent hover:text-accent-foreground` INDEPENDENTLY of the generic `hover:bg-primary/90` (which only applies to the DEFAULT variant's own class branch, so shadcn was never actually at risk of the Salt-style cascade collision; each variant is a separate literal class string, not layered rules), but the accent-tinted hover was never captured by any row either \u2014 the SAME `--accent` token ghost's own hover row already resolves via `ghost-hover-bg` (`hover:bg-accent`, dark: `bg-accent/50`), reused here rather than re-derived. M3: `_md-comp-outlined-button.scss`'s `hover-state-layer-color` is `primary` (== `--action-bg`), composited over the outlined button's own TRANSPARENT container \u2014 a different formula from the generic hover row's `action-fg`-over-`action-bg` mix, which assumes the filled/solid button's own opaque background as the base and would have been the wrong colour even if specificity had not been an issue."
+    },
+    {
       "id": "style.icon.size",
       "piece": "style",
       "policy": "switchable",
