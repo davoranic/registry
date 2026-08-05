@@ -67,8 +67,31 @@ it. Nothing here blocks the next component — per the pipeline rule, declared
 gaps and found-but-out-of-scope bugs queue for later rather than stopping the
 loop.
 
-- **250 slots carry values but no provenance entry** — invisible to the tier-2
-  canary. Concentrated in select (73) and input (42).
+- **Uncited-slots backlog, RE-MEASURED 2026-08-05 — the "250" figure was
+  stale and its origin is untraceable; the real number, from
+  `check-values.py` itself, is 217 (colour slots only, salt+m3, after one
+  fix — see below).** Investigating this surfaced something more useful
+  than the count: `check-values.py`'s own matching is EXACT-KEY-ONLY
+  (`prov.get(slot)`), but this codebase's own writing convention commonly
+  groups several related slots under one combined provenance key for
+  readability (e.g. select.m3.json's `"indicator / -hover / -focus /
+  -disabled"` covers four slots under one key). A slot documented that way
+  reads as fully honest to a human and is real, sourced prose — but is
+  STRUCTURALLY invisible to the gate regardless, because the gate never
+  looks for a combined key. Spot-checked on `select.m3.json`'s 13 apparent
+  gaps: 12 of 13 were exactly this (already honestly cited under a grouped
+  key), and only ONE (`popup-fg`) was a genuine miss — fixed, sourced to
+  `versions/v0_192/_md-comp-list.scss:91`. **The practical conclusion: do
+  not mass-backfill against the raw 217 count** — most of it is likely
+  already-documented values the gate can't see, not missing documentation,
+  and writing a second, differently-keyed citation next to an existing
+  grouped one would be redundant, not a fix. The real fix is teaching
+  `check-values.py` to also try each grouped-key's constituent slot names
+  (split on `/` and match suffix fragments like `-hover`/`-focus` against
+  the base name), which would likely shrink 217 to something close to the
+  true single-digit-per-component gap size shown in this one spot check —
+  a script change, not 217 rows of research. Until that's done, treat the
+  217 figure as an upper bound, not a work estimate.
 - ~~**`button` has a real defect**~~ — **FIXED 2026-08-05.** Salt's
   `--secondary-bg-hover` was defined but referenced by no rule; shadcn's and
   M3's own secondary/outline hover treatments turned out to be silently
@@ -418,16 +441,18 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: explained `dialog`'s shadcn=m3 anatomy convergence (priority-
-list item 2, see Known-open work) while a `toast`/`sonner` component build
-(component 18, row 19/79) still runs in the background — check whether
-that build has landed yet (look for `2-build/matrices/TOAST-MATRIX.md`)
-before starting a new one; if it has, it still needs the same orchestrator
-review pass (gates, live verification, matrix-doc findings, CLAUDE.md
-updates, commit+push) every prior component in this session got before
-this file's prose can be trusted as current.
+Last action: investigated priority-list item 3 (the uncited-slots backlog)
+while a `toast`/`sonner` component build (component 18, row 19/79) still
+runs in the background — check whether that build has landed yet (look
+for `2-build/matrices/TOAST-MATRIX.md`) before starting a new one; if it
+has, it still needs the same orchestrator review pass (gates, live
+verification, matrix-doc findings, CLAUDE.md updates, commit+push) every
+prior component in this session got before this file's prose can be
+trusted as current.
 
-Items 1 and 2 of the standing priority list are both now closed:
+Items 1 and 2 of the standing priority list are closed; item 3 was
+investigated, partly fixed, and mostly RE-SCOPED (see Known-open work for
+the full account):
 - **Button's secondary-hover** (item 1): Salt's `--secondary-bg-hover` slot
   existed but was cited by no row; shadcn and M3 turned out to be silently
   missing their own secondary-hover treatment too, for two different
@@ -446,11 +471,23 @@ Items 1 and 2 of the standing priority list are both now closed:
   OPPOSITE on those two rows. See DIALOG-MATRIX.md finding 14. No files
   outside the matrix doc needed to change; this was purely an explanation
   the running list owed, not a code defect.
+- **Uncited slots (item 3): the "250" figure turned out to be stale/wrong,
+  not a queue of 250 fixes.** Ran `check-values.py` directly rather than
+  trusting the old number — real count is 217, colour slots only. Spot-
+  checked `select.m3.json`'s 13 apparent gaps by hand: 12 were already
+  honestly documented under a COMBINED provenance key the gate can't
+  match (it only does exact per-slot key lookup), and 1 (`popup-fg`) was
+  a real miss, now fixed and sourced. Reported in Known-open work as a
+  measurement problem, not a backlog — mass-backfilling against 217 would
+  mostly duplicate citations that already exist under a different key
+  name. The real fix is teaching the gate to also try grouped-key
+  fragments; that's the next action on this item, not more per-slot
+  research.
 
-`switch`, `radio-group`, `slider`, and the button fix are all committed
-and pushed to `claude/next-component-7e5dex`; the dialog finding and (once
-it lands) `toast` follow in their own commits — check `git log` rather
-than trusting stale prose here.
+`switch`, `radio-group`, `slider`, the button fix, and the dialog finding
+are all committed and pushed to `claude/next-component-7e5dex`; the
+`select.m3.json` popup-fg fix and (once it lands) `toast` follow in their
+own commits — check `git log` rather than trusting stale prose here.
 
 **Standing priority order — deferred by explicit owner choice on
 2026-08-04 ("keep going, track gaps in a running list" over stopping to
@@ -459,7 +496,12 @@ clear the queue), updated as items close:**
 1. ~~Fix `button`'s missing secondary hover~~ — **DONE 2026-08-05.**
 2. ~~Explain or fix `dialog`'s shadcn=m3 identical part-set~~ — **DONE
    2026-08-05 (explained, no code defect).**
-3. Backfill 250 uncited slots (select 73, input 42, badge, card).
+3. ~~Backfill 250 uncited slots~~ — **RE-SCOPED 2026-08-05.** The count
+   was stale (real: 217, colour-only) and mostly a gate matching
+   limitation, not missing work — see Known-open work. One real gap fixed
+   (`select.m3.json` popup-fg). Next action: teach `check-values.py` to
+   match grouped provenance keys, THEN re-measure before any further
+   backfill.
 4. Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure.
 5. Fix the fonts/ path bug across every `build-<name>-check.mjs` (NOTE:
    `button-check.tsx`'s `dist/gen/` import bug is a related but distinct

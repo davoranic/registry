@@ -728,7 +728,7 @@ decide:
 | `status-error` | #b3261e | #f2b8b5 | **no** |
 | `status-error-hover` | #410e0b | #f9dedc | **no** |
 | `popup-bg` | #f3edf7 | #211f26 | yes |
-| `popup-fg` | #1d1b20 | #e6e0e9 | **no** |
+| `popup-fg` | #1d1b20 | #e6e0e9 | yes |
 | `popup-shadow` | 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15) | — | yes |
 | `option-bg-selected` | #e6e0e9 | #36343b | **no** |
 | `option-layer-hover` | color-mix(in oklab, #1d1b20 8%, transparent) | color-mix(in oklab, #e6e0e9 8%, transparent) | **no** |
