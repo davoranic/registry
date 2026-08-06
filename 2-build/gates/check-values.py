@@ -266,6 +266,61 @@ def m3_candidates(text):
     return uniq
 
 
+def grouped_provenance_lookup(prov):
+    """Expand this codebase's own combined-citation convention — one
+    provenance key covering several related slots for readability, e.g.
+    "indicator / -hover / -focus / -disabled" documenting indicator,
+    indicator-hover(-color), indicator-focus(-color), indicator-disabled
+    all in one entry. `prov.get(slot)` alone (the main loop's exact-key
+    lookup) cannot see these; a slot documented this way is real, sourced
+    prose, not a gap, and CLAUDE.md's Known-open work says so explicitly
+    (found while investigating why the "no provenance" count looked too
+    high — most of it turned out to be exactly this pattern).
+
+    Returns {slot-or-prefix: group_key} for every "/"-joined provenance
+    key. This is used ONLY to reclassify the diagnostic count, never to
+    supply text for token re-resolution — a combined entry can name
+    several DIFFERENT tokens for several DIFFERENT sub-slots in one
+    string, and blindly resolving against the whole string risks a false
+    DRIFT signal (this slot's recorded colour genuinely not matching a
+    resolved candidate that actually belongs to a sibling sub-slot).
+    Diagnostic honesty is worth improving; the drift signal's trustworthiness
+    is not worth risking to do it.
+    """
+    out = {}
+    for key in prov:
+        if "/" not in key:
+            continue
+        parts = [p.strip() for p in key.split("/")]
+        base = parts[0]
+        # keep only the leading identifier-ish token of the base (drop any
+        # trailing free-text description some keys carry)
+        m = re.match(r"^[a-zA-Z0-9-]+", base)
+        if not m:
+            continue
+        base = m.group(0)
+        out[base] = key
+        for frag in parts[1:]:
+            m = re.match(r"^-?[a-zA-Z0-9-]+", frag)
+            if not m:
+                continue
+            frag = m.group(0)
+            name = base + frag if frag.startswith("-") else frag
+            out[name] = key
+    return out
+
+
+def covered_by_group(slot, grouped):
+    """Exact match, or slot is a suffixed variant of a grouped fragment
+    (e.g. "indicator-hover-color" against the expanded "indicator-hover")."""
+    if slot in grouped:
+        return grouped[slot]
+    for name, key in grouped.items():
+        if slot.startswith(name + "-") or slot.startswith(name):
+            return key
+    return None
+
+
 def main():
     salt = load_salt()
     m3_latest, m3_v0 = load_m3("latest"), load_m3("v0_192")
@@ -292,13 +347,22 @@ def main():
             stats["skipped_shadcn"] += len(slots.get("light", {}))
             continue
 
+        grouped = grouped_provenance_lookup(prov)
+
         for mode in ("light", "dark"):
             for slot, recorded in (slots.get(mode) or {}).items():
                 if not isinstance(recorded, str) or norm_color(recorded) is None:
                     continue                    # tier 2 checks COLOURS; sizes are tier 3
                 text = prov.get(slot) or ""
                 if not text:
-                    stats["no_provenance"] += 1
+                    if covered_by_group(slot, grouped):
+                        # documented, honestly, under a combined key this
+                        # exact-match lookup can't see — NOT a gap, but not
+                        # safely auto-verifiable either (see
+                        # grouped_provenance_lookup's own docstring)
+                        stats["grouped_provenance"] += 1
+                    else:
+                        stats["no_provenance"] += 1
                     continue
 
                 found, tried = None, []
@@ -337,7 +401,10 @@ def main():
     print("  VERIFIED (token still resolves to our value) : %d" % stats["verified"])
     print("  DRIFT    (token resolves to something else)  : %d" % stats["drift"])
     print("  unresolvable from provenance text            : %d" % stats["unresolvable"])
-    print("  slots with no provenance entry               : %d" % stats["no_provenance"])
+    print("  slots with NO provenance entry (a real gap)  : %d" % stats["no_provenance"])
+    print("  documented under a GROUPED key (not a gap,")
+    print("    but not auto-verified — see the function's")
+    print("    own docstring for why)                     : %d" % stats["grouped_provenance"])
     print("  shadcn colour slots SKIPPED (out of scope)   : %d" % stats["skipped_shadcn"])
     print()
 

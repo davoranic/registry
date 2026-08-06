@@ -67,31 +67,30 @@ it. Nothing here blocks the next component — per the pipeline rule, declared
 gaps and found-but-out-of-scope bugs queue for later rather than stopping the
 loop.
 
-- **Uncited-slots backlog, RE-MEASURED 2026-08-05 — the "250" figure was
-  stale and its origin is untraceable; the real number, from
-  `check-values.py` itself, is 217 (colour slots only, salt+m3, after one
-  fix — see below).** Investigating this surfaced something more useful
-  than the count: `check-values.py`'s own matching is EXACT-KEY-ONLY
-  (`prov.get(slot)`), but this codebase's own writing convention commonly
-  groups several related slots under one combined provenance key for
-  readability (e.g. select.m3.json's `"indicator / -hover / -focus /
-  -disabled"` covers four slots under one key). A slot documented that way
-  reads as fully honest to a human and is real, sourced prose — but is
-  STRUCTURALLY invisible to the gate regardless, because the gate never
-  looks for a combined key. Spot-checked on `select.m3.json`'s 13 apparent
-  gaps: 12 of 13 were exactly this (already honestly cited under a grouped
-  key), and only ONE (`popup-fg`) was a genuine miss — fixed, sourced to
-  `versions/v0_192/_md-comp-list.scss:91`. **The practical conclusion: do
-  not mass-backfill against the raw 217 count** — most of it is likely
-  already-documented values the gate can't see, not missing documentation,
-  and writing a second, differently-keyed citation next to an existing
-  grouped one would be redundant, not a fix. The real fix is teaching
-  `check-values.py` to also try each grouped-key's constituent slot names
-  (split on `/` and match suffix fragments like `-hover`/`-focus` against
-  the base name), which would likely shrink 217 to something close to the
-  true single-digit-per-component gap size shown in this one spot check —
-  a script change, not 217 rows of research. Until that's done, treat the
-  217 figure as an upper bound, not a work estimate.
+- ~~**Uncited-slots backlog**~~ — **RE-MEASURED then FIXED 2026-08-05. The
+  "250" figure was stale; the real number, from `check-values.py` itself,
+  was 217 (colour slots, salt+m3), and most of THAT was a gate limitation,
+  not missing documentation.** `check-values.py`'s matching was EXACT-KEY-
+  ONLY (`prov.get(slot)`), but this codebase's own writing convention
+  commonly groups several related slots under one combined provenance key
+  for readability (e.g. select.m3.json's `"indicator / -hover / -focus /
+  -disabled"` covers four slots under one key) — real, sourced prose a
+  human reads as fully honest, but structurally invisible to the exact-key
+  gate. Spot-checked on `select.m3.json`'s 13 apparent gaps: 12 of 13 were
+  exactly this, and only ONE (`popup-fg`) was a genuine miss — fixed,
+  sourced to `versions/v0_192/_md-comp-list.scss:91`. Taught the gate
+  itself to recognise the pattern (`grouped_provenance_lookup()` in
+  `check-values.py`, split on `/`, expand `-suffix` fragments against the
+  base, prefix-match to absorb `-color`/`-width` variance) — reclassifying
+  into its own bucket, NOT folded into "verified" (a combined entry can
+  name several different tokens for several different sub-slots in one
+  string, and auto-resolving against the whole string risks manufacturing
+  false DRIFT, so grouped-key slots are marked honestly documented but
+  still not machine-verified, rather than silently trusted). Result: 217
+  collapsed to 68 genuine gaps + 149 correctly-reclassified false
+  positives. `check-values.py` still exits 0 (this stat never gated the
+  build). The 68 real gaps are the actual backlog now, if anyone wants it —
+  concentrated by component in the gate's own per-slot detail output.
 - ~~**`button` has a real defect**~~ — **FIXED 2026-08-05.** Salt's
   `--secondary-bg-hover` was defined but referenced by no rule; shadcn's and
   M3's own secondary/outline hover treatments turned out to be silently
@@ -482,17 +481,17 @@ the full account):
   outside the matrix doc needed to change; this was purely an explanation
   the running list owed, not a code defect.
 - **Uncited slots (item 3): the "250" figure turned out to be stale/wrong,
-  not a queue of 250 fixes.** Ran `check-values.py` directly rather than
-  trusting the old number — real count is 217, colour slots only. Spot-
-  checked `select.m3.json`'s 13 apparent gaps by hand: 12 were already
-  honestly documented under a COMBINED provenance key the gate can't
-  match (it only does exact per-slot key lookup), and 1 (`popup-fg`) was
-  a real miss, now fixed and sourced. Reported in Known-open work as a
-  measurement problem, not a backlog — mass-backfilling against 217 would
-  mostly duplicate citations that already exist under a different key
-  name. The real fix is teaching the gate to also try grouped-key
-  fragments; that's the next action on this item, not more per-slot
-  research.
+  not a queue of 250 fixes — and most of the corrected 217 turned out to
+  be a gate limitation, now fixed.** Ran `check-values.py` directly rather
+  than trusting the old number — real count was 217, colour slots only.
+  Spot-checked `select.m3.json`'s 13 apparent gaps by hand: 12 were
+  already honestly documented under a COMBINED provenance key the gate
+  couldn't match (exact per-slot key lookup only), and 1 (`popup-fg`) was
+  a real miss, fixed and sourced. Then taught `check-values.py` itself to
+  recognise grouped keys (`grouped_provenance_lookup()`, a new diagnostic
+  bucket, kept deliberately separate from "verified" to avoid manufacturing
+  false drift from cross-sub-slot text) — 217 collapsed to 68 genuine gaps.
+  Gate still exits 0 either way (this stat never blocked the build).
 - **Tabs' shadcn activation-mode conformance failure** (item 4): the test
   itself, not the skeleton — `behavior.disabled-navigation`'s own
   assertion already moved focus to the tab `behavior.activation-mode` then
@@ -520,12 +519,14 @@ clear the queue), updated as items close:**
 1. ~~Fix `button`'s missing secondary hover~~ — **DONE 2026-08-05.**
 2. ~~Explain or fix `dialog`'s shadcn=m3 identical part-set~~ — **DONE
    2026-08-05 (explained, no code defect).**
-3. ~~Backfill 250 uncited slots~~ — **RE-SCOPED 2026-08-05.** The count
-   was stale (real: 217, colour-only) and mostly a gate matching
-   limitation, not missing work — see Known-open work. One real gap fixed
-   (`select.m3.json` popup-fg). Next action: teach `check-values.py` to
-   match grouped provenance keys, THEN re-measure before any further
-   backfill.
+3. ~~Backfill 250 uncited slots~~ — **RE-SCOPED, THEN LARGELY FIXED
+   2026-08-05.** The count was stale (real: 217, colour-only) and mostly a
+   gate matching limitation, not missing work. One real gap fixed
+   (`select.m3.json` popup-fg). Taught `check-values.py` to recognise
+   grouped provenance keys — 217 collapsed to 68 genuine gaps, a much
+   smaller and now-accurate backlog if anyone wants to pick it up; not
+   pursued further this session (diminishing returns vs. continuing
+   components).
 4. ~~Fix `tabs`'s shadcn `behavior.activation-mode` conformance failure~~ —
    **DONE 2026-08-05.** Root cause was `harness/conformance.tsx`'s own
    `checkTabs()`: the disabled-navigation assertion just before it already
