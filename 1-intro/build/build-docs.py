@@ -44,6 +44,13 @@ BUILD = os.path.join(WORK, "2-build")                                # where the
 DOCS = os.path.join(INTRO, "content")
 OUT = os.path.join(INTRO, "site", "index.html")
 
+# every component with a built harness page (2-build/harness/<name>-check.tsx,
+# or harness/registry.tsx for calendar) — order matches CLAUDE.md's component
+# index table
+COMPONENTS = ["alert", "badge", "button", "calendar", "card", "checkbox", "chip",
+              "dialog", "input", "progress", "radio-group", "select", "slider",
+              "spinner", "switch", "tabs", "tooltip"]
+
 # order in the sidebar; slug -> source file
 PAGES = [
     ("overview", "01-use-case.md"),
@@ -52,6 +59,7 @@ PAGES = [
     ("status", None),            # generated: where the work actually stands
     ("matrices", None),          # generated from 2-build/ JSON, not markdown
     ("components", "04-component-map.md"),
+] + [("comp-%s" % c, None) for c in COMPONENTS] + [   # one live page per component
     ("f-salt", "foundations/salt.md"),
     ("f-shadcn", "foundations/shadcn.md"),
     ("f-m3", "foundations/m3.md"),
@@ -249,11 +257,12 @@ def meta_of(md):
 # answers two. A silent near-match here would overstate coverage.
 BUILT_FOR = {
     "alert": ["alert"], "badge": ["badge"], "button": ["button"],
-    "calendar": ["calendar"], "card": ["card"], "chip": ["tag / pill"],
-    "dialog": ["dialog"], "input": ["input"],
+    "calendar": ["calendar"], "card": ["card"], "checkbox": ["checkbox"],
+    "chip": ["tag / pill"], "dialog": ["dialog"], "input": ["input"],
     "progress": ["progress (linear)", "progress (circular)"],
-    "select": ["select"], "spinner": ["spinner"], "tabs": ["tabs"],
-    "tooltip": ["tooltip"],
+    "radio-group": ["radio-group"], "select": ["select"],
+    "slider": ["slider"], "spinner": ["spinner"], "switch": ["switch"],
+    "tabs": ["tabs"], "tooltip": ["tooltip"],
 }
 
 
@@ -465,6 +474,46 @@ def sig(cell):
                       sort_keys=True)
 
 
+def component_html_path(name):
+    """Where that component's built harness page lives. Calendar built the
+    pilot page (harness/registry.tsx -> out/index.html); every later
+    component built the lighter harness/<name>-check.tsx -> out/<name>-check.html
+    pattern instead (see CLAUDE.md's build loop, step 7)."""
+    fname = "index.html" if name == "calendar" else "%s-check.html" % name
+    return os.path.join(BUILD, "out", fname)
+
+
+def build_component_page(name):
+    """Embed that component's already-built harness page (live render, all
+    three themes, plus its value side panel) via <iframe srcdoc>, so the site
+    stays ONE published file (PUBLISHING.md) instead of linking out to 13
+    more. The harness page itself is untracked (2-build/out/ is generated,
+    gitignored) — built by node 2-build/tools/build-page.mjs (calendar) or
+    build-<name>-check.mjs (everyone else), which build.sh now runs first."""
+    path = component_html_path(name)
+    build_cmd = ("node 2-build/tools/build-page.mjs" if name == "calendar"
+                 else "node 2-build/tools/build-%s-check.mjs" % name)
+    if not os.path.exists(path):
+        return (
+            '<p class="callout">Not built in this checkout. Run '
+            '<code>cd 2-build &amp;&amp; npm install</code> once, then '
+            '<code>%s</code> from the workspace root and rebuild the site.</p>'
+            % html.escape(build_cmd)
+        ), []
+    raw = read(path)
+    body = (
+        '<p>Live render, all three themes, generated straight from '
+        '<code>2-build/contract/templates/%s.template.json</code> + '
+        '<code>2-build/columns/%s.*.json</code> — drag the theme tabs in the '
+        'frame’s right-hand panel to see every row for that theme, the same '
+        'data behind the <a href="#" data-doc="matrices">Matrices</a> page. '
+        '(<code>%s</code>)</p>'
+        '<iframe class="comp-frame" data-comp-frame srcdoc="%s"></iframe>'
+        % (name, name, html.escape(build_cmd), html.escape(raw))
+    )
+    return body, []
+
+
 def build_matrices():
     """ONE table per component. Attributes down, the three systems across.
     Segments are collapsible category rows inside the same table, so the grid
@@ -615,11 +664,22 @@ def build():
                               "desc": "What is built, what each component still owes, and "
                                       "what the gates said on the last run."})
                 continue
-            body, toc = build_matrices()
-            pages.append({"slug": slug, "file": "contract/ + columns/",
-                          "body": body, "toc": toc, "title": "Matrices",
-                          "badge": "Data", "nav": "Matrices", "group": "Reference",
-                          "desc": "The real thing: every row, every system, every value."})
+            if slug == "matrices":
+                body, toc = build_matrices()
+                pages.append({"slug": slug, "file": "contract/ + columns/",
+                              "body": body, "toc": toc, "title": "Matrices",
+                              "badge": "Data", "nav": "Matrices", "group": "Reference",
+                              "desc": "The real thing: every row, every system, every value."})
+                continue
+            name = slug[len("comp-"):]
+            body, toc = build_component_page(name)
+            pages.append({
+                "slug": slug, "file": os.path.relpath(component_html_path(name), WORK),
+                "body": body, "toc": toc, "title": name.capitalize(),
+                "badge": "Live", "nav": name.capitalize(), "group": "Components",
+                "desc": "All three themes, rendered from the generated CSS and skeleton, "
+                        "with the full value panel alongside.",
+            })
             continue
         path = os.path.join(DOCS, fname)
         if not os.path.exists(path):
@@ -676,6 +736,7 @@ def build():
 
     doc = TEMPLATE.format(css=css, nav="".join(nav_items), articles="\n".join(articles),
                           options=options, header_links=header_links, sources=sources,
+                          component_count=len(COMPONENTS),
                           slugs=repr([p["slug"] for p in pages]))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w", encoding="utf-8").write(doc)
@@ -699,7 +760,7 @@ TEMPLATE = """<meta charset="utf-8">
   <p class="brand"><span class="dot"></span> UI Registry</p>
   <span class="header-sep"></span>
   <nav class="header-links">{header_links}</nav>
-  <span class="header-meta">13 / 79 components</span>
+  <span class="header-meta">{component_count} / 79 components</span>
 </div></header>
 
 <div class="mobile-nav">
@@ -734,6 +795,10 @@ function buildToc(id){{
     a.href = '#' + h.id; a.textContent = h.textContent; box.appendChild(a);
   }});
 }}
+function fitFrame(f){{
+  try {{ f.style.height = (f.contentWindow.document.documentElement.scrollHeight + 24) + 'px'; }}
+  catch (e) {{ /* cross-origin or not yet laid out — the CSS min-height covers it */ }}
+}}
 function show(id){{
   docs.forEach(d => {{
     document.getElementById('doc-' + d).hidden = (d !== id);
@@ -744,15 +809,26 @@ function show(id){{
     if (sub) sub.hidden = (d !== id);
   }});
   const sel = document.getElementById('docsel'); if (sel.value !== id) sel.value = id;
-  const wide = (id === 'matrices');
+  // the matrices page has a single heading, and a component page is one big
+  // embedded frame — the TOC is 288px of waste on both
+  const wide = (id === 'matrices' || id.indexOf('comp-') === 0);
   document.querySelector('.content').classList.toggle('wide', wide);
-  // the matrices page has a single heading — the TOC is 288px of waste there
   document.querySelector('.toc').hidden = wide;
+  // a frame laid out while its article was [hidden] reports scrollHeight 0 —
+  // re-measure now that it is visible
+  document.querySelectorAll('#doc-' + id + ' iframe.comp-frame').forEach(f => setTimeout(() => fitFrame(f), 30));
   buildToc(id); window.scrollTo(0, 0);
 }}
 document.querySelectorAll('[data-doc]').forEach(b =>
   b.addEventListener('click', e => {{ e.preventDefault(); show(b.dataset.doc); }}));
 document.getElementById('docsel').addEventListener('change', e => show(e.target.value));
+// attached here, not as an inline onload= attribute, so fitFrame already
+// exists by the time a frame that loads fast (all srcdoc, no network) fires
+document.querySelectorAll('iframe[data-comp-frame]').forEach(f => {{
+  const attempt = () => fitFrame(f);
+  if (f.contentDocument && f.contentDocument.readyState === 'complete') attempt();
+  f.addEventListener('load', attempt);
+}});
 
 const obs = new IntersectionObserver(es => {{
   es.forEach(e => {{
@@ -764,8 +840,8 @@ const obs = new IntersectionObserver(es => {{
 }}, {{ rootMargin: '-10% 0px -75% 0px' }});
 document.querySelectorAll('article h2[id]').forEach(h => obs.observe(h));
 buildToc(docs[0]);
-document.querySelector('.content').classList.toggle('wide', docs[0] === 'matrices');
-document.querySelector('.toc').hidden = (docs[0] === 'matrices');
+document.querySelector('.content').classList.toggle('wide', docs[0] === 'matrices' || docs[0].indexOf('comp-') === 0);
+document.querySelector('.toc').hidden = (docs[0] === 'matrices' || docs[0].indexOf('comp-') === 0);
 
 /* matrices: collapse a segment inside the one big table */
 document.addEventListener('click', e => {{

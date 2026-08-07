@@ -183,10 +183,10 @@ All seven have been observed in this repo, not imagined.
 
 | | | |
 |---|---|---|
-| 13 | component matrices written | |
-| 9,723 | lines across them | |
-| 8,807 | template rows behind them | |
-| 246 | value slots still uncited | open |
+| 17 | component matrices written | |
+| 12,638 | lines across them | |
+| 1,033 | template rows behind them | |
+| 288 | value slots still uncited | open |
 
 Every `docs/<NAME>-MATRIX.md` carries a generated **Resolved values** block —
 every row against every system, read from the column files by

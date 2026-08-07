@@ -178,7 +178,7 @@ order, no skipping ahead.
 | phase | what | state |
 |---|---|---|
 | **1 · Foundations** | one reference page per raw-value category; rows are the union of that category's tokens across every system, every cell citing the system's own token name | 12 pages |
-| **2 · Per-component matrices** | one matrix per component in six segments, then generate and validate the render against the real system's own code before moving on — extraction work, not design work | 13 of 79 |
+| **2 · Per-component matrices** | one matrix per component in six segments, then generate and validate the render against the real system's own code before moving on — extraction work, not design work | 18 of 79 |
 | **3 · Building** | the same loop, unattended; when a judgement call has no source-backed answer, record a declared gap and move on rather than stopping | not started |
 
 Phase 2 is where nearly all the work lives, and it is the only layer that

@@ -12,7 +12,7 @@ browser) or read the markdown it is built from in
 [`1-intro/content/`](1-intro/content/).
 
 ```bash
-./build.sh      # gates -> generate -> sync -> rebuild the site. Run after ANY change.
+./build.sh      # gates -> generate -> sync -> harness pages -> rebuild the site. Run after ANY change.
 ```
 
 ## The tree
@@ -38,8 +38,11 @@ Three folders, three verbs: **read**, **build**, **explain**. Nothing in
 ├── columns/                 one per system per component — the ANSWERS
 ├── skeleton/                the union renderers
 ├── matrices/                per-component *-MATRIX.md (prose + generated values)
-├── harness/                 check pages + the behaviour conformance rig
-├── tools/                   generators: gen-from-template, sync-matrix-values, build-index
+├── harness/                 one <name>-check.tsx per component (calendar's is
+│                             registry.tsx) + panel-shared.tsx (the value-panel
+│                             UI they all share) + the behaviour conformance rig
+├── tools/                   generators: gen-from-template, sync-matrix-values,
+│                             build-index, one build-<name>-check.mjs per component
 ├── gates/                   the checks: provenance, values, structure, anatomy, behaviour
 └── out/                     generated CSS + rendered pages — GENERATED
 
@@ -62,7 +65,7 @@ traps already hit are in [`PUBLISHING.md`](PUBLISHING.md).
 Build locally, then ship the folder:
 
 ```bash
-./build.sh                                  # gates -> generate -> sync -> site
+./build.sh                                  # gates -> generate -> sync -> harness pages -> site
 cd 1-intro/site && npx vercel deploy --prod --yes
 ```
 
@@ -88,18 +91,18 @@ install endpoint on the same project, so both can be served from one deployment.
 local `./build.sh`, timestamped and committed on purpose — and the page states
 that they were not re-checked rather than implying they were.
 
-## State, measured 2026-08-04
+## State, measured 2026-08-07
 
 | | |
 |---|---|
-| components built | **13**, covering 14 of 79 canonical rows |
-| attributes in the contract | **817**, of which **658** differ across the three systems |
-| verified to render a different part-set per system | **12 of 13** |
-| citations | **2,334**, resolving to 305 distinct source files |
-| token values re-resolved against source | **208 verified, 0 drift** |
-| value slots with no citation yet | **246 of 497** — the largest open debt |
+| components built | **17**, covering 18 of 79 canonical rows |
+| attributes in the contract | **1,033**, of which **853** differ across the three systems |
+| verified to render a different part-set per system | **13 of 17** |
+| citations | **2,334+**, resolving to 305+ distinct source files — last full count with `3-source/` present; not re-measured against the four newest components |
+| token values re-resolved against source | **208 verified, 0 drift** — same caveat, needs a fresh `./build.sh` with the clones present |
+| value slots with no citation yet | **288 of 584** — the largest open debt |
 
-The claim is proven at 13 components, not at 79.
+The claim is proven at 17 components, not at 79.
 
 ## Two rules that outrank convenience
 

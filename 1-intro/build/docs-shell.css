@@ -379,6 +379,16 @@
   .content.wide{max-width:none}
   .content.wide .legend,.content.wide .cstats.total{max-width:52rem}
 
+  /* a component page: the live 3-theme render lives in its own document
+     (the harness page's own React root, its own copy of the generated CSS) —
+     an iframe keeps it isolated rather than merging 13 stylesheets and DOM
+     trees into this one page. Height is set by fitFrame() once its content
+     has laid out; min-height covers the gap before that runs. */
+  .comp-frame{width:100%;min-height:600px;border:1px solid var(--border);
+    border-radius:var(--radius-lg);display:block;background:var(--card)}
+  .callout{padding:.75rem 1rem;border:1px solid var(--border);
+    border-radius:var(--radius-md);background:var(--muted);color:var(--muted-foreground)}
+
   i.chinfo{display:inline-block;width:5px;height:5px;margin-left:5px;vertical-align:middle;
     border-radius:50%;background:var(--chart-2);opacity:.7}
   tr.inforow td.mc{opacity:.45;font-style:italic}
