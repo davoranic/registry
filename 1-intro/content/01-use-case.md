@@ -147,10 +147,10 @@ Current state, measured from the working tree rather than asserted:
 
 | figure | what |
 |---|---|
-| 13 | components built, covering 14 of 79 canonical rows |
-| 12/13 | render a genuinely different part-set per system |
-| 2,334 | citations, resolving to 305 source files |
-| 246 | value slots still carrying no citation | open |
+| 17 | components built, covering 18 of 79 canonical rows |
+| 13/17 | render a genuinely different part-set per system |
+| 2,334+ | citations, resolving to 305+ source files (last full count with `3-source/` present; the four newest components haven't been re-measured against it) |
+| 288 | value slots still carrying no citation | open |
 
 That middle figure is the actual result. If all three produced the same markup,
 the theme would be cosmetic and the premise false — so it is measured by a gate
@@ -163,13 +163,13 @@ one implementation — and a fourth design system is a column, not a rewrite.
 
 ### What is not yet true
 
-- **246 of 497 value slots carry no citation.** They were read from source, but
+- **288 of 584 value slots carry no citation.** They were read from source, but
   the pointer back was never written down, so they cannot currently be
   re-verified. Concentrated in select, input, badge, card.
 - **Four of the ten build steps have no automated check**, only judgement.
-- **6 of 13 components have a behaviour test**; calendar was generated but never
+- **10 of 17 components have a behaviour test**; calendar was generated but never
   visually validated.
-- The claim is proven at 13 components, not at 79. Nothing here says it holds at
+- The claim is proven at 17 components, not at 79. Nothing here says it holds at
   scale — only that it has not broken yet.
 
 ---

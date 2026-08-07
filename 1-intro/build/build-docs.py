@@ -257,11 +257,12 @@ def meta_of(md):
 # answers two. A silent near-match here would overstate coverage.
 BUILT_FOR = {
     "alert": ["alert"], "badge": ["badge"], "button": ["button"],
-    "calendar": ["calendar"], "card": ["card"], "chip": ["tag / pill"],
-    "dialog": ["dialog"], "input": ["input"],
+    "calendar": ["calendar"], "card": ["card"], "checkbox": ["checkbox"],
+    "chip": ["tag / pill"], "dialog": ["dialog"], "input": ["input"],
     "progress": ["progress (linear)", "progress (circular)"],
-    "select": ["select"], "spinner": ["spinner"], "tabs": ["tabs"],
-    "tooltip": ["tooltip"],
+    "radio-group": ["radio-group"], "select": ["select"],
+    "slider": ["slider"], "spinner": ["spinner"], "switch": ["switch"],
+    "tabs": ["tabs"], "tooltip": ["tooltip"],
 }
 
 

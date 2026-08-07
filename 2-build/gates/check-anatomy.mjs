@@ -35,7 +35,10 @@ const comps = readdirSync(join(ROOT, "contract/templates"))
   .map((f) => f.replace(".template.json", ""))
   .sort()
 
-/** Parts a column actually renders: structure rows that are ON. */
+/** Parts a column actually renders: structure rows that are ON. A config-channel
+ * enum row (e.g. dialog's closeButton: optional/default/none) signals absence
+ * with the string "none", the same way a css-channel row signals it with
+ * kind:"off" or value:false/null — all three are excluded here. */
 function partsOf(comp, system) {
   const p = `columns/${comp}.${system}.json`
   if (!existsSync(join(ROOT, p))) return null
@@ -46,7 +49,7 @@ function partsOf(comp, system) {
     if (r.piece !== "structure") continue
     const c = cells[r.id]
     if (!c) continue
-    if (c.kind === "off" || c.value === false || c.value === null) continue
+    if (c.kind === "off" || c.value === false || c.value === null || c.value === "none") continue
     parts.add(r.id.replace(/^structure\./, ""))
   }
   return parts
