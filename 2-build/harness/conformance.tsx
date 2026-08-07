@@ -36,10 +36,10 @@ import { Select } from "../skeleton/select"
 import { Tabs } from "../skeleton/tabs"
 import { Card } from "../skeleton/card"
 
-import dialogCfg from "../dist/gen/dialog-config.json"
-import selectCfg from "../dist/gen/select-config.json"
-import tabsCfg from "../dist/gen/tabs-config.json"
-import cardCfg from "../dist/gen/card-config.json"
+import dialogCfg from "../out/gen/dialog-config.json"
+import selectCfg from "../out/gen/select-config.json"
+import tabsCfg from "../out/gen/tabs-config.json"
+import cardCfg from "../out/gen/card-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 

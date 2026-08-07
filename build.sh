@@ -40,6 +40,19 @@ echo "  $(ls 2-build/out/gen/*.css | wc -l | tr -d ' ') stylesheets"
 step "Sync resolved values into every matrix doc"
 python3 2-build/tools/sync-matrix-values.py
 
+step "Build each component's harness page (3 themes + value panel)"
+if [ ! -d 2-build/node_modules ]; then
+  echo "  2-build/node_modules missing — running npm install (react, esbuild)"
+  npm install --prefix 2-build >/dev/null
+fi
+node 2-build/tools/build-page.mjs >/dev/null && echo "  calendar   -> out/index.html"
+for t in 2-build/contract/templates/*.template.json; do
+  c="$(basename "$t" .template.json)"
+  [ "$c" = calendar ] && continue
+  s="2-build/tools/build-$c-check.mjs"
+  [ -f "$s" ] && { node "$s" >/dev/null && echo "  $c$(printf '%*s' $((10 - ${#c})) '')-> out/$c-check.html"; }
+done
+
 step "Rebuild the docs site"
 python3 1-intro/build/build-docs.py
 

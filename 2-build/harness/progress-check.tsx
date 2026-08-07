@@ -51,9 +51,12 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Progress, type ProgressConfig } from "../skeleton/progress"
-import configs from "../dist/gen/progress-config.json"
+import configs from "../out/gen/progress-config.json"
+import panel from "../out/gen/progress-panel.json"
+import { ValuePanel, ThemeTabs } from "./panel-shared"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
+type Theme = (typeof THEMES)[number]
 
 const SHAPE_LABEL: Record<string, string> = {
   linear: "linear (the only shape all three columns express)",
@@ -366,6 +369,7 @@ function Stage({ theme }: { theme: (typeof THEMES)[number] }) {
 }
 
 function App() {
+  const [panelTheme, setPanelTheme] = React.useState<Theme>("salt")
   return (
     <div className="shell">
       <header>
@@ -375,11 +379,17 @@ function App() {
           circular belongs to `spinner`
         </span>
       </header>
-      <main style={{ flexDirection: "column", alignItems: "stretch" }}>
+      <div className="body">
+        <main style={{ flexDirection: "column", alignItems: "stretch" }}>
         {THEMES.map((t) => (
           <Stage key={t} theme={t} />
         ))}
-      </main>
+        </main>
+        <div className="side">
+          <ThemeTabs themes={THEMES} active={panelTheme} onChange={setPanelTheme} />
+          <ValuePanel theme={panelTheme} panel={panel} />
+        </div>
+      </div>
     </div>
   )
 }

@@ -18,9 +18,12 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { Input, type InputConfig } from "../skeleton/input"
-import configs from "../dist/gen/input-config.json"
+import configs from "../out/gen/input-config.json"
+import panel from "../out/gen/input-panel.json"
+import { ValuePanel, ThemeTabs } from "./panel-shared"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
+type Theme = (typeof THEMES)[number]
 
 /* Each system's own name for the two indicator mechanisms, so the toggle
    reads in the vocabulary of the system being checked. Harness labelling
@@ -147,12 +150,19 @@ function Stage({ theme }: { theme: (typeof THEMES)[number] }) {
 }
 
 function App() {
+  const [panelTheme, setPanelTheme] = React.useState<Theme>("salt")
   return (
     <div className="shell">
       <header><b>Input — phase 2 validation</b></header>
-      <main style={{ flexDirection: "column", alignItems: "stretch" }}>
+      <div className="body">
+        <main style={{ flexDirection: "column", alignItems: "stretch" }}>
         {THEMES.map((t) => <Stage key={t} theme={t} />)}
-      </main>
+        </main>
+        <div className="side">
+          <ThemeTabs themes={THEMES} active={panelTheme} onChange={setPanelTheme} />
+          <ValuePanel theme={panelTheme} panel={panel} />
+        </div>
+      </div>
     </div>
   )
 }
