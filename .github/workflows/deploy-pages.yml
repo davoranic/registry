@@ -1,0 +1,83 @@
+name: Deploy docs site to GitHub Pages
+
+# Runs the same steps build.sh does locally (minus the gates that need
+# 3-source/, the ~600MB design-system clones deliberately excluded from
+# this repo — same reason DEPLOY.md gives for why build.sh never runs in
+# CI either) and publishes the result to GitHub Pages. This exists as an
+# always-current, always-visible mirror of the real site — the actual
+# publish target stays registry.davoranic.com via a manual
+# `vercel deploy --prod`, per PUBLISHING.md.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install harness dependencies
+        run: npm install --prefix 2-build
+
+      - name: Generate CSS from every template x column
+        run: |
+          for t in 2-build/contract/templates/*.template.json; do
+            python3 2-build/tools/gen-from-template.py "$(basename "$t" .template.json)"
+          done
+
+      - name: Sync resolved values into every matrix doc
+        run: python3 2-build/tools/sync-matrix-values.py
+
+      - name: Build each component's harness page (3 themes + value panel)
+        run: |
+          mkdir -p 2-build/out/fonts
+          cp 2-build/fonts/*.woff2 2-build/out/fonts/
+          node 2-build/tools/build-page.mjs
+          for t in 2-build/contract/templates/*.template.json; do
+            c="$(basename "$t" .template.json)"
+            [ "$c" = calendar ] && continue
+            s="2-build/tools/build-$c-check.mjs"
+            [ -f "$s" ] && node "$s"
+          done
+
+      - name: Rebuild the docs site
+        run: python3 1-intro/build/build-docs.py
+
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p _site
+          cp 1-intro/site/index.html _site/index.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
