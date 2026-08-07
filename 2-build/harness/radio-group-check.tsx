@@ -33,8 +33,11 @@ import * as React from "react"
 import { createRoot } from "react-dom/client"
 import { RadioGroup, RadioItem } from "../skeleton/radio-group"
 import configs from "../out/gen/radio-group-config.json"
+import panel from "../out/gen/radio-group-panel.json"
+import { ValuePanel, ThemeTabs } from "./panel-shared"
 
 const THEMES = ["salt", "shadcn", "m3"] as const
+type Theme = (typeof THEMES)[number]
 
 type RadioGroupConfig = {
   groupShape?: string
@@ -220,16 +223,23 @@ function Stage({ theme }: { theme: (typeof THEMES)[number] }) {
 }
 
 function App() {
+  const [panelTheme, setPanelTheme] = React.useState<Theme>("salt")
   return (
     <div className="shell">
       <header>
         <b>RadioGroup — phase 2 validation</b>
       </header>
-      <main style={{ flexDirection: "column", alignItems: "stretch" }}>
+      <div className="body">
+        <main style={{ flexDirection: "column", alignItems: "stretch" }}>
         {THEMES.map((t) => (
           <Stage key={t} theme={t} />
         ))}
-      </main>
+        </main>
+        <div className="side">
+          <ThemeTabs themes={THEMES} active={panelTheme} onChange={setPanelTheme} />
+          <ValuePanel theme={panelTheme} panel={panel} />
+        </div>
+      </div>
     </div>
   )
 }
