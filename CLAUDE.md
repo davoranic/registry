@@ -66,9 +66,15 @@ breaking the thing it watches before trusting its output.**
 - **`button` has a real defect**: Salt's `--secondary-bg-hover` is defined in
   both modes and referenced by no rule, so bordered buttons have no hover — and
   the secondary selector at (0,5,0) would beat `:hover` at (0,4,0) anyway.
-  Needs a `@secondary-hover` row.
-- **`dialog` shadcn=m3 identical part-set** — flagged by check-anatomy, not yet
-  explained.
+  Needs a `@secondary-hover` row. (Fixed on branch `fix-button-secondary-hover`,
+  not yet merged.)
+- ~~`dialog` shadcn=m3 identical part-set...~~ **Resolved 2026-08-04**: not a
+  retrofit — `check-anatomy.mjs` didn't recognise `"none"` as the absence
+  signal for config-channel enum rows (`closeButton`, `headerDecoration`), so
+  it missed that m3 lacks a close button and shadcn lacks a header
+  decoration, and counted both as sharing parts neither has. Gate fixed;
+  dialog's real 3-part shared core (scrim/actions/description) now reports
+  correctly. See DIALOG-MATRIX.md finding 14.
 - 65 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
 
 ### Method notes that cost real time to learn
@@ -382,10 +388,11 @@ is committed — the working tree holds the entire session.
    defined in both modes and referenced by NO rule. Add a
    `style.root.background@secondary-hover` row with a selector of higher
    specificity than the plain `@secondary` row, then fill all three columns.
-   Found by `check-structure.py` gate A.
-2. **Explain or fix `dialog`'s shadcn=m3 identical part-set**, flagged by
-   `check-anatomy.mjs`. Either justify the convergence in DIALOG-MATRIX.md or
-   find the missing part.
+   Found by `check-structure.py` gate A. (Fixed on branch
+   `fix-button-secondary-hover`, not yet merged.)
+2. ~~Explain or fix `dialog`'s shadcn=m3 identical part-set.~~ **Done
+   2026-08-04** — it was a gate blind spot, not a retrofit; see
+   DIALOG-MATRIX.md finding 14 and the Known-open entry above.
 3. **Backfill 250 uncited slots** (select 73, input 42, badge, card). They carry
    values with no provenance, so tier-2 cannot see them.
 4. **Continue components** — 65 canonical rows remain, order per

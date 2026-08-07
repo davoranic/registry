@@ -596,6 +596,24 @@ Three, all stated rather than smoothed:
     the path. Same reasoning for the content-overflow state: it is expressed as
     data attributes the CSS selects on, not as a measured value threaded
     through a theme slot.
+14. **`check-anatomy.mjs` flagged shadcn=m3 as an identical part-set — a gate
+    blind spot, not a retrofit.** `structure.close-button` and
+    `structure.header-decoration` are `channel: "config"` rows with a 3-way
+    enum (finding 5 and finding 11's axis self-audit already document all
+    three values per row in full). The gate's absence check only recognised
+    `kind:"off"`/`value:false`/`value:null` — the css-channel vocabulary — so
+    it missed that shadcn's `header-decoration: "none"` and m3's
+    `close-button: "none"` are the SAME absence signal in enum form, and
+    counted both as present. That made m3 (which has no close button) and
+    shadcn (which has no header decoration) look like they share a part
+    neither actually has. Fixed in `check-anatomy.mjs` (`partsOf`) to also
+    treat `value === "none"` as absent; verified no other structure row in
+    any component uses `"none"` as a real, present value. Re-run: dialog
+    drops from 5 shared parts to the real 3 (`scrim`, `actions`,
+    `description`), the shadcn=m3 flag clears, and the true divergence —
+    shadcn has a close button and no decoration, m3 the reverse — is now
+    what the gate actually reports instead of something a human had to
+    already know from finding 5.
 
 ## Correction found by driving the render (owner-validation pass)
 
