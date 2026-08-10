@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **18 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **19 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group, slider (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider, toast (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -145,7 +145,23 @@ loop.
   → `3-source/salt-ds`, `material-components/material-web` →
   `3-source/material-web`. Folder names must match exactly — provenance
   strings across every matrix doc cite paths inside them.
-- 61 canonical rows unbuilt. Order still per `1-intro/content/04-component-map.md`.
+- **`policy: "default"` rows left `off` — found while fixing `toast.m3.json`'s
+  padding/gap (2026-08-05), NOT yet swept beyond that one component.** A
+  `default`-policy row is supposed to be "on with a registry default when
+  a column is silent" (the row-policy table below, already the convention
+  `tooltip.m3.json`'s delay row and now `toast.m3.json`'s padding/gap row
+  use) — `off` is only a legitimate outcome for `switchable`. A repo-wide
+  scan found 40 instances across every built component where a
+  `default`-policy row has an `off` cell somewhere. Most are probably
+  fine — several channels (info/config, not just css) may not need a
+  registry-default concept the same way a rendered style value does — but
+  at least one looks like the same real bug: `alert.m3.json`'s own
+  `style.root.padding`/`style.root.gap`, whose absence note toast's own
+  first draft cited almost verbatim before this fix corrected it. Not
+  audited row-by-row; the 40-item list is in this session's history if
+  someone wants to pick it up (`grep -rn 'policy.*default' contract/
+  templates/*.template.json` cross-referenced against `columns/*.json`
+  cells with `"kind": "off"` for the same row id).
 
 ### Method notes that cost real time to learn
 
@@ -260,6 +276,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `spinner` | [`SPINNER-MATRIX.md`](SPINNER-MATRIX.md) | 20 | 12 | 8 | 9 | — |
 | `switch` | [`SWITCH-MATRIX.md`](SWITCH-MATRIX.md) | 53 | 41 | 30 | 38 | ✓ |
 | `tabs` | [`TABS-MATRIX.md`](TABS-MATRIX.md) | 98 | 64 | 54 | 44 | ✓ |
+| `toast` | [`TOAST-MATRIX.md`](TOAST-MATRIX.md) | 41 | 23 | 23 | 13 | ✓ |
 | `tooltip` | [`TOOLTIP-MATRIX.md`](TOOLTIP-MATRIX.md) | 38 | 27 | 16 | 11 | — |
 
 Numbers are rows the column expresses (not `off`). A high `off` count is not incompleteness — it is how much of another system's surface that system genuinely lacks, recorded with a citation.
@@ -450,15 +467,13 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: fixed the fonts/ path bug centrally in `build.sh`, and while
-verifying it, found and fixed 13 harnesses' unrelated `dist/gen/` import
-bug too (priority-list item 5) — while a `toast`/`sonner` component build
-(component 18, row 19/79) still runs in the background. Check whether
-that build has landed yet (look for `2-build/matrices/TOAST-MATRIX.md`)
-before starting a new one; if it has, it still needs the same orchestrator
-review pass (gates, live verification, matrix-doc findings, CLAUDE.md
-updates, commit+push) every prior component in this session got before
-this file's prose can be trusted as current.
+Last action: built `toast`/`sonner`/`snackbar` (component 18, row 19/79).
+The FIRST attempt at this component was silently interrupted mid-build
+(no files ever written) and sat unreachable for a long stretch before
+that was noticed and it was relaunched fresh — if a future session finds
+a background build that seems to be taking far longer than its peers,
+check whether the agent is actually still reachable/writing to its
+transcript before assuming it just needs more time.
 
 Items 1, 2, 4 and 5 of the standing priority list are closed; item 3 was
 investigated, partly fixed, and mostly RE-SCOPED (see Known-open work for
@@ -506,11 +521,39 @@ the full account):
   harness had — all 13 corrected to `../out/gen/` and verified building
   clean.
 
-`switch`, `radio-group`, `slider`, the button fix, the dialog finding, and
-the uncited-slots re-scope are all committed and pushed to
-`claude/next-component-7e5dex`; the tabs conformance fix and (once it
-lands) `toast` follow in their own commits — check `git log` rather than
-trusting stale prose here.
+Toast itself: 41 rows (salt 23, shadcn 23, m3 13), all four automated
+gates green, conformance 122/122. `structure.group` (Salt's `ToastGroup`)
+is modelled IN scope as one chassis part rather than a second component,
+justified by Salt's own source (the group is purely presentational, the
+consumer owns the live array). shadcn's `sonner` is a thin wrapper around
+an external npm package not vendored in this clone — confirmed
+unreachable, cited what the wrapper itself shows as `[S]`, everything
+else `[R]` rather than fabricated. The building session found and fixed
+one real bug itself (Salt's `prop.position` value list had the wrong
+`value[0]` — `top-right` instead of the real default `bottom-right`) and
+verified BOTH a real setTimeout-driven auto-dismiss (with pause-on-hover)
+and zero-overlap three-toast stacking, live, across all three columns.
+
+Orchestrator review found a SECOND real bug the build's own live-state
+verification didn't catch, because it only checked state, not layout —
+the same shape as RADIO-GROUP-MATRIX.md finding 8. `style.item.padding`/
+`.gap` are `policy: "default"` (registry-default-when-silent, not
+switchable), but the first draft left them `off` for M3 with a correct
+absence citation and an incorrect conclusion — `off` isn't valid for a
+`default`-policy row. Real effect: M3's message/action/close sat flush
+against each other at zero gap. Fixed with labelled registry defaults
+(16px/12px, matching shadcn's own cited values). Found while chasing this
+down: a repo-wide sweep shows 40 similar `default`-policy-rows-left-off
+instances across every component, logged in Known-open work, NOT audited
+— most are probably fine, at least one sibling (`alert.m3.json`) looks
+like the same bug.
+
+`switch`, `radio-group`, `slider`, the button fix, the dialog finding, the
+uncited-slots re-scope, the tabs conformance fix, and toast itself are
+all committed and pushed to `claude/next-component-7e5dex`, and merged to
+`main` through `slider` (the button/dialog/uncited-slots/tabs/fonts fixes
+and toast are NOT yet on `main` — check `git log main..claude/next-
+component-7e5dex` before assuming otherwise).
 
 **Standing priority order — deferred by explicit owner choice on
 2026-08-04 ("keep going, track gaps in a running list" over stopping to
