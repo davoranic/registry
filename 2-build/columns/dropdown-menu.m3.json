@@ -1,0 +1,123 @@
+{
+  "system": "m3",
+  "component": "dropdown-menu",
+  "fontFaces": [
+    { "family": "Roboto", "weight": "400", "file": "fonts/roboto-400.woff2" },
+    { "family": "Roboto", "weight": "500", "file": "fonts/roboto-500.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "trigger-fg": "#49454f",
+      "trigger-layer": "color-mix(in srgb, #49454f 8%, transparent)",
+      "trigger-layer-strong": "color-mix(in srgb, #49454f 12%, transparent)",
+      "popup-bg": "#f3edf7",
+      "popup-shadow": "0 1px 2px 0 rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15)",
+      "item-fg": "#1d1b20",
+      "item-icon-fg": "#49454f",
+      "item-layer": "color-mix(in srgb, #1d1b20 8%, transparent)",
+      "item-open-bg": "#e8def8"
+    },
+    "dark": {
+      "trigger-fg": "#cac4d0",
+      "trigger-layer": "color-mix(in srgb, #cac4d0 8%, transparent)",
+      "trigger-layer-strong": "color-mix(in srgb, #cac4d0 12%, transparent)",
+      "popup-bg": "#211f26",
+      "item-fg": "#e6e0e9",
+      "item-icon-fg": "#cac4d0",
+      "item-layer": "color-mix(in srgb, #e6e0e9 8%, transparent)",
+      "item-open-bg": "#4a4458"
+    }
+  },
+  "modeInvariant": ["popup-shadow"],
+  "provenance": {
+    "tokens-only-caveat": "menu/ is REAL, live component source (menu.ts, menu-item.ts, sub-menu.ts) — confirmed by `find`, a genuine third outcome after checkbox/switch/radio-group/slider's 'real' and toast/snackbar's 'tokens-only' (DROPDOWN-MENU-MATRIX.md §0). Structure/behaviour rows are therefore [S] from the .ts files themselves, not [R]-by-absence the way most M3 columns' behaviour rows have been.",
+    "edition-gap-and-its-resolution": "versions/v0_192/ has _md-comp-menu.scss (container only) but NO _md-comp-menu-item.scss — confirmed by `find`, not an empty grep. The UNVERSIONED tokens/_md-comp-menu-item.scss derives item values by merging menu.values() with md-comp-list-item.values(), stripping the 'list-item-' prefix — and that list-item function itself hardcodes `@use 'versions/v0_192/md-comp-list'` as its ONLY dependency, plus two bare literals (top-space/bottom-space: 12px, container-color: transparent) that are edition-independent by construction. Every menu-item value below is therefore a real, TRACEABLE v0.192 number, cited to both files — treated as an [S] derivation per rule 6, not a declared gap. See DROPDOWN-MENU-MATRIX.md §0 finding 3.",
+    "trigger-*": "tokens/versions/v0_192/_md-comp-standard-menu-button.scss (REAL, present in the pinned edition, unlike menu-item) — the unfilled/text variant, matching Salt's default transparent-appearance trigger. label-text-color -> on-surface-variant -> #49454f/#cac4d0. hover-state-layer-color/-opacity -> on-surface-variant / md-sys-state.hover-state-layer-opacity=0.08 (v0.192). focus-/pressed-state-layer-opacity both -> 0.12 (v0.192, versions/v0_192/_md-sys-state.scss — the SAME edition-pinned 0.08/0.12/0.12 triple docs/foundations/state-layers.md now records as edition-dependent). disabled-label-text-opacity -> 0.38. CONFIRMED ABSENT: no container-color/background token of any kind in this file, no padding/leading-space token either — an unfilled TEXT-style trigger, not a filled/outlined one.",
+    "trigger-shape": "container-shape -> md-sys-shape.corner-full = 9999px, a fully pill trigger — the SAME role badge/chip's own corner-full already resolved.",
+    "trigger-open-off": "CONFIRMED ABSENT — the token file's own families are hover/focus/pressed/disabled ONLY; no distinct 'open'/'expanded' state-layer family exists to alias, unlike Salt's (dead-reference) attempt at one.",
+    "popup-bg": "menu-container-color -> md-sys-color.surface-container -> neutral94 #f3edf7 light / neutral12 #211f26 dark (versions/v0_192/_md-comp-menu.scss, reused verbatim from select.m3.json's own identical slot).",
+    "popup-shadow": "container-elevation -> level2, this registry's own canonical dp->CSS derivation (docs/foundations/elevation.md): 0 1px 2px 0 rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15).",
+    "popup-shape": "container-shape -> corner-extra-small = 4px, the SAME role select's own menu-popup shape already resolved.",
+    "popup-border-off": "CONFIRMED ABSENT — internal/_menu.scss `.menu { border: none }`, elevation/shadow only.",
+    "popup-padding-gap-off": "CONFIRMED ABSENT at the container level — internal/_menu.scss's `.items`/`.menu` rules carry no padding or gap property; vertical space is entirely per-item (see item-padding), and there is no horizontal container inset at all (items span the full popup width).",
+    "popup-min-width": "internal/_menu.scss `:host { min-width: 112px }`.",
+    "popup-zindex": "internal/_menu.scss `.menu { z-index: 20 }` — a literal, the lowest of the three columns' popup z-index values.",
+    "item-fg": "the v0.192 derivation's own renamed 'label-text-color' -> list-item-label-text-color -> md-sys-color.on-surface -> #1d1b20 light / #e6e0e9 dark.",
+    "item-font": "renamed 'label-text-*' -> list-item-label-text-* -> md-sys-typescale.body-large = 1rem/1.5rem, weight-regular 400, Roboto (self-hosted, this pipeline's standing M3 precedent).",
+    "item-bg-off": "the derivation function EXPLICITLY sets container-color to transparent ('menu items use their parent menu for their container colour... we change its default unselected background colour to transparent to inherit from its parent menu') — a real, sourced, DELIBERATE off, not an oversight.",
+    "item-padding": "renamed top-space/bottom-space -> 12px each (edition-independent hardcoded literal in the unversioned derivation function) + renamed leading-space/trailing-space -> list-item-leading-space/-trailing-space -> versions/v0_192/_md-comp-list.scss = 16px each.",
+    "item-gap": "menu-item.ts's own :host rule: `gap: 16px` — a literal in the component's own SCSS mixin file (internal/menuitem/_menu-item.scss), not a versioned token.",
+    "item-min-height": "renamed one-line-container-height -> list-item-one-line-container-height -> versions/v0_192/_md-comp-list.scss = 56px.",
+    "item-shape": "menu-item.ts's own :host rule: `border-radius: inherit` from the popup's own container-shape = corner-extra-small = 4px.",
+    "item-layer (hover/focus)": "renamed hover-/focus-state-layer-color -> list-item-hover-/-focus-state-layer-color -> on-surface -> #1d1b20/#e6e0e9, at hover-state-layer-opacity 0.08 / focus-state-layer-opacity 0.12 (v0.192 — CHANGED from 0.10 under latest, per select.m3.json's own already-recorded finding).",
+    "item-disabled-opacity": "renamed disabled-opacity -> list-item-disabled-label-text-opacity -> 0.3 (v0.192 — CHANGED from 0.38 under latest, same re-point select.m3.json already recorded).",
+    "item-icon-fg": "renamed leading-icon-color -> list-item-leading-icon-color -> on-surface-variant -> #49454f/#cac4d0. No dedicated icon-SIZE token exists for menu-item (grepped, absent from the supported-tokens list) — 24px used as [R], Material's own default md-icon size, the same convention select.m3.json's own leading-icon-size 24px cell used at the same role.",
+    "item-open-bg": "the STANDALONE versions/v0_192/_md-comp-menu.scss's own list-item-selected-container-color -> md-sys-color.secondary-container -> #e8def8 light / #4a4458 dark (the SAME slot/value chip.m3.json's own chip-bg-selected already resolved) — a DIFFERENT slot from plain hover/focus, unlike shadcn which reuses its own hover slot for the open state.",
+    "shortcut-*": "renamed trailing-supporting-text-* -> list-item-trailing-supporting-text-* -> versions/v0_192/_md-comp-list.scss: color -> on-surface-variant, font -> label-small = 0.6875rem/1rem, weight-medium 500, Roboto (versions/v0_192/_md-ref-typeface.scss carries the literal family — docs/foundations/typography.md's own correction).",
+    "separator-off-color": "no dedicated separator colour token in menu/item files — internal/_menu.scss's own `::slotted(:is(md-divider,[role='separator'])) { margin: 8px 0 }` styles ANY slotted divider generically by MARGIN only, no colour; the slotted element's own default colour applies, [R]."
+  },
+  "cells": {
+    "structure.trigger": { "kind": "value", "value": true, "source": "standard-menu-button token family, real, v0.192-pinned" },
+    "structure.popup": { "kind": "value", "value": true, "source": "menu.ts's .menu/.items, popover API" },
+    "structure.item": { "kind": "value", "value": true, "source": "menu-item.ts" },
+    "structure.item-icon": { "kind": "value", "value": true, "source": "[slot='start'], dedicated" },
+    "structure.item-shortcut": { "kind": "value", "value": true, "source": "[slot='trailing-supporting-text'], dedicated" },
+    "structure.separator": { "kind": "value", "value": true, "source": "::slotted(:is(md-divider,[role='separator']))" },
+    "structure.group": { "kind": "off", "note": "CONFIRMED ABSENT — no group wrapper or token family anywhere in menu/" },
+    "structure.group-label": { "kind": "off", "note": "CONFIRMED ABSENT, same reason as structure.group" },
+    "structure.submenu-trigger": { "kind": "value", "value": true, "source": "sub-menu.ts's SubMenu, slotted item" },
+    "structure.submenu-popup": { "kind": "value", "value": true, "source": "sub-menu.ts's SubMenu, slotted menu" },
+
+    "behavior.home-end": { "kind": "value", "value": true, "source": "menu.ts:51-52 NavigableKeys.Home/.End" },
+    "behavior.typeahead": { "kind": "value", "value": true, "source": "menu.ts's real TypeaheadController" },
+    "behavior.submenu-open": { "kind": "value", "value": "ArrowRight, click, or hover (400ms delay)", "source": "sub-menu.ts:56 hoverOpenDelay=400" },
+    "behavior.submenu-close": { "kind": "value", "value": "ArrowLeft, or the submenu's own close-menu event (400ms hover-close delay)", "source": "sub-menu.ts hoverCloseDelay=400, onCloseSubmenu" },
+
+    "prop.item-variant": { "kind": "off", "note": "no sentiment/tone axis — MenuItemType is menuitem|option|button|link, no destructive concept" },
+    "prop.submenu-hover-delay": { "kind": "value", "value": "400", "source": "sub-menu.ts hoverOpenDelay/hoverCloseDelay, both default 400" },
+
+    "style.trigger.background": { "kind": "off", "note": "CONFIRMED ABSENT — no container-color/background token in standard-menu-button" },
+    "style.trigger.color": { "kind": "alias", "slot": "trigger-fg" },
+    "style.trigger.shape": { "kind": "value", "value": "9999px", "source": "container-shape -> corner-full" },
+    "style.trigger.padding": { "kind": "off", "note": "CONFIRMED ABSENT — no padding/leading-space token in standard-menu-button" },
+    "style.trigger.font": { "kind": "value", "value": "500 0.875rem/1.25rem Roboto", "source": "label-text -> label-large" },
+    "style.trigger.background@open": { "kind": "off", "note": "CONFIRMED ABSENT — only hover/focus/pressed families exist, no distinct open state" },
+    "style.trigger.opacity@disabled": { "kind": "value", "value": "0.38", "source": "disabled-label-text-opacity" },
+
+    "style.popup.background": { "kind": "alias", "slot": "popup-bg" },
+    "style.popup.color": { "kind": "alias", "slot": "item-fg", "note": "internal/_menu.scss :host sets `color: unset` (inherits ambiently, no owned token) — this locked row is expressed via the item's own real label-text-color (on-surface) as the closest honest resolution, since that is what is actually painted throughout the popup" },
+    "style.popup.border": { "kind": "off", "note": "CONFIRMED ABSENT — .menu{border:none}" },
+    "style.popup.shape": { "kind": "value", "value": "4px", "source": "container-shape -> corner-extra-small" },
+    "style.popup.shadow": { "kind": "alias", "slot": "popup-shadow" },
+    "style.popup.padding": { "kind": "off", "note": "CONFIRMED ABSENT at the container level" },
+    "style.popup.gap": { "kind": "off", "note": "CONFIRMED ABSENT, no gap token" },
+    "style.popup.min-width": { "kind": "value", "value": "112px", "source": ":host{min-width:112px}" },
+    "style.popup.z-index": { "kind": "value", "value": "20", "source": ".menu{z-index:20}" },
+
+    "style.item.background": { "kind": "value", "value": "transparent", "note": "DELIBERATE, explicit transparent — container-color is EXPLICITLY set to transparent so items inherit the popup's own fill (see item-bg-off provenance) — a real value, not an absence, so this locked row is honestly filled rather than left off" },
+    "style.item.color": { "kind": "alias", "slot": "item-fg" },
+    "style.item.font": { "kind": "value", "value": "400 1rem/1.5rem Roboto", "source": "label-text -> body-large" },
+    "style.item.padding": { "kind": "value", "value": "12px 16px", "source": "top/bottom-space 12px + leading/trailing-space 16px" },
+    "style.item.gap": { "kind": "value", "value": "16px", "source": "menu-item.ts :host{gap:16px}" },
+    "style.item.min-height": { "kind": "value", "value": "56px", "source": "one-line-container-height" },
+    "style.item.shape": { "kind": "value", "value": "4px", "source": "border-radius:inherit from the popup's own corner-extra-small" },
+    "style.item.background@hover": { "kind": "alias", "slot": "item-layer", "note": "hover/focus state-layer, color-mix at 8%/12% over the container" },
+    "style.item.opacity@disabled": { "kind": "value", "value": "0.3", "source": "disabled-opacity (v0.192)" },
+    "style.item.color@destructive": { "kind": "off", "note": "no variant axis" },
+    "style.item.background@destructive-hover": { "kind": "off", "note": "no variant axis" },
+
+    "style.icon.color": { "kind": "alias", "slot": "item-icon-fg" },
+    "style.icon.size": { "kind": "value", "value": "24px", "note": "[R] — Material's own default md-icon size; no menu-item-specific size token exists" },
+
+    "style.shortcut.color": { "kind": "alias", "slot": "item-icon-fg", "note": "trailing-supporting-text-color, the SAME on-surface-variant role as the leading icon" },
+    "style.shortcut.font": { "kind": "value", "value": "500 0.6875rem/1rem Roboto", "source": "trailing-supporting-text -> label-small" },
+
+    "style.separator.color": { "kind": "off", "note": "no dedicated colour token — the slotted element's own default colour applies, [R]" },
+    "style.separator.margin": { "kind": "value", "value": "8px 0", "source": "::slotted(:is(md-divider,[role='separator'])) { margin: 8px 0 }" },
+
+    "style.group-label.color": { "kind": "off", "note": "structure.group-label is off" },
+    "style.group-label.font": { "kind": "off", "note": "structure.group-label is off" },
+
+    "style.submenu-trigger.background@open": { "kind": "alias", "slot": "item-open-bg", "note": "list-item-selected-container-color -> secondary-container, a DIFFERENT slot from plain hover" }
+  }
+}

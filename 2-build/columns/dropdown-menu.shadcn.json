@@ -1,0 +1,122 @@
+{
+  "system": "shadcn",
+  "component": "dropdown-menu",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "popup-bg": "oklch(1 0 0)",
+      "popup-fg": "oklch(0% 0 0)",
+      "popup-border": "oklch(0.922 0 0)",
+      "popup-shadow": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      "item-bg-hover": "oklch(0.97 0 0)",
+      "item-fg-hover": "oklch(0.205 0 0)",
+      "fg-muted": "oklch(0.556 0 0)",
+      "danger": "oklch(0.577 0.245 27.325)",
+      "danger-bg-hover": "color-mix(in oklab, oklch(0.577 0.245 27.325) 10%, transparent)",
+      "radius-popup": "calc(0.625rem * 0.8)",
+      "radius-item": "calc(0.625rem * 0.6)",
+      "type-body": "400 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif",
+      "type-shortcut": "400 0.75rem/1rem ui-sans-serif, system-ui, sans-serif",
+      "type-label": "500 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif"
+    },
+    "dark": {
+      "popup-bg": "oklch(0.205 0 0)",
+      "popup-fg": "oklch(0.985 0 0)",
+      "popup-border": "oklch(1 0 0 / 10%)",
+      "item-bg-hover": "oklch(0.371 0 0)",
+      "item-fg-hover": "oklch(0.985 0 0)",
+      "fg-muted": "oklch(0.708 0 0)",
+      "danger": "oklch(0.704 0.191 22.216)",
+      "danger-bg-hover": "color-mix(in oklab, oklch(0.704 0.191 22.216) 20%, transparent)"
+    }
+  },
+  "modeInvariant": ["popup-shadow", "radius-popup", "radius-item"],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/dropdown-menu.tsx — 15 exported parts, every one a thin data-slot wrapper around the external, unvendored `radix-ui` package's DropdownMenu primitive (package.json:80 `\"radix-ui\": \"^1.4.3\"`, no node_modules/radix-ui anywhere in this clone). Every STYLE value below comes from this file's own literal className strings, which ARE real, committed source even though the code that sets the data-state/data-highlighted attributes those classes key off lives externally. See DROPDOWN-MENU-MATRIX.md §0.",
+    "trigger-is-unstyled": "DropdownMenuTrigger's entire body is `<DropdownMenuPrimitive.Trigger data-slot=\"dropdown-menu-trigger\" {...props} />` — no className, no style props, nothing. Every style.trigger.* row is therefore a CONFIRMED, sourced absence for this column, not a research gap — see finding 2.",
+    "popup-bg / popup-fg": "DropdownMenuContent: `bg-popover text-popover-foreground` -> --popover/--popover-foreground (globals.css:105-106 light, :148-149 dark). Reused verbatim from select.shadcn.json's own identical slots.",
+    "popup-border": "DropdownMenuContent's bare `border` utility, no colour class -> --border (globals.css:117/:160).",
+    "popup-shadow": "DropdownMenuContent class `shadow-md`. [R] — Tailwind's documented default two-layer value; radix-ui is not vendored in this clone. Reused verbatim from select.shadcn.json's own popup-shadow (the first shadow-md this registry needed).",
+    "popup-shape": "DropdownMenuContent `rounded-md` -> --radius-md = calc(var(--radius)*0.8) = 8px (globals.css:50-51,100).",
+    "popup-padding": "DropdownMenuContent class `p-1` = 4px uniform.",
+    "popup-gap": "CONFIRMED OFF — no gap utility anywhere on DropdownMenuContent; items sit flush against each other inside the p-1 padding.",
+    "popup-min-width": "DropdownMenuContent class `min-w-[8rem]` = 128px.",
+    "popup-zindex": "DropdownMenuContent class `z-50` = 50.",
+    "item-bg-hover / item-fg-hover": "DropdownMenuItem: `focus:bg-accent focus:text-accent-foreground` -> --accent/--accent-foreground (globals.css:113-114/:156-157). Reached through :focus, not :hover — Radix moves real DOM focus onto the item on pointermove/arrow-keys, the same mechanism select.shadcn.json's own accent-bg/-fg already documented.",
+    "item-fg": "DropdownMenuItem sets no own text-colour class at rest — the item inherits --popover-foreground from the popup ambient colour (see popup-fg); not re-slotted.",
+    "item-padding / item-gap / item-shape": "DropdownMenuItem class `flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm` -> gap-2=8px, rounded-sm -> --radius-sm = calc(var(--radius)*0.6) = 6px (globals.css:50), px-2 py-1.5 = 8px/6px.",
+    "item-min-height": "CONFIRMED OFF — content-driven, no min-height/height utility anywhere on DropdownMenuItem.",
+    "item-disabled-opacity": "DropdownMenuItem class `data-[disabled]:opacity-50`.",
+    "danger / danger-bg-hover": "DropdownMenuItem's `variant=\"destructive\"` branch: `data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20` -> --destructive (globals.css:115/:158, the SAME value select.shadcn.json's own 'danger' slot already resolved) at two DIFFERENT alpha stops per mode (10% light / 20% dark — a real, sourced, mode-specific asymmetry, not a copy-paste of one alpha into both modes). Tailwind v4 compiles the /N modifier on an oklch custom property to color-mix(in oklab, var(--x) N%, transparent), the same derivation select.shadcn.json's own dark field-bg already used.",
+    "fg-muted": "--muted-foreground (globals.css:112/:155). THREE consumers: item icons (`[&_svg:not([class*='text-'])]:text-muted-foreground`), DropdownMenuShortcut (`text-muted-foreground`), and item-icon sizing's colour partner.",
+    "icon-size": "class `[&_svg:not([class*='size-'])]:size-4` = 16px, the generic descendant-selector sizing rule for any un-annotated child svg (informal mechanism — see structure.item-icon).",
+    "shortcut-type": "DropdownMenuShortcut class `ml-auto text-xs tracking-widest text-muted-foreground` -> text-xs = 0.75rem/1rem, tracking-widest is a letter-spacing utility not modelled as a separate row (folded into the type shorthand's own font-family string is inaccurate for tracking, but this column's own type rows do not carry a tracking channel elsewhere either — declared simplification, consistent with the rest of this pipeline's shadcn columns).",
+    "group-label-no-color": "DropdownMenuLabel class `px-2 py-1.5 text-sm font-medium data-[inset]:pl-8` — NO text-muted-foreground or any other colour class. A real, sourced CONTRAST with select.shadcn.json's own SelectLabel (which DOES carry text-muted-foreground): this dropdown-menu's label inherits the ambient popover-foreground and is distinguished ONLY by font-medium weight, not colour.",
+    "separator": "DropdownMenuSeparator class `-mx-1 my-1 h-px bg-border` -> --border, my-1=4px vertical margin, -mx-1=-4px horizontal (bleeds the line to the popup's own edge past its p-1 padding), h-px=1px height.",
+    "submenu-trigger-open": "DropdownMenuSubTrigger class `data-[state=open]:bg-accent data-[state=open]:text-accent-foreground` — the SAME slot as plain item hover, not a distinct 'open' colour."
+  },
+  "cells": {
+    "structure.trigger": { "kind": "value", "value": true, "source": "DropdownMenuTrigger, real element, zero owned style — see trigger-is-unstyled" },
+    "structure.popup": { "kind": "value", "value": true, "source": "DropdownMenuContent, portalled" },
+    "structure.item": { "kind": "value", "value": true, "source": "DropdownMenuItem" },
+    "structure.item-icon": { "kind": "value", "value": true, "note": "informal — any child <svg> generically sized, no dedicated data-slot in the canonical source" },
+    "structure.item-shortcut": { "kind": "value", "value": true, "source": "DropdownMenuShortcut, dedicated exported part" },
+    "structure.separator": { "kind": "value", "value": true, "source": "DropdownMenuSeparator" },
+    "structure.group": { "kind": "value", "value": true, "source": "DropdownMenuGroup" },
+    "structure.group-label": { "kind": "value", "value": true, "source": "DropdownMenuLabel" },
+    "structure.submenu-trigger": { "kind": "value", "value": true, "source": "DropdownMenuSubTrigger" },
+    "structure.submenu-popup": { "kind": "value", "value": true, "source": "DropdownMenuSubContent" },
+
+    "behavior.home-end": { "kind": "value", "value": true, "note": "[R] — external package, general APG convention" },
+    "behavior.typeahead": { "kind": "value", "value": true, "note": "[R] — external package, Radix's own documented typeahead support" },
+    "behavior.submenu-open": { "kind": "value", "value": "ArrowRight, click, or hover", "note": "[R] — data-state=\"open\" styling implies the mechanism; the trigger logic lives in the external package" },
+    "behavior.submenu-close": { "kind": "value", "value": "ArrowLeft or Escape", "note": "[R] — same external-package boundary" },
+
+    "prop.item-variant": { "kind": "value", "value": ["default", "destructive"], "source": "DropdownMenuItem's own variant?: \"default\"|\"destructive\" prop, real, sourced [S]" },
+    "prop.submenu-hover-delay": { "kind": "value", "value": "unspecified", "note": "[R] — external package, not independently confirmable in this clone" },
+
+    "style.trigger.background": { "kind": "off", "note": "CONFIRMED ABSENT — see trigger-is-unstyled" },
+    "style.trigger.color": { "kind": "off", "note": "CONFIRMED ABSENT — see trigger-is-unstyled" },
+    "style.trigger.shape": { "kind": "off", "note": "CONFIRMED ABSENT — see trigger-is-unstyled" },
+    "style.trigger.padding": { "kind": "off", "note": "CONFIRMED ABSENT — see trigger-is-unstyled" },
+    "style.trigger.font": { "kind": "off", "note": "CONFIRMED ABSENT — see trigger-is-unstyled" },
+    "style.trigger.background@open": { "kind": "off", "note": "CONFIRMED ABSENT — see trigger-is-unstyled" },
+    "style.trigger.opacity@disabled": { "kind": "off", "note": "CONFIRMED ABSENT — see trigger-is-unstyled" },
+
+    "style.popup.background": { "kind": "alias", "slot": "popup-bg" },
+    "style.popup.color": { "kind": "alias", "slot": "popup-fg" },
+    "style.popup.border": { "kind": "value", "value": { "border": "1px solid var(--popup-border)" }, "source": "DropdownMenuContent's bare `border` utility -> --border" },
+    "style.popup.shape": { "kind": "value", "value": "8px", "source": "rounded-md = --radius-md" },
+    "style.popup.shadow": { "kind": "alias", "slot": "popup-shadow" },
+    "style.popup.padding": { "kind": "value", "value": "4px", "source": "class p-1" },
+    "style.popup.gap": { "kind": "off", "note": "CONFIRMED ABSENT — items sit flush inside the p-1 padding" },
+    "style.popup.min-width": { "kind": "value", "value": "128px", "source": "class min-w-[8rem]" },
+    "style.popup.z-index": { "kind": "value", "value": "50", "source": "class z-50" },
+
+    "style.item.background": { "kind": "value", "value": "transparent", "source": "no bg class at rest" },
+    "style.item.color": { "kind": "alias", "slot": "popup-fg", "note": "no OWN colour class at rest — DropdownMenuItem sets no text-color utility, so this is the inherited popup-fg value made explicit for this locked row, not a distinct component token" },
+    "style.item.font": { "kind": "alias", "slot": "type-body" },
+    "style.item.padding": { "kind": "value", "value": "6px 8px", "source": "py-1.5 px-2" },
+    "style.item.gap": { "kind": "value", "value": "8px", "source": "gap-2" },
+    "style.item.min-height": { "kind": "off", "note": "CONFIRMED ABSENT — content-driven" },
+    "style.item.shape": { "kind": "alias", "slot": "radius-item" },
+    "style.item.background@hover": { "kind": "alias", "slot": "item-bg-hover" },
+    "style.item.opacity@disabled": { "kind": "value", "value": "0.5", "source": "data-[disabled]:opacity-50" },
+    "style.item.color@destructive": { "kind": "alias", "slot": "danger" },
+    "style.item.background@destructive-hover": { "kind": "alias", "slot": "danger-bg-hover" },
+
+    "style.icon.color": { "kind": "alias", "slot": "fg-muted" },
+    "style.icon.size": { "kind": "value", "value": "16px", "source": "class size-4 on non-annotated svg children" },
+
+    "style.shortcut.color": { "kind": "alias", "slot": "fg-muted" },
+    "style.shortcut.font": { "kind": "alias", "slot": "type-shortcut" },
+
+    "style.separator.color": { "kind": "alias", "slot": "popup-border", "note": "bg-border, modelled as an equivalent border-color for this template's border-based separator rule" },
+    "style.separator.margin": { "kind": "value", "value": "4px -4px", "source": "class my-1 -mx-1" },
+
+    "style.group-label.color": { "kind": "off", "note": "CONFIRMED absent — no colour class, see group-label-no-color provenance; a real contrast with select's own muted label" },
+    "style.group-label.font": { "kind": "value", "value": { "font": "var(--type-label)", "padding": "6px 8px" }, "source": "class text-sm font-medium px-2 py-1.5" },
+
+    "style.submenu-trigger.background@open": { "kind": "alias", "slot": "item-bg-hover", "note": "data-[state=open]:bg-accent, the SAME slot as plain hover" }
+  }
+}
