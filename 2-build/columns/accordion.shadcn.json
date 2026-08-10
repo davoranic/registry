@@ -1,0 +1,84 @@
+{
+  "system": "shadcn",
+  "component": "accordion",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "fg-muted": "oklch(0.556 0 0)",
+      "border-color": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)"
+    },
+    "dark": {
+      "fg-muted": "oklch(0.708 0 0)",
+      "border-color": "oklch(1 0 0 / 10%)",
+      "ring": "oklch(0.556 0 0)"
+    }
+  },
+  "modeInvariant": [],
+  "provenance": {
+    "external-package-note": "`accordion.tsx` is a thin data-slot wrapper around `radix-ui`'s `Accordion` primitive (`\"use client\"; import { Accordion as AccordionPrimitive } from \"radix-ui\"`), an EXTERNAL, UNVENDORED npm dependency (`apps/v4/package.json:80`, `\"radix-ui\": \"^1.4.3\"`, no `node_modules/radix-ui` anywhere under 3-source/) — the SAME external-package boundary DROPDOWN-MENU-MATRIX.md and TOAST-MATRIX.md already recorded. Every STYLE cell here is real, sourced from the wrapper's own literal className strings (committed source); every BEHAVIOR cell is [R] unless independently confirmable from the wrapper file itself (the data-state/data-disabled attribute contract its own classes key off IS real source, even though the code that SETS those attributes lives in the external package).",
+    "fg-muted": "AccordionTrigger's own chevron className: text-muted-foreground -> app/globals.css --muted-foreground, the SAME slot dropdown-menu.shadcn.json's own fg-muted already resolved: oklch(0.556 0 0) light / oklch(0.708 0 0) dark.",
+    "border-color": "AccordionItem's own className: border-b -> the bare `border` utility -> --border, the SAME slot dropdown-menu.shadcn.json's own popup-border already resolved: oklch(0.922 0 0) light / oklch(1 0 0 / 10%) dark.",
+    "ring": "AccordionTrigger's own className: focus-visible:ring-[3px] ring-ring/50 focus-visible:border-ring -> --ring, the SAME slot checkbox.shadcn.json's own focus ring already resolved: oklch(0.708 0 0) light / oklch(0.556 0 0) dark."
+  },
+  "cells": {
+    "structure.group": { "kind": "value", "value": true, "source": "Accordion (root), a real STATEFUL container — the Radix primitive owns the open-item set and exclusivity logic" },
+    "structure.item": { "kind": "value", "value": true, "source": "AccordionItem" },
+    "structure.header": { "kind": "value", "value": true, "source": "AccordionPrimitive.Header className=\"flex\" wraps AccordionPrimitive.Trigger; Radix's own published API renders this as an <h3> by default (external, [R] for the exact tag)" },
+    "structure.trigger": { "kind": "value", "value": true, "source": "AccordionTrigger" },
+    "structure.icon": { "kind": "value", "value": true, "source": "ONE ChevronDownIcon (lucide-react), rotated via CSS on data-state=\"open\" — not swapped, see Finding 5" },
+    "structure.status-icon": { "kind": "off", "note": "CONFIRMED ABSENT — no tone/status/sentiment concept anywhere in accordion.tsx" },
+    "structure.content": { "kind": "value", "value": true, "source": "AccordionContent" },
+
+    "behavior.role": { "kind": "value", "value": "native <button>; role=\"region\" (documented APG accordion pattern)", "note": "[R] — external package; the wrapper's own docs state it 'adheres to the WAI-ARIA design pattern' (content/docs/components/radix/accordion.mdx)" },
+    "behavior.expand-toggle": { "kind": "value", "value": true, "note": "[R] — native button plus Radix state toggle" },
+    "behavior.exclusive-expand": { "kind": "value", "value": "on when type=\"single\" — real Radix root-level state", "source": "Accordion's own required type prop, accordion-demo.tsx: type=\"single\" collapsible" },
+    "behavior.collapsible-to-none": { "kind": "value", "value": "on, config'd via the real collapsible boolean prop (single-mode only)", "source": "accordion-demo.tsx / accordion.mdx: 'Use collapsible on Accordion'" },
+    "behavior.arrow-navigation": { "kind": "value", "value": true, "note": "[R] — external package, documented APG accordion pattern" },
+    "behavior.home-end": { "kind": "value", "value": true, "note": "[R] — external package, documented APG accordion pattern" },
+    "behavior.disabled-item": { "kind": "value", "value": true, "source": "AccordionItem's own disabled prop -> disabled:pointer-events-none disabled:opacity-50 on the trigger, confirmed real in accordion-disabled.tsx" },
+
+    "prop.type": { "kind": "value", "value": ["single", "multiple"], "source": "Accordion's own type: \"single\" | \"multiple\", required Radix root prop" },
+    "prop.collapsible": { "kind": "value", "value": true, "source": "Accordion's own collapsible?: boolean, single-mode only" },
+    "prop.disabled": { "kind": "value", "value": true, "source": "AccordionItem's own disabled prop" },
+    "prop.indicator-side": { "kind": "off", "note": "CONFIRMED ABSENT — the chevron is always trailing, no side prop exists" },
+    "prop.status": { "kind": "off", "note": "CONFIRMED ABSENT — no sentiment/tone concept anywhere in accordion.tsx" },
+
+    "style.group.border": { "kind": "off", "note": "CONFIRMED OFF — the Accordion root sets no border of its own; only w-full appears in the demo's own className, group-level framing is left entirely to the consumer" },
+    "style.item.border": { "kind": "value", "value": { "border-bottom": "1px solid var(--border-color)" }, "source": "AccordionItem className: border-b last:border-b-0 (uniform-bottom approximation, see the row's own note)" },
+    "style.item.border@error": { "kind": "off", "note": "no status axis" },
+    "style.item.border@warning": { "kind": "off", "note": "no status axis" },
+    "style.item.border@success": { "kind": "off", "note": "no status axis" },
+
+    "style.trigger.background": { "kind": "value", "value": "transparent", "source": "AccordionTrigger className: no bg utility at rest" },
+    "style.trigger.color": { "kind": "off", "note": "CONFIRMED OFF — no dedicated colour class, ambient/inherited text colour, the same absence shape dropdown-menu.shadcn.json's own trigger already established" },
+    "style.trigger.font": { "kind": "value", "value": "500 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif", "source": "AccordionTrigger className: text-sm font-medium" },
+    "style.trigger.padding": { "kind": "value", "value": "16px 0", "source": "AccordionTrigger className: py-4 (no horizontal padding)" },
+    "style.trigger.gap": { "kind": "value", "value": "16px", "source": "AccordionTrigger className: gap-4" },
+    "style.trigger.min-height": { "kind": "off", "note": "CONFIRMED OFF, content-driven entirely via py-4" },
+    "style.trigger.shape": { "kind": "value", "value": "6px", "source": "AccordionTrigger className: rounded-md = calc(0.625rem * 0.8)" },
+    "style.trigger.text-decoration@hover": { "kind": "value", "value": "underline", "source": "AccordionTrigger className: hover:underline" },
+    "style.trigger.outline@focus-visible": { "kind": "value", "value": { "border-color": "var(--ring)", "box-shadow": "0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)" }, "source": "AccordionTrigger className: focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px], the SAME ring technique checkbox.shadcn.json's own style.box.focus already resolved" },
+    "style.trigger.opacity@disabled": { "kind": "value", "value": { "opacity": "0.5", "pointer-events": "none" }, "source": "AccordionTrigger className: disabled:pointer-events-none disabled:opacity-50" },
+    "style.trigger.cursor@disabled": { "kind": "off", "note": "CONFIRMED OFF — no explicit cursor property, relies entirely on pointer-events-none" },
+    "style.trigger.background@error": { "kind": "off", "note": "no status axis" },
+    "style.trigger.background@warning": { "kind": "off", "note": "no status axis" },
+    "style.trigger.background@success": { "kind": "off", "note": "no status axis" },
+
+    "style.icon.size": { "kind": "value", "value": "16px", "source": "ChevronDownIcon className: size-4" },
+    "style.icon.color": { "kind": "alias", "slot": "fg-muted", "source": "ChevronDownIcon className: text-muted-foreground" },
+    "style.icon.transform@expanded": { "kind": "value", "value": "rotate(180deg)", "source": "AccordionTrigger className: [&[data-state=open]>svg]:rotate-180" },
+    "style.icon.transition": { "kind": "value", "value": "transform 200ms", "source": "ChevronDownIcon className: transition-transform duration-200" },
+
+    "style.content.padding": { "kind": "value", "value": "0 0 16px", "source": "AccordionContent's inner div className: pt-0 pb-4 (no horizontal padding)" },
+    "style.content.padding@indented": { "kind": "off", "note": "no indicator-side axis exists" },
+    "style.content.font-size": { "kind": "value", "value": "0.875rem", "source": "AccordionContent className: text-sm" },
+    "style.content.expand-transition": { "kind": "value", "value": "grid-template-rows 200ms ease-out, opacity 200ms ease-out, visibility 200ms ease-out", "note": "[R] — UNSHARED DERIVATION, see ACCORDION-MATRIX.md Finding 4/8. Real mechanism is a keyframe height animation via --radix-accordion-content-height, owned by the external, unvendored tw-animate-css package; not independently confirmable at the exact-ms level in this clone. This chassis reproduces the same VISIBLE effect via its own shared grid-transition technique, timed to tw-animate-css's well-documented default (200ms ease-out)." },
+    "style.content.reduced-motion": { "kind": "off", "note": "not confirmable either way — external package boundary, [R] unconfirmable" },
+
+    "style.status-icon.color": { "kind": "off", "note": "no structure.status-icon" },
+    "style.status-icon.color@warning": { "kind": "off", "note": "no structure.status-icon" },
+    "style.status-icon.color@success": { "kind": "off", "note": "no structure.status-icon" },
+    "style.status-icon.size": { "kind": "off", "note": "no structure.status-icon" }
+  }
+}

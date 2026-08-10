@@ -1,0 +1,70 @@
+{
+  "system": "m3",
+  "component": "accordion",
+  "fontFaces": [],
+  "slots": {},
+  "modeInvariant": [],
+  "provenance": {
+    "total-absence": "CONFIRMED ABSENT — a genuine first for this pipeline (not an edition gap like alert/progress/spinner's missing token families, and not a tokens-only component like toast/snackbar). No accordion, expansion-panel, or disclosure component or token family exists anywhere in 3-source/material-web, checked TWO ways per CLAUDE.md rule 7 ('grep returning nothing is not evidence of absence'): (1) `grep -rli \"accordion|expansion-panel|disclosure\"` across the whole clone returned zero real matches (one incidental hit in divider/divider.ts unrelated to any accordion concept); (2) a `find -maxdepth 1 -type d` listing of every top-level component folder in the clone (button, checkbox, chips, dialog, divider, fab, field, iconbutton, list, menu, progress, radio, select, slider, switch, tabs, textfield, tokens, typography, ...) shows no accordion-shaped entry among them. Every row below is 'off' with this SAME citation — see ACCORDION-MATRIX.md §0 and Finding 1 for why this forces every row's policy to 'switchable' (a locked row that is off anywhere fails gen-from-template.py, and M3 is off on every single row here)."
+  },
+  "cells": {
+    "structure.group": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "structure.item": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "structure.header": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "structure.trigger": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "structure.icon": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "structure.status-icon": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "structure.content": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+
+    "behavior.role": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "behavior.expand-toggle": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "behavior.exclusive-expand": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "behavior.collapsible-to-none": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "behavior.arrow-navigation": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "behavior.home-end": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "behavior.disabled-item": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+
+    "prop.type": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "prop.collapsible": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "prop.disabled": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "prop.indicator-side": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "prop.status": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+
+    "style.group.border": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.item.border": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.item.border@error": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.item.border@warning": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.item.border@success": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+
+    "style.trigger.background": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.color": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.font": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.padding": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.gap": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.min-height": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.shape": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.text-decoration@hover": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.outline@focus-visible": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.opacity@disabled": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.cursor@disabled": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.background@error": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.background@warning": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.trigger.background@success": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+
+    "style.icon.size": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.icon.color": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.icon.transform@expanded": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.icon.transition": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+
+    "style.content.padding": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.content.padding@indented": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.content.font-size": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.content.expand-transition": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.content.reduced-motion": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+
+    "style.status-icon.color": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.status-icon.color@warning": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.status-icon.color@success": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" },
+    "style.status-icon.size": { "kind": "off", "note": "CONFIRMED ABSENT — see provenance.total-absence" }
+  }
+}

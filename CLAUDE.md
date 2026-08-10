@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **20 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **21 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -260,6 +260,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 
 | component | matrix doc | rows | salt | shadcn | m3 | behaviour gate |
 |---|---|---|---|---|---|---|
+| `accordion` | [`ACCORDION-MATRIX.md`](ACCORDION-MATRIX.md) | 59 | 37 | 32 | 0 | ✓ |
 | `alert` | [`ALERT-MATRIX.md`](ALERT-MATRIX.md) | 33 | 17 | 16 | 9 | — |
 | `badge` | [`BADGE-MATRIX.md`](BADGE-MATRIX.md) | 50 | 29 | 33 | 18 | ✓ |
 | `button` | [`BUTTON-MATRIX.md`](BUTTON-MATRIX.md) | 31 | 20 | 18 | 18 | — |
@@ -468,7 +469,43 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `dropdown-menu` (component 19, row 20/79). 68 rows
+Last action: built `accordion` (component 20, row 21/79). 59 rows (salt 37,
+shadcn 32, m3 0 — a genuine FIRST for this pipeline: not an edition gap or
+a tokens-only component like alert/progress/spinner/toast, but a TOTAL,
+confirmed absence — no accordion/expansion-panel/disclosure component or
+token family exists anywhere in `3-source/material-web`, verified by both
+a name grep and a directory listing). All four automated gates green.
+Orchestrator review found and fixed TWO real bugs the building agent's own
+(non-browser) build could not have caught:
+- **A real geometry bug in the chassis's own collapse technique** (its
+  `grid-template-rows: 0fr` + `min-height:0` derivation, ACCORDION-
+  MATRIX.md Finding 4): a "collapsed" panel never actually reached zero
+  height, it stalled at exactly its own vertical padding sum (measured
+  live: 20px Salt medium, 16px shadcn) — `box-sizing:border-box` cannot
+  render a box shorter than its own padding, and nothing had zeroed the
+  padding for the collapsed state. Fixed in `accordion.template.json`'s
+  `base` block by zeroing `accordion-content-body`'s padding when its
+  ancestor carries `aria-hidden="true"` (chassis-owned, no provenance
+  re-derivation needed), plus a matching padding transition so it
+  collapses in step with the row/opacity/visibility transition instead of
+  snapping. Re-verified live: both columns now measure exactly 0.
+  See ACCORDION-MATRIX.md Finding 9.
+- **A conformance-test setup bug**, same shape as TABS-MATRIX.md finding
+  15 and DROPDOWN-MENU-MATRIX.md finding 7 (the test, not the skeleton):
+  `checkAccordion()` in `harness/conformance.tsx` never passed the
+  `type="single"` prop to the mounted instance, so shadcn's real
+  exclusivity (verified correct in the INTERACTIVE harness, which does
+  pass the prop) never activated in the shared conformance check and
+  `behavior.exclusive-expand` failed for shadcn even though the skeleton
+  itself was right. Fixed by passing `type="single"` in the test's own
+  render call. Conformance now 191/191.
+
+Live-verified beyond conformance: independent per-item toggling for Salt
+(no exclusivity, by design — AccordionGroup holds no state, see Finding
+2), shadcn's real single-mode exclusivity + collapsible-to-none, and
+ArrowDown/End roving focus correctly skipping the disabled item.
+
+Previous action: built `dropdown-menu` (component 19, row 20/79). 68 rows
 (salt 42, shadcn 42, m3 38), all four automated gates green, conformance
 164/164. Orchestrator review re-verified live rather than trusting the
 building agent's own claim: open/click, ArrowDown navigation (correctly
@@ -570,9 +607,9 @@ instances across every component, logged in Known-open work, NOT audited
 like the same bug.
 
 `switch`, `radio-group`, `slider`, the button fix, the dialog finding, the
-uncited-slots re-scope, the tabs conformance fix, toast, and dropdown-menu
-are all committed and pushed to `claude/next-component-7e5dex` (check
-`git log main..claude/next-component-7e5dex` before assuming what's
+uncited-slots re-scope, the tabs conformance fix, toast, dropdown-menu, and
+accordion are all committed and pushed to `claude/next-component-7e5dex`
+(check `git log main..claude/next-component-7e5dex` before assuming what's
 landed on `main` — this list is updated less reliably than that log).
 
 **Standing priority order — deferred by explicit owner choice on
@@ -608,7 +645,7 @@ clear the queue), updated as items close:**
    `button`, `card`, `chip`, `dialog`, `input`, `progress`, `calendar`
    (`registry.tsx`), `select`, `spinner`, `tabs`, `tooltip`. All 13
    corrected to `../out/gen/` and verified to build clean.
-6. **Continue components** — 59 canonical rows remain after `dropdown-menu`
+6. **Continue components** — 58 canonical rows remain after `accordion`
    lands, order per `1-intro/content/04-component-map.md`: rows with real
    cross-system character first.
 

@@ -1,0 +1,110 @@
+{
+  "system": "salt",
+  "component": "accordion",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" },
+    { "family": "Open Sans", "weight": "600", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "trigger-fg": "rgb(0, 0, 0)",
+      "trigger-fg-disabled": "rgba(0, 0, 0, 0.4)",
+      "border-color": "rgba(0, 0, 0, 0.2)",
+      "focus-outline": "rgb(0, 69, 126)",
+      "tone-error": "rgb(229, 33, 53)",
+      "tone-warning": "rgb(199, 83, 0)",
+      "tone-success": "rgb(0, 135, 93)",
+      "bg-error": "rgb(255, 236, 234)",
+      "bg-warning": "rgb(255, 236, 217)",
+      "bg-success": "rgb(234, 245, 242)"
+    },
+    "dark": {
+      "trigger-fg": "rgb(255, 255, 255)",
+      "trigger-fg-disabled": "rgba(255, 255, 255, 0.4)",
+      "border-color": "rgba(255, 255, 255, 0.2)",
+      "focus-outline": "rgb(154, 189, 245)",
+      "bg-error": "rgb(69, 0, 2)",
+      "bg-warning": "rgb(66, 32, 0)",
+      "bg-success": "rgb(0, 41, 21)"
+    },
+    "byDensity": {
+      "high":   { "trigger-padding": "2px 4px", "trigger-gap": "4px", "trigger-min-height": "24px", "content-padding": "4px 4px 6px", "content-indent": "18px", "icon-height": "20px", "type-trigger": "600 11px/14px 'Open Sans', sans-serif" },
+      "medium": { "trigger-padding": "4px 8px", "trigger-gap": "8px", "trigger-min-height": "36px", "content-padding": "8px 8px 12px", "content-indent": "28px", "icon-height": "28px", "type-trigger": "600 12px/16px 'Open Sans', sans-serif" },
+      "low":    { "trigger-padding": "6px 12px", "trigger-gap": "12px", "trigger-min-height": "48px", "content-padding": "12px 12px 18px", "content-indent": "38px", "icon-height": "36px", "type-trigger": "600 14px/18px 'Open Sans', sans-serif" },
+      "touch":  { "trigger-padding": "8px 16px", "trigger-gap": "16px", "trigger-min-height": "60px", "content-padding": "16px 16px 24px", "content-indent": "48px", "icon-height": "44px", "type-trigger": "600 16px/20px 'Open Sans', sans-serif" }
+    }
+  },
+  "modeInvariant": ["tone-error", "tone-warning", "tone-success"],
+  "provenance": {
+    "tokens-only-note": "packages/core/src/accordion/{Accordion,AccordionGroup,AccordionHeader,AccordionPanel}.tsx+.css are ALL real, live, fully-inspectable Salt components — every cell below is [S] unless individually marked [R]. See ACCORDION-MATRIX.md §0.",
+    "trigger-fg / trigger-fg-disabled": "AccordionHeader.css color: var(--salt-content-primary-foreground) -> black/white (rest); :disabled { color: var(--salt-content-primary-foreground-disabled) } -> palette-foreground-primary-disabled -> foundations/alpha.css black-40a/white-40a = rgba(...,0.4) — the IDENTICAL -Na chain dropdown-menu.salt.json's own item-fg-disabled already resolved (Salt recolours disabled text rather than dimming opacity, hence style.trigger.opacity@disabled is off for this column — see style.trigger.color's own disabled treatment).",
+    "border-color": "Accordion.css border-top: var(--salt-size-fixed-100) solid var(--salt-separable-tertiary-borderColor); AccordionGroup.css border-bottom: (same). next/characteristics/separable.css --salt-separable-tertiary-borderColor: var(--salt-palette-alpha-contrast-mediumLow) -> next/palette/alpha.css --salt-palette-alpha-contrast-mediumLow: var(--salt-color-black-20a)/var(--salt-color-white-20a) -> foundations/alpha.css black-20a: rgba(0,0,0,0.2), white-20a: rgba(255,255,255,0.2).",
+    "focus-outline": "AccordionHeader.css :focus-visible { outline: var(--salt-focused-outline); outline-offset: calc(-1 * var(--salt-focused-outlineWidth)) } -> next/characteristics/focused.css --salt-focused-outline: 2px dotted var(--salt-focused-outlineColor), --salt-focused-outlineColor: var(--salt-palette-accent-stronger) -> next/palette/accent.css --salt-color-blue-700-rgb: 0,69,126 (light) / --salt-color-blue-300-rgb: 154,189,245 (dark) — the IDENTICAL accent-stronger resolution checkbox.salt.json's own focus-outline entry already made. outline-offset: -2px (inset), a size-fixed-200=2px width negated.",
+    "tone-* / bg-*": "AccordionHeader.css .saltAccordionHeader-{status} { background: var(--salt-status-{status}-background) }, :focus-visible { outline-color: var(--salt-status-{status}-borderColor) }; Accordion.css .saltAccordion-{status} { border-top-color: var(--salt-status-{status}-borderColor) }; StatusIndicator.css --statusIndicator-{status}-color: var(--salt-status-{status}-foreground-decorative). next/characteristics/status.css resolves borderColor/foreground-decorative to the SAME palette-{role} 500-stop (mode-invariant) and background to the palette-{role}-weakest stop (light: 100-stop, dark: 900-stop) — the IDENTICAL tone-*/bg-*-secondary slot family alert.salt.json already resolved: tone-error rgb(229,33,53), tone-warning rgb(199,83,0), tone-success rgb(0,135,93); bg-error rgb(255,236,234)/rgb(69,0,2), bg-warning rgb(255,236,217)/rgb(66,32,0), bg-success rgb(234,245,242)/rgb(0,41,21). Note: unlike Banner/alert, Accordion's own ValidationStatus has NO 'info' member — only error/warning/success (Accordion.tsx's own `status?: \"error\" | \"warning\" | \"success\"` prop type).",
+    "byDensity.trigger-padding / -gap / -min-height": "AccordionHeader.css padding: spacing-50 spacing-100; gap: spacing-100; min-height: calc(size-base + spacing-100) — ALL by density, the min-height formula IDENTICAL to dropdown-menu.salt.json's own item-min-height.",
+    "byDensity.content-padding": "AccordionPanel.css .saltAccordionPanel-content: padding-left/-right: spacing-100; padding-top: spacing-100; padding-bottom: spacing-150 — expressed as the 3-value shorthand 'top horizontal bottom'.",
+    "byDensity.content-indent": "AccordionPanel.css .saltAccordionPanel-indentedContent: padding-left: calc(spacing-200 + size-icon), applied ONLY when indicatorSide='left' (the default) — additive on top of content-padding's own base left padding, so the true left inset is content-padding's left value REPLACED by this larger one (the CSS rule's own specificity/order wins, matching the real .saltAccordionPanel-indentedContent selector overriding .saltAccordionPanel-content's own padding-left in the cascade).",
+    "byDensity.icon-height": "AccordionHeader.css .saltAccordionHeader-icon / .saltAccordionHeader-statusIndicator: height: size-base (width unset, intrinsic/auto) — the icon and the status indicator share the SAME height formula.",
+    "byDensity.type-trigger": "characteristics/text.css body role fontSize/lineHeight/fontFamily (Open Sans, IDENTICAL sizes to dropdown-menu.salt.json's own type-body), but AccordionHeader.css's own font-weight: var(--salt-text-fontWeight-strong) -> foundations/typography.css --salt-typography-fontWeight-semiBold: 600 — A DIFFERENT, BOLDER weight stop from the plain body-regular (400) text every other Salt column's item/trigger text has used so far."
+  },
+  "cells": {
+    "structure.group": { "kind": "value", "value": true, "source": "AccordionGroup, a real but purely presentational wrapper (AccordionGroup.tsx/.css)" },
+    "structure.item": { "kind": "value", "value": true, "source": "Accordion — this IS the single collapsible unit (Accordion.tsx)" },
+    "structure.header": { "kind": "off", "note": "CONFIRMED ABSENT — AccordionHeader.tsx renders the <button> directly, no wrapping heading element of any kind" },
+    "structure.trigger": { "kind": "value", "value": true, "source": "AccordionHeader, a real <button type=\"button\">" },
+    "structure.icon": { "kind": "value", "value": true, "source": "ExpansionIcon, swaps ChevronDownIcon/ChevronUpIcon via useIcon()" },
+    "structure.status-icon": { "kind": "value", "value": ["error", "warning", "success"], "source": "StatusIndicator, rendered in AccordionHeader when status is set and not disabled" },
+    "structure.content": { "kind": "value", "value": true, "source": "AccordionPanel, role=\"region\", permanently mounted" },
+
+    "behavior.role": { "kind": "value", "value": "native <button>; role=\"region\" on the panel", "source": "AccordionHeader.tsx (native button), AccordionPanel.tsx role=\"region\"" },
+    "behavior.expand-toggle": { "kind": "value", "value": true, "source": "AccordionHeader.tsx handleClick -> toggle(), native button gives Enter/Space for free" },
+    "behavior.exclusive-expand": { "kind": "off", "note": "CONFIRMED ABSENT — AccordionGroup.tsx holds no state/context; each Accordion's `expanded` boolean is entirely independent (useControlled scoped per instance)" },
+    "behavior.collapsible-to-none": { "kind": "off", "note": "MOOT, not missing — with no exclusive-expand mechanism, every individual Accordion already toggles freely to either state regardless of siblings" },
+    "behavior.arrow-navigation": { "kind": "off", "note": "CONFIRMED ABSENT — grepped directly, no keydown handler of any kind beyond the native button's own Enter/Space anywhere in packages/core/src/accordion/" },
+    "behavior.home-end": { "kind": "off", "note": "CONFIRMED ABSENT, same reason as behavior.arrow-navigation — no roving-focus code exists to jump within" },
+    "behavior.disabled-item": { "kind": "value", "value": true, "source": "AccordionHeader.tsx passes disabled={disabled} straight to the native <button>" },
+
+    "prop.type": { "kind": "off", "note": "no group-level type concept exists — see behavior.exclusive-expand" },
+    "prop.collapsible": { "kind": "off", "note": "moot — see behavior.collapsible-to-none" },
+    "prop.disabled": { "kind": "value", "value": true, "source": "Accordion.tsx's own disabled prop" },
+    "prop.indicator-side": { "kind": "value", "value": ["left", "right"], "source": "Accordion.tsx indicatorSide?: \"left\" | \"right\", default \"left\"" },
+    "prop.status": { "kind": "value", "value": ["error", "warning", "success"], "source": "Accordion.tsx status?: \"error\" | \"warning\" | \"success\"" },
+
+    "style.group.border": { "kind": "value", "value": "1px solid var(--border-color)", "source": "AccordionGroup.css border-bottom: var(--salt-size-fixed-100) solid var(--salt-separable-tertiary-borderColor)" },
+    "style.item.border": { "kind": "value", "value": { "border-top": "1px solid var(--border-color)" }, "source": "Accordion.css border-top: var(--salt-size-fixed-100) solid var(--salt-separable-tertiary-borderColor)" },
+    "style.item.border@error": { "kind": "alias", "slot": "tone-error", "source": ".saltAccordion-error { border-top-color: var(--salt-status-error-borderColor) }" },
+    "style.item.border@warning": { "kind": "alias", "slot": "tone-warning", "source": ".saltAccordion-warning { border-top-color: var(--salt-status-warning-borderColor) }" },
+    "style.item.border@success": { "kind": "alias", "slot": "tone-success", "source": ".saltAccordion-success { border-top-color: var(--salt-status-success-borderColor) }" },
+
+    "style.trigger.background": { "kind": "value", "value": "transparent", "source": "AccordionHeader.css background: transparent (rest)" },
+    "style.trigger.color": { "kind": "alias", "slot": "trigger-fg" },
+    "style.trigger.font": { "kind": "alias", "slot": "type-trigger" },
+    "style.trigger.padding": { "kind": "alias", "slot": "trigger-padding" },
+    "style.trigger.gap": { "kind": "alias", "slot": "trigger-gap" },
+    "style.trigger.min-height": { "kind": "alias", "slot": "trigger-min-height" },
+    "style.trigger.shape": { "kind": "off", "note": "CONFIRMED OFF — AccordionHeader.css has no border-radius rule of its own" },
+    "style.trigger.text-decoration@hover": { "kind": "off", "note": "CONFIRMED OFF — AccordionHeader.css has no :hover rule of any kind, only :focus-visible and :disabled" },
+    "style.trigger.outline@focus-visible": { "kind": "value", "value": { "outline": "2px dotted var(--focus-outline)", "outline-offset": "-2px" }, "source": "AccordionHeader.css :focus-visible { outline: var(--salt-focused-outline); outline-offset: calc(-1 * var(--salt-focused-outlineWidth)) }" },
+    "style.trigger.opacity@disabled": { "kind": "off", "note": "Salt recolours (content-primary-foreground-disabled, see style.trigger.color) rather than reducing opacity — the same 'recolour not opacity' pattern dropdown-menu.salt.json's own item column already established" },
+    "style.trigger.cursor@disabled": { "kind": "value", "value": "not-allowed", "source": "AccordionHeader.css :disabled { cursor: var(--salt-cursor-disabled) }" },
+    "style.trigger.background@error": { "kind": "alias", "slot": "bg-error", "source": ".saltAccordionHeader-error { background: var(--salt-status-error-background) }" },
+    "style.trigger.background@warning": { "kind": "alias", "slot": "bg-warning", "source": ".saltAccordionHeader-warning { background: var(--salt-status-warning-background) }" },
+    "style.trigger.background@success": { "kind": "alias", "slot": "bg-success", "source": ".saltAccordionHeader-success { background: var(--salt-status-success-background) }" },
+
+    "style.icon.size": { "kind": "alias", "slot": "icon-height" },
+    "style.icon.color": { "kind": "off", "note": "CONFIRMED OFF — no dedicated icon-colour rule anywhere in AccordionHeader.css, inherits the trigger's own text colour" },
+    "style.icon.transform@expanded": { "kind": "off", "note": "CONFIRMED OFF — Salt does not rotate anything; it SWAPS the glyph itself (ChevronDown -> ChevronUp)" },
+    "style.icon.transition": { "kind": "off", "note": "CONFIRMED OFF — no icon-specific transition rule, the glyph swap is instantaneous" },
+
+    "style.content.padding": { "kind": "alias", "slot": "content-padding" },
+    "style.content.padding@indented": { "kind": "alias", "slot": "content-indent", "source": ".saltAccordionPanel-indentedContent { padding-left: calc(spacing-200 + size-icon) }, applied when indicatorSide=\"left\"" },
+    "style.content.font-size": { "kind": "off", "note": "CONFIRMED OFF — AccordionPanel.css sets no font property, content is arbitrary consumer markup" },
+    "style.content.expand-transition": { "kind": "value", "value": "grid-template-rows 300ms ease-in-out, opacity 300ms ease-in-out, visibility 300ms ease-in-out", "source": "AccordionPanel.css transition: grid-template-rows var(--salt-duration-perceptible) ease-in-out, opacity ..., visibility ... (--salt-duration-perceptible: 300ms)" },
+    "style.content.reduced-motion": { "kind": "value", "value": "transition: none", "source": "AccordionPanel.css @media (prefers-reduced-motion: reduce) { .saltAccordionPanel { transition: none } }" },
+
+    "style.status-icon.color": { "kind": "alias", "slot": "tone-error", "source": "StatusIndicator.css --statusIndicator-error-color -> status-error-foreground-decorative" },
+    "style.status-icon.color@warning": { "kind": "alias", "slot": "tone-warning" },
+    "style.status-icon.color@success": { "kind": "alias", "slot": "tone-success" },
+    "style.status-icon.size": { "kind": "alias", "slot": "icon-height", "source": "AccordionHeader.css .saltAccordionHeader-statusIndicator { height: size-base; margin-left: auto }" }
+  }
+}
