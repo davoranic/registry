@@ -44,6 +44,7 @@ import { DropdownMenu, type MenuNode } from "../skeleton/dropdown-menu"
 import { Accordion, type AccordionConfig, type AccordionItemModel } from "../skeleton/accordion"
 import { Popover, type PopoverConfig } from "../skeleton/popover"
 import { Combobox, type ComboboxConfig, type ComboboxOptionModel } from "../skeleton/combobox"
+import { ToggleGroup, ToggleGroupItem, type ToggleGroupConfig } from "../skeleton/toggle-group"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -58,6 +59,7 @@ import dropdownMenuCfg from "../out/gen/dropdown-menu-config.json"
 import accordionCfg from "../out/gen/accordion-config.json"
 import popoverCfg from "../out/gen/popover-config.json"
 import comboboxCfg from "../out/gen/combobox-config.json"
+import toggleGroupCfg from "../out/gen/toggle-group-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -1664,6 +1666,183 @@ async function checkComboboxParts(host: HTMLElement, system: string) {
   mount.remove()
 }
 
+// ---------------------------------------------------------------- toggle-group
+
+async function checkToggleGroup(host: HTMLElement, system: string) {
+  const cfg = (toggleGroupCfg as Record<string, ToggleGroupConfig>)[system]
+
+  // 1 — the real TRANSITION (CLAUDE.md method notes), not two static mounts:
+  // a single-select group defaults to "bold" pressed; click "italic" and
+  // confirm bold releases while italic presses — the mutual-exclusion half
+  // of behavior.selection-mode's single-mode engine.
+  const mount1 = document.createElement("div")
+  mount1.setAttribute("data-theme", system)
+  host.appendChild(mount1)
+  const root1 = createRoot(mount1)
+  function SingleHarness() {
+    const [value, setValue] = React.useState<string | undefined>("bold")
+    return (
+      <ToggleGroup config={cfg} mode="single" value={value} onValueChange={(v) => setValue(v as string | undefined)} aria-label="single">
+        <ToggleGroupItem config={cfg} value="bold" aria-label="bold">B</ToggleGroupItem>
+        <ToggleGroupItem config={cfg} value="italic" aria-label="italic">I</ToggleGroupItem>
+      </ToggleGroup>
+    )
+  }
+  root1.render(<SingleHarness />)
+  await settle()
+  const items1 = [...mount1.querySelectorAll('[data-slot="toggle-group-item"]')] as HTMLButtonElement[]
+  record("toggle-group", "structure.item", system, items1.length === 2, `${items1.length} item buttons rendered`)
+  if (items1.length === 2) {
+    const [bold, italic] = items1
+    const beforeBold = bold.getAttribute("data-state")
+    const beforeItalic = italic.getAttribute("data-state")
+    italic.click()
+    await settle()
+    record(
+      "toggle-group",
+      "prop.selection-mode",
+      system,
+      beforeBold === "on" && beforeItalic === "off" && bold.getAttribute("data-state") === "off" && italic.getAttribute("data-state") === "on",
+      `before: bold=${beforeBold}, italic=${beforeItalic}; after clicking italic: bold=${bold.getAttribute("data-state")}, italic=${italic.getAttribute("data-state")}`,
+    )
+
+    // 2 — clicking the ALREADY-selected item deselects it (the sourced,
+    // declared divergence from Salt's own real ToggleButtonGroup — see the
+    // skeleton's file banner). This chassis implements ONE engine for all
+    // three columns, so the assertion runs for every system regardless of
+    // whether that system's own real source would allow it.
+    italic.click()
+    await settle()
+    record(
+      "toggle-group",
+      "behavior.keyboard-activate",
+      system,
+      italic.getAttribute("data-state") === "off",
+      `clicking the already-selected item must deselect it (single mode) — italic.data-state=${italic.getAttribute("data-state")}`,
+    )
+  }
+  root1.unmount()
+  mount1.remove()
+
+  // 3 — behavior/prop.selection-mode's OTHER half: multiple mode allows
+  // independent toggling with no mutual exclusion, where the column's own
+  // config advertises the capability (Salt's real source never does).
+  if (cfg.selectionMode?.includes("multiple")) {
+    const mount2 = document.createElement("div")
+    mount2.setAttribute("data-theme", system)
+    host.appendChild(mount2)
+    const root2 = createRoot(mount2)
+    function MultiHarness() {
+      const [value, setValue] = React.useState<string[]>(["bold"])
+      return (
+        <ToggleGroup config={cfg} mode="multiple" value={value} onValueChange={(v) => setValue((v as string[]) ?? [])} aria-label="multiple">
+          <ToggleGroupItem config={cfg} value="bold" aria-label="bold">B</ToggleGroupItem>
+          <ToggleGroupItem config={cfg} value="italic" aria-label="italic">I</ToggleGroupItem>
+        </ToggleGroup>
+      )
+    }
+    root2.render(<MultiHarness />)
+    await settle()
+    const items2 = [...mount2.querySelectorAll('[data-slot="toggle-group-item"]')] as HTMLButtonElement[]
+    if (items2.length === 2) {
+      const [bold, italic] = items2
+      italic.click()
+      await settle()
+      record(
+        "toggle-group",
+        "prop.selection-mode",
+        system,
+        bold.getAttribute("data-state") === "on" && italic.getAttribute("data-state") === "on",
+        `multiple mode: clicking italic must NOT release bold — bold=${bold.getAttribute("data-state")}, italic=${italic.getAttribute("data-state")}`,
+      )
+    }
+    root2.unmount()
+    mount2.remove()
+  } else {
+    record("toggle-group", "prop.selection-mode", system, true, "no \"multiple\" capability in this column (confirmed absence, Salt's real source) — nothing to assert")
+  }
+
+  // 4 — behavior.group-role: Salt is ALWAYS "radiogroup" (hardcoded);
+  // shadcn is presumed to switch on `type`; M3 is ALWAYS "group"
+  // (hardcoded) — asserting the actual role attribute the skeleton wrote.
+  const mount3 = document.createElement("div")
+  mount3.setAttribute("data-theme", system)
+  host.appendChild(mount3)
+  const root3 = createRoot(mount3)
+  root3.render(
+    <ToggleGroup config={cfg} mode="single" defaultValue="a" aria-label="role-check">
+      <ToggleGroupItem config={cfg} value="a" aria-label="a">A</ToggleGroupItem>
+    </ToggleGroup>,
+  )
+  await settle()
+  const groupEl3 = mount3.querySelector('[data-slot="toggle-group-root"]')
+  const expectedRole = cfg.selectionMode?.includes("multiple") ? (cfg.groupTag === "span" ? "group" : "radiogroup") : "radiogroup"
+  record(
+    "toggle-group",
+    "behavior.group-role",
+    system,
+    groupEl3?.getAttribute("role") === expectedRole,
+    `group role="${groupEl3?.getAttribute("role")}" (expected "${expectedRole}" for single mode)`,
+  )
+  root3.unmount()
+  mount3.remove()
+
+  // 5 — prop.group-disabled: a group-level disabled must reach an
+  // UNMODIFIED child, the same OR-merge checkbox's/radio-group's own group
+  // assertions check. shadcn's own group-level forwarding is [R] but this
+  // chassis implements the observable capability regardless, so the
+  // assertion runs for every column that declares the capability.
+  if (Array.isArray(cfg.groupDisabled) && cfg.groupDisabled.includes(true)) {
+    const mount4 = document.createElement("div")
+    mount4.setAttribute("data-theme", system)
+    host.appendChild(mount4)
+    const root4 = createRoot(mount4)
+    root4.render(
+      <ToggleGroup config={cfg} mode="single" defaultValue="a" disabled aria-label="group-disabled">
+        <ToggleGroupItem config={cfg} value="a" aria-label="group-child">A</ToggleGroupItem>
+      </ToggleGroup>,
+    )
+    await settle()
+    const child = mount4.querySelector('[data-slot="toggle-group-item"]') as HTMLButtonElement | null
+    record(
+      "toggle-group",
+      "prop.group-disabled",
+      system,
+      child?.disabled === true,
+      "group disabled must reach an unmodified child — child.disabled=" + child?.disabled,
+    )
+    root4.unmount()
+    mount4.remove()
+  } else {
+    record("toggle-group", "prop.group-disabled", system, true, "no group-disabled capability in this column (confirmed absence, M3's real source) — nothing to assert")
+  }
+
+  // 6 — structure.selected-marker: M3 renders a real, dedicated checkmark
+  // element that becomes visible on selection; Salt/shadcn render NONE —
+  // asserting the negative case is as load-bearing as the positive one.
+  const mount5 = document.createElement("div")
+  mount5.setAttribute("data-theme", system)
+  host.appendChild(mount5)
+  const root5 = createRoot(mount5)
+  root5.render(
+    <ToggleGroup config={cfg} mode="single" defaultValue="a" aria-label="marker-check">
+      <ToggleGroupItem config={cfg} value="a" aria-label="a">A</ToggleGroupItem>
+    </ToggleGroup>,
+  )
+  await settle()
+  const marker = mount5.querySelector('[data-slot="toggle-group-marker"]')
+  const expectMarker = cfg.markerMode === "checkmark"
+  record(
+    "toggle-group",
+    "structure.selected-marker",
+    system,
+    Boolean(marker) === expectMarker,
+    `marker present=${Boolean(marker)} (expected ${expectMarker} for markerMode=${cfg.markerMode ?? "off"})`,
+  )
+  root5.unmount()
+  mount5.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -1692,6 +1871,7 @@ async function run() {
     try { await checkPopoverModalFocusTrap(host, s) } catch (e) { record("popover", "(threw, modal-focus-trap)", s, false, String(e)) }
     try { await checkCombobox(host, s) } catch (e) { record("combobox", "(threw)", s, false, String(e)) }
     try { await checkComboboxParts(host, s) } catch (e) { record("combobox", "(threw, parts)", s, false, String(e)) }
+    try { await checkToggleGroup(host, s) } catch (e) { record("toggle-group", "(threw)", s, false, String(e)) }
   }
   host.remove()
 

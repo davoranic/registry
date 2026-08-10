@@ -1,0 +1,112 @@
+{
+  "system": "salt",
+  "component": "toggle-group",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "neutral": "rgb(114, 119, 125)",
+      "fg-rest": "rgb(0, 0, 0)",
+      "fg-selected": "rgb(255, 255, 255)",
+      "bg-hover": "rgba(0, 0, 0, 0.1)",
+      "bg-active": "rgba(0, 0, 0, 0.15)",
+      "group-bg": "rgb(255, 255, 255)",
+      "group-border": "rgba(0, 0, 0, 0.3)",
+      "focus-outline": "rgb(0, 69, 126)",
+      "type-fontFamily": "'Open Sans', sans-serif",
+      "type-fontWeight": "400"
+    },
+    "dark": {
+      "fg-rest": "rgb(255, 255, 255)",
+      "bg-hover": "rgba(255, 255, 255, 0.1)",
+      "bg-active": "rgba(255, 255, 255, 0.15)",
+      "group-bg": "rgb(16, 24, 32)",
+      "group-border": "rgba(255, 255, 255, 0.3)",
+      "focus-outline": "rgb(154, 189, 245)"
+    },
+    "byDensity": {
+      "high":   { "item-height": "16px", "item-padding-x": "3px",  "group-gap": "2px", "item-gap": "2px", "group-padding": "1px", "item-radius": "1px", "type-fontSize": "11px", "type-lineHeight": "14px" },
+      "medium": { "item-height": "20px", "item-padding-x": "7px",  "group-gap": "4px", "item-gap": "4px", "group-padding": "3px", "item-radius": "2px", "type-fontSize": "12px", "type-lineHeight": "16px" },
+      "low":    { "item-height": "24px", "item-padding-x": "11px", "group-gap": "6px", "item-gap": "6px", "group-padding": "5px", "item-radius": "3px", "type-fontSize": "14px", "type-lineHeight": "18px" },
+      "touch":  { "item-height": "28px", "item-padding-x": "15px", "group-gap": "8px", "item-gap": "8px", "group-padding": "7px", "item-radius": "4px", "type-fontSize": "16px", "type-lineHeight": "20px" }
+    }
+  },
+  "modeInvariant": ["neutral", "fg-selected", "type-fontFamily", "type-fontWeight"],
+  "provenance": {
+    "canonical-source": "packages/core/src/toggle-button-group/{ToggleButtonGroup.tsx,ToggleButtonGroup.css,ToggleButtonGroupContext.ts} and packages/core/src/toggle-button/{ToggleButton.tsx,ToggleButton.css} — all five files read in full. packages/core/stories/toggle-button-group/toggle-button-group.stories.tsx (confirms real icon-only Tooltip-wrapped usage and the single-select-only story — no example anywhere passes an array `value`). Resolution through packages/theme/css/next/characteristics/{actionable,container,focused}.css, next/palette/{neutral,accent,foreground,alpha}.css, next/foundations/color.css, packages/theme/css/foundations/{size,spacing,cursor,borderStyle}.css.",
+    "single-select-only-confirmed": "ToggleButtonGroup.tsx's `role=\"radiogroup\"` is a hardcoded literal, not conditional on any prop. `isSelected(id) { return value === id }` (ToggleButtonGroupContext.ts, via useToggleButtonGroup) is strict-equality against ONE held `value`. The `Value` type (`string | readonly string[] | number | undefined`) permits an array, but no code path anywhere in ToggleButtonGroup.tsx/ToggleButton.tsx ever compares an array's CONTENTS — a real array value would only match by reference, so multiselect is a type artifact, not a working feature, confirmed by reading every reference to `value`/`isSelected`/`select` in both files.",
+    "neutral": "ToggleButton.css .saltToggleButton-neutral.saltToggleButton-solid --toggleButton-background-selected: var(--salt-actionable-background-selected) -> actionable.css -> var(--salt-palette-neutral) -> palette/neutral.css, IDENTICAL in both [data-mode] blocks (var(--salt-color-gray-500)) -> foundations/color.css rgb(114,119,125). MODE-INVARIANT, the SAME token radio-group.salt.json's own 'neutral' slot already resolved. Also used for --toggleButton-borderColor-selected (actionable-borderColor-selected, the SAME role).",
+    "fg-rest": "actionable.css --salt-actionable-subtle-foreground: var(--salt-palette-foreground-primary) -> next/palette/foreground.css, black rgb(0,0,0) light / white rgb(255,255,255) dark. The SAME value used for -hover AND -active (both alias back to foreground-primary too) — Salt's REST/HOVER/ACTIVE text colour never actually changes for the neutral/solid family; only the BACKGROUND does.",
+    "fg-selected": "actionable.css --salt-actionable-foreground-selected: var(--salt-palette-foreground-primary-alt) -> next/palette/foreground.css, white rgb(255,255,255) in BOTH [data-mode] blocks. MODE-INVARIANT.",
+    "bg-hover": "actionable.css --salt-actionable-subtle-background-hover: var(--salt-palette-alpha-contrast-lower) -> next/palette/alpha.css: black-10a light / white-10a dark -> foundations/color.css. This is the UNSELECTED-item hover mechanism only — see selected-hover-scrim.",
+    "bg-active": "actionable.css --salt-actionable-subtle-background-active: var(--salt-palette-alpha-contrast-low) -> alpha.css: black-15a light / white-15a dark.",
+    "selected-hover-scrim": "NOT a separate slot — recorded here for provenance completeness. actionable.css --salt-actionable-bold-background-hover: linear-gradient(var(--salt-palette-alpha-dark-low), var(--salt-palette-alpha-dark-low)) var(--salt-palette-neutral) -> alpha-dark-low resolves to black-15a in BOTH modes (alpha.css) -> a darkening scrim OVER the existing --neutral fill, not a flat colour swap. A SELECTED item's hover treatment is therefore mechanically different from an UNSELECTED item's own bg-hover slot — declared in style.item.hover's row note rather than given its own row, matching the scope-control precedent other components use for a secondary variant axis.",
+    "group-bg": "container.css --salt-container-primary-background: var(--salt-palette-background-primary) -> background-snow rgb(255,255,255) light / background-jet rgb(16,24,32) dark, the SAME slot every prior Salt column's own box-bg/group-bg has used.",
+    "group-border": "container.css --salt-container-primary-borderColor: var(--salt-palette-alpha-contrast-medium) -> alpha.css: black-30a light / white-30a dark.",
+    "focus-outline": "ToggleButton.css :focus-visible { outline: var(--salt-focused-outlineStyle) var(--salt-focused-outlineWidth) var(--salt-focused-outlineColor) } -> next/characteristics/focused.css --salt-focused-outlineColor: var(--salt-palette-accent-stronger) -> blue-700 rgb(0,69,126) light / blue-300 rgb(154,189,245) dark, the SAME slot radio-group's/checkbox's own focus-outline already resolved.",
+    "byDensity.item-height": "ToggleButtonGroup.css .saltToggleButtonGroup-horizontal .saltToggleButton { height: calc(var(--salt-size-base) - var(--salt-spacing-100)) } -> foundations/size.css size-base (20/28/36/44 by density) minus foundations/spacing.css spacing-100 (4/8/12/16 by density) = 16/20/24/28px high/medium/low/touch.",
+    "byDensity.item-padding-x": "ToggleButton.css padding: 0 calc(var(--salt-spacing-100) - var(--toggleButton-borderWidth)) -> spacing-100 (4/8/12/16) minus size-fixed-100 (1px, density-invariant) = 3/7/11/15px.",
+    "byDensity.group-gap / item-gap": "ToggleButtonGroup.css gap: var(--salt-spacing-50); ToggleButton.css gap: var(--salt-spacing-50) -> foundations/spacing.css spacing-50 = calc(0.5 * spacing-100) = 2/4/6/8px — the SAME token cited for two DIFFERENT purposes (between-items vs icon-to-label), a real sourced coincidence, matching the identical pattern radio-group.salt.json's own group-gap/item-gap finding already recorded.",
+    "byDensity.group-padding": "ToggleButtonGroup.css padding: calc(var(--salt-spacing-50) - var(--toggleButtonGroup-borderWidth)) -> spacing-50 (2/4/6/8) minus size-fixed-100 (1px) = 1/3/5/7px.",
+    "byDensity.item-radius": "ToggleButtonGroup.css .saltToggleButtonGroup .saltToggleButton { border-radius: var(--salt-palette-corner-weaker, 0) } -> next/palette/corner.css --salt-palette-corner-weaker: var(--salt-curve-50) -> foundations/curve.css, 1/2/3/4px high/medium/low/touch, the SAME token checkbox's own box-shape row already used.",
+    "byDensity.type-fontSize/lineHeight": "ToggleButton.css's own font declaration is a MIX of two token families, confirmed by reading it line by line (a real correction made after check-provenance.py's own --tokens NOT found scan caught an over-claim in this column's first draft, which cited a non-existent --salt-text-action-fontSize): `font-size: var(--salt-text-fontSize); line-height: var(--salt-text-lineHeight)` use the PLAIN, density-scaled body-size tokens (foundations/characteristics/text.css, 11/14 . 12/16 . 14/18 . 16/20 by density — the SAME numeric scale radio-group's/checkbox's own root-font rows already used), while `font-weight`/`font-family`/`letter-spacing`/`text-transform` use the ACTION-specific tokens instead (see action-role-partial below). No token named --salt-text-action-fontSize or --salt-text-action-lineHeight exists anywhere in the theme package, confirmed directly.",
+    "action-role-partial": "ToggleButton.css's own font declarations read var(--salt-text-action-fontWeight)/var(--salt-text-action-fontFamily)/var(--salt-text-action-letterSpacing)/var(--salt-text-action-textTransform) — the ACTION text role (buttons, links) for weight/family/letter-spacing/text-transform ONLY, layered on top of the PLAIN body role's own size/line-height (see byDensity.type-fontSize/lineHeight). This is genuinely a HYBRID, not a clean single-role citation: next/characteristics/text.css's own [data-mode] block resolves --salt-text-action-textTransform to `uppercase` and --salt-text-action-letterSpacing to `0.6px` — a REAL, VISIBLE fact (Salt toggle-button labels render in ALL CAPS with letter-spacing) this column's first draft omitted entirely by only citing font-size/line-height/font-family/font-weight; fixed by adding both to style.root.font's cell.",
+    "no-selected-marker": "CONFIRMED ABSENCE — grepped ToggleButton.tsx/ToggleButtonIcon-equivalent (there is none) in full: no glyph/icon/indicator element exists anywhere; the checked/selected signal is entirely a background/foreground/border recolour of the button itself.",
+    "no-transition": "CONFIRMED ABSENCE, and it is an EXPLICIT statement not a bare gap: ToggleButton.css's own base rule literally declares `transition: none;`.",
+    "disabled-preserves-selected": "ToggleButton.css: `.saltToggleButton[aria-disabled=\"true\"] { background: var(--toggleButton-background); ...; opacity: 0.4 }` (resets to REST/unselected colours) is immediately followed by `.saltToggleButton[aria-checked=\"true\"].saltToggleButton[aria-disabled=\"true\"], .saltToggleButton[aria-pressed=\"true\"].saltToggleButton[aria-disabled=\"true\"] { background: var(--toggleButton-background-selected); ...}` (re-applies SELECTED colours, without re-declaring opacity) — so a disabled+selected item keeps its fill while still dimming via the opacity property alone, confirmed by reading the cascade order directly.",
+    "cursor-hover-equals-cursor-active": "foundations/cursor.css: --salt-cursor-hover: pointer; --salt-cursor-active: pointer — two differently-named tokens resolving to the identical CSS keyword, confirmed directly."
+  },
+  "cells": {
+    "structure.group": { "kind": "value", "value": "div", "source": "ToggleButtonGroup.tsx returns <div role=\"radiogroup\" ...>, providing ToggleButtonGroupContext to children" },
+    "structure.item": { "kind": "value", "value": true, "source": "ToggleButton.tsx <button ref={handleRef} type=\"button\" {...toggleButtonProps}>" },
+    "structure.icon-slot": { "kind": "value", "value": "children", "source": "toggle-button-group.stories.tsx IconOnlyTemplate: <ToggleButton ...><LightIcon aria-hidden /></ToggleButton> — a plain child, no dedicated slot concept" },
+    "structure.selected-marker": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-selected-marker" },
+
+    "behavior.role": { "kind": "value", "value": "ALWAYS role=\"radio\" + aria-checked when inside a group (regardless of Salt's own single-select-only reality)", "source": "ToggleButton.tsx: role: toggleButtonGroup ? \"radio\" : undefined; aria-checked: toggleButtonGroup ? selected : undefined" },
+    "behavior.group-role": { "kind": "value", "value": "ALWAYS role=\"radiogroup\", hardcoded, not conditional on anything", "source": "ToggleButtonGroup.tsx <div role=\"radiogroup\" ...>" },
+    "behavior.arrow-navigation": { "kind": "value", "value": "real JS roving-tabindex + wrapping arrow-key nav, ArrowDown/Right forward, ArrowUp/Left backward, disabled siblings skipped via a :not([disabled]) query", "source": "ToggleButtonGroup.tsx handleKeyDown; ToggleButtonGroupContext.ts isFocused/focus" },
+    "behavior.keyboard-activate": { "kind": "value", "value": "native <button> Space/Enter activation, no keydown override", "source": "ToggleButton.tsx — no keydown handler bound at all" },
+
+    "prop.selection-mode": { "kind": "value", "value": ["single"], "source": "role=\"radiogroup\" hardcoded + strict === comparison in isSelected — see single-select-only-confirmed" },
+    "prop.variant": { "kind": "value", "value": ["solid", "bordered"], "source": "appearance?: Extract<ButtonAppearance, \"bordered\"|\"solid\">, default \"solid\"" },
+    "prop.size": { "kind": "off", "note": "no per-component size prop — Salt's equivalent axis is the global density system" },
+    "prop.sentiment": { "kind": "value", "value": ["neutral", "accented", "positive", "negative", "caution"], "source": "sentiment?: ButtonSentiment, default \"neutral\"" },
+    "prop.orientation": { "kind": "value", "value": ["horizontal", "vertical"], "source": "orientation?: \"horizontal\"|\"vertical\", default \"horizontal\" — VISUAL ONLY, see the template row's own note" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "toggleButtonGroup?.disabled || disabledProp" },
+    "prop.group-disabled": { "kind": "value", "value": [false, true], "source": "ToggleButtonGroupProps.disabled?: boolean" },
+    "prop.validation": { "kind": "off", "note": "CONFIRMED ABSENCE — no validationStatus/error/warning field anywhere in either component" },
+
+    "slot.item-content": { "kind": "value", "value": "children: ReactNode", "source": "ToggleButton.tsx" },
+    "slot.composes": { "kind": "value", "value": true, "note": "toggle-button-group.stories.tsx's IconOnlyTemplate wraps each ToggleButton in a real <Tooltip content=\"...\" >; the four siblings this matrix's scope note declares (toggle, and — inherited from radio-group's own precedent — form-field for status inheritance, not directly used by this component's own real source but the general Salt composition convention)" },
+
+    "state.rest": { "kind": "value", "value": "transparent background, foreground-primary text, transparent border", "note": "the SAME appearance for hover-inactive as active, since fg-rest never changes across rest/hover/active for the neutral/solid family — only background does" },
+    "state.selected": { "kind": "value", "value": "a REAL SOLID FILL: background moves to neutral (gray-500), text to foreground-primary-alt (white)", "note": "unlike radio-group's own Salt column, which never filled solid" },
+    "state.hover": { "kind": "value", "value": "unselected: flat alpha-tinted background; selected: a darkening scrim gradient OVER the existing fill", "source": "see bg-hover and selected-hover-scrim" },
+    "state.focus": { "kind": "value", "value": "2px dotted outline at 1px offset, plus the hover recolour riding along", "source": "ToggleButton.css :focus-visible" },
+    "state.pressed": { "kind": "value", "value": "background/color/border move to the -active variant", "source": "ToggleButton.css :active" },
+    "state.disabled": { "kind": "value", "value": "flat opacity 0.4 + not-allowed cursor; a disabled+selected item PRESERVES its selected colours", "source": "see disabled-preserves-selected" },
+
+    "style.group.gap": { "kind": "alias", "slot": "group-gap" },
+    "style.group.background": { "kind": "alias", "slot": "group-bg" },
+    "style.group.border": { "kind": "value", "value": { "border-style": "solid", "border-width": "1px", "border-color": "var(--group-border)" }, "source": "ToggleButtonGroup.css border: var(--toggleButtonGroup-borderWidth) solid var(--salt-container-primary-borderColor); --toggleButtonGroup-borderWidth resolves to --salt-size-fixed-100 = 1px, density-invariant" },
+    "style.group.padding": { "kind": "alias", "slot": "group-padding" },
+    "style.item.height": { "kind": "alias", "slot": "item-height" },
+    "style.item.padding": { "kind": "alias", "slot": "item-padding-x" },
+    "style.item.gap": { "kind": "alias", "slot": "item-gap" },
+    "style.item.shape": { "kind": "alias", "slot": "item-radius" },
+    "style.item.border-width": { "kind": "value", "value": "1px", "source": "--toggleButton-borderWidth: var(--salt-size-fixed-100) = 1px" },
+    "style.item.rest": { "kind": "value", "value": { "background": "transparent", "color": "var(--fg-rest)", "border-color": "transparent" }, "source": "ToggleButton.css .saltToggleButton-neutral.saltToggleButton-solid" },
+    "style.item.selected": { "kind": "value", "value": { "background": "var(--neutral)", "color": "var(--fg-selected)", "border-color": "var(--neutral)" }, "source": "ToggleButton.css [aria-checked=\"true\"], [aria-pressed=\"true\"]" },
+    "style.item.hover": { "kind": "value", "value": { "background": "var(--bg-hover)", "color": "var(--fg-rest)" }, "source": "ToggleButton.css @media(hover:hover) :hover (unselected-item mechanism — see selected-hover-scrim for the selected variant, not separately modelled)" },
+    "style.item.focus": { "kind": "value", "value": { "outline": "2px dotted var(--focus-outline)", "outline-offset": "1px", "background": "var(--bg-hover)", "color": "var(--fg-rest)" }, "source": "ToggleButton.css :focus-visible" },
+    "style.item.pressed": { "kind": "value", "value": { "background": "var(--bg-active)", "color": "var(--fg-rest)" }, "source": "ToggleButton.css :active" },
+    "style.item.disabled": { "kind": "value", "value": { "opacity": "0.4", "cursor": "not-allowed" }, "source": "ToggleButton.css [aria-disabled=\"true\"] — see disabled-preserves-selected for why colours are NOT re-declared here" },
+    "style.item.validation": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.item.transition": { "kind": "off", "note": "EXPLICIT `transition: none;` — see no-transition" },
+    "style.selected-marker.paint": { "kind": "off", "note": "no marker glyph exists — see structure.selected-marker" },
+    "style.selected-marker.draw-in@checked": { "kind": "off", "note": "no marker glyph exists" },
+    "style.root.font": { "kind": "value", "value": { "font-size": "var(--type-fontSize)", "line-height": "var(--type-lineHeight)", "font-family": "var(--type-fontFamily)", "font-weight": "var(--type-fontWeight)", "letter-spacing": "0.6px", "text-transform": "uppercase" }, "source": "ToggleButton.css — a HYBRID of the plain body-size tokens and the ACTION-role weight/family/letter-spacing/text-transform tokens, see action-role-partial" },
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": "--salt-cursor-hover / --salt-cursor-active, both resolve to pointer — see cursor-hover-equals-cursor-active" }
+  }
+}

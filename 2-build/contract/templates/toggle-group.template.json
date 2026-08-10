@@ -1,0 +1,250 @@
+{
+  "component": "toggle-group",
+  "openUiAnatomy": "no published Open UI toggle-group anatomy consulted directly — union built from the three clones: shadcn's ToggleGroup + ToggleGroupItem (a thin data-slot-tagging wrapper around radix-ui's ToggleGroup.Root/.Item, external/unvendored — [R] a <div> carrying role=\"radiogroup\" for type=\"single\" or role=\"group\" for type=\"multiple\" per the general Radix convention, wrapping any number of Items, each [R] a real <button>), Salt's ToggleButtonGroup + ToggleButton (a real <div role=\"radiogroup\"> — ALWAYS radiogroup, because Salt's group is genuinely single-select-only despite its Value type alias permitting an array — distributing appearance/sentiment/disabled/readOnly/orientation/value via ToggleButtonGroupContext to any number of ToggleButton children, each a real native <button role=\"radio\" aria-checked> when inside a group), and M3's <md-outlined-segmented-button-set> + <md-outlined-segmented-button> (a REAL, LIVE component in labs/ — not tokens-only, a genuine divergence from most M3 columns in this pipeline — a <span role=\"group\"> ALWAYS, regardless of its own real `multiselect` boolean, wrapping any number of buttons, each a real <button aria-pressed> — M3 uses ONE aria pattern for both single- and multi-select modes, where shadcn/Radix is presumed to switch patterns entirely depending on `type`).",
+  "behavior": {
+    "pattern": "A row of togglable buttons where one (single mode) or several (multiple mode) may be pressed at once — the button-based cousin of radio-group's input-based single-selection pattern, per the general APG toolbar/radiogroup conventions the linked Radix docs cite. THE HEADLINE STRUCTURAL QUESTION THIS MATRIX HAD TO ANSWER FIRST: is single-vs-multiple a real, first-class axis in all three systems, or does one system only pretend to have it? Answer, confirmed by reading the real source rather than assuming from the `Value` type alias: shadcn's `type: \"single\" | \"multiple\"` is a real, first-class Radix prop, demonstrated live in both `toggle-group-demo.tsx` (type=\"multiple\") and `toggle-group-single.tsx` (type=\"single\") [S]. M3's `SegmentedButtonSet.multiselect: boolean` is real, sourced, live JS logic — `setButtonSelected()` branches on it directly, deselecting every sibling in single mode, leaving siblings untouched in multi mode [S]. Salt's `ToggleButtonGroup`, despite its own `Value` type permitting `string | readonly string[] | number | undefined`, is CONFIRMED SINGLE-SELECT-ONLY: `role=\"radiogroup\"` is a HARDCODED literal (not conditional on any prop), `isSelected(id) { return value === id }` uses strict equality against ONE held value (an array value would only ever match by reference, never by content, so multi-select is a TYPE ARTIFACT, not a working capability), and no `ToggleButtonGroupProps` field of any kind selects a selection mode [S, confirmed absence of a working multi-select path despite the permissive type]. A second real structural finding: M3 uses exactly ONE aria pattern — `role=\"group\"` on the set, `aria-pressed` on every button — for BOTH single AND multi-select modes, never switching to `role=\"radiogroup\"`/`role=\"radio\"` the way shadcn's Radix implementation is presumed to for `type=\"single\"` [S, confirmed by reading segmented-button-set.ts/segmented-button.ts in full — no role branching on `multiselect` exists anywhere].",
+    "chassis": "skeleton/toggle-group.tsx — written from the template's part union: a ToggleGroup wrapper (a <div> for Salt/shadcn, a <span> for M3, per structure.group's config strategy) providing context to any number of ToggleGroupItem children, each a real native <button> (matching all three real sources — the first component in this pipeline where NO column needed a declared native-element APPROXIMATION at the item level; every real source already renders a genuine <button>). Selection state: value may be a single string (single mode) or a string array (multiple mode), matching shadcn's real, richer API shape — the ONE internal engine this chassis implements for all three columns, a declared simplification for Salt (whose real source only ever drives the single-string path) and a declared simplification for M3 (whose real source drives a per-item boolean rather than a shared array, converging on the identical OBSERVABLE outcome). A SECOND declared choice, sourced directly rather than assumed: clicking an ALREADY-selected item in single mode DESELECTS it (value becomes undefined) — the presumed real Radix behaviour [R], and a genuine, sourced DIVERGENCE from Salt's own real ToggleButtonGroup, whose `select()` callback re-sets the SAME value on a repeat click and therefore never fires `onChange` and never deselects (grepped directly: `if (value !== newValue) { onChange?.(event) }` — an equal-value click is a silent no-op) — recorded here and in the matrix doc's findings rather than silently reproducing Salt's more restrictive behaviour as if it were universal. Every item is a REAL, unconditionally rendered <button> (no ref-reading effect on a conditionally-mounted node anywhere in this file — the same dialog-trap-immune shape checkbox.tsx/switch.tsx/radio-group.tsx already have). Icon content is wrapped in its own [data-slot=\"toggle-group-item-icon\"] span, explicitly sized (CLAUDE.md rule 12 — see structure.icon-slot), matching the exact fix POPOVER-MATRIX.md findings 9/10 record for an unconstrained SVG."
+  },
+  "skeletonParams": {
+    "groupTag": ["div", "span"],
+    "markerMode": ["off", "checkmark"],
+    "selectionMode": ["single", "multiple"],
+    "variant": ["solid", "bordered", "default", "outline"],
+    "size": ["sm", "default", "lg"],
+    "sentiment": ["neutral", "accented", "positive", "negative", "caution"],
+    "orientation": ["horizontal", "vertical"],
+    "disabled": [false, true],
+    "groupDisabled": [false, true],
+    "validation": ["off", "error"]
+  },
+  "base": {
+    "[data-slot=\"toggle-group-root\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "width": "fit-content"
+    },
+    "[data-slot=\"toggle-group-root\"][data-orientation=\"vertical\"]": {
+      "flex-direction": "column"
+    },
+    "[data-slot=\"toggle-group-item\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "position": "relative",
+      "appearance": "none",
+      "background": "none",
+      "margin": "0",
+      "text-decoration": "none",
+      "white-space": "nowrap",
+      "-webkit-tap-highlight-color": "transparent"
+    },
+    "[data-slot=\"toggle-group-item-icon\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"toggle-group-item-icon\"] svg": {
+      "display": "block",
+      "width": "1em",
+      "height": "1em"
+    },
+    "[data-slot=\"toggle-group-marker\"]": {
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "opacity": "0",
+      "transform": "scale(0.5)"
+    },
+    "[data-slot=\"toggle-group-marker\"] svg": {
+      "display": "block",
+      "width": "1em",
+      "height": "1em"
+    },
+    "[data-slot=\"toggle-group-item\"][data-state=\"on\"] [data-slot=\"toggle-group-marker\"]": {
+      "opacity": "1",
+      "transform": "scale(1)"
+    }
+  },
+  "rows": [
+    { "id": "structure.group", "piece": "structure", "policy": "locked", "channel": "config", "param": "groupTag",
+      "note": "The wrapper's own TAG, kept separate from its ROLE (see behavior.group-role, which depends on the runtime selection-mode axis and cannot be a fixed per-system config value the way radio-group's could). Salt = \"div\": ToggleButtonGroup.tsx returns a real <div ... role=\"radiogroup\"> [S]. shadcn = \"div\" [R]: ToggleGroupPrimitive.Root, a thin wrapper around radix-ui's own Root, documented/presumed to render a plain <div>. M3 = \"span\": segmented-button-set.ts's render() returns a real <span role=\"group\" class=\"md3-segmented-button-set\">, confirmed directly — a genuinely different tag from either sibling, and the FIRST M3 column in this pipeline whose group wrapper is real, live, cloned source rather than an [R] inference (material-web's labs/ directory ships an actual Lit component for this one, not tokens-only)." },
+
+    { "id": "structure.item", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "All three render a REAL native <button> for each toggle item — the first component in this pipeline where every column's item element converges on the identical underlying DOM primitive with zero declared approximation needed. Salt [S]: ToggleButton.tsx's own `<button ref={handleRef} {...toggleButtonProps}>`, `type=\"button\"`. shadcn [R]: radix-ui's Toggle/ToggleGroup primitives are documented as rendering a native <button>, consistent with the base-ui/aria style variants read for context. M3 [S]: segmented-button.ts's render() literally contains `<button tabindex=... aria-pressed=... ?disabled=... class=\"md3-segmented-button\">` inside its shadow DOM — genuinely live, cloned source, not inferred." },
+
+    { "id": "structure.icon-slot", "piece": "structure", "policy": "switchable", "channel": "info",
+      "note": "All three support an icon inside an item, but the MECHANISM diverges. Salt [S]: plain children composition — icon-only examples (toggle-button-group.stories.tsx's IconOnlyTemplate) pass e.g. `<LightIcon aria-hidden />` as a direct child, no dedicated slot concept. shadcn [S]: same — plain `children` (`<Bold className=\"h-4 w-4\" />` in toggle-group-demo.tsx), the item's own `[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4` base rule defaults an unsized svg to 16px (the SAME lesson-12 guard this chassis's own base block gives every icon explicitly). M3 [S]: a DEDICATED named `<slot name=\"icon\">`, with `hasIcon` detected via `queryAssignedElements({slot: 'icon', flatten: true})` in `update()` — a real, structural anatomy difference (a named slot vs generic children), not merely a styling one." },
+
+    { "id": "structure.selected-marker", "piece": "structure", "policy": "switchable", "channel": "config", "param": "markerMode",
+      "note": "THE SHARPEST STRUCTURAL DIVERGENCE THIS MATRIX FOUND. Salt: **off** — CONFIRMED ABSENCE, ToggleButton.tsx/.css carry no glyph of any kind; the entire selected signal is a background/foreground/border recolour (see state.selected). shadcn: **off** — CONFIRMED ABSENCE, the same finding: `data-[state=on]:bg-accent data-[state=on]:text-accent-foreground` is the whole signal, no indicator element anywhere in toggle.tsx/toggle-group.tsx. M3 = \"checkmark\": a REAL, DEDICATED, ALWAYS-PRESENT checkmark <svg> (`renderLeadingWithLabel`/`renderLeadingWithoutLabel`), hidden at rest (`.md3-segmented-button--unselected .md3-segmented-button__checkmark { opacity: 0 }`) and fading in on selection — AND, when the item also has a label, the leading ICON fades OUT as the checkmark fades in (`.md3-segmented-button--selected.md3-segmented-button--with-label .md3-segmented-button__icon { opacity: 0 }`) so the two glyphs occupy the same slot rather than stacking, a real sourced choreography [S]." },
+
+    { "id": "behavior.role", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Per-item role, and it depends on the runtime selection-mode axis for two of three columns. Salt [S]: ALWAYS `role=\"radio\"` + `aria-checked` when inside a group (`toggleButtonGroup ? \"radio\" : undefined`, and `aria-checked: toggleButtonGroup ? selected : undefined`) — regardless of the fact Salt has no real multi-select, this IS the mechanism it uses, matching radio-group's own item role exactly. shadcn [R]: presumed to SWITCH per `type` — `role=\"radio\"`+`aria-checked` for `type=\"single\"` (mirroring Salt/the general APG radiogroup pattern), `aria-pressed` with no special role for `type=\"multiple\"` (mirroring a toolbar of toggle buttons) — the general Radix ToggleGroup convention; not independently confirmable, `radix-ui` is unvendored. M3 [S]: ALWAYS `aria-pressed=${this.selected}` on a native button, NEVER `role=\"radio\"`/`aria-checked`, confirmed directly in segmented-button.ts's render() — genuinely ONE pattern for both selection modes, the real headline finding of this row." },
+
+    { "id": "behavior.group-role", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt [S]: ALWAYS `role=\"radiogroup\"` — a hardcoded literal in ToggleButtonGroup.tsx, not conditional on anything (consistent with Salt having no real multi-select path). shadcn [R]: presumed to switch — `role=\"radiogroup\"` for `type=\"single\"`, `role=\"group\"` (or none) for `type=\"multiple\"`, per the general Radix convention; not independently confirmable. M3 [S]: ALWAYS `role=\"group\"` on the `<span>` — confirmed directly, literal in segmented-button-set.ts's render(), regardless of `multiselect` — the SAME single-pattern-for-both-modes finding as behavior.role, now on the wrapper." },
+
+    { "id": "behavior.arrow-navigation", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "A REAL, GENUINE THREE-WAY SPLIT — unlike radio-group's own version of this row, which converged for a structural reason, this one does not. Salt [S]: REAL, explicit JS — `ToggleButtonGroup.tsx`'s own `handleKeyDown` queries `button:not([disabled])` inside the group, ArrowDown/ArrowRight move forward, ArrowUp/ArrowLeft move backward, WRAPPING (`% elements.length`); a full roving-tabindex story is layered on top via `isFocused(id)`/`focus(id)` (only the most-recently-focused — or, absent that, the currently SELECTED — item carries `tabIndex=0`, every other item `tabIndex=-1`). shadcn [R]: presumed roving-focus-group behaviour (arrow keys move a single tab stop, likely Home/End too), per Radix's own well-documented shared roving-focus primitive (the same one Radix's Tabs/RadioGroup use); not independently confirmable, `radix-ui` unvendored. M3: **off** — CONFIRMED ABSENCE, grepped the ENTIRE live segmentedbutton/segmentedbuttonset source tree for \"keydown\"/\"KeyDown\"/\"ArrowLeft\"/\"roving\": zero hits. Each enabled button's own `tabindex` is a flat `disabled ? '-1' : '0'` (segmented-button.ts's render()) — EVERY enabled button is independently Tab-stoppable in sequence; there is no roving single tab-stop and no arrow-key handling of any kind. A real, sourced, structural absence, not an oversight this registry is inferring." },
+
+    { "id": "behavior.keyboard-activate", "piece": "behavior", "policy": "locked", "channel": "info",
+      "note": "Converges, for a structural reason: because every column renders a REAL native <button> (structure.item), Space/Enter activation is free from the browser everywhere, with zero custom keydown code needed for activation specifically (as opposed to navigation, which is where the three columns diverge — see behavior.arrow-navigation). Salt [S]: no keydown override for activation in ToggleButton.tsx. shadcn [R]: native button semantics, presumed. M3 [S]: no keydown override in segmented-button.ts either (confirmed by the same full-tree grep that found no arrow-key handling) — the button's own native activation is the whole mechanism." },
+
+    { "id": "prop.selection-mode", "piece": "prop", "policy": "switchable", "channel": "config", "param": "selectionMode",
+      "note": "shadcn [\"single\",\"multiple\"], SOURCE-DEFAULT-FIRST (`type=\"single\"` in toggle-group-single.tsx, `type=\"multiple\"` in toggle-group-demo.tsx — both real, first-class values of a real Radix prop) [S]. M3 [\"single\",\"multiple\"], SOURCE-DEFAULT-FIRST (`@property({type: Boolean}) multiselect = false` — `false`/single is the real default) [S]. Salt: **[\"single\"] ONLY** — see the template's own `behavior.pattern` note for the full grep-confirmed finding: the `Value` type alias PERMITS an array, but `role=\"radiogroup\"` is hardcoded and `isSelected` uses strict `===` against one held value, so a working multi-select path does not exist in the real source despite the type suggesting otherwise [S, confirmed absence of a WORKING capability, not merely absence of a type]." },
+
+    { "id": "prop.variant", "piece": "prop", "policy": "switchable", "channel": "config", "param": "variant",
+      "note": "Salt [\"solid\",\"bordered\"], SOURCE-DEFAULT-FIRST (`appearance?: Extract<ButtonAppearance, \"bordered\"|\"solid\">`, default `solid` per ToggleButton.tsx's own fallback chain) [S]. shadcn [\"default\",\"outline\"], SOURCE-DEFAULT-FIRST (`toggleVariants`'s own `defaultVariants: { variant: \"default\" }`) [S]. M3: **off** — CONFIRMED ABSENCE of a variant AXIS: only ONE segmented-button family exists in the real source (`labs/segmentedbutton{,set}/internal/outlined-segmented-button{,-set}.ts`) — no `filled-segmented-button` file or class exists anywhere under `labs/` or `tokens/versions/v0_192/`, confirmed by directory listing. M3 ships exactly one visual treatment; there is no second value to switch to." },
+
+    { "id": "prop.size", "piece": "prop", "policy": "switchable", "channel": "config", "param": "size",
+      "note": "shadcn ONLY: [\"sm\",\"default\",\"lg\"], SOURCE-DEFAULT-FIRST (`toggleVariants`'s own `defaultVariants: { size: \"default\" }`, real per-size classes confirmed directly in `toggle-group-sm.tsx`/`toggle-group-lg.tsx`) [S]. Salt: **off** — Salt has no per-COMPONENT size prop; its equivalent axis is the GLOBAL density system (`salt-density-*`), already modelled once for the whole registry rather than re-declared per component. M3: **off** — `container-height: 40px` is a single hardcoded literal in the token file, no size axis of any kind." },
+
+    { "id": "prop.sentiment", "piece": "prop", "policy": "switchable", "channel": "config", "param": "sentiment",
+      "note": "Salt ONLY: [\"neutral\",\"accented\",\"positive\",\"negative\",\"caution\"], SOURCE-DEFAULT-FIRST (`sentiment?: ButtonSentiment`, default `\"neutral\"`) [S] — five real `.saltToggleButton-<sentiment>` CSS blocks confirmed directly in ToggleButton.css. shadcn/M3: **off** — CONFIRMED ABSENCE, no tone/sentiment concept for this component in either source." },
+
+    { "id": "prop.orientation", "piece": "prop", "policy": "switchable", "channel": "config", "param": "orientation",
+      "note": "Salt [\"horizontal\",\"vertical\"], SOURCE-DEFAULT-FIRST (`orientation?: \"horizontal\"|\"vertical\"`, default `\"horizontal\"`) [S] — but a real, worth-stating NUANCE: orientation is VISUAL-ONLY in Salt's own real source — `handleKeyDown` always maps ArrowDown/ArrowRight forward and ArrowUp/ArrowLeft backward REGARDLESS of `orientation`, confirmed by reading the whole handler; only `.saltToggleButtonGroup-vertical { flex-direction: column }` changes. shadcn [\"horizontal\",\"vertical\"] [S, prop existence confirmed in `toggle-group-vertical.tsx`]; [R] whether Radix's own roving-focus-group SWAPS its arrow-key mapping for vertical orientation (the general convention its shared primitive follows, unlike Salt's real fixed mapping) — not independently confirmable. M3: **off** — CONFIRMED ABSENCE, `_shared.scss`'s `.md3-segmented-button-set { display: grid; grid-auto-flow: column; ... }` is a HARDCODED horizontal-only layout; no vertical variant token, class, or property exists anywhere in the real source." },
+
+    { "id": "prop.disabled", "piece": "prop", "policy": "locked", "channel": "config", "param": "disabled",
+      "note": "[false,true] — item-level, all three [S]: Salt `ToggleButtonProps` has no OWN `disabled` field but merges the group's (`toggleButtonGroup?.disabled || disabledProp`, where `disabledProp` comes through `...rest`); shadcn native `disabled` on `ToggleGroupItem` (confirmed directly in `toggle-group-disabled.tsx`); M3 `@property({type:Boolean}) disabled` on `SegmentedButton`, plus real programmatic helpers on the SET (`getButtonDisabled(index)`/`setButtonDisabled(index, disabled)`)." },
+
+    { "id": "prop.group-disabled", "piece": "prop", "policy": "switchable", "channel": "config", "param": "groupDisabled",
+      "note": "Salt [false,true] [S]: `ToggleButtonGroupProps.disabled?: boolean`, merged into every child via context — the SAME mechanism radio-group's own group-disabled row used. shadcn [false,true] [S]: `<ToggleGroup type=\"multiple\" disabled>` is a REAL, confirmed example (`toggle-group-disabled.tsx`) — a group-level `disabled` genuinely reaches every Item. M3: **off** — CONFIRMED ABSENCE: `SegmentedButtonSet`'s own `@property` list has exactly ONE field (`multiselect`) — no group-level `disabled` exists; each button's `disabled` must be set individually, or programmatically via the SET's own per-index `setButtonDisabled` helper (a real capability, but not a single group-wide switch)." },
+
+    { "id": "prop.validation", "piece": "prop", "policy": "switchable", "channel": "config", "param": "validation",
+      "note": "shadcn ONLY: [\"off\",\"error\"] [S] — `toggleVariants`'s own base string carries `aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40`, a real, class-confirmed validation treatment (the consumer sets `aria-invalid` directly, the same bare-boolean shape checkbox's/radio-group's own shadcn columns used). Salt: **off** — CONFIRMED ABSENCE, no `validationStatus`/error/warning field anywhere in ToggleButtonProps/ToggleButtonGroupProps or either .css file. M3: **off** — CONFIRMED ABSENCE, no error/invalid token anywhere in `_md-comp-outlined-segmented-button.scss` (read in full, both editions)." },
+
+    { "id": "slot.item-content", "piece": "slot", "policy": "locked", "channel": "info",
+      "note": "Consumer-owned in all three — an icon, a text label, or both. Salt/shadcn: plain `children`. M3: children route through the item's own default slot for the label PLUS the dedicated named `slot=\"icon\"` for an icon (see structure.icon-slot) — the label itself is a plain `label` STRING property (`@property() label = ''`), not slotted content, a real, sourced API-shape difference from Salt/shadcn (whose label is always JSX children, never a separate string prop) [S]." },
+
+    { "id": "slot.composes", "piece": "slot", "policy": "default", "channel": "info",
+      "note": "DECLARED COMPOSITION. (a) `toggle` — the single-item, no-group sibling row this matrix deliberately does NOT absorb (see the matrix doc's own scope note for the full structural reasoning: shadcn's `Toggle`/`toggleVariants` genuinely underpins `ToggleGroupItem` in code, but a standalone `Toggle` carries no selection-SET semantics of its own, and M3's own source states directly that its segmented button is 'intended **only** for use as a child of a SegmentedButtonSet component. It is **not** intended for use in any other context' — the component-map's own M3 column already records this as an absence on the standalone `toggle` row). (b) Salt's OWN icon-only usage pattern wraps EACH `ToggleButton` in a real, separate `<Tooltip>` for the aria-label pairing (`toggle-button-group.stories.tsx`'s `IconOnlyTemplate`) — a real, sourced composition with `tooltip` (an already-built canonical row), not modelled here. All render as neutral placeholders in the harness rather than importing those skeletons." },
+
+    { "id": "state.rest", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Unselected, enabled, unfocused. Salt (neutral/solid, the source default): transparent background, `foreground-primary` text (black/white), transparent border [S]. shadcn (default variant): `bg-transparent`, inherited text colour, no border; (outline variant): `border-input` 1px border + `shadow-xs` [S]. M3: NO background of any kind at rest (`.md3-segmented-button--selected { background-color: ... }` is the ONLY background rule in the whole stylesheet — unselected genuinely draws nothing), `unselected-label-text-color`=on-surface, a SEPARATE `.md3-segmented-button__outline` span carries the 1px `outline`-role stroke [S]." },
+
+    { "id": "state.selected", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "All three genuinely FILL on selection — a real contrast with radio-group's own Salt/M3 columns, whose containers never filled solid. Salt [S]: background moves from transparent to `neutral` (gray-500, mode-invariant), text to `foreground-primary-alt` (white, both modes) — a real SOLID FILL, not merely a border recolour. shadcn [S]: `data-[state=on]:bg-accent data-[state=on]:text-accent-foreground` — also a real fill. M3 [S]: background moves to `secondary-container`, text to `on-secondary-container`, PLUS the dedicated checkmark glyph fades in (structure.selected-marker) — three different mechanisms, one shared strategy (fill, not outline)." },
+
+    { "id": "state.hover", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt [S]: TWO different mechanisms depending on whether the item is ALSO selected — unselected hover moves to a flat alpha-tinted background (`actionable-subtle-background-hover`); SELECTED hover instead applies a darkening SCRIM gradient OVER the existing selected fill (`linear-gradient(alpha-dark-low, alpha-dark-low) neutral`, confirmed directly in actionable.css) — a real, sourced, two-mechanism finding, not a single flat token reused. shadcn [S]: unselected hover -> `bg-muted`/`text-muted-foreground`; the OUTLINE variant's own hover OVERRIDES to `bg-accent`/`text-accent-foreground` instead (a per-variant divergence, confirmed directly in `toggleVariants`'s `outline` branch) — no explicit selected-hover override exists in the class string at all (Tailwind cascade between the unconditional `hover:` utility and the `data-[state=on]:` utility is not independently resolved here). M3 [S]: BOTH selected and unselected have their OWN real hover colour tokens (unlike radio-group's icon-only story) plus an 8%-opacity ripple state layer, documented not rendered." },
+
+    { "id": "state.focus", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt [S]: `:focus-visible` -> 2px dotted outline + the hover recolour riding along, the identical mechanism every prior Salt column in this pipeline used. shadcn [S]: `focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50`. M3 [S]: label/icon colour recolours to the focus token (numerically identical to hover — the SAME token-reuse pattern radio-group's M3 column already found) plus a SEPARATE `md-focus-ring` element (documented not rendered)." },
+
+    { "id": "state.pressed", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Salt [S]: on — `.saltToggleButton:active { background/color/border-color: -active variants }`, a real, confirmed rule. shadcn: **off** — CONFIRMED ABSENCE, no `active:` class prefix anywhere in `toggleVariants`'s full string, grepped directly. M3 [S]: on — label/icon colour recolours to the pressed token (again numerically identical to hover/focus) plus a 12%-opacity ripple (documented not rendered, matching the focus/pressed opacity pair every prior M3 column in this pipeline has used)." },
+
+    { "id": "state.disabled", "piece": "state", "policy": "locked", "channel": "info",
+      "note": "Salt [S]: flat opacity 0.4 + `cursor: not-allowed`, WITH a real nuance — a disabled+selected item PRESERVES its selected colour scheme (a dedicated override rule re-applies the selected background/foreground/border on top of the disabled rule; only opacity/cursor persist from the disabled-only rule, since the override does not redeclare them), rather than resetting to the unselected disabled treatment. shadcn [S]: `disabled:pointer-events-none disabled:opacity-50`. M3 [S]: three separate opacity tokens (icon/label 0.38, outline 0.12) — the same 0.38-content/0.12-container M3 convention every prior M3 column in this pipeline has used." },
+
+    { "id": "style.group.gap", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-root\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt: `--salt-spacing-50`, density-scaled 2/4/6/8px (high/medium/low/touch) — ToggleButtonGroup.css's own `gap` declaration, FIXED (not a per-item/spacing-prop axis the way shadcn's is) [S]. shadcn: `gap-[--spacing(var(--gap))]`, where `--gap` is literally the `spacing` PROP's own numeric value — SOURCE-DEFAULT `spacing = 0` (read directly from `toggle-group.tsx`'s own destructured default; see the matrix doc's own finding on the doc-vs-source contradiction for the changelog's claimed default of 2) — so the REAL, current default is a ZERO gap, connected layout [S]. M3: `0` — CONFIRMED ABSENCE of any gap declaration in `_shared.scss`'s `.md3-segmented-button-set { display: grid; grid-auto-flow: column; ...}` grid rules — items are always edge-to-edge [S]." },
+
+    { "id": "style.group.background", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-root\"]",
+      "declarations": { "background": "$" },
+      "note": "Salt ONLY [S]: `container-primary-background` — a real, filled chassis BEHIND the whole group, matching checkbox's/switch's own `box-bg`. shadcn/M3: **off** — CONFIRMED ABSENCE, neither Root nor the M3 `<span>` carries any background declaration." },
+
+    { "id": "style.group.border", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-root\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY [S]: a real 1px OUTER border wrapping the whole group (`--toggleButtonGroup-borderWidth: var(--salt-size-fixed-100)`, `border-color: container-primary-borderColor`) — a genuinely different mechanism from shadcn's item-level `border-input`/`outline`-variant borders and M3's per-item `.md3-segmented-button__outline` span; only Salt draws a border around the GROUP itself. shadcn/M3: **off**, confirmed absence at the group level." },
+
+    { "id": "style.group.padding", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-root\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt ONLY [S]: `calc(var(--salt-spacing-50) - var(--toggleButtonGroup-borderWidth))`, density-scaled 1/3/5/7px (high/medium/low/touch) — the inset between the group's own outer border and its first/last item. shadcn/M3: **off**, no group-level padding in either real source." },
+
+    { "id": "style.item.height", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "declarations": { "height": "$" },
+      "note": "Salt: `calc(var(--salt-size-base) - var(--salt-spacing-100))`, density-scaled 16/20/24/28px (high/medium/low/touch) — ToggleButtonGroup.css's own horizontal-orientation rule [S]. shadcn: `h-8`/`h-9`/`h-10` = 32/36/40px by `prop.size` [S]. M3: `container-height` = 40px, hardcoded, both editions [S]." },
+
+    { "id": "style.item.padding", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "declarations": { "padding": "0 $" },
+      "note": "Salt: `calc(var(--salt-spacing-100) - var(--toggleButton-borderWidth))`, density-scaled 3/7/11/15px (high/medium/low/touch) [S]. shadcn: `px-1.5`/`px-2`/`px-2.5` = 6/8/10px by `prop.size` [S]. M3: `12px` — a HARDCODED WORKAROUND VALUE, not from the official token generator: `_outlined-segmented-button.scss`'s own comment reads `// b/198759625 - Remove spacing tokens once provided.` immediately above `'spacing-leading': 12px, 'spacing-trailing': 12px` — a real, sourced technical-debt marker in M3's own authored (non-generated) stylesheet, worth citing verbatim rather than treating as an ordinary token [S]." },
+
+    { "id": "style.item.gap", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "declarations": { "gap": "$" },
+      "note": "The internal gap between an item's own icon and label. Salt: `--salt-spacing-50`, density-scaled 2/4/6/8px (high/medium/low/touch) — ToggleButton.css's own `gap` declaration [S]. shadcn: `gap-2` = 8px, fixed, part of `toggleVariants`'s base string [S]. M3: **off** — no explicit gap property between the icon and label spans in `_shared.scss`; spacing between them is achieved through the `.md3-segmented-button__graphic`'s own calculated WIDTH (`icon-size + 8px`) rather than a `gap` property, a genuinely different CSS mechanism, not merely a missing value [S, confirmed absence of a `gap` property specifically]." },
+
+    { "id": "style.item.shape", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: `corner-weaker`, density-scaled 1/2/3/4px (high/medium/low/touch) — applied to EVERY item independently (`.saltToggleButtonGroup .saltToggleButton { border-radius: corner-weaker }`), never just the first/last [S]. shadcn: `rounded-md` = `calc(0.625rem * 0.8)`, the SAME radius formula this registry's other shadcn columns already established — but real, sourced NUANCE: at the source-default `spacing=0` (see style.group.gap), the ITEM classes add `rounded-none` plus `first:rounded-l-md`/`last:rounded-r-md` — ONLY the group's own two end items get any rounding at all, a CONNECTED/segmented look, contradicting the visually-gapped/pill impression the docs' own screenshots and later `spacing=2` examples suggest — a real doc-vs-source contradiction, trusted from the grep over the prose, per CLAUDE.md's own instruction [S]. M3: pill-shaped ends ONLY — `shape: corner-full` = 9999px is the underlying BUTTON's own token, applied by the SET to its first/last slotted child via `::slotted(:first-child)`/`::slotted(:last-child)` (`border-start-start-radius`/etc); every middle item is square (`border-radius: inherit`, unset by default) [S] — the SAME 'ends rounded, middle square' shape shadcn's own real default converges on, via a completely different mechanism (a data-attribute-driven Tailwind class vs a `::slotted` CSS selector) — an explainable convergence, not a retrofit." },
+
+    { "id": "style.item.border-width", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "declarations": { "border-style": "solid", "border-width": "$" },
+      "note": "Salt: `--salt-size-fixed-100` = 1px, fixed scale [S]. shadcn: `border` utility on the outline variant = 1px, undeclared exact width per the established unvendored-Tailwind caveat [S]. M3: **off** — CONFIRMED ABSENCE on the ITEM itself: the 1px outline stroke lives on a SEPARATE `.md3-segmented-button__outline` span (`position: absolute; inset: 0px -0.5px`), not a `border-width` property of the button element — the identical 'the ring lives somewhere unexpected' shape radio-group's own M3 column already found for its dual-circle dot [S]." },
+
+    { "id": "style.item.rest", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt (neutral/solid): `background: transparent; color: var(--fg-rest); border-color: transparent` [S]. shadcn (default variant): `background: transparent` — no text-colour override at rest, inherits [S]. M3: `background: transparent; color: var(--fg-rest)` on the label text — the border/outline lives on the separate span (style.item.border-width) [S]." },
+
+    { "id": "style.item.selected", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"][data-state=\"on\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: `background: var(--neutral); color: var(--fg-selected); border-color: var(--neutral)` — a REAL SOLID FILL [S]. shadcn: `background: var(--accent-bg); color: var(--accent-fg)` [S]. M3: `background: var(--secondary-container); color: var(--on-secondary-container)` [S]." },
+
+    { "id": "style.item.hover", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]:hover",
+      "cellIsDeclarations": true,
+      "note": "Salt (unselected hover, the flat mechanism): `background: var(--bg-hover); color: var(--fg-rest)` — see the matrix doc's own note on Salt's SECOND, scrim-based selected-hover mechanism, not separately modelled as its own row for scope control [S]. shadcn: `background: var(--muted-bg); color: var(--muted-fg)` [S]. M3: `color: var(--fg-hover)` on the label/icon text (no container background — see state.rest) [S]." },
+
+    { "id": "style.item.focus", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]:focus-visible",
+      "cellIsDeclarations": true,
+      "note": "Salt: `outline: 2px dotted var(--focus-outline); outline-offset: 1px; background: var(--bg-hover); color: var(--fg-rest)` [S]. shadcn: `border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)` [S]. M3: `color: var(--fg-hover)` — numerically identical to hover, the same token-reuse pattern radio-group's own M3 column found [S]." },
+
+    { "id": "style.item.pressed", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]:active",
+      "cellIsDeclarations": true,
+      "note": "Salt: `background: var(--bg-active); color: var(--fg-rest)` [S]. shadcn: **off** — CONFIRMED ABSENCE, no `active:` class anywhere. M3: `color: var(--fg-hover)` — again numerically identical to hover/focus [S]." },
+
+    { "id": "style.item.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]:disabled",
+      "cellIsDeclarations": true,
+      "note": "Deliberately OPACITY/CURSOR ONLY (no background/foreground/border overrides) for all three — this is not an omission, it is what lets a disabled+selected item PRESERVE its selected colours automatically (Salt's own real source does exactly this, see state.disabled), and native `<button disabled>` semantics already make hover/focus/active physically unreachable, so no cascade-order conflict exists to guard against. Salt: `opacity: 0.4; cursor: not-allowed` [S]. shadcn: `opacity: 0.5; cursor: not-allowed` [S]. M3: **off** — dimming happens PER-ELEMENT (icon/label/outline each carry their own opacity token) rather than on the item container as a whole; not expressible as one container-level declaration without inventing a value M3's own source does not apply at that level [S]." },
+
+    { "id": "style.item.validation", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"][data-validation=\"error\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn ONLY [S]: `border-color: var(--danger); box-shadow: 0 0 0 3px color-mix(in oklab, var(--danger) var(--ring-alpha-invalid), transparent)` — a PERMANENT ring, not gated on focus, the same `aria-invalid` pattern checkbox's/combobox's own shadcn columns used. Salt/M3: **off**, confirmed absence — see prop.validation." },
+
+    { "id": "style.item.transition", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "declarations": { "transition": "$" },
+      "note": "Salt: **off** — and this is a POSITIVE statement, not a bare absence: `ToggleButton.css`'s own base rule literally reads `transition: none;` — Salt EXPLICITLY disables transitions on this element, confirmed directly [S]. shadcn: `transition-[color,box-shadow]`, real, class-confirmed [S]. M3: **off** at the item-container level — M3's own real motion on this component lives specifically on the checkmark/icon choreography (structure.selected-marker), not a general item-level property transition; not modelled as a duplicate of that row [S]." },
+
+    { "id": "style.selected-marker.paint", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-marker\"] svg",
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY [S]: `selected-icon-color` = `on-secondary-container` — `.md3-segmented-button--selected .md3-segmented-button__checkmark-path { stroke: var(--_selected-icon-color) }`, a STROKED path (the checkmark is drawn, not filled — `fill=\"none\"` is a literal in the real SVG markup). Salt/shadcn: **off**, neither renders a marker glyph at all (structure.selected-marker)." },
+
+    { "id": "style.selected-marker.draw-in@checked", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"][data-state=\"on\"] [data-slot=\"toggle-group-marker\"]",
+      "declarations": { "transition": "$" },
+      "note": "M3 ONLY. THE REAL M3 SOURCE uses a `stroke-dashoffset` `@keyframes` draw-in (150ms, 50ms delay) plus a fade of the icon it replaces — see `_shared.scss`'s `.md3-segmented-button--selecting`/`--deselecting` rules. `gen-from-template.py` has no mechanism to emit a raw `@keyframes` block (only `selector { declarations }` rules), and `harness/chrome.css` — where prior components (dialog, radio-group) appended their own keyframes — is OFF LIMITS to this build per its own concurrency rule. DECLARED APPROXIMATION: this row instead uses a plain CSS `transition` on the SAME opacity/transform pair `base` already sets at rest (`opacity:0; transform:scale(0.5)` -> `opacity:1; transform:scale(1)`, see the template's own `base` block) — a fade-and-grow that approximates the real draw-in's SILHOUETTE without reproducing its literal stroke animation. `140ms cubic-bezier(0.3, 0, 0, 1)`, matching the easing-emphasized-decelerate family radio-group's own dual-circle grow-in already cited from the same M3 motion vocabulary." },
+
+    { "id": "style.root.font", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "declarations": { "font-size": "$fontSize", "line-height": "$lineHeight", "font-family": "$fontFamily", "font-weight": "$fontWeight" },
+      "cellIsDeclarations": true,
+      "note": "Salt: the ACTION role (not the BODY role radio-group's own label text used), by density — `--salt-text-action-fontWeight`/`-fontFamily`/`-letterSpacing`/`-textTransform`, confirmed directly in ToggleButton.css's own font declarations, a real, sourced divergence from radio-group's own root-font row [S]. shadcn: `text-sm font-medium` = 500 weight, 0.875rem/1.25rem [S]. M3: the label-large typescale, `500 0.875rem/1.25rem 'Roboto', sans-serif` [S]." },
+
+    { "id": "style.root.cursor", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"toggle-group-item\"]",
+      "declarations": { "cursor": "$" },
+      "note": "Salt: `cursor-hover` = pointer at rest, `cursor-active` when selected — BOTH tokens resolve to the identical CSS keyword `pointer` (confirmed directly in `foundations/cursor.css`), a real sourced coincidence, not a meaningful behavioural difference [S]. shadcn: **off** — CONFIRMED ABSENCE, no `cursor-pointer` class anywhere, matching every prior shadcn column's own finding for this row. M3: `pointer` on enabled buttons [S]." }
+  ]
+}
