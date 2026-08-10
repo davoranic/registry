@@ -47,7 +47,7 @@ OUT = os.path.join(INTRO, "site", "index.html")
 # every component with a built harness page (2-build/harness/<name>-check.tsx,
 # or harness/registry.tsx for calendar) — order matches CLAUDE.md's component
 # index table
-COMPONENTS = ["alert", "badge", "button", "calendar", "card", "checkbox", "chip",
+COMPONENTS = ["accordion", "alert", "badge", "button", "calendar", "card", "checkbox", "chip",
               "dialog", "dropdown-menu", "input", "progress", "radio-group", "select",
               "slider", "spinner", "switch", "tabs", "toast", "tooltip"]
 

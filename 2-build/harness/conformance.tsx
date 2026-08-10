@@ -41,6 +41,7 @@ import { RadioGroup, RadioItem } from "../skeleton/radio-group"
 import { Slider } from "../skeleton/slider"
 import { Toast, ToastGroup } from "../skeleton/toast"
 import { DropdownMenu, type MenuNode } from "../skeleton/dropdown-menu"
+import { Accordion, type AccordionConfig, type AccordionItemModel } from "../skeleton/accordion"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -52,6 +53,7 @@ import radioGroupCfg from "../out/gen/radio-group-config.json"
 import sliderCfg from "../out/gen/slider-config.json"
 import toastCfg from "../out/gen/toast-config.json"
 import dropdownMenuCfg from "../out/gen/dropdown-menu-config.json"
+import accordionCfg from "../out/gen/accordion-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -1220,6 +1222,144 @@ async function checkDropdownMenuDismiss(host: HTMLElement, system: string) {
   mount.remove()
 }
 
+// ---------------------------------------------------------------- accordion
+
+const ACCORDION_ITEMS: AccordionItemModel[] = [
+  { value: "a", trigger: "Alpha", content: "Alpha content" },
+  { value: "b", trigger: "Bravo", content: "Bravo content", disabled: true },
+  { value: "c", trigger: "Charlie", content: "Charlie content" },
+]
+
+async function checkAccordion(host: HTMLElement, system: string) {
+  const cfg = (accordionCfg as Record<string, AccordionConfig>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+
+  // type="single" is only HONOURED when config.type is present (Salt
+  // ignores it entirely — see the skeleton's own singleMode gate), so
+  // passing it unconditionally here is safe and is what actually lets
+  // this test exercise shadcn's real exclusivity: the render below used
+  // to omit the `type` prop, so shadcn's `singleMode` (Boolean(config.type)
+  // && type==="single") was never true and the exclusive-expand assertion
+  // failed even though the skeleton's own toggle() logic was correct —
+  // caught by the orchestrator's live re-verification, see
+  // ACCORDION-MATRIX.md Finding 9 (root cause: this test's own setup, not
+  // the skeleton, the same class of bug as TABS-MATRIX.md finding 15).
+  root.render(<Accordion config={cfg} items={ACCORDION_ITEMS} type="single" defaultValue={[]} />)
+  await settle()
+
+  const triggers = () => [...mount.querySelectorAll<HTMLButtonElement>('[data-slot="accordion-trigger"]')]
+  const contentFor = (value: string) => mount.querySelector(`#accordion-${value}-panel`) as HTMLElement | null
+  const isExpanded = (value: string) => {
+    const c = contentFor(value)
+    return !!c && c.getAttribute("aria-hidden") === "false" && !c.hasAttribute("hidden")
+  }
+
+  record("accordion", "structure.trigger", system, triggers().length === ACCORDION_ITEMS.length,
+    `${triggers().length} triggers rendered (expected ${ACCORDION_ITEMS.length})`)
+
+  // 1 — behavior.expand-toggle: mount COLLAPSED, then a real click expands it
+  // (test the transition, not an already-open mount — the DIALOG-MATRIX.md
+  // lesson).
+  record("accordion", "behavior.expand-toggle", system, !isExpanded("a"),
+    "mounted COLLAPSED, as required for the next assertion to be a real transition")
+  triggers()[0].click()
+  await waitFor(() => isExpanded("a"))
+  record("accordion", "behavior.expand-toggle", system, isExpanded("a"),
+    isExpanded("a") ? "click expanded item a" : "did not expand")
+
+  // 2 — behavior.disabled-item: Bravo is disabled, a click must not expand it.
+  triggers()[1].click()
+  await settle()
+  record("accordion", "behavior.disabled-item", system, !isExpanded("b"),
+    isExpanded("b") ? "disabled item b expanded — should not have" : "disabled item b correctly ignored the click")
+
+  // 3 — behavior.exclusive-expand: open c, then check whether a closed. A
+  // REAL per-column divergence, not a shared assumption — shadcn's single
+  // mode closes a, Salt's own real independent-item behaviour keeps it open
+  // (see ACCORDION-MATRIX.md Finding 2).
+  triggers()[2].click()
+  await settle()
+  if (cfg.type) {
+    record("accordion", "behavior.exclusive-expand", system, isExpanded("c") && !isExpanded("a"),
+      `single-mode: c open=${isExpanded("c")}, a open=${isExpanded("a")} (expected c open, a closed)`)
+  } else {
+    record("accordion", "behavior.exclusive-expand", system, isExpanded("c") && isExpanded("a"),
+      `CONFIRMED ABSENT column: c open=${isExpanded("c")}, a open=${isExpanded("a")} (expected BOTH open — no group-level exclusivity exists)`)
+  }
+
+  root.unmount()
+  mount.remove()
+}
+
+async function checkAccordionCollapsible(host: HTMLElement, system: string) {
+  const cfg = (accordionCfg as Record<string, AccordionConfig>)[system]
+  if (!cfg.type) {
+    record("accordion", "behavior.collapsible-to-none", system, true,
+      "CONFIRMED ABSENT/MOOT for this column — no group-level exclusive mode exists to gate (see ACCORDION-MATRIX.md's own note on this row)")
+    return
+  }
+  for (const collapsible of [true, false]) {
+    const mount = document.createElement("div")
+    mount.setAttribute("data-theme", system)
+    host.appendChild(mount)
+    const root = createRoot(mount)
+    root.render(<Accordion config={cfg} items={ACCORDION_ITEMS} type="single" collapsible={collapsible} defaultValue={["a"]} />)
+    await settle()
+    const trigger = mount.querySelector<HTMLButtonElement>('[data-slot="accordion-trigger"]')!
+    const content = () => mount.querySelector('#accordion-a-panel') as HTMLElement | null
+    const isExpanded = () => { const c = content(); return !!c && c.getAttribute("aria-hidden") === "false" && !c.hasAttribute("hidden") }
+    record("accordion", "behavior.expand-toggle", system + ` (collapsible=${collapsible}, before)`, isExpanded(), "mounted pre-expanded via defaultValue, as required for a real close transition")
+    trigger.click()
+    await settle()
+    record("accordion", "behavior.collapsible-to-none", system + ` (collapsible=${collapsible})`,
+      collapsible ? !isExpanded() : isExpanded(),
+      `clicking the only open trigger in single mode with collapsible=${collapsible}: expanded=${isExpanded()} (expected ${collapsible ? "closed" : "still open"})`)
+    root.unmount()
+    mount.remove()
+  }
+}
+
+async function checkAccordionArrowNav(host: HTMLElement, system: string) {
+  const cfg = (accordionCfg as Record<string, AccordionConfig>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+  root.render(<Accordion config={cfg} items={ACCORDION_ITEMS} defaultValue={[]} />)
+  await settle()
+
+  const triggers = () => [...mount.querySelectorAll<HTMLButtonElement>('[data-slot="accordion-trigger"]')]
+  focusFor(triggers()[0])
+  await settle()
+
+  if (cfg.arrowNav) {
+    // ArrowDown from Alpha must SKIP disabled Bravo and land on Charlie —
+    // a real roving-focus assertion, not just "focus moved somewhere".
+    key(triggers()[0], "ArrowDown")
+    await settle()
+    record("accordion", "behavior.arrow-navigation", system,
+      document.activeElement === triggers()[2],
+      `after ArrowDown from Alpha, focus is on "${(document.activeElement as HTMLElement)?.textContent}" (expected to skip disabled Bravo and land on Charlie)`)
+
+    key(triggers()[2], "Home")
+    await settle()
+    record("accordion", "behavior.home-end", system,
+      document.activeElement === triggers()[0],
+      `Home returned focus to "${(document.activeElement as HTMLElement)?.textContent}" (expected Alpha)`)
+  } else {
+    record("accordion", "behavior.arrow-navigation", system, true,
+      "CONFIRMED ABSENT for this column — no roving-focus code exists (see ACCORDION-MATRIX.md Finding 3), nothing to drive")
+    record("accordion", "behavior.home-end", system, true,
+      "CONFIRMED ABSENT for this column, same reason as behavior.arrow-navigation")
+  }
+
+  root.unmount()
+  mount.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -1240,6 +1380,9 @@ async function run() {
     try { await checkDropdownMenu(host, s) } catch (e) { record("dropdown-menu", "(threw)", s, false, String(e)) }
     try { await checkDropdownMenuSubmenu(host, s) } catch (e) { record("dropdown-menu", "(threw, submenu)", s, false, String(e)) }
     try { await checkDropdownMenuDismiss(host, s) } catch (e) { record("dropdown-menu", "(threw, dismiss)", s, false, String(e)) }
+    try { await checkAccordion(host, s) } catch (e) { record("accordion", "(threw)", s, false, String(e)) }
+    try { await checkAccordionCollapsible(host, s) } catch (e) { record("accordion", "(threw, collapsible)", s, false, String(e)) }
+    try { await checkAccordionArrowNav(host, s) } catch (e) { record("accordion", "(threw, arrow-nav)", s, false, String(e)) }
   }
   host.remove()
 
