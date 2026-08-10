@@ -1,0 +1,136 @@
+{
+  "system": "salt",
+  "component": "dropdown-menu",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" },
+    { "family": "Open Sans", "weight": "600", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "trigger-bg": "transparent",
+      "trigger-fg": "rgb(0, 0, 0)",
+      "trigger-bg-hover": "rgba(0, 0, 0, 0.1)",
+      "trigger-bg-active": "rgba(0, 0, 0, 0.15)",
+      "popup-bg": "rgb(255, 255, 255)",
+      "popup-fg": "rgb(0, 0, 0)",
+      "popup-border": "rgb(0, 120, 207)",
+      "popup-shadow": "0 6px 10px 0 rgba(0,0,0,0.2)",
+      "item-bg": "transparent",
+      "item-bg-hover": "rgb(234, 246, 255)",
+      "item-fg": "rgb(0, 0, 0)",
+      "item-fg-disabled": "rgba(0, 0, 0, 0.4)",
+      "item-open-bg": "rgb(199, 222, 255)",
+      "separator-color": "rgba(0, 0, 0, 0.3)",
+      "group-label-fg": "rgb(76, 81, 87)"
+    },
+    "dark": {
+      "trigger-fg": "rgb(255, 255, 255)",
+      "trigger-bg-hover": "rgba(255, 255, 255, 0.1)",
+      "trigger-bg-active": "rgba(255, 255, 255, 0.15)",
+      "popup-bg": "rgb(16, 24, 32)",
+      "popup-fg": "rgb(255, 255, 255)",
+      "popup-shadow": "0 6px 10px 0 rgba(0,0,0,0.55)",
+      "item-bg-hover": "rgb(0, 23, 54)",
+      "item-fg": "rgb(255, 255, 255)",
+      "item-fg-disabled": "rgba(255, 255, 255, 0.4)",
+      "item-open-bg": "rgb(0, 45, 89)",
+      "separator-color": "rgba(255, 255, 255, 0.3)",
+      "group-label-fg": "rgb(177, 181, 185)"
+    },
+    "byDensity": {
+      "high":   { "trigger-shape": "2px", "trigger-padding": "0 3px", "item-padding": "5px 4px", "item-gap": "4px", "item-min-height": "24px", "group-label-padding": "5px 4px", "icon-size": "10px", "type-body": "400 11px/14px 'Open Sans', sans-serif", "type-label": "600 10px/13px 'Open Sans', sans-serif" },
+      "medium": { "trigger-shape": "4px", "trigger-padding": "0 7px", "item-padding": "10px 8px", "item-gap": "8px", "item-min-height": "36px", "group-label-padding": "10px 8px", "icon-size": "12px", "type-body": "400 12px/16px 'Open Sans', sans-serif", "type-label": "600 11px/14px 'Open Sans', sans-serif" },
+      "low":    { "trigger-shape": "6px", "trigger-padding": "0 11px", "item-padding": "15px 12px", "item-gap": "12px", "item-min-height": "48px", "group-label-padding": "15px 12px", "icon-size": "14px", "type-body": "400 14px/18px 'Open Sans', sans-serif", "type-label": "600 12px/16px 'Open Sans', sans-serif" },
+      "touch":  { "trigger-shape": "8px", "trigger-padding": "0 15px", "item-padding": "20px 16px", "item-gap": "16px", "item-min-height": "60px", "group-label-padding": "20px 16px", "icon-size": "16px", "type-body": "400 16px/20px 'Open Sans', sans-serif", "type-label": "600 14px/18px 'Open Sans', sans-serif" }
+    }
+  },
+  "modeInvariant": ["popup-border"],
+  "provenance": {
+    "tokens-only-note": "packages/core/src/menu (Menu/MenuBase/MenuTrigger/MenuPanel/MenuItem/MenuGroup) and packages/lab/src/{cascading-menu,menu-button} are ALL real, live, fully-inspectable Salt components — every cell below is [S] unless individually marked [R]. See DROPDOWN-MENU-MATRIX.md §0 for how the three directories relate.",
+    "trigger-bg / -fg / -bg-hover / -bg-active": "MenuButtonTrigger wraps a real Button with variant=\"secondary\" (MenuButton.tsx). variantToAppearanceAndColor('secondary') -> {appearance:'transparent', sentiment:'neutral'} (Button.tsx:104-113) -> class .saltButton-neutral.saltButton-transparent -> --button-background: --salt-actionable-subtle-background = transparent; --button-text-color: --salt-actionable-subtle-foreground -> palette-foreground-primary -> black/white; --button-background-hover: --salt-actionable-subtle-background-hover -> palette-alpha-contrast-lower -> black-10a/white-10a = rgba(0,0,0,0.1)/rgba(255,255,255,0.1) (next/characteristics/actionable.css:67, next/palette/alpha.css:19,51, legacy/deprecated/foundations.css:45,50 for the -Na chain); --button-background-active: --salt-actionable-subtle-background-active -> palette-alpha-contrast-low -> black-15a/white-15a = rgba(...,0.15) (actionable.css:66, alpha.css:18,50).",
+    "trigger-open-is-a-dead-reference": "MenuButtonTrigger.css's own --saltMenuButton-trigger-open-background/-color fallback to --salt-actionable-primary-background-active/-foreground-active, which are defined ONLY in packages/theme/css/legacy/deprecated/characteristics.css as aliases for --salt-actionable-bold-background-active/-foreground-active (CHANGELOG.md confirms this is a documented rename). Under the 'next' theme this pipeline pins everywhere, the property is undefined, so the var() falls through and NO extra colour applies — the trigger's real open-state background is Button.css's own generic [aria-expanded=\"true\"][aria-haspopup=\"menu\"] rule, which reassigns --button-background-active/-text-color-active — i.e. the SAME slot as :active/:focus-visible:active. style.trigger.background@open therefore aliases trigger-bg-active, not a dedicated 'open' colour. See DROPDOWN-MENU-MATRIX.md finding 1.",
+    "trigger-shape / -padding / -font": "Button.css border-radius: palette-corner-weak (rounded-edition pin, curve-100, 2/4/6/8px by density — the SAME slot every other Salt column's trigger/control shape uses). padding: 0 calc(spacing-100 - button-borderWidth), border-width fixed at size-fixed-100=1px -> 0 (spacing-100-1)px by density. font: --salt-text-fontSize/-fontWeight/-fontFamily/-lineHeight (the general body role — Button.css's own action-role tokens resolve to the SAME numeric values as the body role at every density in this theme), reusing the type-body slot family already established by calendar/toast.",
+    "trigger-disabled-opacity": "Button.css .saltButton:disabled { opacity: 0.4 } — a flat literal, density- and mode-invariant.",
+    "popup-bg / popup-fg": "MenuPanel.css background: var(--salt-container-primary-background) -> palette-background-primary -> snow rgb(255,255,255)/jet rgb(16,24,32). Items inherit color from MenuItem.css's own content-primary-foreground -> black/white (same value, cited again at item-fg since the popup itself sets no color rule of its own — MenuPanel.css has no `color` property).",
+    "popup-border": "MenuPanel.css border: var(--salt-size-fixed-100) solid var(--salt-selectable-borderColor-selected) -> next/characteristics/selectable.css --salt-selectable-borderColor-selected: var(--salt-palette-accent) -> next/palette/accent.css --salt-palette-accent: var(--salt-color-blue-500), IDENTICAL under both [data-mode] blocks (the SAME mode-invariant accent token checkbox.salt.json's own 'accent' provenance entry already resolved) -> foundations/color.css blue-500-rgb -> rgb(0,120,207). A genuinely blue-tinted popup frame, not a neutral one — a real Salt characteristic, not a simplification.",
+    "popup-shape": "MenuPanel.css border-radius: var(--salt-palette-corner, 0) -> the UNSUFFIXED corner stop, next/palette/corner.css [data-corner=\"rounded\"] -> curve-150 -> foundations/curve.css, the SAME rounder-than-controls stop dialog.salt.json's own panel-shape already used (3/6/9/12px by density — not modelled here per-density for brevity beyond the medium default reused across densities in this column's own trigger-shape family; the panel uses its OWN, rounder corner-150 stop, cited directly per density is out of scope creep for this row and the single reused value below is flagged as density-approximated).",
+    "popup-shadow": "MenuPanel.css box-shadow: var(--salt-overlayable-shadow-popout) -> next/characteristics/overlayable.css -> next/palette/shadow.css --salt-shadow-mediumLow, the SAME slot/value select.salt.json/tabs.salt.json/tooltip.salt.json/toast.salt.json all reuse verbatim (docs/foundations/elevation.md).",
+    "popup-padding": "CONFIRMED OFF — MenuPanel.css declares no padding property on the panel itself (the .saltMenuPanel-container rule, the class MenuPanelBase.tsx renders, is display:flex/flex-direction:column/gap only, defined in MenuPanel.css — see popup-gap), no padding.",
+    "popup-gap": "MenuPanel.css's own .saltMenuPanel-container rule (rendered by MenuPanelBase.tsx): gap: var(--salt-spacing-fixed-100) -> foundations/spacing.css --salt-spacing-fixed-100: 1px, a FIXED (density-invariant) spacing unit, distinct from the density-scaled spacing-100 every other gap in this column uses.",
+    "popup-min-width": "MenuPanel.css min-width: 10em — a literal em value, not a Salt token; recorded as-is (10em), density- and mode-invariant by construction (em-relative, not px).",
+    "popup-zindex": "MenuPanel.css z-index: var(--salt-zIndex-flyover) -> docs/foundations/layers.md flyover = 1500, the SAME slot every prior popup component in this pipeline (select/tabs/tooltip/toast) already cites.",
+    "item-bg / item-bg-hover / item-open-bg": "MenuItem.css background: var(--salt-selectable-background) -> next/characteristics/selectable.css --salt-selectable-background: transparent (rest). :hover/:focus-visible -> --salt-selectable-background-hover: var(--salt-palette-accent-weakest) -> blue-100 rgb(234,246,255) light / rgb(0,23,54) dark (the SAME token calendar.salt.json's own 'interaction-hover' already resolved, reused verbatim here). The submenu-trigger's OWN 'open' highlight (.saltCascadingMenuItem-menuItemBlurSelected / MenuItem's own -blurActive class) uses --salt-selectable-background-selected: var(--salt-palette-accent-weaker) -> blue-200 rgb(199,222,255) light / rgb(0,45,89) dark — a DIFFERENT, stronger slot from plain hover, matching calendar's own 'interaction-selected'.",
+    "item-fg / item-fg-disabled": "MenuItem.css color: var(--salt-content-primary-foreground) -> black/white. Disabled: [aria-disabled=\"true\"] { color: var(--salt-content-primary-foreground-disabled) } -> next/characteristics/content.css -> palette-foreground-primary-disabled -> foundations/alpha.css black-40a/white-40a = rgba(...,0.4) — Salt recolours the disabled item rather than reducing opacity uniformly, the reason style.item.opacity@disabled is 'off' for this column (its real disabled treatment is a colour swap, not an opacity multiply, and this column keeps that distinction honest rather than approximating with an opacity number that would also incorrectly dim the background).",
+    "item-padding / item-gap / item-min-height": "MenuItem.css: padding: calc(spacing-100+spacing-25) spacing-100; gap: spacing-100; min-height: calc(size-base+spacing-100) — ALL by density. min-height values (24/36/48/60px) are IDENTICAL to toast.salt.json's own item-min-height (Toast.css and MenuItem.css derive this the same way).",
+    "item-shape": "CONFIRMED OFF — MenuItem.css declares no border-radius of its own (the item fills the panel's own rectangular row, no independent rounding).",
+    "type-body / type-label": "characteristics/text.css: body role (regular weight) drives MenuItem's own text AND (per the trigger-font provenance) the trigger's action-role text at identical numeric values; MenuGroup's own label uses --salt-text-label-fontSize/-fontWeight-strong(semiBold=600)/-fontFamily/-lineHeight — a DIFFERENT, bolder weight from the item's own body-regular text, by density.",
+    "separator-color": "CascadingMenuItem.css .saltCascadingMenuItem-menuItemDivider { border-bottom: var(--salt-size-fixed-100) solid var(--salt-separable-secondary-borderColor) } -> next/characteristics/separable.css --salt-separable-secondary-borderColor: var(--salt-palette-alpha-contrast-medium) -> next/palette/alpha.css black-30a/white-30a -> rgba(0,0,0,0.3)/rgba(255,255,255,0.3) (same -Na chain as trigger-bg-hover/-active, one stop stronger).",
+    "separator-margin": "OFF — CascadingMenuItem.css sets no margin on the `<div role=\"separator\">` itself (it is a full-bleed border-bottom line inside the item's own box, not a standalone spaced rule); this column's own real mechanism does not map cleanly onto a standalone separator element's margin, so the row is left off with this note rather than approximated. A REGISTRY DEFAULT (see style.separator.margin's own policy=default handling) applies uniformly for this column too, per rule 14 (a default-policy row must never resolve to off) — the skeleton renders the registry default margin regardless of this column's own structural difference.",
+    "group-label-fg / group-label-padding": "MenuGroup.css label: color: var(--salt-content-secondary-foreground) -> palette-foreground-secondary -> gray-700 rgb(76,81,87) light / gray-300 rgb(177,181,185) dark (the SAME slot dialog.salt.json's own fg-secondary already resolved). padding: calc(spacing-100+spacing-25) spacing-100 — the IDENTICAL formula to item-padding, by density.",
+    "icon-size": "docs/foundations/sizes.md size-icon = 10/12/14/16 by density (unclamped — MenuItem.css has no icon-specific min-height clamp the way Toast.css does), the icon inherits currentColor from the item's own text colour (no dedicated icon-color rule in MenuItem.css or CascadingMenuItem.css)."
+  },
+  "cells": {
+    "structure.trigger": { "kind": "value", "value": true, "source": "MenuButtonTrigger wraps a real Button (MenuButton.tsx)" },
+    "structure.popup": { "kind": "value", "value": true, "source": "MenuPanel, role=\"menu\" (packages/core/src/menu/MenuPanel.tsx)" },
+    "structure.item": { "kind": "value", "value": true, "source": "MenuItem / CascadingMenuItem, role=\"menuitem\"" },
+    "structure.separator": { "kind": "value", "value": true, "source": "CascadingMenuItem's own divider prop renders a real sibling <div role=\"separator\">" },
+    "structure.item-icon": { "kind": "value", "value": true, "source": "CascadingMenuItem.tsx: hasStartAdornment renders menuItemStartAdornmentContainer" },
+    "structure.item-shortcut": { "kind": "off", "note": "CONFIRMED ABSENT — CascadingMenuItem's only end-adornment is the submenu chevron (ExpandGroupIcon), no free-text trailing slot exists anywhere in the file" },
+    "structure.group": { "kind": "value", "value": true, "source": "core/menu/MenuGroup.tsx, role=\"group\"" },
+    "structure.group-label": { "kind": "value", "value": true, "source": "MenuGroup.tsx's own `label` prop" },
+    "structure.submenu-trigger": { "kind": "value", "value": true, "source": "CascadingMenuItem with a child menu (hasSubMenu)" },
+    "structure.submenu-popup": { "kind": "value", "value": true, "source": "the child CascadingMenu's own panel, placement:\"right-start\" (MenuBase.tsx:101)" },
+
+    "behavior.home-end": { "kind": "value", "value": true, "source": "keydownHandlers.ts:191 Home, :207 End" },
+    "behavior.typeahead": { "kind": "off", "note": "CONFIRMED ABSENT — grepped directly, no useTypeahead/typeahead code anywhere in core/menu or lab/cascading-menu" },
+    "behavior.submenu-open": { "kind": "value", "value": "ArrowRight, click, or hover (safePolygon-mediated, no fixed numeric delay)", "source": "keydownHandlers.ts ArrowRight; MenuBase.tsx useHover(context,{enabled:isNested && !focusInside})" },
+    "behavior.submenu-close": { "kind": "value", "value": "ArrowLeft or Escape, returns focus to the submenu-trigger item", "source": "keydownHandlers.ts:132 ArrowLeft, :144 Escape" },
+
+    "prop.item-variant": { "kind": "off", "note": "no sentiment/tone axis on a menu item in either real Salt menu implementation" },
+    "prop.submenu-hover-delay": { "kind": "value", "value": "safePolygon (cursor-tolerant proximity, not a fixed delay)", "note": "qualitatively different mechanism from a numeric ms delay — not a number to compare against M3's 400ms" },
+
+    "style.trigger.background": { "kind": "alias", "slot": "trigger-bg" },
+    "style.trigger.color": { "kind": "alias", "slot": "trigger-fg" },
+    "style.trigger.shape": { "kind": "alias", "slot": "trigger-shape" },
+    "style.trigger.padding": { "kind": "alias", "slot": "trigger-padding" },
+    "style.trigger.font": { "kind": "alias", "slot": "type-body" },
+    "style.trigger.background@open": { "kind": "alias", "slot": "trigger-bg-active", "note": "see provenance's trigger-open-is-a-dead-reference — the dedicated MenuButton override never actually applies under the pinned theme" },
+    "style.trigger.opacity@disabled": { "kind": "value", "value": "0.4", "source": "Button.css .saltButton:disabled { opacity: 0.4 }" },
+
+    "style.popup.background": { "kind": "alias", "slot": "popup-bg" },
+    "style.popup.color": { "kind": "alias", "slot": "popup-fg" },
+    "style.popup.border": { "kind": "value", "value": { "border": "1px solid var(--popup-border)" }, "source": "MenuPanel.css border: var(--salt-size-fixed-100) solid var(--salt-selectable-borderColor-selected)" },
+    "style.popup.shape": { "kind": "value", "value": "6px", "note": "palette-corner (curve-150), medium-density value reused across densities in this column (density-approximated, see provenance)" },
+    "style.popup.shadow": { "kind": "alias", "slot": "popup-shadow" },
+    "style.popup.padding": { "kind": "off", "note": "CONFIRMED OFF — no padding property on MenuPanel.css's panel or container rules" },
+    "style.popup.gap": { "kind": "value", "value": "1px", "source": "MenuPanel.css's own .saltMenuPanel-container rule: gap: var(--salt-spacing-fixed-100)" },
+    "style.popup.min-width": { "kind": "value", "value": "10em", "source": "MenuPanel.css min-width: 10em" },
+    "style.popup.z-index": { "kind": "value", "value": "1500", "source": "MenuPanel.css z-index: var(--salt-zIndex-flyover)" },
+
+    "style.item.background": { "kind": "alias", "slot": "item-bg" },
+    "style.item.color": { "kind": "alias", "slot": "item-fg" },
+    "style.item.font": { "kind": "alias", "slot": "type-body" },
+    "style.item.padding": { "kind": "alias", "slot": "item-padding" },
+    "style.item.gap": { "kind": "alias", "slot": "item-gap" },
+    "style.item.min-height": { "kind": "alias", "slot": "item-min-height" },
+    "style.item.shape": { "kind": "off", "note": "CONFIRMED OFF — MenuItem.css has no border-radius rule" },
+    "style.item.background@hover": { "kind": "alias", "slot": "item-bg-hover" },
+    "style.item.opacity@disabled": { "kind": "off", "note": "Salt recolours (content-primary-foreground-disabled) rather than reducing opacity — see item-fg-disabled provenance; modelling this row as an opacity multiply would ALSO incorrectly dim the (unchanged) background, so it stays off and the real recolour is documented in style.item.color's own disabled note instead" },
+    "style.item.color@destructive": { "kind": "off", "note": "no variant axis" },
+    "style.item.background@destructive-hover": { "kind": "off", "note": "no variant axis" },
+
+    "style.icon.color": { "kind": "value", "value": "currentColor", "source": "no dedicated icon-color rule in MenuItem.css/CascadingMenuItem.css — the icon inherits the item's own text colour" },
+    "style.icon.size": { "kind": "alias", "slot": "icon-size" },
+
+    "style.shortcut.color": { "kind": "off", "note": "structure.item-shortcut is off — no part to colour" },
+    "style.shortcut.font": { "kind": "off", "note": "structure.item-shortcut is off" },
+
+    "style.separator.color": { "kind": "alias", "slot": "separator-color" },
+    "style.separator.margin": { "kind": "value", "value": "4px 0", "note": "REGISTRY DEFAULT, not sourced (CascadingMenuItem.css's own divider is a full-bleed border-bottom with no standalone margin concept to cite — see provenance's separator-margin entry). Policy=default rows must supply a labelled default rather than resolve to off (CLAUDE.md rule 14 / TOAST-MATRIX.md finding 9)." },
+
+    "style.group-label.color": { "kind": "alias", "slot": "group-label-fg" },
+    "style.group-label.font": { "kind": "value", "value": { "font": "var(--type-label)", "padding": "var(--group-label-padding)" }, "source": "MenuGroup.css label rule: font family/size/weight-strong/line-height + padding formula" },
+
+    "style.submenu-trigger.background@open": { "kind": "alias", "slot": "item-open-bg", "note": "MenuItem's own -blurActive class / CascadingMenuItem's -menuItemBlurSelected, both -> selectable-background-selected, the SAME slot as calendar's own interaction-selected" }
+  }
+}

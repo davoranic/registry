@@ -40,6 +40,7 @@ import { Switch } from "../skeleton/switch"
 import { RadioGroup, RadioItem } from "../skeleton/radio-group"
 import { Slider } from "../skeleton/slider"
 import { Toast, ToastGroup } from "../skeleton/toast"
+import { DropdownMenu, type MenuNode } from "../skeleton/dropdown-menu"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -50,6 +51,7 @@ import switchCfg from "../out/gen/switch-config.json"
 import radioGroupCfg from "../out/gen/radio-group-config.json"
 import sliderCfg from "../out/gen/slider-config.json"
 import toastCfg from "../out/gen/toast-config.json"
+import dropdownMenuCfg from "../out/gen/dropdown-menu-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -1016,6 +1018,208 @@ async function checkToast(host: HTMLElement, system: string) {
   mount5.remove()
 }
 
+// ------------------------------------------------------------- dropdown-menu
+
+const DM_ITEMS: MenuNode[] = [
+  { type: "item", value: "a", label: "Alpha", icon: true, shortcut: "⌘A" },
+  { type: "item", value: "b", label: "Bravo", disabled: true },
+  { type: "item", value: "c", label: "Charlie" },
+  { type: "separator" },
+  {
+    type: "submenu",
+    value: "sub",
+    label: "More",
+    items: [
+      { type: "item", value: "sub-1", label: "Sub one" },
+      { type: "item", value: "sub-2", label: "Sub two" },
+    ],
+  },
+]
+
+async function checkDropdownMenu(host: HTMLElement, system: string) {
+  const cfg = (dropdownMenuCfg as Record<string, any>)[system]
+
+  // 1 — behavior.trigger-interaction / structure.trigger / structure.popup:
+  // mount CLOSED, then a real click opens it (test the transition, not an
+  // already-open mount — the DIALOG-MATRIX.md lesson).
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+
+  let selected: string | null = null
+  root.render(<DropdownMenu config={cfg} items={DM_ITEMS} trigger="Actions" onSelect={(v) => { selected = v }} />)
+  await settle()
+
+  const trigger = mount.querySelector('[data-slot="dropdown-menu-trigger"]') as HTMLElement
+  const isOpen = () => !!mount.querySelector('[data-slot="dropdown-menu-popup"]')
+  record("dropdown-menu", "structure.trigger", system, !!trigger, trigger ? "trigger rendered" : "no trigger found")
+  record("dropdown-menu", "behavior.trigger-interaction", system, !isOpen(), "mounted CLOSED, as required for the next assertion to be a real transition")
+
+  trigger.click()
+  await waitFor(isOpen)
+  record("dropdown-menu", "structure.popup", system, isOpen(), isOpen() ? "click opened the popup" : "did not open")
+
+  // 2 — behavior.arrow-navigation, and behavior.disabled-item: a REAL
+  // ArrowDown moves data-active, and lands on Charlie (skipping the
+  // disabled Bravo), not just "some item became active".
+  const activeItem = () => mount.querySelector('[data-slot="dropdown-menu-item"][data-active], [data-slot="dropdown-menu-submenu-trigger"][data-active]')
+  const popup = mount.querySelector('[data-slot="dropdown-menu-popup"]') as HTMLElement
+  key(popup, "ArrowDown")
+  await settle()
+  const first = activeItem()?.textContent
+  key(popup, "ArrowDown")
+  await settle()
+  const second = activeItem()?.textContent
+  // labels carry a shortcut suffix in the same textContent for columns
+  // where structure.item-shortcut is on (e.g. "Alpha⌘A") — match by prefix,
+  // not exact equality, so this assertion is honest about what it checks.
+  record(
+    "dropdown-menu",
+    "behavior.arrow-navigation",
+    system,
+    !!first?.startsWith("Alpha") && !second?.startsWith("Alpha"),
+    `first ArrowDown landed on "${first}" (expected to start with Alpha), second landed on "${second}"`,
+  )
+  record(
+    "dropdown-menu",
+    "behavior.disabled-item",
+    system,
+    !!second?.startsWith("Charlie"),
+    `second ArrowDown from Alpha should SKIP disabled "Bravo" and land on "Charlie" — landed on "${second}"`,
+  )
+
+  // 3 — behavior.item-activation / behavior.focus-return: Enter on the
+  // active item fires onSelect, closes the WHOLE stack, and returns real
+  // focus to the trigger.
+  key(popup, "Enter")
+  await waitFor(() => !isOpen())
+  await waitFor(() => document.activeElement === trigger)
+  record(
+    "dropdown-menu",
+    "behavior.item-activation",
+    system,
+    selected === "c" && !isOpen(),
+    `onSelect fired with value="${selected}" (expected "c"), popup open=${isOpen()}`,
+  )
+  record(
+    "dropdown-menu",
+    "behavior.focus-return",
+    system,
+    document.activeElement === trigger,
+    `focus after close: ${document.activeElement === trigger ? "returned to trigger" : (document.activeElement?.tagName || "?") + " (did not return)"}`,
+  )
+
+  root.unmount()
+  mount.remove()
+}
+
+async function checkDropdownMenuSubmenu(host: HTMLElement, system: string) {
+  const cfg = (dropdownMenuCfg as Record<string, any>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+  root.render(<DropdownMenu config={cfg} items={DM_ITEMS} trigger="Actions" />)
+  await settle()
+
+  const trigger = mount.querySelector('[data-slot="dropdown-menu-trigger"]') as HTMLElement
+  trigger.click()
+  await waitFor(() => !!mount.querySelector('[data-slot="dropdown-menu-popup"]'))
+  const popup = mount.querySelector('[data-slot="dropdown-menu-popup"]') as HTMLElement
+
+  // Navigate to the submenu-trigger ("More", the 4th activatable stop after
+  // Alpha/Bravo(disabled-but-counted-as-a-stop-skip)/Charlie): 3 ArrowDowns
+  // from a fresh popup lands on Alpha, Charlie, More in this item set.
+  // EACH key() must be followed by its own settle() — React batches the
+  // state update from one keydown asynchronously, so firing three
+  // KeyboardEvents back-to-back with only ONE settle() at the end lets all
+  // three handlers read the SAME stale `activeValue` from closure and each
+  // independently compute "move to index 0", landing on Alpha three times
+  // instead of progressing — a test-sequencing bug, not a skeleton one
+  // (confirmed: this exact three-in-a-row-then-settle-once shape was the
+  // actual cause the first time this assertion was written).
+  key(popup, "ArrowDown") // Alpha
+  await settle()
+  key(popup, "ArrowDown") // Charlie (Bravo skipped)
+  await settle()
+  key(popup, "ArrowDown") // More
+  await settle()
+  const activeText = mount.querySelector('[data-slot="dropdown-menu-submenu-trigger"][data-active]')?.textContent
+  record("dropdown-menu", "behavior.arrow-navigation", system + " (to submenu-trigger)", activeText === "More", `active after 3x ArrowDown: "${activeText}" (expected "More")`)
+
+  const isSubOpen = () => !!mount.querySelector('[data-slot="dropdown-menu-submenu-popup"]')
+  record("dropdown-menu", "structure.submenu-popup", system, !isSubOpen(), "not yet open, as required for the next assertion to be a real transition")
+
+  key(popup, "ArrowRight")
+  await waitFor(isSubOpen)
+  record("dropdown-menu", "behavior.submenu-open", system, isSubOpen(), isSubOpen() ? "ArrowRight opened the submenu" : "did not open")
+
+  // behavior.dismiss-escape's own innermost-first claim (TABS-MATRIX.md
+  // finding 15's own lesson applied preemptively: verify EACH assertion's
+  // starting state, don't assume a prior assertion left it where expected).
+  if (isSubOpen()) {
+    // RADIO-GROUP/TOAST lesson: verify LAYOUT, not just that the element
+    // exists — the submenu popup must not overlap the root popup.
+    const rootRect = popup.getBoundingClientRect()
+    const subPopup = mount.querySelector('[data-slot="dropdown-menu-submenu-popup"]') as HTMLElement
+    const subRect = subPopup.getBoundingClientRect()
+    const nonOverlapping = subRect.left >= rootRect.right - 1
+    record(
+      "dropdown-menu",
+      "structure.submenu-popup",
+      system + " (geometry)",
+      nonOverlapping,
+      `root popup right=${rootRect.right.toFixed(1)}, submenu left=${subRect.left.toFixed(1)} — must not overlap`,
+    )
+
+    const subPopupEl = mount.querySelector('[data-slot="dropdown-menu-submenu-popup"]') as HTMLElement
+    key(subPopupEl, "ArrowLeft")
+    await waitFor(() => !isSubOpen())
+    record(
+      "dropdown-menu",
+      "behavior.submenu-close",
+      system,
+      !isSubOpen() && !!mount.querySelector('[data-slot="dropdown-menu-popup"]'),
+      `ArrowLeft closed the submenu; ROOT popup still present=${!!mount.querySelector('[data-slot="dropdown-menu-popup"]')} (innermost-first, not the whole stack)`,
+    )
+  }
+
+  root.unmount()
+  mount.remove()
+}
+
+async function checkDropdownMenuDismiss(host: HTMLElement, system: string) {
+  const cfg = (dropdownMenuCfg as Record<string, any>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+  root.render(<DropdownMenu config={cfg} items={DM_ITEMS} trigger="Actions" />)
+  await settle()
+
+  const trigger = mount.querySelector('[data-slot="dropdown-menu-trigger"]') as HTMLElement
+  const isOpen = () => !!mount.querySelector('[data-slot="dropdown-menu-popup"]')
+
+  // behavior.dismiss-outside
+  trigger.click()
+  await waitFor(isOpen)
+  document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }))
+  await waitFor(() => !isOpen())
+  record("dropdown-menu", "behavior.dismiss-outside", system, !isOpen(), isOpen() ? "outside press did NOT close it" : "outside press closed it")
+
+  // behavior.dismiss-escape at the ROOT (no submenu open): a single Escape
+  // closes the whole (single-layer) stack.
+  trigger.click()
+  await waitFor(isOpen)
+  key(mount.querySelector('[data-slot="dropdown-menu-popup"]') as HTMLElement, "Escape")
+  await waitFor(() => !isOpen())
+  record("dropdown-menu", "behavior.dismiss-escape", system, !isOpen(), isOpen() ? "Escape did not close" : "Escape closed the root (no submenu was open)")
+
+  root.unmount()
+  mount.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -1033,6 +1237,9 @@ async function run() {
     try { await checkRadioGroup(host, s) } catch (e) { record("radio-group", "(threw)", s, false, String(e)) }
     try { await checkSlider(host, s) } catch (e) { record("slider", "(threw)", s, false, String(e)) }
     try { await checkToast(host, s) } catch (e) { record("toast", "(threw)", s, false, String(e)) }
+    try { await checkDropdownMenu(host, s) } catch (e) { record("dropdown-menu", "(threw)", s, false, String(e)) }
+    try { await checkDropdownMenuSubmenu(host, s) } catch (e) { record("dropdown-menu", "(threw, submenu)", s, false, String(e)) }
+    try { await checkDropdownMenuDismiss(host, s) } catch (e) { record("dropdown-menu", "(threw, dismiss)", s, false, String(e)) }
   }
   host.remove()
 

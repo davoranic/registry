@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **19 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **20 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group, slider, toast (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -268,6 +268,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `checkbox` | [`CHECKBOX-MATRIX.md`](CHECKBOX-MATRIX.md) | 55 | 41 | 30 | 46 | ✓ |
 | `chip` | [`CHIP-MATRIX.md`](CHIP-MATRIX.md) | 75 | 45 | 7 | 59 | ✓ |
 | `dialog` | [`DIALOG-MATRIX.md`](DIALOG-MATRIX.md) | 97 | 73 | 47 | 38 | ✓ |
+| `dropdown-menu` | [`DROPDOWN-MENU-MATRIX.md`](DROPDOWN-MENU-MATRIX.md) | 68 | 42 | 42 | 38 | ✓ |
 | `input` | [`INPUT-MATRIX.md`](INPUT-MATRIX.md) | 64 | 50 | 20 | 32 | — |
 | `progress` | [`PROGRESS-MATRIX.md`](PROGRESS-MATRIX.md) | 51 | 40 | 23 | 24 | ✓ |
 | `radio-group` | [`RADIO-GROUP-MATRIX.md`](RADIO-GROUP-MATRIX.md) | 54 | 45 | 34 | 28 | ✓ |
@@ -467,7 +468,27 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `toast`/`sonner`/`snackbar` (component 18, row 19/79).
+Last action: built `dropdown-menu` (component 19, row 20/79). 68 rows
+(salt 42, shadcn 42, m3 38), all four automated gates green, conformance
+164/164. Orchestrator review re-verified live rather than trusting the
+building agent's own claim: open/click, ArrowDown navigation (correctly
+skipping the disabled `notes.md` item and clamping at the last root
+node), ArrowRight/ArrowLeft submenu open/close with a real, measured
+zero-overlap rect check between `dropdown-menu-popup` and
+`dropdown-menu-submenu-popup`, and Escape dismissal all confirmed
+correct. One near-miss during that review, logged as
+DROPDOWN-MENU-MATRIX.md finding 7 rather than "fixed" because there was
+nothing to fix: an UNSCOPED `document.querySelector` in the reviewer's
+own first test picked up one of the harness's OTHER, deliberately-
+`forceOpen` demo instances on the same page and made real, working
+Escape-dismissal look broken. Re-scoped to the interacted instance's own
+container and the true behaviour was correct all along — logged so a
+future session doesn't re-spend time on the same trap (same shape as
+TABS-MATRIX.md finding 15, one level removed: a shared-page-of-demos
+version of a shared-test-function bug). No skeleton or template change
+was needed for dropdown-menu itself.
+
+Previous action: built `toast`/`sonner`/`snackbar` (component 18, row 19/79).
 The FIRST attempt at this component was silently interrupted mid-build
 (no files ever written) and sat unreachable for a long stretch before
 that was noticed and it was relaunched fresh — if a future session finds
@@ -549,11 +570,10 @@ instances across every component, logged in Known-open work, NOT audited
 like the same bug.
 
 `switch`, `radio-group`, `slider`, the button fix, the dialog finding, the
-uncited-slots re-scope, the tabs conformance fix, and toast itself are
-all committed and pushed to `claude/next-component-7e5dex`, and merged to
-`main` through `slider` (the button/dialog/uncited-slots/tabs/fonts fixes
-and toast are NOT yet on `main` — check `git log main..claude/next-
-component-7e5dex` before assuming otherwise).
+uncited-slots re-scope, the tabs conformance fix, toast, and dropdown-menu
+are all committed and pushed to `claude/next-component-7e5dex` (check
+`git log main..claude/next-component-7e5dex` before assuming what's
+landed on `main` — this list is updated less reliably than that log).
 
 **Standing priority order — deferred by explicit owner choice on
 2026-08-04 ("keep going, track gaps in a running list" over stopping to
@@ -588,9 +608,9 @@ clear the queue), updated as items close:**
    `button`, `card`, `chip`, `dialog`, `input`, `progress`, `calendar`
    (`registry.tsx`), `select`, `spinner`, `tabs`, `tooltip`. All 13
    corrected to `../out/gen/` and verified to build clean.
-6. **Continue components** — 60 canonical rows remain after `toast` lands
-   (61 before), order per `1-intro/content/04-component-map.md`: rows with
-   real cross-system character first.
+6. **Continue components** — 59 canonical rows remain after `dropdown-menu`
+   lands, order per `1-intro/content/04-component-map.md`: rows with real
+   cross-system character first.
 
 **Standing lessons for the next component's build prompt** (checkbox's two,
 plus radio-group's, all still current): (a) verify a selector actually
