@@ -1,0 +1,88 @@
+{
+  "system": "shadcn",
+  "component": "table",
+  "slots": {
+    "light": {
+      "fg-rest": "oklch(0% 0 0)",
+      "muted-bg": "oklch(0.97 0 0)",
+      "muted-fg": "oklch(0.556 0 0)",
+      "border": "oklch(0.922 0 0)"
+    },
+    "dark": {
+      "fg-rest": "oklch(0.985 0 0)",
+      "muted-bg": "oklch(0.269 0 0)",
+      "muted-fg": "oklch(0.708 0 0)",
+      "border": "oklch(1 0 0 / 10%)"
+    }
+  },
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/table.tsx — the base primitive, all 117 lines read in full (Table/TableHeader/TableBody/TableFooter/TableRow/TableHead/TableCell/TableCaption). content/docs/components/base/{table,data-table}.mdx and apps/v4/registry/new-york-v4/examples/data-table-demo.tsx read for the real TanStack-Table boundary (see behavior.row-selection/slot.composes) — NOT canonical structure/style source, cited only for the external-dependency finding. apps/v4/package.json:52 confirms `@tanstack/react-table` as an installed but UNVENDORED dependency (no node_modules/@tanstack/react-table under 3-source/).",
+    "fg-rest": "table.tsx's own base className carries no unconditional text-colour utility on <table> itself — inherits the page's own foreground, the SAME slot every prior shadcn column's own fg/foreground token resolves to (globals.css --foreground).",
+    "muted-bg": "TableFooter's own bg-muted/50; TableRow's own hover:bg-muted/50 and data-[state=selected]:bg-muted — globals.css --muted, the SAME slot toggle-group.shadcn.json's own muted-bg already resolved.",
+    "muted-fg": "TableHead's own text-foreground uses a DIFFERENT token (see structure.header-cell), but TableCaption's own text-muted-foreground uses this one — globals.css --muted-foreground.",
+    "border": "TableHeader's own [&_tr]:border-b, TableRow's own border-b, TableFooter's own border-t — all THREE use the bare, unmodified `border-b`/`border-t` utility (no border-input/border-ring override anywhere in table.tsx), which resolves to Tailwind's own DEFAULT border-color theme value, globals.css --border (NOT --input, a distinct token from the one this pipeline's other shadcn columns often cite for form-control borders).",
+    "tanstack-selection-wiring": "row.getIsSelected() (TanStack's own row-model API) drives data-state={row.getIsSelected() && \"selected\"} on TableRow — confirmed directly in app/(app)/examples/tasks/components/data-table.tsx:103 and registry/new-york-v4/blocks/dashboard-01/components/data-table.tsx:321. The base <TableRow>'s own data-[state=selected]:bg-muted rule is real and reachable, but only becomes meaningful once this EXTERNAL, unvendored engine sets the attribute — see the template's own behavior.pattern/behavior.row-selection notes.",
+    "expandable-row-hook-out-of-scope": "TableRow's own class string also carries has-aria-expanded:bg-muted/50 — a real, reachable expandable-row style hook, structurally identical in shape to the selection hook above (consumer/external-engine-driven), but OUT OF SCOPE for this build per the matrix doc's own scope note (expandable/nested rows) — recorded here for completeness, not modelled as its own row.",
+    "docs-vs-source": "content/docs/components/base/data-table.mdx states directly: 'So instead of a data-table component, I thought it would be more helpful to provide a guide on how to build your own.' — confirming the data-table guide is explicitly NOT a shipped component, consistent with @tanstack/react-table being an installed-but-unvendored dependency."
+  },
+  "cells": {
+    "structure.container": { "kind": "value", "value": "div", "source": "Table(): <div data-slot=\"table-container\" className=\"relative w-full overflow-x-auto\">" },
+    "structure.root": { "kind": "value", "value": true, "source": "Table(): <table data-slot=\"table\" className=\"w-full caption-bottom text-sm\">" },
+    "structure.header": { "kind": "value", "value": true, "source": "TableHeader(): <thead data-slot=\"table-header\" className=\"[&_tr]:border-b\">" },
+    "structure.body": { "kind": "value", "value": true, "source": "TableBody(): <tbody data-slot=\"table-body\" className=\"[&_tr:last-child]:border-0\">" },
+    "structure.footer": { "kind": "value", "value": true, "source": "TableFooter(): <tfoot data-slot=\"table-footer\" className=\"border-t bg-muted/50 font-medium [&>tr]:last:border-b-0\">" },
+    "structure.row": { "kind": "value", "value": true, "source": "TableRow(): <tr data-slot=\"table-row\" className=\"border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted\">" },
+    "structure.header-cell": { "kind": "value", "value": true, "source": "TableHead(): <th data-slot=\"table-head\" className=\"h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]\">" },
+    "structure.body-cell": { "kind": "value", "value": true, "source": "TableCell(): <td data-slot=\"table-cell\" className=\"p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]\">" },
+    "structure.caption": { "kind": "value", "value": true, "source": "TableCaption(): <caption data-slot=\"table-caption\" className=\"mt-4 text-sm text-muted-foreground\">" },
+
+    "behavior.overflow-region": { "kind": "off", "note": "CONFIRMED ABSENCE — Table()'s own five-line render has no role/tabIndex/measurement of any kind, just a static overflow-x-auto div" },
+    "behavior.row-selection": { "kind": "value", "value": "real, reachable data-[state=selected]:bg-muted style hook on TableRow; requires an external row-selection engine (TanStack Table) to set data-state — no built-in ENGINE in the base primitive itself", "source": "see tanstack-selection-wiring" },
+
+    "prop.variant": { "kind": "off", "note": "CONFIRMED ABSENCE — no tone-variant axis in table.tsx" },
+    "prop.zebra": { "kind": "off", "note": "CONFIRMED ABSENCE — no alternating-row class or prop anywhere" },
+    "prop.divider": { "kind": "off", "note": "CONFIRMED ABSENCE — border-b is a single, fixed utility class, not a switchable prop" },
+    "prop.align": { "kind": "off", "note": "CONFIRMED ABSENCE of a dedicated, typed align prop — TableHead/TableCell accept only an arbitrary className; text-left is a fixed base class, not a prop-driven axis" },
+    "prop.sticky-header": { "kind": "off", "note": "CONFIRMED ABSENCE — no sticky/position string anywhere in table.tsx" },
+    "prop.sticky-footer": { "kind": "off", "note": "CONFIRMED ABSENCE — same reasoning as prop.sticky-header" },
+
+    "slot.header-cell-content": { "kind": "value", "value": "children: ReactNode", "source": "TableHead()" },
+    "slot.body-cell-content": { "kind": "value", "value": "children: ReactNode, unconstrained (arbitrary JSX)", "source": "TableCell(); data-table.tsx's own <Checkbox>/<DropdownMenu> cell content" },
+    "slot.caption-content": { "kind": "value", "value": "children: ReactNode", "source": "TableCaption()" },
+    "slot.composes": { "kind": "value", "value": true, "note": "@tanstack/react-table (external, unvendored) for sorting/pagination/filtering/row-selection; a real, separate checkbox component (an already-built canonical row) composed into the selection column shown in data-table.tsx's own examples — neither modelled here, see docs-vs-source" },
+
+    "state.row.hover": { "kind": "value", "value": "real, hover:bg-muted/50", "source": "TableRow() className" },
+    "state.row.selected": { "kind": "value", "value": "real, reachable style hook, external-engine-driven — see behavior.row-selection", "source": "TableRow() data-[state=selected]:bg-muted" },
+    "state.row.disabled": { "kind": "off", "note": "CONFIRMED ABSENCE — no disabled: variant anywhere on TableRow" },
+
+    "style.root.border": { "kind": "off", "note": "CONFIRMED ABSENCE — no whole-table border class anywhere" },
+    "style.root.shape": { "kind": "off", "note": "CONFIRMED ABSENCE — no rounded/shape class on <table> or its container div" },
+    "style.root.font": { "kind": "value", "value": { "font-family": "inherit", "font-size": "0.875rem", "line-height": "1.25rem" }, "source": "table.tsx <table className=\"w-full caption-bottom text-sm\">" },
+
+    "style.header.background": { "kind": "off", "note": "CONFIRMED ABSENCE — no background class on TableHeader, transparent" },
+    "style.header.divider": { "kind": "alias", "slot": "border" },
+    "style.header.height": { "kind": "value", "value": "40px", "source": "TableHead() h-10 (per-cell, not a section-level rule)" },
+    "style.header.text": { "kind": "value", "value": { "color": "var(--fg-rest)", "font-size": "0.875rem", "line-height": "1.25rem", "font-weight": "500" }, "source": "TableHead() className: text-foreground font-medium, inheriting the table's own text-sm size" },
+    "style.header-cell.divider": { "kind": "off", "note": "CONFIRMED ABSENCE — no vertical rule between header cells" },
+
+    "style.body.row-height": { "kind": "off", "note": "CONFIRMED ABSENCE of an explicit height/min-height on TableRow — implicit from cell padding + line-height, no declared token" },
+    "style.body.text": { "kind": "value", "value": { "color": "inherit", "font-size": "0.875rem", "line-height": "1.25rem" }, "source": "TableCell() has no explicit colour class — confirmed by reading its full class string; inherits the ambient foreground" },
+
+    "style.footer.background": { "kind": "expression", "value": "color-mix(in oklab, var(--muted-bg) 50%, transparent)", "source": "TableFooter() bg-muted/50" },
+    "style.footer.text": { "kind": "value", "value": { "color": "var(--fg-rest)", "font-size": "0.875rem", "line-height": "1.25rem", "font-weight": "500" }, "source": "TableFooter() className: font-medium, inheriting the table's own text-sm size" },
+    "style.footer.divider": { "kind": "alias", "slot": "border" },
+    "style.footer.height": { "kind": "off", "note": "CONFIRMED ABSENCE — same implicit-from-padding reasoning as style.body.row-height" },
+
+    "style.row.background": { "kind": "value", "value": "transparent", "source": "TableRow() has no background class at rest — confirmed" },
+    "style.row.divider": { "kind": "alias", "slot": "border" },
+    "style.row.hover": { "kind": "expression", "value": "color-mix(in oklab, var(--muted-bg) 50%, transparent)", "source": "TableRow() hover:bg-muted/50" },
+    "style.row.selected": { "kind": "alias", "slot": "muted-bg", "note": "see behavior.row-selection for the TanStack wiring that makes this reachable" },
+    "style.row.disabled": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.row.zebra": { "kind": "off", "note": "CONFIRMED ABSENCE — no alternating-row mechanism" },
+
+    "style.cell.padding": { "kind": "value", "value": "8px", "source": "TableCell() p-2; TableHead() px-2 (horizontal only, height driven by h-10 instead — see the template row's own note)" },
+    "style.cell.align": { "kind": "value", "value": "left", "source": "TableHead() text-left; TableCell() inherits native left-alignment, no override — see prop.align for why this is a REGISTRY DEFAULT rather than an alias to a real prop" },
+
+    "style.caption.text": { "kind": "value", "value": { "color": "var(--muted-fg)", "font-size": "0.875rem", "margin-top": "1rem" }, "source": "TableCaption() className: mt-4 text-sm text-muted-foreground" }
+  }
+}

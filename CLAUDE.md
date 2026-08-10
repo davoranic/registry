@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **24 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **25 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover, combobox, toggle-group (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover, combobox, toggle-group, table (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -279,6 +279,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `slider` | [`SLIDER-MATRIX.md`](SLIDER-MATRIX.md) | 53 | 46 | 34 | 41 | ✓ |
 | `spinner` | [`SPINNER-MATRIX.md`](SPINNER-MATRIX.md) | 20 | 12 | 8 | 9 | — |
 | `switch` | [`SWITCH-MATRIX.md`](SWITCH-MATRIX.md) | 53 | 41 | 30 | 38 | ✓ |
+| `table` | [`TABLE-MATRIX.md`](TABLE-MATRIX.md) | 47 | 38 | 31 | 32 | ✓ |
 | `tabs` | [`TABS-MATRIX.md`](TABS-MATRIX.md) | 98 | 64 | 54 | 44 | ✓ |
 | `toast` | [`TOAST-MATRIX.md`](TOAST-MATRIX.md) | 41 | 23 | 23 | 13 | ✓ |
 | `toggle-group` | [`TOGGLE-GROUP-MATRIX.md`](TOGGLE-GROUP-MATRIX.md) | 45 | 38 | 35 | 30 | ✓ |
@@ -472,7 +473,43 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `toggle-group` (component 23, row 24/79). 45 rows
+Last action: built `table` (component 24, row 25/79). 47 rows (salt 38,
+shadcn 31, m3 32) — DELIBERATELY narrow scope: a static structural/visual
+table only (root/header/body/footer/row/header-cell/body-cell/caption
+plus their style), NOT a data-grid. Sorting, pagination, a real selection
+engine, column resizing, virtualization, and expandable rows are all
+explicitly out of scope with structural citations — shadcn's own docs
+literally say, verbatim, "So instead of a data-table component, I thought
+it would be more helpful to provide a guide on how to build your own,"
+built on an external, unvendored TanStack Table, the same external-
+package boundary dropdown-menu/popover/combobox/toggle-group already hit
+for their own shadcn columns. All four automated gates green, conformance
+317/317 (39 new). The building agent had real browser access and found
+AND FIXED two genuine bugs itself, both re-verified independently by the
+orchestrator afterward:
+- **A real CSS scoping bug it introduced and caught live**: the first
+  draft of `style.row.zebra`'s selector had no gate on `data-zebra` and no
+  scope to `tbody`, so it striped every odd row unconditionally —
+  including header/footer rows — in every table, zebra or not. Fixed to
+  scope through `[data-zebra] ... table-body ... table-row:nth-of-type
+  (odd)`. Orchestrator confirmed live: the generated CSS selector is
+  correctly scoped, and computed background-color on tbody rows
+  alternates while thead/tfoot don't.
+- **A real architectural bug in the harness's OWN sticky-header/footer
+  demo**: wrapping the skeleton's already-`overflow-x:auto` container
+  inside an EXTRA external scroll div broke `position:sticky` (two nested
+  scroll containers). Fixed by adding a `containerStyle` prop so the
+  height constraint lands directly on `structure.container`, matching
+  Salt's own real `TableContainer` usage. Orchestrator confirmed live:
+  the header's screen position is bit-for-bit identical before and after
+  a 200px scroll, and the footer stays pinned through a full scroll to
+  the bottom.
+Also documented: Salt's own shipped `Table.css` has genuinely dead CSS (a
+`.saltTable-zebra-tertiary` selector Salt's own class-list construction
+can never emit) — recorded as Salt's own defect, not "fixed" (never
+touch `3-source/`).
+
+Previous action: built `toggle-group` (component 23, row 24/79). 45 rows
 (salt 38, shadcn 35, m3 30) — the first component in this pipeline where
 NO column needed a declared native-element approximation at the item
 level (every real source already renders a genuine `<button>`). All four
@@ -700,8 +737,8 @@ like the same bug.
 
 `switch`, `radio-group`, `slider`, the button fix, the dialog finding, the
 uncited-slots re-scope, the tabs conformance fix, toast, dropdown-menu,
-accordion, popover, combobox, and toggle-group are all committed and
-pushed to `claude/next-component-7e5dex` (check `git log main..claude/
+accordion, popover, combobox, toggle-group, and table are all committed
+and pushed to `claude/next-component-7e5dex` (check `git log main..claude/
 next-component-7e5dex` before assuming what's landed on `main` — this
 list is updated less reliably than that log).
 
@@ -738,8 +775,8 @@ clear the queue), updated as items close:**
    `button`, `card`, `chip`, `dialog`, `input`, `progress`, `calendar`
    (`registry.tsx`), `select`, `spinner`, `tabs`, `tooltip`. All 13
    corrected to `../out/gen/` and verified to build clean.
-6. **Continue components** — 55 canonical rows remain after `toggle-group`
-   lands, order per `1-intro/content/04-component-map.md`: rows with real
+6. **Continue components** — 54 canonical rows remain after `table` lands,
+   order per `1-intro/content/04-component-map.md`: rows with real
    cross-system character first.
 
 **Standing lessons for the next component's build prompt** (checkbox's two,
