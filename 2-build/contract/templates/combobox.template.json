@@ -1,0 +1,981 @@
+{
+  "component": "combobox",
+  "openUiAnatomy": "no published Open UI combobox anatomy adopted here — union of salt-ds core's ComboBox (PillInput trigger + the shared Option/OptionList/OptionGroup parts select.tsx's Dropdown also composes), shadcn's dedicated Combobox primitive (new-york-v4, built on @base-ui/react's Combobox), and M3 filled-autocomplete + outlined-autocomplete (one canonical component with an emphasis/variant axis, the same treatment select's filled/outlined tokens got). shadcn's Command+Popover composed pattern, Salt's lab combo-box/combo-box-deprecated, native-select, list-box and list(-next), and every system's real multiselect/pill/chip surface are each declared out of scope with a structural reason in docs/COMBOBOX-MATRIX.md's scope note. THE POPUP AND THE OPTION ARE MODELLED HERE AS PARTS OF COMBOBOX, reusing select.template.json's own boundary decision — see its scope note's 'what would migrate' list, which applies unchanged here since Salt's combo-box and select share the identical OptionList/Option/OptionGroup components.",
+  "behavior": {
+    "pattern": "an editable, filterable single-choice combobox: a real, typeable <input> trigger (NOT a button — the defining structural difference from select), plus a popup listbox of options filtered by the typed text. The cross-system axes are: whether a filter is built into the component or left to the consumer, whether a dedicated disclosure-toggle button exists as a SEPARATE element from the input, whether a dedicated clear button exists, whether a dedicated empty-state message exists, HOW selection is marked (a trailing checkmark vs a filled option background, the same split select found), and whether pointer hover moves the active/highlighted option.",
+    "chassis": "skeleton/combobox.tsx — written from the template's part union (root, trigger input, toggle button, clear button, popup surface, listbox, group, group label, option, selected marker, separator, empty state); inherits from no design system. Typing filters the option list with a case-insensitive substring match (the registry's own declared default — see behavior.registry-filter-default), Arrow keys move a highlighted option while REAL DOM FOCUS STAYS ON THE INPUT (virtual focus via aria-activedescendant, confirmed real in all three systems — see behavior.focus-model), Enter commits, Escape closes, an outside click dismisses. The floating-position engine each real system composes is a DECLARED GAP, see behavior.positioning-engine."
+  },
+  "skeletonParams": {
+    "indicator": ["underline", "box"],
+    "toggleButton": ["swap", "static", false],
+    "clearButton": [true, false],
+    "selectedMarker": ["check", "fill"],
+    "activateOnHover": [true, false],
+    "group": [true, false],
+    "separator": [true, false],
+    "emptyState": [true, false],
+    "emptyReadOnlyMarker": ["—", ""],
+    "placeholder": [true, false],
+    "variant": ["primary", "secondary", "tertiary"],
+    "status": ["error", "warning", "success"],
+    "disabled": [true, false],
+    "readOnly": [true, false]
+  },
+  "base": {
+    "[data-slot=\"combobox\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "block",
+      "width": "100%"
+    },
+    "[data-slot=\"combobox-field\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "display": "inline-flex",
+      "align-items": "center",
+      "width": "100%"
+    },
+    "[data-slot=\"combobox-input\"]": {
+      "box-sizing": "border-box",
+      "flex": "1 1 auto",
+      "min-width": "0",
+      "margin": "0",
+      "background": "none",
+      "border": "0 solid transparent",
+      "color": "inherit",
+      "font": "inherit",
+      "letter-spacing": "inherit",
+      "outline": "none",
+      "appearance": "none"
+    },
+    "[data-slot=\"combobox-indicator\"]": {
+      "position": "absolute",
+      "left": "0",
+      "bottom": "0",
+      "width": "100%",
+      "pointer-events": "none",
+      "border-bottom": "0 solid transparent"
+    },
+    "[data-slot=\"combobox-toggle-button\"], [data-slot=\"combobox-clear-button\"]": {
+      "box-sizing": "border-box",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex": "0 0 auto",
+      "background": "none",
+      "border": "0",
+      "padding": "0",
+      "color": "inherit",
+      "cursor": "pointer"
+    },
+    "[data-slot=\"combobox-popup\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "left": "0",
+      "top": "100%",
+      "display": "flex",
+      "flex-direction": "column",
+      "overflow-x": "hidden",
+      "overflow-y": "auto"
+    },
+    "[data-slot=\"combobox-listbox\"], [data-slot=\"combobox-group\"]": {
+      "display": "flex",
+      "flex-direction": "column",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"combobox-option\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "position": "relative",
+      "flex-shrink": "0",
+      "width": "100%",
+      "text-align": "left",
+      "-webkit-user-select": "none",
+      "user-select": "none"
+    },
+    "[data-slot=\"combobox-option-marker\"]": {
+      "position": "absolute",
+      "right": "0",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "pointer-events": "none"
+    },
+    "[data-slot=\"combobox-group-label\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "flex-shrink": "0"
+    },
+    "[data-slot=\"combobox-separator\"]": {
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"combobox-empty\"]": {
+      "box-sizing": "border-box",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex-shrink": "0",
+      "text-align": "center"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.trigger",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant, and the whole reason this is a separate component from select: all three render a real, EDITABLE text input as the trigger, not a button. Salt: PillInput's inner <input role={readOnly?\"textbox\":\"combobox\"}>, real DOM focus lands here and stays. shadcn: ComboboxPrimitive.Input via InputGroupInput, likewise a real <input>. M3: [R], a text-field container per the autocomplete token file's own text-field-* prefix plus caret-color tokens select's read-only trigger has no reason to need."
+    },
+    {
+      "id": "structure.indicator",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "indicator",
+      "note": "The trigger's edge mechanism, the SAME two-way structural split select found — a bottom-only rule that thickens on focus vs a full four-sided border. Salt's ComboBox forwards `bordered = false` by default to PillInput, and PillInput.css renders .saltPillInput-activationIndicator unconditionally, so an out-of-the-box Salt combobox is an UNDERLINE, exactly like select's Salt column. M3: underline = filled-autocomplete, box = outlined-autocomplete. shadcn: box only — InputGroup's own chrome is a full border, no underline mechanism anywhere in combobox.tsx or input-group.tsx."
+    },
+    {
+      "id": "structure.toggle-button",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "toggleButton",
+      "note": "A SEPARATE, dedicated disclosure element next to the input — a real row select never needed, because select's whole trigger IS the button. Salt: showOptionsButton, a real nested Button, tabIndex={-1} so Tab skips it. shadcn: ComboboxTrigger, a real, separate element (data-slot=\"combobox-trigger\"), single static ChevronDownIcon, also excluded from the input's own tab stop. M3: [R], text-field-trailing-icon-* tokens, no live component to say whether it swaps glyphs the way select's Salt toggle-icon does."
+    },
+    {
+      "id": "structure.clear-button",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "clearButton",
+      "note": "shadcn only: ComboboxClear, a real, opt-in (showClear prop, default false) XIcon button. Salt: CONFIRMED ABSENT — grepped ComboBox.tsx/PillInput.tsx in full, no clear/reset affordance of any kind; a Salt consumer clears by selecting-all-and-typing-over or backspacing. M3: CONFIRMED ABSENT, no clear-icon token in either autocomplete file."
+    },
+    {
+      "id": "structure.popup",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "info",
+      "note": "shared invariant. Salt: OptionList (role=\"listbox\"), the IDENTICAL shared part select.tsx's Dropdown composes — confirmed by import path, not assumed. shadcn: ComboboxPrimitive.Portal > Positioner > Popup, data-slot=\"combobox-content\". M3: [R], the same menu-* token family select's own file carries."
+    },
+    {
+      "id": "structure.option-group",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "group",
+      "note": "Salt: OptionGroup, the SAME shared part select uses. shadcn: ComboboxGroup + ComboboxLabel. M3: OFF — CONFIRMED ABSENT, no group/label token in either autocomplete file, matching select's own finding exactly."
+    },
+    {
+      "id": "structure.separator",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "separator",
+      "note": "shadcn: ComboboxSeparator (-mx-1 my-1 h-px bg-border), identical mechanism to select's. Salt: OFF — no separator element; the same border-top-on-the-group mechanism select's Salt column uses (style.group.border-top). M3: menu-divider-* cross-file borrow, same as select."
+    },
+    {
+      "id": "structure.empty-state",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "emptyState",
+      "note": "A genuine shadcn-only structural richness, with no equivalent in Salt or M3's real source. shadcn: ComboboxEmpty, a REAL, dedicated exported part shown automatically when the filtered items list is empty. Salt: CONFIRMED ABSENT — ComboBox.tsx renders children directly with no \"no results\" branch; an empty filtered list is simply an empty, zero-height popup. M3: CONFIRMED ABSENT, no equivalent token anywhere in either autocomplete file."
+    },
+    {
+      "id": "structure.selected-marker",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "config",
+      "param": "selectedMarker",
+      "note": "The SAME mechanism split select found (TOOLTIP-MATRIX.md's arrow lesson). shadcn: a trailing CHECKMARK — ComboboxItemIndicator + CheckIcon, pr-8 reserved, no selected background. Salt and M3 both: a FILLED background and no glyph — Salt via the shared Option component's accent-weaker fill plus box-shadow bracket; M3's menu-list-item-selected-container-color."
+    },
+    {
+      "id": "structure.popup-anchor",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "info",
+      "note": "BELOW for all three — a real divergence from select, where shadcn defaulted to Radix's item-aligned overlay mode. shadcn's Combobox has no item-aligned concept: ComboboxContent's own side defaults to \"bottom\", align to \"start\" — the same mechanical shape as Salt's bottom-start placement. Structural reason: overlaying the selected item on the trigger makes sense for a closed button showing one fixed value; it makes no sense for an editable field whose visible content is whatever the user is currently typing. M3: [R], below."
+    },
+    {
+      "id": "behavior.open-trigger",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: useClick(context,{keyboardHandlers:false,toggle:false}) + useFocus(context) + useDismiss(context); ArrowDown/ArrowUp from closed also open it via handleKeyDown's own early branch. shadcn/base-ui: [R] — general APG combobox convention: focus, typing, or ArrowDown/Up open the popup. M3: [R]."
+    },
+    {
+      "id": "behavior.filter",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: CONSUMER-OWNED. ComboBox.tsx itself does NO filtering of its own children — combo-box.stories.tsx's own Template filters externally with a case-insensitive substring match before handing the array to <ComboBox>. shadcn: BUILT IN — base-ui's Combobox filters its own `items` prop internally as the input value changes (mechanism [R], exact algorithm not independently inspectable — unvendored package). M3: [R], no live component; the APG combobox pattern expects app- or library-provided filtering."
+    },
+    {
+      "id": "behavior.registry-filter-default",
+      "piece": "behavior",
+      "policy": "default",
+      "channel": "info",
+      "note": "REGISTRY DEFAULT, applied uniformly to all three columns so the render is checkable: case-insensitive substring match against the option label. NOT invented — this is the literal algorithm Salt's own real story uses (combo-box.stories.tsx: `state.toLowerCase().includes(value.trim().toLowerCase())`), the one live filter algorithm this session could actually read. Declared, not silent, per the row-policy table's rule that a default-policy row must supply a real value rather than ever resolving to off."
+    },
+    {
+      "id": "behavior.focus-model",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "VIRTUAL focus in all three — real DOM focus never leaves the <input>, a genuinely important structural fact this component's own build prompt flagged as easy to get wrong. Salt: aria-activedescendant={activeState?.id} on the input; options and the toggle button are tabIndex={-1}; OptionList's own onClick handler is handleFocusInput, so even a direct click inside the popup refocuses the input [S]. shadcn: [R], general APG combobox convention — ComboboxInput is a real, plain <input>, not a button, which is the structural reason focus MUST stay there (continuous typing would be impossible otherwise); ComboboxItem's data-highlighted styling is driven by base-ui's own internal active-index concept, not the DOM focus target. M3: [R], same APG convention."
+    },
+    {
+      "id": "behavior.pointer-activates-option",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "activateOnHover",
+      "note": "Salt: on — Option.handleMouseOver calls setActive, the SAME mechanism select's Salt column has. shadcn: on [R] — data-highlighted styling implies pointer-move highlighting, the same convention select's shadcn column documented, not independently confirmable at the exact event level (unvendored). M3: OFF [R] — same reasoning select gave: M3 keeps hover (8%) and focus (10%) state layers separate, so conflating them would make the 8% layer unreachable."
+    },
+    {
+      "id": "behavior.enter-commits",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: handleKeyDown's \"Enter\" case calls select(event, activeState) when open and an option is active. shadcn: [R], general APG convention. M3: [R]."
+    },
+    {
+      "id": "behavior.dismiss-escape",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: useDismiss(context)'s own default escapeKey:true. NOTE ComboBox.tsx's own handleKeyDown switch has NO explicit \"Escape\" case — dismissal on Escape is entirely floating-ui's, not hand-coded. shadcn: [R]. M3: [R]."
+    },
+    {
+      "id": "behavior.dismiss-outside",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: useDismiss(context)'s own default outsidePress:true. shadcn: [R]. M3: [R]."
+    },
+    {
+      "id": "behavior.status-inheritance",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION with the separate field component. Salt only, the same non-uniform precedence select documents: disabled = Boolean(disabledProp) || formFieldDisabled, readOnly = Boolean(readOnlyProp) || formFieldReadOnly, validationStatus = formFieldValidationStatus ?? validationStatusProp, plus the necessity channel. shadcn/M3: off."
+    },
+    {
+      "id": "behavior.empty-readonly-marker",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "emptyReadOnlyMarker",
+      "note": "Salt only, and identical to select's: emptyReadOnlyMarker forwarded straight through to PillInput. CONTENT FORMATTING, a first-class config row per CLAUDE.md rule 3. shadcn and M3 have no equivalent."
+    },
+    {
+      "id": "behavior.readonly-suppresses-popup",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, and it is MORE than select's equivalent: (a) useFloatingUI's own `open` expression includes `&& !readOnly`, (b) handleOpenChange returns early when readOnly, (c) handleKeyDown returns early when readOnly, and (d) the role attribute FLIPS from \"combobox\" to \"textbox\" on the underlying <input> itself — a real accessibility difference from select, whose trigger stays a <button role=\"combobox\"> either way. Source comment: `// Workaround to have readonly conveyed by screen readers`, linking jpmorganchase/salt-ds#4586. shadcn/M3: no readOnly concept."
+    },
+    {
+      "id": "behavior.multiselect",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "DECLARED OUT OF SCOPE, recorded rather than dropped — and a REAL, first-class API surface in BOTH live systems here (select only had it in Salt). Salt: ComboBox's multiselect prop, an array selection model with PillInput's own pills/onPillRemove. shadcn: base-ui's own multiple prop plus ComboboxChips/ComboboxChip/ComboboxChipsInput, with has-aria-invalid validation wiring on the chips container. M3: off, no multi-select vocabulary in either autocomplete file."
+    },
+    {
+      "id": "behavior.positioning-engine",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "DECLARED GAP, the same shape select's own row records. Salt composes @floating-ui/react directly — offset(1), a size() middleware writing --overlay-minWidth/--overlay-maxHeight, flip({fallbackStrategy:'initialPlacement'}). shadcn composes base-ui's own Positioner, publishing --anchor-width/--available-width/--available-height/--transform-origin (seen directly in combobox.tsx's own className strings). M3: [R]. NONE of the three is reimplemented here: skeleton/combobox.tsx uses a simple absolutely-positioned popup, measuring the trigger field to publish --combobox-trigger-width, honestly short of collision detection, flipping and available-height clamping."
+    },
+    {
+      "id": "prop.variant",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "variant",
+      "note": "Salt only: primary | secondary | tertiary, forwarded straight through to PillInput, identical mechanism to select's. shadcn/M3: OFF."
+    },
+    {
+      "id": "prop.validation-status",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "status",
+      "note": "Coverage 3 / 1 / 1, same as select. Salt: FormFieldValidationStatus -> error | warning | success. shadcn: a single aria-invalid boolean, wired through InputGroup's own has-[[data-slot][aria-invalid=true]]:border-destructive rule on the WRAPPING InputGroup, confirmed real by reading input-group.tsx directly. M3: a single error-* token family present in both autocomplete files."
+    },
+    {
+      "id": "prop.disabled",
+      "piece": "prop",
+      "policy": "locked",
+      "channel": "config",
+      "param": "disabled",
+      "note": "All three. Salt: PillInput's .saltPillInput-disabled block (background/color/cursor). shadcn: base-ui's own disabled prop, threaded through InputGroupInput's own disabled styling. M3: four per-element disabled-* opacities, same family as select."
+    },
+    {
+      "id": "prop.read-only",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "readOnly",
+      "note": "Salt only, with the role-flip described in behavior.readonly-suppresses-popup. shadcn: CONFIRMED ABSENT — ComboboxInput's own destructured props are only disabled/showTrigger/showClear, no readOnly. M3: no read-only token."
+    },
+    {
+      "id": "prop.placeholder",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "placeholder",
+      "note": "Salt: on, PillInput's own placeholder prop, styled identically to select's (content-secondary-foreground + font-weight:300). shadcn: on, ComboboxInput's placeholder prop passed straight to the native <input>. M3: OFF — same finding select recorded: neither autocomplete file has a placeholder token; an M3 text field shows a floating LABEL instead, belonging to the separate field component."
+    },
+    {
+      "id": "slot.value",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned, but it is the TYPED text, not a rendered label — a structural difference from select's slot.value (always exactly one option's label). Salt: valueState, directly editable. shadcn: the native input's own value. M3: [R]."
+    },
+    {
+      "id": "slot.option-content",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "consumer-owned in all three, identical shape to select's."
+    },
+    {
+      "id": "slot.group-label",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "consumer-owned, where the system has the part (Salt/shadcn only). M3 has no group concept."
+    },
+    {
+      "id": "slot.empty-state-text",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "shadcn only — consumer-owned message inside ComboboxEmpty, its own docs example reads \"No items found.\""
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION, same pattern select's slot.composes established: (a) the field wrapper; (b) an icon set — the toggle glyph (swap for Salt, static for shadcn/M3), the clear-button X, the checkmark; (c) the floating-position engine; (d) for M3, the standalone menu component. All render as neutral placeholders or simplified stand-ins."
+    },
+    {
+      "id": "state.open-closed",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "all three, identical shape to select's."
+    },
+    {
+      "id": "state.trigger-focus",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: .saltPillInput-focused sets cursor: var(--salt-cursor-text) and a dotted outline — a real, sourced DIVERGENCE from select's trigger, which used cursor:pointer (a button, not a text field). shadcn: focus-within ring on InputGroup. M3: outline/indicator thickening, same mechanism as select."
+    },
+    {
+      "id": "state.option",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "rest/hover/active/selected/focus-visible/disabled — the SAME widest set select documents, because Salt/shadcn reuse the identical shared option parts."
+    },
+    {
+      "id": "state.disabled",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "trigger and option, same per-system mechanisms select documents, now on an <input> instead of a <button> for the trigger half."
+    },
+    {
+      "id": "state.read-only",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt only, plus the role=\"textbox\" flip — see behavior.readonly-suppresses-popup."
+    },
+    {
+      "id": "style.trigger.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"]",
+      "declarations": { "background-color": "$" },
+      "note": "shown at each system's default (Salt variant=primary, M3 filled). Every column aliases the same bg-current indirection select's own trigger uses, mirroring PillInput's own --pillInput-background mechanism."
+    },
+    {
+      "id": "style.trigger.background@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"box\"] [data-slot=\"combobox-field\"]",
+      "declarations": { "background-color": "$" },
+      "note": "OFF in all three columns, the SAME surprise select found: M3's outlined autocomplete carries the identical text-field-container-color as filled (surface-container-highest, re-confirmed on this second component), so the filled/outlined axis moves only the edge mechanism and corner shape. Salt is off because `bordered` changes only the border; shadcn is off because box is its only mode."
+    },
+    {
+      "id": "style.trigger.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-input\"]",
+      "declarations": { "color": "$" },
+      "note": "Salt: PillInput's --pillInput-color -> content-primary-foreground. shadcn: the native input inherits the ambient --foreground, no colour class on ComboboxInput itself. M3: text-field-input-text-color -> on-surface."
+    },
+    {
+      "id": "style.trigger.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-input\"]",
+      "declarations": { "font": "$" },
+      "note": "Salt: the same --salt-text-* body role by density select's trigger uses (PillInput.css sets font: inherit on the input itself, inheriting from the root, which declares the body role). shadcn: text-sm, matching InputGroupInput's own sizing. M3: body-large, Roboto, matching select's own trigger."
+    },
+    {
+      "id": "style.trigger.letter-spacing",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-input\"]",
+      "declarations": { "letter-spacing": "$" },
+      "note": "Salt: --saltPillInput-letterSpacing, default 0. shadcn: OFF, no tracking utility. M3: text-field-input-text-tracking -> body-large-tracking = 0.03125rem."
+    },
+    {
+      "id": "style.trigger.min-height",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"]",
+      "declarations": { "min-height": "$" },
+      "note": "Salt: PillInput's own --saltPillInput-minHeight default var(--salt-size-base), the SAME density-driven 20/28/36/44px select's trigger uses. shadcn: no explicit height class on the InputGroup wrapper in combobox.tsx itself; recorded as INHERIT from InputGroup's own default (36px, matching select's shadcn trigger) per the row-policy table's default-policy rule. M3: 56px, the same declared-gap caveat select's own row records (latest-only, @deprecated on arrival) — this column stays on v0_192, so the number is carried as a registry default with the same citation, not re-derived."
+    },
+    {
+      "id": "style.trigger.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt: PillInput's own padding-left/-right = --salt-spacing-100, mirroring select's zero-vertical-padding trigger. shadcn: InputGroup's own px-3 py-2 mirrored from select's own trigger padding (InputGroupInput composes the same input-group chrome select's Select does not use, but the padding numbers match select's own px-3 py-2 finding). M3: 16px uniform, the SAME declared cross-component borrow select's row used."
+    },
+    {
+      "id": "style.trigger.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"]",
+      "declarations": { "column-gap": "$" },
+      "note": "Salt: PillInput's own gap: var(--salt-spacing-50) on .saltPillInput-inputWrapper, HALF select's spacing-100 gap — a real, sourced difference between the two Salt trigger chassis. shadcn: gap-2 = 8px on the InputGroup wrapper, matching select's shadcn trigger. M3: content-space = 16px, same cross-component borrow as select."
+    },
+    {
+      "id": "style.trigger.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: palette-corner-weak, the same rounded stop select's trigger uses (PillInput.css's own border-radius: var(--salt-palette-corner-weak, 0)). shadcn: rounded-md = 8px, matching select. M3 filled: corner-extra-small-top = 4px 4px 0 0."
+    },
+    {
+      "id": "style.trigger.shape@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"box\"] [data-slot=\"combobox-field\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "M3 only: outlined autocomplete's container-shape is corner-extra-small = 4px on all four corners, same as select's outlined variant."
+    },
+    {
+      "id": "style.trigger.cursor",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"]",
+      "declarations": { "cursor": "$" },
+      "note": "Salt only, and a genuine DIVERGENCE from select: PillInput.css's own `.saltPillInput:hover { cursor: var(--salt-cursor-text) }` resolves to `text`, not `pointer` — select's trigger is a button (pointer), combobox's trigger is an editable text field (text), the same distinction Salt's own Input has. shadcn and M3 declare no cursor."
+    },
+    {
+      "id": "style.trigger.transition",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"]",
+      "declarations": { "transition": "$" },
+      "note": "shadcn only: transition-[color,box-shadow], the same property list select's own row cites, same Tailwind-default caveat (150ms cubic-bezier(0.4,0,0.2,1), [R], package unvendored). Salt's PillInput.css contains no transition/animation rule anywhere; M3 has no motion token."
+    },
+    {
+      "id": "style.trigger.border@box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"box\"] [data-slot=\"combobox-field\"]",
+      "cellIsDeclarations": true,
+      "note": "the full four-sided border. All three have one (Salt only when bordered={true}), reading the same border-current indirection select's own row documents — PillInput.css's own --pillInput-borderColor mechanism, one status reassignment recolouring the border and its hover/focus variants together."
+    },
+    {
+      "id": "style.indicator.border@underline",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"underline\"] [data-slot=\"combobox-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "the bottom-only activation indicator. Salt: 1px solid, PillInput.css's own .saltPillInput-activationIndicator, reading the same border-current indirection. M3 filled: active-indicator-height 1px, active-indicator-color -> on-surface-variant. shadcn: OFF."
+    },
+    {
+      "id": "style.trigger.background@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"]:where(:not([data-disabled]):not([data-readonly])):hover",
+      "declarations": { "background-color": "$" },
+      "note": "Salt: OFF — PillInput.css changes only the cursor on hover, never the background, same as select's trigger. shadcn: OFF — combobox.tsx's InputGroup composition carries no dark-mode hover class the way select.tsx's own trigger does (a real, sourced CONTRAST with select — confirmed by reading combobox.tsx and input-group.tsx in full, neither declares a hover background utility). M3: the hover state layer, on-surface at hover-state-layer-opacity (0.08), same mechanism as select."
+    },
+    {
+      "id": "style.trigger.border@box-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"box\"] [data-slot=\"combobox-field\"]:where(:not([data-disabled]):not([data-readonly])):hover",
+      "cellIsDeclarations": true,
+      "note": "Salt: recolour to --pillInput-borderColor-hover (palette-accent), same mechanism select uses. M3: hover-outline-color -> on-surface. shadcn: OFF, same confirmed absence as style.trigger.background@hover."
+    },
+    {
+      "id": "style.indicator.border@underline-hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"underline\"] [data-slot=\"combobox-field\"]:where(:not([data-disabled]):not([data-readonly])):hover [data-slot=\"combobox-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: --pillInput-borderColor-hover. M3: hover-active-indicator-color -> on-surface. shadcn: OFF."
+    },
+    {
+      "id": "style.trigger.border@box-focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"box\"] [data-slot=\"combobox-field\"][data-focused]:where(:not([data-readonly]))",
+      "cellIsDeclarations": true,
+      "note": "Salt: recolour to --pillInput-borderColor-active. shadcn: recolour to --ring (focus-within:border-ring). M3 outlined: recolour to primary AND thicken to 2px (v0_192's own md-sys-state-focus-indicator value, this column's pinned edition — see COMBOBOX-MATRIX.md's edition note)."
+    },
+    {
+      "id": "style.indicator.border@underline-focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"underline\"] [data-slot=\"combobox-field\"][data-focused]:where(:not([data-readonly])) [data-slot=\"combobox-indicator\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: thickens to --salt-size-fixed-200 = 2px and recolours to accent-stronger, same mechanism select uses. M3 filled: 2px per v0_192 (this column's pinned edition does not carry the library-level 3px override select's own filled row found — see the matrix's Sources note on the edition pin). shadcn: OFF."
+    },
+    {
+      "id": "style.trigger.focus",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"][data-focused]",
+      "cellIsDeclarations": true,
+      "note": "Salt: a 2px DOTTED outline outside the box (PillInput.css's own .saltPillInput-focused rule), reassigned to the status colour. shadcn: outline:none plus a translucent ring drawn as a box-shadow on the InputGroup wrapper (focus-within, matching select's own mechanism). M3: OFF — focus is expressed entirely by the indicator/outline thickening."
+    },
+    {
+      "id": "style.trigger.background@readonly",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"][data-readonly]",
+      "declarations": { "background-color": "$" },
+      "note": "Salt only: PillInput's own --pillInput-background-readonly, same field-bg-readonly slot select's trigger uses."
+    },
+    {
+      "id": "style.trigger.background@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"][data-disabled]",
+      "declarations": { "background-color": "$" },
+      "note": "Salt: PillInput's own --pillInput-background-disabled, the 40%-alpha sibling, same as select. M3 filled: on-surface at disabled-container-opacity 0.04. shadcn: OFF — one blanket opacity:0.5."
+    },
+    {
+      "id": "style.trigger.background@box-disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-indicator=\"box\"] [data-slot=\"combobox-field\"][data-disabled]",
+      "declarations": { "background-color": "$" },
+      "note": "M3 only, the same precision row select's equivalent uses: outlined autocomplete has a container-color and no disabled-container-color/-opacity, so an outlined M3 combobox keeps its enabled container fill when disabled."
+    },
+    {
+      "id": "style.trigger.color@disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-input\"][data-disabled]",
+      "declarations": { "color": "$" },
+      "note": "Salt: PillInput's own color: var(--saltPillInput-color-disabled, content-primary-foreground-disabled) — 40% alpha. M3: on-surface at disabled-input-text-opacity 0.38. shadcn: OFF, opacity again."
+    },
+    {
+      "id": "style.trigger.disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-field\"][data-disabled]",
+      "cellIsDeclarations": true,
+      "note": "Salt: cursor:not-allowed. shadcn: opacity:0.5 + cursor:not-allowed. M3: OFF, entirely per-element opacities."
+    },
+    {
+      "id": "style.value.placeholder",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-input\"]::placeholder",
+      "cellIsDeclarations": true,
+      "note": "Salt: PillInput's own .saltPillInput-input::placeholder { color: content-secondary-foreground; font-weight: --salt-text-fontWeight-small } — the SAME declared rendering approximation select's own row uses (this repo self-hosts Open Sans at 400/600 only). shadcn: text-muted-foreground colour only, on the native placeholder attribute. M3: OFF — no placeholder token in either autocomplete file, same as select's own finding; an M3 combobox shows a floating LABEL instead."
+    },
+    {
+      "id": "style.toggle-button.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-toggle-button\"]",
+      "cellIsDeclarations": true,
+      "note": "DECLARED COMPOSITION — the glyph belongs to a future icon component; only its box is modelled. Salt: same 12/12/14/16px clamp select's toggle-icon uses. shadcn: size-4 = 16px, density-invariant. M3: text-field-trailing-icon-size = 24px."
+    },
+    {
+      "id": "style.toggle-button.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-toggle-button\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: OFF — currentColor, no explicit fill applied, inherits the field's own colour. shadcn: text-muted-foreground. M3: text-field-trailing-icon-color -> on-surface-variant."
+    },
+    {
+      "id": "style.clear-button.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-clear-button\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: ComboboxClear renders as an InputGroupButton size=\"icon-xs\", holding an XIcon with no explicit size class, matching the icon-xs button's own 16px box. Salt/M3: OFF, no clear button."
+    },
+    {
+      "id": "style.popup.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "declarations": { "background-color": "$" },
+      "note": "Salt: container-primary-background, the IDENTICAL value select's own popup row cites (same OptionList component). shadcn: bg-popover, ComboboxContent's own class. M3: menu-container-color -> surface-container, same borrow chain select's own row uses."
+    },
+    {
+      "id": "style.popup.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "declarations": { "color": "$" },
+      "note": "same reuse as style.popup.background — Salt/M3 identical to select's own row; shadcn: text-popover-foreground on ComboboxContent."
+    },
+    {
+      "id": "style.popup.border",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: 1px solid the accent colour, the IDENTICAL OptionList.css rule select's own popup border row cites. shadcn: 1px solid ring-foreground/10 (combobox.tsx's own className, a real DIVERGENCE from select's shadcn popup, which uses a bare `border` utility -> --border; combobox instead composes a ring utility). M3: OFF, no border/outline token in either autocomplete file's menu-* family, same as select."
+    },
+    {
+      "id": "style.popup.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: the same rounder popup-corner stop select's row cites. shadcn: rounded-md = 8px, matching select. M3: corner-extra-small = 4px, same borrow chain."
+    },
+    {
+      "id": "style.popup.shadow",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "declarations": { "box-shadow": "$" },
+      "note": "Salt: identical shadow-mediumLow select's own row cites. shadcn: shadow-md, the same [R] Tailwind-default caveat select's row uses. M3: level2 elevation, same derivation select.m3.json already carries."
+    },
+    {
+      "id": "style.popup.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt: 0, identical to select's row (options run edge to edge). shadcn: 4px, ComboboxList's own p-1. M3: 8px 0, same cross-file borrow as select."
+    },
+    {
+      "id": "style.popup.min-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "declarations": { "min-width": "$" },
+      "note": "Salt: the trigger's own width, the same --combobox-trigger-width inline mechanism select's row uses (renamed slot, identical technique). shadcn: w-(--anchor-width) — combobox.tsx's own base-ui Positioner variable, a real DIVERGENCE from select's shadcn popup (which used a fixed 8rem floor independent of the trigger): base-ui's own Combobox ties the popup width to the anchor by default, unlike Radix Select's item-aligned default. M3: OFF, no width token."
+    },
+    {
+      "id": "style.popup.z-index",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "declarations": { "z-index": "$" },
+      "note": "Salt: 1500, identical to select's row. shadcn: 50 (z-50, combobox.tsx's own className). M3: OFF."
+    },
+    {
+      "id": "style.popup.animation",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-popup\"]",
+      "declarations": { "animation": "$" },
+      "note": "Salt: OFF, CONFIRMED ABSENCE identical to select's row. shadcn: combobox-popup-in 100ms ease-out — combobox.tsx's own `duration-100` class, a real, sourced DIVERGENCE from select's own shadcn popup (150ms, tw-animate-css's default) — combobox.tsx sets its OWN explicit duration utility rather than relying on the animate-in/zoom-in defaults alone. M3: OFF."
+    },
+    {
+      "id": "style.option.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"]",
+      "declarations": { "background-color": "$" },
+      "note": "Salt/M3: identical to select's own row (shared Option component / same menu-item-container-color override). shadcn: transparent, ComboboxItem has no background class at rest."
+    },
+    {
+      "id": "style.option.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"]",
+      "declarations": { "color": "$" },
+      "note": "Salt: identical to select's row (shared Option component declares its own colour). shadcn/M3: OFF, inherits the popup."
+    },
+    {
+      "id": "style.option.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"]",
+      "declarations": { "font": "$" },
+      "note": "Salt: identical type-body role select's option uses (shared Option component). shadcn: text-sm, matching select. M3: label-large at weight 500, same divergent-from-trigger finding select's own row records."
+    },
+    {
+      "id": "style.option.min-height",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"]",
+      "declarations": { "min-height": "$" },
+      "note": "Salt: identical density-driven option-min-height select's row uses (shared Option component). shadcn: OFF, content-driven, same as select. M3: 48px, same borrow."
+    },
+    {
+      "id": "style.option.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt: identical density-driven option-padding select's row uses. shadcn: 6px 32px 6px 8px, same asymmetric checkmark-lane padding as select's shadcn column. M3: 12px 16px, same borrow."
+    },
+    {
+      "id": "style.option.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt: identical to select's row (shared Option component). shadcn: 8px, gap-2. M3: 12px, same borrow."
+    },
+    {
+      "id": "style.option.cursor",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"]",
+      "declarations": { "cursor": "$" },
+      "note": "Salt: pointer, identical to select's row. shadcn: default, explicitly not a pointer, matching select's own finding. M3: OFF."
+    },
+    {
+      "id": "style.option.background@hover",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"]:where(:not([data-disabled])):hover",
+      "cellIsDeclarations": true,
+      "note": "Salt: identical accent-weakest select's row uses. shadcn: OFF, CONFIRMED ABSENCE, same as select — the highlight is data-highlighted, not hover:."
+    },
+    {
+      "id": "style.option.active",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"][data-active]",
+      "cellIsDeclarations": true,
+      "note": "Salt: identical accent-weakest select's row uses, through a different selector. shadcn: bg-accent + text-accent-foreground, identical mechanism to select's data-highlighted styling."
+    },
+    {
+      "id": "style.option.focus-visible",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"][data-active][data-focus-visible]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, identical 2px dotted outline select's own row uses — set only after keyboard navigation. shadcn/M3: OFF."
+    },
+    {
+      "id": "style.option.disabled",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"][data-disabled]",
+      "cellIsDeclarations": true,
+      "note": "Salt: identical restated colour/background + opacity 0.4 select's own row uses. shadcn: opacity 0.5 + pointer-events:none. M3: opacity 0.38, same borrow."
+    },
+    {
+      "id": "style.option.selected",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option\"][data-selected]",
+      "cellIsDeclarations": true,
+      "note": "Salt: identical accent-weaker fill + three-layer box-shadow bracket select's own row uses (shared Option component). shadcn: OFF, CONFIRMED ABSENCE — marked only by the checkmark, same as select. M3: surface-container-highest fill, same borrow."
+    },
+    {
+      "id": "style.selected-marker.box",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-option-marker\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: right:8px, 14px box around a 16px CheckIcon, identical to select's own row. Salt/M3: OFF, no marker element in single-select."
+    },
+    {
+      "id": "style.group-label.font",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-group-label\"]",
+      "declarations": { "font": "$" },
+      "note": "Salt: identical semiBold LABEL typescale select's own row uses (shared OptionGroup component). shadcn: text-xs at ambient 400, matching select's own finding. M3: OFF, no group concept."
+    },
+    {
+      "id": "style.group-label.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-group-label\"]",
+      "declarations": { "color": "$" },
+      "note": "Salt: identical fg-secondary select's row uses (the same token as the placeholder). shadcn: text-muted-foreground, matching select. M3: OFF."
+    },
+    {
+      "id": "style.group-label.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-group-label\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: identical to an option's own padding/min-height, select's row. shadcn: 6px 8px, matching select's finding (half an item's height, a caption not a row). M3: OFF."
+    },
+    {
+      "id": "style.group.border-top",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-group\"] + [data-slot=\"combobox-group\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, identical border-top-on-the-group mechanism select's own row uses (shared OptionGroup component)."
+    },
+    {
+      "id": "style.separator",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-separator\"]",
+      "cellIsDeclarations": true,
+      "note": "shadcn only: 1px height, negative inline margins, identical mechanism to select's own row. M3: menu-divider-*, same borrow. Salt: OFF, no separator element."
+    },
+    {
+      "id": "style.empty.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-empty\"]",
+      "declarations": { "color": "$" },
+      "note": "shadcn only: text-muted-foreground, ComboboxEmpty's own class. Salt/M3: OFF, no empty-state part exists — see structure.empty-state."
+    },
+    {
+      "id": "style.empty.font",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-empty\"]",
+      "declarations": { "font": "$" },
+      "note": "shadcn only: text-sm, matching the option/trigger text size. Salt/M3: OFF."
+    },
+    {
+      "id": "style.empty.padding",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox-empty\"]",
+      "declarations": { "padding": "$" },
+      "note": "shadcn only: py-2 = 8px vertical, ComboboxEmpty's own class. Salt/M3: OFF."
+    },
+    {
+      "id": "style.trigger.variant@secondary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-variant=\"secondary\"] [data-slot=\"combobox-field\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, identical secondary-variant reassignment select's own row uses (PillInput's .saltPillInput-secondary block). shadcn/M3: OFF."
+    },
+    {
+      "id": "style.trigger.variant@tertiary",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-variant=\"tertiary\"] [data-slot=\"combobox-field\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, identical tertiary-variant reassignment select's own row uses. shadcn/M3: OFF."
+    },
+    {
+      "id": "style.trigger.status@error",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-status=\"error\"] [data-slot=\"combobox-field\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt: identical error reassignment select's own row uses (PillInput's .saltPillInput-error block — border, border-hover, border-active, outline, background, background-readonly all repointed to status-error). shadcn: aria-invalid wiring on the InputGroup wrapper, same mechanism as select. M3: outline/indicator/hover-color error family, same as select."
+    },
+    {
+      "id": "style.trigger.status@warning",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-status=\"warning\"] [data-slot=\"combobox-field\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, identical warning reassignment select's own row uses. shadcn/M3: OFF, no warning state exists in either."
+    },
+    {
+      "id": "style.trigger.status@success",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"combobox\"][data-status=\"success\"] [data-slot=\"combobox-field\"]",
+      "cellIsDeclarations": true,
+      "note": "Salt only, identical success reassignment select's own row uses. shadcn/M3: OFF."
+    }
+  ]
+}

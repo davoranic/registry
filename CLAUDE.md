@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **22 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **23 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover, combobox (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -268,6 +268,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `card` | [`CARD-MATRIX.md`](CARD-MATRIX.md) | 90 | 62 | 36 | 37 | ✓ |
 | `checkbox` | [`CHECKBOX-MATRIX.md`](CHECKBOX-MATRIX.md) | 55 | 41 | 30 | 46 | ✓ |
 | `chip` | [`CHIP-MATRIX.md`](CHIP-MATRIX.md) | 75 | 45 | 7 | 59 | ✓ |
+| `combobox` | [`COMBOBOX-MATRIX.md`](COMBOBOX-MATRIX.md) | 102 | 70 | 58 | 46 | ✓ |
 | `dialog` | [`DIALOG-MATRIX.md`](DIALOG-MATRIX.md) | 97 | 73 | 47 | 38 | ✓ |
 | `dropdown-menu` | [`DROPDOWN-MENU-MATRIX.md`](DROPDOWN-MENU-MATRIX.md) | 68 | 42 | 42 | 38 | ✓ |
 | `input` | [`INPUT-MATRIX.md`](INPUT-MATRIX.md) | 64 | 50 | 20 | 32 | — |
@@ -470,7 +471,30 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `popover` (component 21, row 22/79). 48 rows (salt 36,
+Last action: built `combobox` (component 22, row 23/79). 102 rows (salt
+70, shadcn 58, m3 46) — a full three-way component after two consecutive
+total-M3-absence builds. All four automated gates green, conformance
+257/257. Two real corrections during the build itself (not orchestrator
+finds, self-caught by the building agent's own grep discipline): the
+prompt's hypothesis that shadcn lacked a real combobox primitive was
+WRONG — shadcn now ships a real, dedicated `combobox.tsx` (16 exported
+parts, `@base-ui/react`-based, superseding the older Command+Popover
+composition); and Salt's canonical combo-box is in `core/`, not `lab/`
+(confirmed via `lab/CHANGELOG.md`: promoted out of labs). Orchestrator
+live-verification (the first real render — same as popover, but this
+time clean) found NO new bugs: virtual focus correctly stays on the
+`<input>` through open/filter/arrow-navigate/commit (confirmed via
+`aria-activedescendant`, never real DOM focus moving to an option — the
+sharpest structural risk this component's own build prompt flagged),
+filtering correctly narrows the option list and correctly shows an
+empty-state message for shadcn (Salt/M3 have none, by design), Enter
+commits and closes, outside click dismisses, and — proactively checked
+given POPOVER-MATRIX.md Finding 9 — every icon glyph (toggle chevron,
+clear ×, selection checkmark) has an explicit pixel size on its
+container in all three columns, so the "unconstrained SVG" bug did not
+recur here.
+
+Previous action: built `popover` (component 21, row 22/79). 48 rows (salt 36,
 shadcn 29, m3 0 — the second consecutive TOTAL M3 absence, same shape as
 accordion: no popover/flyout/bubble component or token family exists
 anywhere in `3-source/material-web`). All four automated gates green.
@@ -649,7 +673,7 @@ like the same bug.
 
 `switch`, `radio-group`, `slider`, the button fix, the dialog finding, the
 uncited-slots re-scope, the tabs conformance fix, toast, dropdown-menu,
-accordion, and popover are all committed and pushed to
+accordion, popover, and combobox are all committed and pushed to
 `claude/next-component-7e5dex` (check `git log main..claude/next-
 component-7e5dex` before assuming what's landed on `main` — this list is
 updated less reliably than that log).
@@ -687,7 +711,7 @@ clear the queue), updated as items close:**
    `button`, `card`, `chip`, `dialog`, `input`, `progress`, `calendar`
    (`registry.tsx`), `select`, `spinner`, `tabs`, `tooltip`. All 13
    corrected to `../out/gen/` and verified to build clean.
-6. **Continue components** — 57 canonical rows remain after `popover`
+6. **Continue components** — 56 canonical rows remain after `combobox`
    lands, order per `1-intro/content/04-component-map.md`: rows with real
    cross-system character first.
 
