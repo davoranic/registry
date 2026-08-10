@@ -49,7 +49,7 @@ OUT = os.path.join(INTRO, "site", "index.html")
 # index table
 COMPONENTS = ["alert", "badge", "button", "calendar", "card", "checkbox", "chip",
               "dialog", "input", "progress", "radio-group", "select", "slider",
-              "spinner", "switch", "tabs", "tooltip"]
+              "spinner", "switch", "tabs", "toast", "tooltip"]
 
 # order in the sidebar; slug -> source file
 PAGES = [
