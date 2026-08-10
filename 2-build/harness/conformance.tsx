@@ -46,6 +46,7 @@ import { Popover, type PopoverConfig } from "../skeleton/popover"
 import { Combobox, type ComboboxConfig, type ComboboxOptionModel } from "../skeleton/combobox"
 import { ToggleGroup, ToggleGroupItem, type ToggleGroupConfig } from "../skeleton/toggle-group"
 import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHeadCell, TableCell, type TableConfig } from "../skeleton/table"
+import { Drawer, type DrawerConfig } from "../skeleton/drawer"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -63,6 +64,7 @@ import comboboxCfg from "../out/gen/combobox-config.json"
 import toggleGroupCfg from "../out/gen/toggle-group-config.json"
 import tableCfg from "../out/gen/table-config.json"
 import tablePanel from "../out/gen/table-panel.json"
+import drawerCfg from "../out/gen/drawer-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -205,6 +207,112 @@ async function checkDialog(host: HTMLElement, system: string) {
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }))
     await settle()
   }
+
+  root.unmount()
+  mount.remove()
+}
+
+// ---------------------------------------------------------------- drawer
+
+/* Reuses dialog.tsx's own proven transition-testing discipline (mount
+ * CLOSED, then open — never mount already-open) and checks BOTH state
+ * (focus/role/dismissal) and real EDGE-ANCHORED LAYOUT geometry as two
+ * separate assertions, per the standing lesson every *-MATRIX.md since
+ * checkbox/radio-group has carried: layout and state are different claims
+ * and a passing state check proves nothing about geometry. */
+async function checkDrawer(host: HTMLElement, system: string) {
+  const cfg = (drawerCfg as Record<string, any>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+
+  const trigger = document.createElement("button")
+  trigger.textContent = "open"
+  mount.appendChild(trigger)
+
+  function Harness({ open, position }: { open: boolean; position: string }) {
+    return (
+      <Drawer config={cfg} open={open} onOpenChange={() => {}} position={position} title="T" description="D">
+        <button>inner</button>
+      </Drawer>
+    )
+  }
+
+  // --- geometry: a RIGHT-anchored panel must sit flush against the
+  // viewport's right edge and span full height — checked on its own, not
+  // inferred from the CSS text (CLAUDE.md rule: verify layout with
+  // getBoundingClientRect, not assumed).
+  trigger.focus()
+  root.render(<Harness open={false} position="right" />)
+  await settle()
+  root.render(<Harness open position="right" />)
+  const panel = await waitFor(() => mount.querySelector('[data-slot="drawer-panel"]') as HTMLElement | null)
+  record("drawer", "structure.panel", system, !!panel, panel ? "panel rendered" : "no panel")
+
+  if (panel) {
+    const rect = panel.getBoundingClientRect()
+    const flushRight = Math.abs(rect.right - window.innerWidth) < 2
+    const fullHeight = Math.abs(rect.height - window.innerHeight) < 2
+    record("drawer", "style.panel.size@right", system, flushRight && fullHeight,
+      `rect=${JSON.stringify({ x: Math.round(rect.x), right: Math.round(rect.right), height: Math.round(rect.height) })} viewport=${window.innerWidth}x${window.innerHeight}`)
+
+    // behavior.initial-focus
+    await waitFor(() => panel.contains(document.activeElement))
+    const inside = panel.contains(document.activeElement)
+    record("drawer", "behavior.initial-focus", system, inside,
+      inside ? "focus moved into the panel" : "focus never entered — active=" + (document.activeElement?.tagName || "?"))
+
+    record("drawer", "behavior.role", system, panel.getAttribute("role") === "dialog", "role=" + panel.getAttribute("role"))
+
+    // behavior.scroll-lock — Salt's own Drawer is CONFIRMED to never lock
+    // scroll (DRAWER-MATRIX.md Finding 4); shadcn/m3 are this skeleton's own
+    // [R] fallback, which DOES lock. The expectation is read from the
+    // column's own generated config, not hardcoded per system, so the
+    // assertion stays honest if a future column edit changes it.
+    const locked = getComputedStyle(document.documentElement).overflow === "hidden"
+    const expectLocked = Boolean(cfg.scrollLock)
+    record("drawer", "behavior.scroll-lock", system, locked === expectLocked,
+      `expected locked=${expectLocked}; documentElement.overflow="${getComputedStyle(document.documentElement).overflow}"`)
+    // undo any lock this assertion itself caused before moving on
+    document.documentElement.style.overflow = ""
+    document.documentElement.style.paddingRight = ""
+
+    // behavior.focus-trap
+    const t = [...panel.querySelectorAll<HTMLElement>('button,[href],[tabindex]:not([tabindex="-1"])')]
+    if (t.length > 1) {
+      t[t.length - 1].focus()
+      key(t[t.length - 1], "Tab")
+      await settle()
+      const wrapped = panel.contains(document.activeElement)
+      record("drawer", "behavior.focus-trap", system, wrapped, wrapped ? "Tab stayed inside the panel" : "Tab escaped the panel")
+    }
+
+    // behavior.dismiss-escape — re-render with a real onOpenChange so the
+    // dismissal is observable
+    let closed = false
+    root.render(
+      <Drawer config={cfg} open onOpenChange={() => { closed = true }} position="right" title="T" description="D">
+        <button>inner</button>
+      </Drawer>,
+    )
+    await settle()
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }))
+    await settle()
+    record("drawer", "behavior.dismiss-escape", system, closed, closed ? "Escape closed it" : "Escape did not close it")
+  }
+
+  // --- structure.drag-handle: real in shadcn/m3, bottom-position-only in
+  // BOTH real sources (independently). Verify the handle is present at
+  // position=bottom and ABSENT at position=right, for columns that have it.
+  root.render(<Harness open={false} position="bottom" />)
+  await settle()
+  root.render(<Harness open position="bottom" />)
+  const bottomPanel = await waitFor(() => mount.querySelector('[data-slot="drawer-panel"][data-position="bottom"]') as HTMLElement | null)
+  const hasHandleAtBottom = !!bottomPanel?.querySelector('[data-slot="drawer-drag-handle"]')
+  const expectHandle = Boolean(cfg.dragHandle)
+  record("drawer", "structure.drag-handle", system, hasHandleAtBottom === expectHandle,
+    `expected=${expectHandle} bottom-handle-present=${hasHandleAtBottom}`)
 
   root.unmount()
   mount.remove()
@@ -2052,6 +2160,7 @@ async function run() {
 
   for (const s of ["salt", "shadcn", "m3"]) {
     try { await checkDialog(host, s) } catch (e) { record("dialog", "(threw)", s, false, String(e)) }
+    try { await checkDrawer(host, s) } catch (e) { record("drawer", "(threw)", s, false, String(e)) }
     try { await checkSelect(host, s) } catch (e) { record("select", "(threw)", s, false, String(e)) }
     try { await checkTabs(host, s) } catch (e) { record("tabs", "(threw)", s, false, String(e)) }
     try { await checkCard(host, s) } catch (e) { record("card", "(threw)", s, false, String(e)) }

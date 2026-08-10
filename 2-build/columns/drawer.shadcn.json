@@ -1,0 +1,109 @@
+{
+  "system": "shadcn",
+  "component": "drawer",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "surface": "oklch(1 0 0)",
+      "border-base": "oklch(0.922 0 0)",
+      "muted-bg": "oklch(0.97 0 0)",
+      "muted-fg": "oklch(0.556 0 0)",
+      "fg": "oklch(0% 0 0)",
+      "scrim-bg": "color-mix(in oklab, #000 50%, transparent)",
+      "radius-panel": "0.625rem"
+    },
+    "dark": {
+      "surface": "oklch(0.145 0 0)",
+      "border-base": "oklch(1 0 0 / 10%)",
+      "muted-bg": "oklch(0.269 0 0)",
+      "muted-fg": "oklch(0.708 0 0)",
+      "fg": "oklch(0.985 0 0)"
+    }
+  },
+  "modeInvariant": ["scrim-bg", "radius-panel"],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/drawer.tsx — the CANONICAL base primitive, all 136 lines read in full (Drawer/DrawerTrigger/DrawerPortal/DrawerClose/DrawerOverlay/DrawerContent/DrawerHeader/DrawerFooter/DrawerTitle/DrawerDescription). apps/v4/registry/new-york-v4/examples/drawer-demo.tsx read for real usage (no default close X, DrawerClose composed inside the footer as a Cancel button). apps/v4/content/docs/components/radix/drawer.mdx read for the documented external dependency (built on vaul by emilkowalski, https://vaul.emilkowal.ski). apps/v4/package.json:101 confirms `vaul: 1.1.2` as an installed but UNVENDORED dependency — confirmed by an exhaustive directory search of 3-source for *vaul*: zero hits outside this package.json line. This is a REAL, notable asymmetry from Sheet's own citations: radix-ui IS vendored in this clone (primitives/, used for Sheet's/Dialog's own [S] behaviour citations) but vaul is NOT, so every Drawer behaviour row this column cannot read directly in Drawer.tsx's own JSX is marked [R], not [S] — a structurally weaker evidence base than this pipeline's other overlay columns, and declared as such rather than silently upgraded. apps/v4/registry/new-york-v4/ui/sheet.tsx read ONLY to fix the drawer-vs-sheet scope boundary (see docs/DRAWER-MATRIX.md scope note) — NOT a style/structure source for this row.",
+    "surface / border-base / muted-bg / muted-fg / fg": "the SAME slots dialog.shadcn.json already resolves (bg-background, --border, bg-muted, text-muted-foreground, text-foreground) — reused verbatim because DrawerContent/DrawerHeader/DrawerFooter/DrawerTitle/DrawerDescription reference the identical CSS custom properties.",
+    "scrim-bg": "DrawerOverlay className: bg-black/50 -> color-mix(in oklab, #000 50%, transparent), the identical rule dialog.shadcn.json's own scrim resolves (DrawerOverlay's whole className string is byte-identical to SheetOverlay's and DialogOverlay's).",
+    "radius-panel": "--radius-lg -> --radius = 0.625rem, the SAME slot dialog.shadcn.json's own panel shape resolves — used here ONLY at the far corners of top/bottom drawers (rounded-b-lg / rounded-t-lg); left/right drawers have no border-radius class of any kind.",
+    "no-panel-shadow": "CONFIRMED ABSENCE: DrawerContent's own className string — read in full, twice — has no shadow-* utility of any kind, unlike Dialog's own shadow-lg and Sheet's own shadow-lg. A real, sourced contrast between this sibling and its own siblings.",
+    "no-close-default": "CONFIRMED ABSENCE: drawer.tsx declares `DrawerClose` with NO className at all — a bare wrapper around DrawerPrimitive.Close (vaul), unlike DialogContent's own default-rendered, pre-styled corner X and SheetContent's own showCloseButton=true default. drawer-demo.tsx's own real usage places a DrawerClose INSIDE DrawerFooter as a full <Button variant=\"outline\">Cancel</Button>, not a corner glyph.",
+    "asymmetric-duration": "DrawerContent className: `data-[state=closed]:duration-300 data-[state=open]:duration-500` — the drawer opens over 500ms and closes over 300ms, a deliberate asymmetry neither Dialog nor Sheet's own className strings carry (both leave duration unset/default). See docs/DRAWER-MATRIX.md Finding 3.",
+    "drag-handle": "DrawerContent's own literal child: `<div className=\"mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full bg-muted group-data-[vaul-drawer-direction=bottom]/drawer-content:block\" />` — hidden by default, shown ONLY when the group's own direction data attribute is \"bottom\"."
+  },
+  "cells": {
+    "structure.scrim": { "kind": "value", "value": true, "source": "DrawerOverlay, declared inside drawer.tsx and rendered unconditionally by DrawerContent's own DrawerPortal wrapper" },
+    "structure.panel": { "kind": "value", "value": true, "source": "DrawerPrimitive.Content (vaul)" },
+    "structure.header": { "kind": "value", "value": true, "source": "DrawerHeader — a real, dedicated `flex flex-col gap-0.5 p-4` wrapper" },
+    "structure.title": { "kind": "value", "value": true, "source": "DrawerTitle (vaul's own Title primitive)" },
+    "structure.description": { "kind": "value", "value": true, "source": "DrawerDescription (vaul's own Description primitive)" },
+    "structure.footer": { "kind": "value", "value": true, "source": "DrawerFooter — `mt-auto flex flex-col gap-2 p-4`" },
+    "structure.close-button": { "kind": "value", "value": "manual", "note": "see no-close-default", "source": "DrawerClose is a bare, unstyled wrapper the consumer places anywhere and styles by hand" },
+    "structure.drag-handle": { "kind": "value", "value": true, "note": "see drag-handle — bottom-direction-only in source", "source": "DrawerContent's own hard-coded child div" },
+
+    "behavior.role": { "kind": "value", "value": true, "note": "[R] — vaul is unvendored in this clone; inferred from its own published docs describing a dialog-pattern component", "source": "https://vaul.emilkowal.ski/getting-started (cited in radix/drawer.mdx), not readable from this clone's own source" },
+    "behavior.aria-modal": { "kind": "value", "value": true, "note": "[R] — unvendored, inferred true per APG's dialog-modal pattern (the same inference dialog.template.json makes for M3)" },
+    "behavior.background-suppression": { "kind": "value", "value": "aria-hidden", "note": "[R] — unvendored; inferred to mirror Sheet's own Radix-documented hideOthers() mechanism, since vaul's docs describe the same page-hiding contract without exposing which primitive attribute performs it" },
+    "behavior.focus-trap": { "kind": "value", "value": true, "note": "[R] — unvendored; vaul's own published docs describe focus trapping while open" },
+    "behavior.initial-focus": { "kind": "value", "value": "first-tabbable", "note": "[R] — unvendored, no ordinal API documented anywhere in radix/drawer.mdx" },
+    "behavior.focus-return": { "kind": "value", "value": true, "note": "[R] — unvendored; vaul's own docs describe returning focus to the trigger on close" },
+    "behavior.dismiss-escape": { "kind": "value", "value": true, "note": "[R] — unvendored, inferred from vaul's own documented `dismissible` default (true)" },
+    "behavior.dismiss-outside": { "kind": "value", "value": true, "note": "[R] — unvendored, inferred on by default per vaul's own docs" },
+    "behavior.scroll-lock": { "kind": "value", "value": true, "note": "[R] — unvendored; inferred ON, since vaul wraps the same modal-overlay contract Sheet's own Radix Dialog fulfils with react-remove-scroll — genuinely WEAKER evidence than Sheet's own [S] citation for the identical row, and declared as such rather than silently upgraded" },
+    "behavior.labelled-by": { "kind": "value", "value": true, "note": "[R] — likely mirrors Radix's own mounted-Title counting (Sheet's confirmed [S] mechanism), unvendored so not directly readable in vaul's own internals" },
+    "behavior.described-by": { "kind": "value", "value": true, "note": "[R] — unvendored; inferred on when a Description is mounted, mirroring Sheet's own [S]-confirmed pattern" },
+    "behavior.exit-animation": { "kind": "value", "value": true, "note": "see asymmetric-duration", "source": "DrawerContent className: data-[state=closed]:animate-out ... data-[state=open]:animate-in ..." },
+
+    "prop.position": { "kind": "value", "value": ["bottom", "top", "right", "left"], "source": "vaul's own `direction` prop (top|right|bottom|left), forwarded through data-vaul-drawer-direction selectors; default \"bottom\" confirmed by drawer-demo.tsx's own usage, which never passes a direction and renders bottom-anchored. Listed SOURCE-DEFAULT-FIRST." },
+    "prop.variant": { "kind": "off", "note": "no tone-variant axis" },
+    "prop.disable-dismiss": { "kind": "off", "note": "no per-instance prop on DrawerContent itself; vaul's own Root accepts `dismissible` (unvendored)" },
+    "prop.disable-scrim": { "kind": "off", "note": "DrawerOverlay is rendered unconditionally inside DrawerContent's DrawerPortal, so removing it is a source edit" },
+
+    "slot.title": { "kind": "value", "value": true },
+    "slot.description": { "kind": "value", "value": true },
+    "slot.footer": { "kind": "value", "value": true },
+
+    "style.scrim.background": { "kind": "alias", "slot": "scrim-bg" },
+    "style.scrim.z-index": { "kind": "value", "value": "50", "source": "DrawerOverlay className: z-50" },
+    "style.scrim.animation": { "kind": "value", "value": "drawer-fade-in 200ms", "note": "[R] duration/easing — tw-animate-css not vendored", "source": "DrawerOverlay className: data-[state=open]:animate-in data-[state=open]:fade-in-0" },
+
+    "style.panel.background": { "kind": "alias", "slot": "surface" },
+    "style.panel.background@secondary": { "kind": "off" },
+    "style.panel.background@tertiary": { "kind": "off" },
+    "style.panel.shadow": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-panel-shadow" },
+    "style.panel.padding": { "kind": "off", "note": "DrawerContent itself carries no padding class; the header/footer/drag-handle each carry their own" },
+    "style.panel.z-index": { "kind": "value", "value": "50", "source": "DrawerContent className: z-50" },
+
+    "style.panel.size@left": { "kind": "value", "value": { "width": "75vw", "max-width": "24rem" }, "source": "DrawerContent className: data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:sm:max-w-sm" },
+    "style.panel.size@right": { "kind": "value", "value": { "width": "75vw", "max-width": "24rem" }, "source": "DrawerContent className: data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:sm:max-w-sm" },
+    "style.panel.size@top": { "kind": "value", "value": { "max-height": "80vh" }, "source": "DrawerContent className: data-[vaul-drawer-direction=top]:max-h-[80vh] (height itself is h-auto, from base)" },
+    "style.panel.size@bottom": { "kind": "value", "value": { "max-height": "80vh" }, "source": "DrawerContent className: data-[vaul-drawer-direction=bottom]:max-h-[80vh]" },
+    "style.panel.inset-margin@top": { "kind": "value", "value": "96px", "source": "DrawerContent className: data-[vaul-drawer-direction=top]:mb-24" },
+    "style.panel.inset-margin@bottom": { "kind": "value", "value": "96px", "source": "DrawerContent className: data-[vaul-drawer-direction=bottom]:mt-24" },
+    "style.panel.corner@top": { "kind": "alias", "slot": "radius-panel", "source": "DrawerContent className: data-[vaul-drawer-direction=top]:rounded-b-lg — the BOTTOM (far) corners only" },
+    "style.panel.corner@bottom": { "kind": "alias", "slot": "radius-panel", "source": "DrawerContent className: data-[vaul-drawer-direction=bottom]:rounded-t-lg — the TOP (far) corners only" },
+    "style.panel.border@left": { "kind": "alias", "slot": "border-base", "source": "DrawerContent className: data-[vaul-drawer-direction=left]:border-r" },
+    "style.panel.border@right": { "kind": "alias", "slot": "border-base", "source": "DrawerContent className: data-[vaul-drawer-direction=right]:border-l" },
+    "style.panel.border@top": { "kind": "alias", "slot": "border-base", "source": "DrawerContent className: data-[vaul-drawer-direction=top]:border-b" },
+    "style.panel.border@bottom": { "kind": "alias", "slot": "border-base", "source": "DrawerContent className: data-[vaul-drawer-direction=bottom]:border-t" },
+
+    "style.panel.animation@left": { "kind": "value", "value": "drawer-slide-in-left 500ms", "note": "[R] easing — tw-animate-css not vendored; see asymmetric-duration", "source": "DrawerContent className: data-[vaul-drawer-direction=left]:slide-in-from-left" },
+    "style.panel.animation@right": { "kind": "value", "value": "drawer-slide-in-right 500ms", "note": "[R] easing", "source": "DrawerContent className: data-[vaul-drawer-direction=right]:slide-in-from-right" },
+    "style.panel.animation@top": { "kind": "value", "value": "drawer-slide-in-from-above 500ms", "note": "[R] easing", "source": "DrawerContent className: data-[vaul-drawer-direction=top]:slide-in-from-top" },
+    "style.panel.animation@bottom": { "kind": "value", "value": "drawer-slide-in-from-below 500ms", "note": "[R] easing; vaul's own default direction", "source": "DrawerContent className: data-[vaul-drawer-direction=bottom]:slide-in-from-bottom" },
+
+    "style.header.padding": { "kind": "value", "value": "16px", "source": "DrawerHeader className: p-4" },
+    "style.title.font": { "kind": "value", "value": "600 inherit", "note": "no explicit font-size utility — a real contrast with Dialog's own text-lg; DrawerTitle inherits the ambient body size", "source": "DrawerTitle className: font-semibold text-foreground" },
+    "style.title.color": { "kind": "alias", "slot": "fg", "source": "DrawerTitle className: text-foreground" },
+    "style.description.font": { "kind": "value", "value": "400 0.875rem/1.25rem", "source": "DrawerDescription className: text-sm text-muted-foreground" },
+    "style.footer.padding": { "kind": "value", "value": "16px", "source": "DrawerFooter className: p-4" },
+    "style.footer.gap": { "kind": "value", "value": "8px", "source": "DrawerFooter className: gap-2" },
+
+    "style.close-button.position": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-close-default; there is no default rendering to place" },
+    "style.drag-handle.box": {
+      "kind": "value",
+      "value": { "width": "100px", "height": "8px", "border-radius": "9999px", "background": "var(--muted-bg)", "margin": "16px auto 0" },
+      "source": "DrawerContent's own child div — see drag-handle"
+    }
+  }
+}

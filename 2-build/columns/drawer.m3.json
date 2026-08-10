@@ -1,0 +1,108 @@
+{
+  "system": "m3",
+  "component": "drawer",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "surface-container-low": "#f7f2fa",
+      "on-surface-variant": "#49454f",
+      "outline": "#79747e",
+      "scrim-bg": "color-mix(in srgb, #000 32%, transparent)"
+    },
+    "dark": {
+      "surface-container-low": "#1d1b20",
+      "on-surface-variant": "#cac4d0",
+      "outline": "#938f99"
+    }
+  },
+  "modeInvariant": ["scrim-bg"],
+  "provenance": {
+    "canonical-source": "tokens/versions/v0_192/_md-comp-sheet-side.scss (94 lines, read in full) for the docked-modal-* chassis family (container color/elevation/shape, headline, divider) — the closest M3 file to a generic, temporary, edge-anchored panel with a title. tokens/versions/v0_192/_md-comp-sheet-bottom.scss (46 lines, read in full) for the ONE real drag-handle token family in any M3 sheet/drawer file (docked-drag-handle-color/-height/-width) and the bottom-anchored corner treatment. tokens/versions/v0_192/_md-comp-navigation-drawer.scss (165 lines, read in full) cross-checked per docs/04-component-map.md's own dual citation of `navigation-drawer, sheet-side` for this row's M3 mapping — its bare chassis tokens (modal-container-color -> surface-container-low, modal-container-elevation -> level1, container-width -> 360px, container-shape -> corner-large-end) AGREE in kind with sheet-side's own docked-modal-* family, confirming the two files describe the same underlying chassis concept from two different product contexts. navigation-drawer's own LARGE nav-item-list token family (active-*/inactive-*/large-badge-*, roughly 40 of its 55 keys) is explicitly OUT OF SCOPE — it styles a navigation LIST composed inside a drawer chassis, a structurally different and much bigger surface belonging to a future navigation-menu/list-item component, not this row (see docs/DRAWER-MATRIX.md scope note). tokens/versions/v0_192/_md-comp-sheet-floating.scss (35 lines, read in full) read ONLY to confirm it is NOT edge-anchored (container-shape: corner-extra-large is a single uniform value, not a partial/top/start form like every other file here) and therefore out of scope, belonging to the separate `sheet` canonical row. Resolution through versions/v0_192/{_md-sys-color.scss,_md-sys-shape.scss,_md-sys-elevation.scss,_md-sys-typescale.scss,_md-ref-typeface.scss}. Cross-referenced against values already resolved elsewhere in this registry rather than re-derived: surface-container-low (card.m3.json), on-surface-variant (dialog.m3.json/checkbox.m3.json), outline (select.m3.json).",
+    "no-m3-top-sheet": "CONFIRMED ABSENCE, by exhaustive directory listing of tokens/versions/v0_192/ for *sheet*/*drawer*: exactly four files exist (_md-comp-navigation-drawer.scss, _md-comp-sheet-bottom.scss, _md-comp-sheet-floating.scss, _md-comp-sheet-side.scss). No top-anchored sheet variant exists anywhere in this clone, so every style row's @top cell is off for this column, not a gap — there is nothing to be a gap IN.",
+    "surface-container-low": "docked-modal-container-color -> md-sys-color.surface-container-low (_md-comp-sheet-side.scss) — the SAME value card.m3.json's own elevated variant already resolves (neutral96 #f7f2fa light / neutral10 #1d1b20 dark).",
+    "on-surface-variant": "docked-headline-color -> md-sys-color.on-surface-variant (_md-comp-sheet-side.scss) — the SAME value dialog.m3.json's own description colour and checkbox.m3.json's own label colour already resolve.",
+    "outline": "docked-divider-color -> md-sys-color.outline (_md-comp-sheet-side.scss) — the SAME value select.m3.json already resolves for its own popup border.",
+    "type-title": "docked-headline-font/-size/-line-height/-tracking -> md-sys-typescale.title-large (_md-comp-sheet-side.scss): font-weight 400 (md-ref-typeface.weight-regular), size 1.375rem (22px), line-height 1.75rem (28px), tracking 0rem, family Roboto (md-ref-typeface.brand, the same literal dialog.m3.json's own Finding 9 already confirmed resolvable, not unresolvable). LARGER than Dialog's own headline-small (1.5rem at the SAME 400 weight) — the size, not the weight, is what moves between the two M3 dialog-family components.",
+    "elevation-level1": "docked-modal-container-elevation -> md-sys-elevation.level1 (1dp), rendered as the registry's own canonical level1 CSS from docs/foundations/elevation.md: `0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15)` — the SAME derivation select.m3.json/dialog.m3.json/card.m3.json already use, reused rather than re-derived (see elevation.md's own note about button.m3.json's now-corrected divergent level1).",
+    "corner-extra-large-top": "_md-comp-sheet-bottom.scss docked-container-shape -> md-sys-shape.corner-extra-large-top = 28px 28px 0px 0px (_md-sys-shape.scss line 18-19) — by far the roundest per-position value in this component, the top corners fully rounded and the bottom (flush against the viewport edge) left square.",
+    "docked-container-width": "_md-comp-sheet-side.scss docked-container-width: 256px — a REAL, hardcoded chassis width, unlike either live source's own drawer (Salt has none at all; shadcn's is a Tailwind default, not a design-token).",
+    "drag-handle": "_md-comp-sheet-bottom.scss docked-drag-handle-color -> on-surface-variant, docked-drag-handle-height: 4px, docked-drag-handle-width: 32px — roughly a THIRD the size of shadcn's own 100px x 8px bar in both dimensions, a real contrast recorded rather than averaged away.",
+    "no-supporting-text": "CONFIRMED ABSENCE: neither _md-comp-sheet-side.scss nor _md-comp-sheet-bottom.scss carries a supporting-text/description token family of any kind (both read in full) — an M3 drawer/sheet has a headline but no modelled body-description role, unlike Dialog's own supporting-text-*.",
+    "no-close-footer-action": "CONFIRMED ABSENCE: neither chassis file has a close/dismiss token. _md-comp-sheet-side.scss's own docked-action-*-label-text-color/-state-layer-* family styles a RAIL TOGGLE button that expands/collapses the docked (persistent, non-modal) variant of the sheet — a control for the OTHER, out-of-scope half of this same file (the `docked-standard-*` / non-modal tokens this row does not model, see docs/DRAWER-MATRIX.md scope note), not a panel-level close affordance for the modal variant this row does model. Declared out of scope rather than mis-cited as a close button."
+  },
+  "cells": {
+    "structure.scrim": { "kind": "value", "value": true, "source": "the shared _md-comp-scrim.scss token file, borrowed exactly as dialog.m3.json borrows it" },
+    "structure.panel": { "kind": "value", "value": true, "note": "[R] — tokens-only, conventional" },
+    "structure.header": { "kind": "off", "note": "no dedicated header ELEMENT in the tokens-only chassis; the real headline token family is modelled at style.title.font instead — see the template row's own note" },
+    "structure.title": { "kind": "value", "value": true, "note": "[R, tokens] — docked-headline-* exists as a real token family with no live element to confirm a distinct Title component", "source": "_md-comp-sheet-side.scss docked-headline-*" },
+    "structure.description": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-supporting-text" },
+    "structure.footer": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-close-footer-action" },
+    "structure.close-button": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-close-footer-action" },
+    "structure.drag-handle": { "kind": "value", "value": true, "note": "bottom-direction-only — see drag-handle; _md-comp-sheet-side.scss and _md-comp-navigation-drawer.scss carry no equivalent token", "source": "_md-comp-sheet-bottom.scss docked-drag-handle-*" },
+
+    "behavior.role": { "kind": "value", "value": true, "note": "[R] per APG" },
+    "behavior.aria-modal": { "kind": "value", "value": true, "note": "[R] per APG's dialog-modal pattern" },
+    "behavior.background-suppression": { "kind": "value", "value": "aria-hidden", "note": "[R], the APG-documented fallback" },
+    "behavior.focus-trap": { "kind": "value", "value": true, "note": "[R] per APG" },
+    "behavior.initial-focus": { "kind": "value", "value": "first-tabbable", "note": "[R] per APG" },
+    "behavior.focus-return": { "kind": "value", "value": true, "note": "[R] per APG" },
+    "behavior.dismiss-escape": { "kind": "value", "value": true, "note": "[R] per APG" },
+    "behavior.dismiss-outside": { "kind": "value", "value": true, "note": "[R] — basic M3 sheets dismiss on scrim tap, per m3.material.io" },
+    "behavior.scroll-lock": { "kind": "value", "value": true, "note": "[R] per APG" },
+    "behavior.labelled-by": { "kind": "value", "value": true, "note": "[R] per APG" },
+    "behavior.described-by": { "kind": "off", "note": "no supporting-text token exists to associate — see no-supporting-text" },
+    "behavior.exit-animation": { "kind": "off", "note": "no motion token in either sheet chassis file" },
+
+    "prop.position": { "kind": "off", "note": "no runtime prop — no live M3 component. The AXIS itself is still real: see canonical-source and no-m3-top-sheet for which per-position style rows carry real evidence" },
+    "prop.variant": { "kind": "off" },
+    "prop.disable-dismiss": { "kind": "off" },
+    "prop.disable-scrim": { "kind": "off" },
+
+    "slot.title": { "kind": "value", "value": true, "note": "presumed text content (headline); no live component to confirm the exact API shape" },
+    "slot.description": { "kind": "off" },
+    "slot.footer": { "kind": "off" },
+
+    "style.scrim.background": { "kind": "alias", "slot": "scrim-bg", "note": "reused from the shared scrim slot — see structure.scrim" },
+    "style.scrim.z-index": { "kind": "off", "note": "no z-index token anywhere" },
+    "style.scrim.animation": { "kind": "off", "note": "no motion token" },
+
+    "style.panel.background": { "kind": "alias", "slot": "surface-container-low" },
+    "style.panel.background@secondary": { "kind": "off" },
+    "style.panel.background@tertiary": { "kind": "off" },
+    "style.panel.shadow": { "kind": "value", "value": "0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15)", "note": "see elevation-level1 — [R, derived]", "source": "_md-comp-sheet-side.scss docked-modal-container-elevation -> level1" },
+    "style.panel.padding": { "kind": "off", "note": "neither chassis file carries a padding token" },
+    "style.panel.z-index": { "kind": "off", "note": "no z-index token" },
+
+    "style.panel.size@left": { "kind": "value", "value": { "width": "256px" }, "note": "mirrored from the @right citation — see the template row's own note", "source": "_md-comp-sheet-side.scss docked-container-width" },
+    "style.panel.size@right": { "kind": "value", "value": { "width": "256px" }, "source": "_md-comp-sheet-side.scss docked-container-width — see docked-container-width" },
+    "style.panel.size@top": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-m3-top-sheet" },
+    "style.panel.size@bottom": { "kind": "off", "note": "_md-comp-sheet-bottom.scss carries a shape/elevation/drag-handle family but no explicit height or max-height token" },
+    "style.panel.inset-margin@top": { "kind": "off" },
+    "style.panel.inset-margin@bottom": { "kind": "off" },
+    "style.panel.corner@top": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-m3-top-sheet" },
+    "style.panel.corner@bottom": { "kind": "value", "value": "28px 28px 0px 0px", "note": "see corner-extra-large-top", "source": "_md-comp-sheet-bottom.scss docked-container-shape" },
+    "style.panel.border@left": { "kind": "off", "note": "mirror of @right not sourced — see the @right cell's own note" },
+    "style.panel.border@right": { "kind": "alias", "slot": "outline", "note": "see outline; docked-modal-container-shape's own corner-large-start geometry describes a right-anchored/trailing-edge sheet, so @right carries the citation and @left is the declared mirror", "source": "_md-comp-sheet-side.scss docked-divider-color" },
+    "style.panel.border@top": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-m3-top-sheet" },
+    "style.panel.border@bottom": { "kind": "off", "note": "CONFIRMED ABSENCE — _md-comp-sheet-bottom.scss has no divider/outline token of any kind" },
+
+    "style.panel.animation@left": { "kind": "value", "value": "drawer-slide-in-left 300ms cubic-bezier(0.2,0,0,1)", "note": "[R] — borrowed from docs/foundations/motion.md, the same registry-neutral placeholder dialog.m3.json uses, since neither sheet chassis file carries a motion token" },
+    "style.panel.animation@right": { "kind": "value", "value": "drawer-slide-in-right 300ms cubic-bezier(0.2,0,0,1)", "note": "[R] — see @left" },
+    "style.panel.animation@top": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-m3-top-sheet" },
+    "style.panel.animation@bottom": { "kind": "value", "value": "drawer-slide-in-from-below 300ms cubic-bezier(0.2,0,0,1)", "note": "[R] — see @left" },
+
+    "style.header.padding": { "kind": "off", "note": "no header part exists" },
+    "style.title.font": { "kind": "value", "value": "400 1.375rem/1.75rem Roboto, sans-serif", "note": "see type-title", "source": "_md-comp-sheet-side.scss docked-headline-*" },
+    "style.title.color": { "kind": "alias", "slot": "on-surface-variant", "source": "_md-comp-sheet-side.scss docked-headline-color" },
+    "style.description.font": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-supporting-text" },
+    "style.footer.padding": { "kind": "off" },
+    "style.footer.gap": { "kind": "off" },
+
+    "style.close-button.position": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-close-footer-action" },
+    "style.drag-handle.box": {
+      "kind": "value",
+      "value": { "width": "32px", "height": "4px", "border-radius": "9999px", "background": "var(--on-surface-variant)", "margin": "16px auto 0" },
+      "source": "_md-comp-sheet-bottom.scss docked-drag-handle-* — see drag-handle"
+    }
+  }
+}
