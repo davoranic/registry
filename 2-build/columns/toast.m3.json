@@ -1,0 +1,71 @@
+{
+  "system": "m3",
+  "component": "toast",
+  "fontFaces": [
+    { "family": "Roboto", "weight": "400", "file": "fonts/roboto-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "item-bg": "#e6e0e9",
+      "item-fg": "#322f35",
+      "item-shape": "4px",
+      "item-elevation": "0 1px 3px 0 rgba(0,0,0,0.3), 0 4px 8px 3px rgba(0,0,0,0.15)",
+      "item-min-height": "48px",
+      "type-body": "400 0.875rem/1.25rem 'Roboto', sans-serif"
+    },
+    "dark": {
+      "item-bg": "#322f35",
+      "item-fg": "#f5eff7"
+    }
+  },
+  "modeInvariant": ["item-shape", "item-elevation", "item-min-height", "type-body"],
+  "provenance": {
+    "tokens-only-clone": "material-web is a tokens-only clone — there is no live M3 snackbar component in either edition (CLAUDE.md). Every structure/behaviour claim here is [R]; every style value below is [S] from tokens/versions/v0_192/_md-comp-snackbar.scss, resolved through _md-sys-color.scss/_md-ref-palette.scss/_md-sys-shape.scss/_md-sys-elevation.scss/_md-sys-typescale.scss.",
+    "item-bg": "'container-color' -> md-sys-color.inverse-surface -> values-light() neutral90 #e6e0e9 / values-dark() neutral20 #322f35 (_md-ref-palette.scss). NOTABLY inverted — M3's snackbar is the first component in this pipeline whose container colour role is a deliberately HIGH-CONTRAST inverted surface (a dark chip on a light page and vice-versa), unlike alert/banner's own same-as-page surface-container.",
+    "item-fg": "'supporting-text-color' -> md-sys-color.inverse-on-surface -> values-light() neutral20 #322f35 / values-dark() neutral95 #f5eff7. Paired with item-bg's own inverse-surface — a genuinely inverted, high-contrast pairing.",
+    "item-shape": "'container-shape' -> md-sys-shape.corner-extra-small -> _md-sys-shape.scss 'corner-extra-small' = 4px. The SMALLEST corner radius any M3 column in this pipeline has used so far (alert's own pinned banner used 0px; the unpinned rich schema used 28px).",
+    "item-elevation": "'container-elevation' -> md-sys-elevation.level3 = 6dp -> this registry's own canonical dp->CSS shadow derivation (docs/foundations/elevation.md's 'M3 dp -> CSS shadow' table): '0 1px 3px 0 rgba(0,0,0,0.3), 0 4px 8px 3px rgba(0,0,0,0.15)'. Shadow colour token 'container-shadow-color' -> md-sys-color.shadow -> neutral0 #000, matching the table's own black-alpha assumption. The HIGHEST elevation level any M3 column in this pipeline has used (alert used level1).",
+    "item-min-height": "'with-single-line-container-height' = 48px. The TWO-LINE variant, 'with-two-lines-container-height' = 68px, is real, sourced and declared OUT OF SCOPE — this template models no line-count axis, the same trim alert.m3.json made for its own six container-height variants.",
+    "type-body": "'supporting-text-{weight,size,line-height,font}' -> md-sys-typescale.body-medium -> weight-regular 400 / 0.875rem / 1.25rem / md-ref-typeface.plain (the literal 'Roboto', self-hosted per every prior M3 column's own precedent).",
+    "action-family-unmodelled": "Declared rather than silently ignored: 'action-label-text-*' -> md-sys-typescale.label-large (500 0.875rem/1.25rem Roboto) with colour 'action-label-text-color'/-focus/-hover/-pressed all -> md-sys-color.inverse-primary (light primary40 #6750a4 / dark primary80 #d0bcff), plus matching state-layer colour/opacity triples. NOT modelled as a style row here — action/close compose the registry's own future/already-built button component (slot.composes), the same scope boundary alert.template.json drew for its own actions/close parts. Real, sourced, and available if a per-part action style row is ever added.",
+    "icon-family-is-the-close-button": "'icon-color'/-focus/-hover/-pressed (all -> inverse-on-surface) plus 'icon-size' = 24px is the DISMISS icon-BUTTON family, not a leading status glyph (see structure.icon/structure.close in toast.template.json for the full reasoning — hover/focus/pressed states only make sense on an interactive element). Also unmodelled as a style row, same composition boundary as the action family."
+  },
+  "cells": {
+    "structure.icon": { "kind": "off", "note": "no leading status icon concept — the ONLY icon token family in _md-comp-snackbar.scss carries hover/focus/pressed interaction states, confirming it is the trailing DISMISS icon-button (see structure.close), not a decorative leading glyph" },
+    "structure.description": { "kind": "off", "note": "exactly ONE text-run token family ('supporting-text-*') exists — grepped directly, the string 'title' appears zero times, no second text-role family of any kind" },
+    "structure.action": { "kind": "value", "value": true, "source": "'action-label-text-*' family (see provenance.action-family-unmodelled) — the richest single part in the whole snackbar token file" },
+    "structure.close": { "kind": "value", "value": true, "source": "'icon-*' family (see provenance.icon-family-is-the-close-button) — a first-class dedicated close affordance, mirroring alert.m3.json's own close-button finding" },
+
+    "behavior.role": { "kind": "value", "value": "status", "note": "[R] — no live component in this tokens-only clone; treated as role=\"status\" per the general APG toast/live-region convention, the same boundary alert.m3.json's own role cell used" },
+
+    "prop.type": { "kind": "off", "note": "CONFIRMED ABSENCE — grepped directly: _md-comp-snackbar.scss has exactly ONE container-color (inverse-surface) and no colour-axis token of any kind. The SAME marquee finding alert.m3.json recorded for M3's banner, recurring here." },
+    "prop.position": { "kind": "off", "note": "no positioning token exists — position is a layout concern this component's token file does not tokenise" },
+
+    "style.item.background": { "kind": "alias", "slot": "item-bg" },
+    "style.item.border-color": { "kind": "off", "note": "no border/outline token exists anywhere in _md-comp-snackbar.scss, confirmed by grep — M3's snackbar, like its banner, is colour-fill only" },
+    "style.item.border-width": { "kind": "value", "value": "0", "note": "explicitly zeroed, not left off — base sets border-style:solid for cross-system layout convenience; an absent width would let the browser's initial ~3px border render unwanted, the same reasoning alert.m3.json's own border-width cell gives" },
+    "style.item.shape": { "kind": "alias", "slot": "item-shape" },
+    "style.item.elevation": { "kind": "alias", "slot": "item-elevation" },
+    "style.item.padding": { "kind": "value", "value": "16px", "note": "CORRECTED DURING ORCHESTRATOR REVIEW — this row is policy=\"default\" (\"on with a registry default when a column is silent\", the same convention tooltip.m3.json's own delay row already established), not policy=\"switchable\"; `off` is not a legitimate outcome and left a real M3 toast's message/action/close flush against each other with zero gap (confirmed live via getBoundingClientRect). No padding token exists in _md-comp-snackbar.scss (grepped, confirmed absent — that much of the original note was correct), so 16px is a REGISTRY DEFAULT, not an M3-sourced number — matching shadcn's own real, cited `p-4` value rather than inventing an unrelated figure." },
+    "style.item.gap": { "kind": "value", "value": "12px", "note": "CORRECTED DURING ORCHESTRATOR REVIEW, same reasoning as style.item.padding — no gap token exists in _md-comp-snackbar.scss (confirmed absent), so 12px is a REGISTRY DEFAULT matching shadcn's own real, cited `gap-3` value, not an M3-sourced number." },
+    "style.item.margin": { "kind": "off", "note": "no token, no live component" },
+    "style.item.min-height": { "kind": "alias", "slot": "item-min-height" },
+    "style.item.width": { "kind": "off", "note": "no width token anywhere" },
+    "style.item.font": { "kind": "alias", "slot": "type-body" },
+    "style.item.color": { "kind": "alias", "slot": "item-fg" },
+
+    "style.icon.color": { "kind": "off", "note": "structure.icon is off — M3 renders no leading icon slot at all; the token nominally named 'icon-color' is the CLOSE button's icon (see provenance.icon-family-is-the-close-button), out of scope under this row (slot.composes)" },
+    "style.icon.size": { "kind": "off", "note": "same reason as style.icon.color — the 24px 'icon-size' token belongs to the composed close button, not this row's leading-icon slot" },
+
+    "style.description.color": { "kind": "off", "note": "structure.description is off — no description part to colour" },
+
+    "style.group.position": { "kind": "value", "value": { "position": "fixed", "bottom": "0", "left": "50%", "top": "auto", "right": "auto", "transform": "translateX(-50%)" }, "note": "[R] — no positioning token exists; one implied default corner per the general Material snackbar guidance (bottom-center on compact layouts), not grepped from any source in this clone" },
+    "style.group.width": { "kind": "off", "note": "no width token anywhere" },
+    "style.group.gap": { "kind": "off", "note": "no token, no live component" },
+    "style.group.z-index": { "kind": "off", "note": "no token, no live component" },
+
+    "style.item.type@error": { "kind": "off", "note": "M3 has no type axis at all (see prop.type)" },
+    "style.item.type@warning": { "kind": "off", "note": "M3 has no type axis at all (see prop.type)" },
+    "style.item.type@success": { "kind": "off", "note": "M3 has no type axis at all (see prop.type)" }
+  }
+}

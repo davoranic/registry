@@ -1,0 +1,411 @@
+{
+  "component": "toast",
+  "openUiAnatomy": "no published Open UI toast anatomy — union of shadcn's canonical 'sonner' (a thin wrapper around Emil Kowalski's external `sonner` npm package, itself NOT vendored in this clone — see behavior.pattern) plus the same monorepo's real, inspectable 'base' style Toast (Base UI primitives, also external at the timer/gesture-implementation level but with a real, sourced wrapper file), salt-ds's Toast/ToastContent (packages/core) + ToastGroup (packages/lab), and M3's 'snackbar' token family (tokens-only clone, no live component). Canonical name is shadcn's 'sonner'; Salt calls the individual surface 'toast' and its stacking manager 'toast-group'; M3 calls the whole thing 'snackbar' — confirmed by 04-component-map.md's Feedback & status row: '| sonner / toast | ✓ sonner | ✓ toast, toast-group | ✓ snackbar |'. This document and the generated artifacts use 'toast' as the canonical id, matching the map's own row-name convention (the same choice alert made against 'banner').",
+  "behavior": {
+    "pattern": "Non-modal, transient status notification, rendered inside a positioned stacking container. SCOPE DECISION (see TOAST-MATRIX.md §0): the stacking/viewport manager (Salt's ToastGroup, shadcn's Toaster/viewport, M3's implied single-corner queue) is IN SCOPE as a structural PART of this one chassis (structure.group), not a second top-level component — the same one-chassis-many-parts precedent dialog set for overlay+panel and select set for trigger+popup. Imperative triggering (`toast()`/a global singleton manager) is explicitly OUT of the reproduced surface: Salt's own architecture is the model for why this is a reasonable, sourced simplification rather than an invented shortcut — packages/lab/stories/toast-group/toast-group.stories.tsx shows ToastGroup is PURELY a presentational flex-column positioning wrapper, with the consumer owning an array of live toast entries via ordinary useState (no imperative API anywhere in Salt's own source). This chassis reproduces exactly that: `Toast` items each own their own internal auto-dismiss timer (a real, testable mechanism — the closest correct analogue to what the external sonner/Base UI toast managers do at the DOM-observable level), and `ToastGroup` is presentation-only; a consumer (the harness, standing in for a future imperative wrapper) manages the array. shadcn's OWN canonical 'sonner' is a thin wrapper: `Toaster` passes theming (`--normal-bg/-text/-border`, `--border-radius`), per-type icon overrides, and forwards `{...props}` straight into the external `sonner` npm package (confirmed NOT vendored in this clone: package.json:95 lists `\"sonner\": \"^2.0.0\"` as a dependency, and no `node_modules/sonner` directory exists anywhere under 3-source/ui). The actual toast-surface DOM contract, stacking math, swipe gesture and timer internals therefore live in an EXTERNAL, UNVENDORED package for the canonical column — a real, structural [R] boundary, the same class of boundary Radix was for behaviour-only reference in earlier components. As SUPPLEMENTARY, cross-checked (not canonical) evidence, this SAME shadcn monorepo ships a second, real, fully-inspectable 'base' style Toast (registry/bases/base/ui/toast.tsx, built on `@base-ui/react/toast` — also an external package, but the WRAPPER file's own CSS classes and data-attribute contract (`data-slot`, `data-expanded`, `data-limited`, `data-starting-style`, `data-ending-style`, `data-swipe-direction`, the `--toast-index`/`--toast-offset-y` custom-property stack) are real, committed source, not speculation — used here the same way alert.template.json used `registry/bases/radix/ui/alert.tsx`'s AlertAction as supplementary evidence for a part canonical new-york-v4 doesn't show directly.",
+    "chassis": "skeleton/toast.tsx — written from the template's part union; inherits from no design system. `Toast` (a single surface) and `ToastGroup` (a positioning wrapper) are two exported parts of the SAME chassis, not two components."
+  },
+  "skeletonParams": {
+    "icon": [true, false],
+    "description": [true, false],
+    "action": [true, false],
+    "close": [true, false],
+    "role": ["alert", "status"],
+    "type": ["default", "info", "success", "warning", "error", "loading"],
+    "position": ["top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right"]
+  },
+  "base": {
+    "[data-slot=\"toast-group\"]": {
+      "position": "fixed",
+      "display": "flex",
+      "flex-direction": "column",
+      "box-sizing": "border-box",
+      "pointer-events": "none",
+      "top": "auto",
+      "bottom": "0",
+      "right": "0",
+      "left": "auto"
+    },
+    "[data-slot=\"toast-item\"]": {
+      "position": "relative",
+      "display": "flex",
+      "align-items": "flex-start",
+      "box-sizing": "border-box",
+      "pointer-events": "auto",
+      "border-style": "solid"
+    },
+    "[data-slot=\"toast-icon\"]": {
+      "display": "inline-flex",
+      "flex": "0 0 auto"
+    },
+    "[data-slot=\"toast-content\"]": {
+      "display": "flex",
+      "flex": "1 1 auto",
+      "flex-direction": "column",
+      "min-width": "0"
+    },
+    "[data-slot=\"toast-message\"]": {
+      "display": "block"
+    },
+    "[data-slot=\"toast-description\"]": {
+      "display": "block"
+    },
+    "[data-slot=\"toast-action\"]": {
+      "appearance": "none",
+      "flex": "0 0 auto",
+      "cursor": "pointer"
+    },
+    "[data-slot=\"toast-close\"]": {
+      "appearance": "none",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "flex": "0 0 auto",
+      "background": "none",
+      "border": "none",
+      "padding": "0",
+      "cursor": "pointer",
+      "color": "inherit"
+    }
+  },
+  "rows": [
+    {
+      "id": "structure.group",
+      "piece": "structure",
+      "policy": "locked",
+      "channel": "info",
+      "note": "The stacking/positioning container. Salt: `ToastGroup` (packages/lab/src/toast-group/ToastGroup.tsx), a real, fully-inspectable component — `position: fixed`, `display: flex-inline; flex-direction: column`, `placement` prop (top-right/bottom-right), density-driven `width` [S]. shadcn (canonical 'sonner'): the wrapping `<Toaster>` renders the external, unvendored `sonner` package's own internal viewport — [R] boundary (see behavior.pattern) — with SUPPLEMENTARY, real evidence from the sibling 'base' style's own `ToastViewport` (`data-slot=\"toast-viewport\"`, `fixed inset-x-4 bottom-4 z-50 mx-auto w-auto max-w-sm ... sm:right-4 sm:left-auto sm:w-full`) [S-supplementary]. M3: no live component in this tokens-only clone and no positioning token exists in `_md-comp-snackbar.scss` (positioning is a layout concern, not tokenised in any M3 component this pipeline has built) — treated as [R], one default corner per the general Material snackbar guidance, not a config axis M3 itself exposes."
+    },
+    {
+      "id": "structure.icon",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "icon",
+      "note": "A LEADING glyph. Salt: `StatusIndicator`, rendered only when `status` is set (Toast.tsx: `{status && <div className={withBaseName(\"iconContainer\")}>...`) [S]. shadcn (canonical sonner): the `Toaster`'s own `icons` prop supplies a literal per-type icon element (`success`/`info`/`warning`/`error`/`loading`), passed straight through to the external package [S] — real, sourced evidence directly in the canonical wrapper file, unlike most of sonner's other internals. M3: **OFF — no leading status icon concept at all.** `_md-comp-snackbar.scss`'s ONLY icon token family (`icon-color`/`icon-focus-icon-color`/`icon-hover-icon-color`/`icon-pressed-icon-color`/`icon-size`) carries hover/focus/pressed INTERACTION states — a property only an actionable, clickable element would need — confirming this is the TRAILING DISMISS icon-BUTTON, not a decorative leading glyph (see structure.close). Mirrors ALERT-MATRIX.md's own M3 finding shape (a token family that looks like one part is actually serving a different structural role than its name first suggests)."
+    },
+    {
+      "id": "structure.description",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "description",
+      "note": "A secondary text run DISTINCT from the primary message. Salt: **OFF** — Toast/ToastContent expose no title/description split; `toast.stories.tsx`'s own examples achieve a two-line look purely by content formatting (`<Text><strong>File update</strong></Text>` followed by a plain `<div>...</div>`, both inside ONE `ToastContent`) — the EXACT same 'bold-first-line is a content convention, not a structural part' finding ALERT-MATRIX.md recorded for Salt's Banner. shadcn (canonical sonner): **on** — the `toast(message, { description })` call shape is real, sourced evidence directly from `sonner-demo.tsx`: `toast(\"Event has been created\", { description: \"Sunday, December 03, 2023 at 9:00 AM\", ... })` [S]. M3: **OFF** — `_md-comp-snackbar.scss` defines exactly ONE text-run token family (`supporting-text-*`); grepped directly, the string 'title' appears zero times and there is no second text-role family of any kind — confirmed structural absence, not a research gap."
+    },
+    {
+      "id": "structure.action",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "action",
+      "note": "A dedicated action button (e.g. 'Undo'/'Try again'). Salt: **OFF as a DEDICATED PART** — unlike Banner's `BannerActions` wrapper, `Toast.tsx` has NO actions-wrapper subcomponent at all; every story that shows an action button (`toast.stories.tsx`'s Error/Warning exports) composes an ordinary `<Button>` as a free child inside `ToastContent`'s own `FlowLayout`, with no distinct data-slot hook — a real CONTRAST with alert/banner, not an oversight (see TOAST-MATRIX.md Findings). shadcn (canonical sonner): **on** — `action: { label, onClick }` is a real, sourced, first-class option directly in the public `toast()` call shape (`sonner-demo.tsx`) [S]. M3: **on** — a genuinely first-class, dedicated token family (`action-label-text-*`, `action-focus/-hover/-pressed-label-text-color` + matching state-layer colour/opacity triples), the richest single part in the whole snackbar token file [S]."
+    },
+    {
+      "id": "structure.close",
+      "piece": "structure",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "close",
+      "note": "A dedicated dismiss affordance, separate from any action button. Salt: **OFF** — same composition convention as Banner: an ordinary `<Button appearance=\"transparent\" aria-label=\"Dismiss\">` composed as a free child, no distinct part (`toast.stories.tsx`) [S]. shadcn: canonical sonner has no dedicated close part VISIBLE in the wrapper file itself (external, [R] boundary) — SUPPLEMENTARY evidence from the sibling 'base' style's real `ToastClose` (`data-slot=\"toast-close\"`, `aria-label=\"Close toast\"`, renders a ghost icon button) [S-supplementary], the same 'canonical is silent, a real sibling source in the same monorepo confirms the pattern exists' shape alert.template.json used for `structure.actions`. M3: **on** — the same `icon-*` token family identified at structure.icon IS this part (hover/focus/pressed states on a 24px icon), a first-class dedicated close affordance, mirroring ALERT-MATRIX.md's own M3-close-button finding almost exactly [S]."
+    },
+    {
+      "id": "behavior.role",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "role",
+      "note": "Salt: `role=\"alert\"` HARDCODED in `Toast.tsx` (`<div ... role=\"alert\" {...rest} ref={ref}>`), always — a real CONTRAST with Banner, whose own Salt column has NO default role at all (ALERT-MATRIX.md finding 2). shadcn: [R] — external package, role not visible in the wrapper; sonner is publicly documented to render an ARIA live region for its announcer, treated as `role=\"status\"` per the general APG toast/live-region convention (not grepped from code, same class of boundary as alert's own M3 role cell). M3: [R] — no live component in this tokens-only clone, treated as `role=\"status\"` per the same APG convention alert's M3 column used."
+    },
+    {
+      "id": "behavior.auto-dismiss",
+      "piece": "behavior",
+      "policy": "default",
+      "channel": "info",
+      "note": "THE headline cross-system divergence of this matrix, and the first genuinely TIME-based behaviour row in this pipeline. Salt: **CONFIRMED OFF** — no timer of any kind exists in `Toast.tsx`/`ToastContent.tsx`/`ToastGroup.tsx` (grepped directly, no `setTimeout`/`useEffect` with a delay anywhere in the toast/toast-group source), and `site/docs/components/toast/usage.mdx` states directly: 'Users should always be able to close or dismiss a toast' — Salt toasts are PERSISTENT by design until a consumer dismisses them, the real, sourced Salt posture [S]. shadcn (sonner) and M3 (snackbar): both **ON** by real-world/spec convention, but the specific default duration is not independently confirmable in EITHER case — sonner's own timer lives entirely inside the external, unvendored npm package [R]; M3's `_md-comp-snackbar.scss` has NO duration/timeout token of any kind (grepped, confirmed absent — timing is a behavioural spec concern M3 does not tokenise) [R], per the Material snackbar guidelines' documented (not tokenised) auto-dismiss requirement. Per the schema's own `default` policy definition ('on with a registry default when a column is silent; label it'), this chassis implements a REAL internal timer (see skeleton/toast.tsx) with an explicit, LABELLED registry-chosen duration for shadcn/M3 (not a sourced number) — see prop.duration."
+    },
+    {
+      "id": "behavior.pause-on-interaction",
+      "piece": "behavior",
+      "policy": "default",
+      "channel": "info",
+      "note": "Salt: off (no timer exists to pause — see behavior.auto-dismiss). shadcn/M3: [R] — well-documented public convention for both the sonner library and the Material snackbar spec (hovering/focusing a toast should not let it expire mid-interaction), not independently confirmable in this clone at the implementation level. This chassis implements pause-on-pointer-hover for REAL (see skeleton/toast.tsx's pointer-enter/-leave handlers) wherever behavior.auto-dismiss is active, as the closest correct, testable analogue."
+    },
+    {
+      "id": "behavior.dismiss",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Shared invariant: REMOVAL from the visible stack is always ultimately a consumer-owned state change, in every system. Salt's own `toast-group.stories.tsx` demonstrates the exact pattern this chassis reproduces: each toast entry owns a local `open` useState, a `closeToast` callback flips it, and the CONSUMER'S array (in `ToastGroup`'s parent) is what actually removes the entry — no imperative singleton anywhere in Salt's real source. shadcn/M3's own external managers own this internally, but the OBSERVABLE contract (a dismiss trigger removes the toast from the visible stack) is identical. `onClose` is this chassis's one shared hook for both the manual (close-button/action) and automatic (timer) dismissal paths."
+    },
+    {
+      "id": "behavior.swipe-dismiss",
+      "piece": "behavior",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Salt: off — no swipe/gesture code anywhere in `Toast.tsx`/`ToastContent.tsx` [S]. shadcn: SUPPLEMENTARY evidence only — the 'base' style's real `Toast` wrapper carries a full swipe-gesture DATA-ATTRIBUTE contract (`data-swipe-direction`, `data-ending-style` variants for up/down/left/right, translateX/Y driven by `--toast-swipe-movement-x/-y`) [S-supplementary]; canonical sonner is ALSO publicly documented to support touch swipe-to-dismiss, but the gesture math itself lives in the external, unvendored package — [R] boundary. M3: [R] — general touch-dismiss convention, no token evidence either way (gesture behaviour is not a token-file concern). NOT implemented as physical pointer-dragging in this chassis (a declared deferral, not a silent gap — see TOAST-MATRIX.md Findings): the close button and auto-dismiss timer are the two REAL, testable dismissal paths this build delivers."
+    },
+    {
+      "id": "behavior.stacking-order",
+      "piece": "behavior",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Salt: real, sourced ordering rule — `toast-group.stories.tsx`'s own `BottomRight`/`TopRight` examples sort a timestamped array (`.sort((a,b)=>a.timestamp-b.timestamp)` for bottom-right, reversed for top-right) so the NEWEST toast is always nearest the anchored corner [S]. shadcn: SUPPLEMENTARY evidence from 'base' style's real `--toast-index`-driven transform stack (each toast's own Z-order/scale/offset keyed to its position in the manager's array) [S-supplementary]; canonical sonner's own stacking math is [R] (external package). M3: [R] — per the general Material snackbar guideline, at most ONE snackbar is typically visible at a time (later ones queue rather than stack simultaneously) — a real, DIFFERENT posture from Salt/shadcn's simultaneous multi-toast stacks, not modelled as a config axis since it is not a tokenised fact, but noted as a genuine finding. This chassis stacks via ordinary flex-column document flow (see style.group.gap) — newest-appended-last, a declared simplification of shadcn's fancier peek/scale visual (see structure.group)."
+    },
+    {
+      "id": "prop.type",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "config",
+      "param": "type",
+      "note": "Salt: 4-value `ValidationStatus` enum (info/error/warning/success), `Toast`'s own `status` prop, no forced default (undefined renders with no status icon/colour at all) [S]. shadcn (canonical sonner): 6-value real, sourced enum straight off `toast`'s own call shape (`sonner-types.tsx`): default (bare `toast()`), success, info, warning, error, loading (`toast.promise`'s own loading state) [S]. M3: **OFF — no type/status axis at all.** Grepped directly: `_md-comp-snackbar.scss` has exactly ONE `container-color` (`inverse-surface`) and no colour-axis token of any kind — the SAME marquee finding ALERT-MATRIX.md recorded for M3's banner, recurring here (see TOAST-MATRIX.md Findings)."
+    },
+    {
+      "id": "prop.position",
+      "piece": "prop",
+      "policy": "switchable",
+      "channel": "config",
+      "param": "position",
+      "note": "Salt: 2-value enum, `ToastGroup`'s own `placement` prop (`\"top-right\" | \"bottom-right\"`, default `\"bottom-right\"`) [S]. shadcn (canonical sonner): 6-value enum, real and sourced directly from `sonner-position.tsx`'s own six `toast(message, { position })` calls: top-left/top-center/top-right/bottom-left/bottom-center/bottom-right [S] — a real capability gap against Salt's two corners, not fabricated. M3: **OFF** — position is a layout concern with no token in `_md-comp-snackbar.scss`; [R] one implied default corner per the general spec, not a config axis M3 itself exposes. Every value this row declares is DISCRIMINATED by a real skeleton branch (`ToastGroup`'s own position→inset computation in skeleton/toast.tsx), not merely accepted and ignored — the exact 'dead axis' failure mode ALERT-MATRIX.md finding 10 warns against."
+    },
+    {
+      "id": "prop.duration",
+      "piece": "prop",
+      "policy": "default",
+      "channel": "info",
+      "note": "Numeric magnitude, not a discrete enum — channel=info (documented, no config-enum gate), read directly as a skeleton prop (the same pattern slider.template.json used for `min`/`max`/`step`, which are also not modelled as config-channel template rows). Salt: N/A — behavior.auto-dismiss is off, so no duration concept exists to cite. shadcn/M3: [R] boundary (see behavior.auto-dismiss) — this chassis's own registry-chosen default is 5000ms, LABELLED explicitly in skeleton/toast.tsx and TOAST-MATRIX.md as a registry default, not a sourced number from either clone."
+    },
+    {
+      "id": "slot.composes",
+      "piece": "slot",
+      "policy": "default",
+      "channel": "info",
+      "note": "DECLARED COMPOSITION (same pattern as alert.template.json's own slot.composes): the leading icon composes a future registry icon-set component; the action and close buttons compose the registry's own already-built `button` component. All render as neutral placeholders here (a plain geometric SVG glyph, a plain `<button>`) rather than importing skeleton/button.tsx directly, keeping this component's build self-contained."
+    },
+    {
+      "id": "slot.message",
+      "piece": "slot",
+      "policy": "locked",
+      "channel": "info",
+      "note": "Consumer-owned primary text content. All three systems accept it: Salt's `ToastContent` children (required), shadcn sonner's `toast(message, ...)` first argument, M3's `supporting-text`."
+    },
+    {
+      "id": "slot.description",
+      "piece": "slot",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "Consumer-owned secondary text, where the system has a description part (see structure.description) — shadcn only."
+    },
+    {
+      "id": "state.rest",
+      "piece": "state",
+      "policy": "locked",
+      "channel": "info",
+      "note": "The only ambient state of the item itself when not mid-transition. No source system defines a hover/focus/active/disabled rule on the toast ROOT (confirmed no such rule in Toast.css, and no interaction-state token targets the snackbar CONTAINER in `_md-comp-snackbar.scss` — only its composed action/icon sub-parts have interaction-state tokens, owned by the button component's own matrix, not this one)."
+    },
+    {
+      "id": "state.swipe-drag",
+      "piece": "state",
+      "policy": "switchable",
+      "channel": "info",
+      "note": "The ONE real exception to state.rest's own claim — see behavior.swipe-dismiss. Documented (SUPPLEMENTARY shadcn 'base'-style evidence only), not implemented as physical drag in this chassis."
+    },
+    {
+      "id": "style.item.background",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "background": "$" },
+      "note": "shown at the default type (Salt: unset status / shadcn: default / M3: only value there is). Salt: container-primary-background, same neutral role Banner's own background used, does NOT vary by status at the container level (only border/icon do — see style.item.type@error etc). shadcn: `--normal-bg` -> `--popover`, a real, sourced theming variable straight off the canonical `Toaster` wrapper file itself. M3: `inverse-surface` — an intentionally HIGH-CONTRAST inverted surface (dark chip on a light page, or vice-versa), unlike alert/banner's own same-as-page `surface-container` — a real, sourced M3 divergence worth its own finding."
+    },
+    {
+      "id": "style.item.border-color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "border-color": "$" },
+      "note": "shown at the default type. Salt: status-driven indirection (same `--toast-borderColor` mechanism Banner's own border-color used) — the type@error/@warning/@success rows below reassign it. shadcn: fixed, non-status-driven `--normal-border` -> `--border`, a real non-variation (the same shape alert's own shadcn border-color finding recorded). M3: **OFF** — no border/outline token exists anywhere in `_md-comp-snackbar.scss`, confirmed by grep — M3's snackbar, like its banner, is colour-fill only."
+    },
+    {
+      "id": "style.item.border-width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "border-width": "$" },
+      "note": "Salt: `--salt-size-fixed-100` = 1px, density-invariant. shadcn: Tailwind's undeclared default `border` = 1px (base style's own `border` class). M3: explicitly `0`, not left off — the same reason alert.template.json's own M3 border-width row gives: `base` sets `border-style: solid` for cross-system layout convenience, and an absent width would let the browser's initial ~3px `medium` border render unwanted."
+    },
+    {
+      "id": "style.item.shape",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt: `palette-corner` (rounded-edition pin, by density). shadcn: `--border-radius` -> `--radius` = 0.625rem = 10px, a real, sourced theming variable straight off the canonical `Toaster` wrapper. M3: `container-shape` -> `corner-extra-small` = 4px — notably the SMALLEST corner radius any M3 column in this pipeline has used so far (compare alert's own 28px rich/0px v0.192-pinned banner)."
+    },
+    {
+      "id": "style.item.elevation",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "box-shadow": "$" },
+      "note": "Salt: `overlayable-shadow-popout` -> `shadow-mediumLow` (the same slot select/tabs/tooltip's own popup shadows already reuse) = `0 6px 10px 0 rgba(0,0,0,0.2)` light / `0 6px 10px 0 rgba(0,0,0,0.55)` dark. shadcn: SUPPLEMENTARY 'base' style evidence, `shadow-lg` (canonical sonner's own elevation is [R], external) = `0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)`, the same Tailwind default value dialog.shadcn.json's own `shadow-lg` cites. M3: `container-elevation` -> `level3` = 6dp -> this registry's own canonical dp→CSS derivation (docs/foundations/elevation.md): `0 1px 3px 0 rgba(0,0,0,0.3), 0 4px 8px 3px rgba(0,0,0,0.15)` — the HIGHEST elevation level any M3 column in this pipeline has used (alert/banner used level1)."
+    },
+    {
+      "id": "style.item.padding",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt: uniform `--salt-spacing-100` on all sides (Toast.css `padding: var(--saltToast-padding, var(--salt-spacing-100))`) — a real CONTRAST with Banner's own split block/inline spacing-50/spacing-100. shadcn: SUPPLEMENTARY 'base' evidence, `p-4` = 16px uniform (canonical sonner's own padding is [R], external). M3: `_md-comp-snackbar.scss` has NO padding/space token of any kind (grepped, confirmed absent, the same absence alert's own v0.192-pinned banner found) — **OFF, a real, sourced gap.**"
+    },
+    {
+      "id": "style.item.gap",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt: `--salt-spacing-75`, by density (Toast.css `gap: var(--salt-spacing-75)`), the SAME slot/value family Banner's own icon-to-content gap used. shadcn: SUPPLEMENTARY 'base' evidence, `gap-3` = 12px (canonical sonner's own gap is [R]). M3: **OFF** — no gap/space token exists in `_md-comp-snackbar.scss`, same absence class as style.item.padding."
+    },
+    {
+      "id": "style.item.margin",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "margin": "$" },
+      "note": "Salt-specific finding: unlike Banner, Salt's own inter-toast SPACING is achieved by each ITEM's own outer margin, not by the group container — `Toast.css`: `margin: 0 var(--salt-spacing-100) var(--salt-spacing-100) var(--salt-spacing-100)`, plus `.saltToast:last-child { margin-bottom: var(--salt-spacing-200) }`. shadcn/M3: **OFF** — neither system puts inter-toast spacing on the ITEM; both do it at the GROUP level (see style.group.gap) — a real structural difference in WHERE the same visual gap is owned, not a missing value."
+    },
+    {
+      "id": "style.item.min-height",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "min-height": "$" },
+      "note": "Salt: `calc(var(--salt-size-base) + var(--salt-spacing-100))`, by density — the SAME formula and slot family alert.template.json's own `style.root.min-height` used for Banner (Toast.css and Banner.css both derive it identically). shadcn: **OFF** — content-driven, no min-height token anywhere in any shadcn toast source checked, a real gap. M3: `with-single-line-container-height` = 48px (the two-line variant, 68px, is a real, sourced, declared-out-of-scope alternative — this template models no line-count axis, the same trim alert's own M3 column made for its six container-height variants)."
+    },
+    {
+      "id": "style.item.width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "width": "$" },
+      "note": "Salt: a FIXED, density-driven width lives on the GROUP not the item (`ToastGroup.css`'s own `--toastGroup-width`, 210/260/310/360px) — this row is therefore off for Salt and the real value is recorded at style.group.width instead. shadcn: SUPPLEMENTARY 'base' evidence puts the fixed width on the VIEWPORT too (`max-w-sm` = 384px), not the item — **OFF here for the same structural reason as Salt**, see style.group.width. M3: **OFF** — no width token in `_md-comp-snackbar.scss`. This row is recorded as a genuine cross-system CONVERGENCE (all three systems, when they fix a width at all, fix it on the CONTAINER, never the item) rather than three independent gaps."
+    },
+    {
+      "id": "style.item.font",
+      "piece": "style",
+      "policy": "default",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "font": "$" },
+      "note": "the message/description type. Salt: `--salt-text-*` body role, by density (Open Sans, weight-regular) — the same family alert's own style.root.font used. shadcn: SUPPLEMENTARY 'base' evidence, `text-sm` (0.875rem/1.25rem) (canonical sonner's own type is [R]). M3: `supporting-text-*` -> `body-medium` = 400 0.875rem/1.25rem Roboto (self-hosted, same precedent as every prior M3 column)."
+    },
+    {
+      "id": "style.item.color",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"]",
+      "declarations": { "color": "$" },
+      "note": "Salt: `content-primary-foreground` — neutral, does NOT vary by status, the same non-variation Banner's own root text colour showed. shadcn: `--normal-text` -> `--popover-foreground`, a real, sourced theming variable straight off the canonical wrapper. M3: `supporting-text-color` -> `inverse-on-surface` — paired with style.item.background's own `inverse-surface`, a genuinely HIGH-CONTRAST inverted pairing unique to M3's snackbar among every M3 column this pipeline has built so far."
+    },
+    {
+      "id": "style.icon.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-icon\"]",
+      "declarations": { "color": "$" },
+      "note": "shown at the default type. Salt: status-driven indirection, the SAME mechanism/finding as alert's own icon colour — genuinely independent of the body text colour. shadcn: [R] — canonical sonner's icons inherit `currentColor` by convention (not independently verified, external); rendered here as the same indirection slot as style.item.color, matching alert's own shadcn convergence finding (icon ties to text colour, not a separate token). M3: **N/A/off — M3 has no leading icon at all** (see structure.icon); this row therefore carries no M3 cell."
+    },
+    {
+      "id": "style.icon.size",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-icon\"] svg",
+      "declarations": { "width": "$", "height": "$" },
+      "note": "Salt: `max(var(--salt-size-icon), 12px)`, by density — read directly off `Toast.css`'s own icon vertical-centring calc. shadcn: `size-4` = 16px, real and sourced directly off the canonical `Toaster`'s own `icons` prop (`className=\"size-4\"` on every per-type icon element). M3: `icon-size` = 24px, the largest of the three — but recall this M3 token is the CLOSE button's icon (see structure.icon/structure.close), not a leading glyph; recorded here anyway as the size THIS chassis's own placeholder icon renders at for M3, with the caveat spelled out again at style.icon.color."
+    },
+    {
+      "id": "style.description.color",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-description\"]",
+      "declarations": { "color": "$" },
+      "note": "shadcn is the ONLY system with a distinct description colour, separate from the message/root colour — SUPPLEMENTARY 'base' evidence: `ToastDescription`'s own `text-muted-foreground` class (canonical sonner's own description styling is [R], external, but this SUPPLEMENTARY value is the closest real, sourced analogue and matches this pipeline's OWN `--muted-foreground` role already resolved for alert). Salt and M3 are both OFF — structure.description is off for both, so there is no description part to colour independently."
+    },
+    {
+      "id": "style.group.position",
+      "piece": "style",
+      "policy": "locked",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-group\"]",
+      "cellIsDeclarations": true,
+      "note": "The DEFAULT corner's fixed-positioning declarations (bottom-right for Salt/shadcn — Salt's own `ToastGroup`'s `placement` default IS `\"bottom-right\"`; SUPPLEMENTARY 'base' evidence anchors its viewport `bottom-4`/`right-4` too — canonical sonner's own default is [R] but publicly documented as bottom-right as well). M3: [R], one implied default corner, no token. This row supplies the BASE/default corner only; `prop.position`'s remaining five values are delivered by a real skeleton branch (an explicit inset computation in `ToastGroup`), not by additional CSS rows — declared explicitly so this config axis is never a 'dead' one (ALERT-MATRIX.md finding 10)."
+    },
+    {
+      "id": "style.group.width",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-group\"]",
+      "declarations": { "width": "$" },
+      "note": "Salt: `--toastGroup-width`, by density: high 210px / medium 260px / low 310px / touch 360px (`ToastGroup.css`, literal per-density values, not a derived multiple of the spacing/size unit). shadcn: SUPPLEMENTARY 'base' evidence, `max-w-sm` = 384px on the viewport (canonical sonner's own width is [R]). M3: **OFF** — no width token anywhere."
+    },
+    {
+      "id": "style.group.gap",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-group\"]",
+      "declarations": { "gap": "$" },
+      "note": "Salt: **OFF at the group level** — Salt's own inter-toast spacing is owned by the ITEM's own margin (see style.item.margin), not the group's flex gap; `ToastGroup.css` sets no `gap` property. shadcn: SUPPLEMENTARY 'base' evidence, `--gap: 0.75rem` = 12px, a real CSS custom property the base style's own stacking math consumes (canonical sonner's own gap is [R]). M3: **OFF** — no token, no live component. This chassis applies shadcn's own 12px value uniformly (a declared, reasonable registry choice for the columns that leave it off, since SOME visible separation between stacked items is needed for the non-overlap requirement any real toast stack has) — labelled here, not silently assumed."
+    },
+    {
+      "id": "style.group.z-index",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-group\"]",
+      "declarations": { "z-index": "$" },
+      "note": "Salt: `--salt-zIndex-flyover` = 1500 (docs/foundations/layers.md, the same slot tabs.salt.json's own overflow popup already cited). shadcn: SUPPLEMENTARY 'base' evidence, `z-50` = 50 (Tailwind numeric scale; canonical sonner's own z-index is [R], external, publicly documented to be a very large literal to guarantee top-most stacking — not independently confirmable here so NOT cited as a specific number). M3: **OFF** — no token, no live component."
+    },
+    {
+      "id": "style.item.type@error",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"][data-type=\"error\"]",
+      "cellIsDeclarations": true,
+      "note": "Non-default type. Salt: reassigns the SAME border-color/icon-color indirection mechanism Banner's own tone rows used (`.saltToast-error { --toast-borderColor: var(--salt-status-error-borderColor); --toast-iconColor: var(--salt-status-error-foreground-decorative) }`) — genuinely status-driven at the container level. shadcn: **OFF at the item-container level** — canonical sonner's default (non-`richColors`) theming keeps `--normal-bg`/`--normal-border` FIXED regardless of type (the same real non-variation alert's own shadcn tone rows found); only the ICON glyph itself changes per type (structure.icon), not the container. M3: **OFF** — no type axis exists at all (see prop.type)."
+    },
+    {
+      "id": "style.item.type@warning",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"][data-type=\"warning\"]",
+      "cellIsDeclarations": true,
+      "note": "Non-default type — see style.item.type@error for the shared shape."
+    },
+    {
+      "id": "style.item.type@success",
+      "piece": "style",
+      "policy": "switchable",
+      "channel": "css",
+      "selector": "[data-slot=\"toast-item\"][data-type=\"success\"]",
+      "cellIsDeclarations": true,
+      "note": "Non-default type — see style.item.type@error for the shared shape."
+    }
+  ]
+}

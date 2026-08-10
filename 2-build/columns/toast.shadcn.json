@@ -1,0 +1,74 @@
+{
+  "system": "shadcn",
+  "component": "toast",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "item-bg": "oklch(1 0 0)",
+      "item-fg": "oklch(0% 0 0)",
+      "item-border": "oklch(0.922 0 0)",
+      "item-shape": "10px",
+      "description-fg": "oklch(0.556 0 0)",
+      "item-elevation": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+    },
+    "dark": {
+      "item-bg": "oklch(0.205 0 0)",
+      "item-fg": "oklch(0.985 0 0)",
+      "item-border": "oklch(1 0 0 / 10%)",
+      "description-fg": "oklch(0.708 0 0)"
+    }
+  },
+  "modeInvariant": ["item-elevation"],
+  "provenance": {
+    "canonical-vs-supplementary": "CANONICAL source is registry/new-york-v4/ui/sonner.tsx, a thin wrapper around the external, UNVENDORED `sonner` npm package (package.json:95 `\"sonner\": \"^2.0.0\"`; no node_modules/sonner anywhere under 3-source/ui, confirmed by find). Values marked [S] below come DIRECTLY from that wrapper file (the theming CSS custom properties it sets, and the toast()/Toaster prop shapes visible in its own examples). Values marked [S-supplementary] come from the SAME monorepo's real, fully-inspectable sibling 'base' style Toast (registry/bases/base/ui/toast.tsx, built on @base-ui/react/toast — also external at the gesture/timer-implementation level, but the WRAPPER's own CSS classes and data-attributes are real committed source) — used the identical way alert.shadcn.json's own structure.actions cited registry/bases/radix/ui/alert.tsx as supplementary, cross-checked (not canonical) evidence for a part the canonical file itself doesn't show directly. Values marked [R] are neither: general, publicly-documented conventions of the external sonner package, not independently confirmable in this clone.",
+    "item-bg / item-fg": "sonner.tsx (canonical): style={{ \"--normal-bg\": \"var(--popover)\", \"--normal-text\": \"var(--popover-foreground)\" }} -> globals.css --popover/--popover-foreground (a DEDICATED popover role, distinct from --card, the same role select.shadcn.json's own popup-bg/popup-fg cite). [S], directly from the canonical wrapper.",
+    "item-border": "sonner.tsx (canonical): style={{ \"--normal-border\": \"var(--border)\" }} -> globals.css --border. [S], directly from the canonical wrapper.",
+    "item-shape": "sonner.tsx (canonical): style={{ \"--border-radius\": \"var(--radius)\" }} -> globals.css --radius = 0.625rem = 10px. [S], directly from the canonical wrapper.",
+    "description-fg": "[S-supplementary] base style's ToastDescription: text-muted-foreground -> globals.css --muted-foreground. Canonical sonner's own description styling is [R] (external); this is the closest real, sourced analogue, and matches --muted-foreground's own value already resolved in alert.shadcn.json.",
+    "item-elevation": "[S-supplementary] base style's Toast: shadow-lg -> Tailwind's documented default two-layer value, the same literal dialog.shadcn.json's own shadow-lg already cites (Tailwind not vendored in this clone). Canonical sonner's own elevation is [R].",
+    "item-padding / item-gap": "[S-supplementary] base style's ToastContent: p-4 gap-3 = 16px / 12px. Canonical sonner's own spacing is [R].",
+    "item-font": "[S-supplementary] base style's ToastContent/ToastTitle: text-sm = 0.875rem/1.25rem. Canonical sonner's own type is [R]; shadcn has no type-scale foundation file regardless (foundations/typography.md).",
+    "icon-size": "[S] canonical sonner.tsx's OWN icons prop: every per-type icon element carries className=\"size-4\" = 16px, directly in the canonical wrapper — a rare case where the canonical file itself gives a real style value.",
+    "group-width": "[S-supplementary] base style's ToastViewport: max-w-sm = 24rem = 384px. Canonical sonner's own viewport width is [R].",
+    "group-gap": "[S-supplementary] base style's Toast: the --gap: 0.75rem custom property its own stacking transform math consumes = 12px. Canonical sonner's own gap is [R]; this chassis applies this value to ALL columns that leave style.group.gap off (see toast.template.json's own note on this row).",
+    "group-zindex": "[S-supplementary] base style's ToastViewport: z-50 = z-index:50 (Tailwind numeric scale). Canonical sonner's own z-index is [R], publicly documented as a very large literal — not cited as a specific number here since it is not independently confirmable."
+  },
+  "cells": {
+    "structure.icon": { "kind": "value", "value": true, "source": "sonner.tsx (canonical): icons={{ success: <CircleCheckIcon/>, info: <InfoIcon/>, warning: <TriangleAlertIcon/>, error: <OctagonXIcon/>, loading: <Loader2Icon className=\"animate-spin\"/> }} — real, sourced, directly in the canonical wrapper" },
+    "structure.description": { "kind": "value", "value": true, "source": "sonner-demo.tsx: toast(\"Event has been created\", { description: \"Sunday, December 03, 2023 at 9:00 AM\", ... }) — real, sourced call shape" },
+    "structure.action": { "kind": "value", "value": true, "source": "sonner-demo.tsx: toast(message, { action: { label: \"Undo\", onClick: () => console.log(\"Undo\") } }) — real, sourced call shape" },
+    "structure.close": { "kind": "value", "value": true, "note": "canonical sonner.tsx does not itself show a close-button element (it forwards {...props} into the external package) — [R] boundary. SUPPLEMENTARY evidence: base style's real ToastClose (data-slot=\"toast-close\", aria-label=\"Close toast\", render={<Button variant=\"ghost\" size=\"icon-sm\"/>}) confirms the pattern is a real shadcn-family convention, the same class of citation alert.shadcn.json made for structure.actions via bases/radix." },
+
+    "behavior.role": { "kind": "value", "value": "status", "note": "[R] — canonical sonner is external; role not visible in the wrapper file. Treated as role=\"status\" per the general APG live-region/toast convention, the same boundary alert.shadcn.json's own M3 role cell used (there for a different reason — no live component at all)." },
+
+    "prop.type": { "kind": "value", "value": ["default", "success", "info", "warning", "error", "loading"], "source": "sonner-types.tsx: toast(...), toast.success(...), toast.info(...), toast.warning(...), toast.error(...), toast.promise(...) (loading state) — six real, sourced call variants" },
+    "prop.position": { "kind": "value", "value": ["bottom-right", "top-left", "top-center", "top-right", "bottom-left", "bottom-center"], "source": "sonner-position.tsx: six real toast(message, { position }) calls, one per value — sonner-position.tsx itself does not indicate which is the DEFAULT (all six are shown as equal buttons); bottom-right is listed first per this chassis's own default (see style.group.position), matching the commonly-documented external sonner default, [R] since the wrapper file itself does not set a default position prop" },
+
+    "style.item.background": { "kind": "alias", "slot": "item-bg" },
+    "style.item.border-color": { "kind": "alias", "slot": "item-border", "note": "FIXED regardless of type — no per-type border-color override anywhere in the canonical wrapper's own theming variables, a real non-variation (see style.item.type@error)" },
+    "style.item.border-width": { "kind": "value", "value": "1px", "note": "[S-supplementary] base style's own `border` class -> Tailwind's undeclared default border-width" },
+    "style.item.shape": { "kind": "alias", "slot": "item-shape" },
+    "style.item.elevation": { "kind": "alias", "slot": "item-elevation" },
+    "style.item.padding": { "kind": "value", "value": "16px", "note": "[S-supplementary], see provenance.item-padding" },
+    "style.item.gap": { "kind": "value", "value": "12px", "note": "[S-supplementary], see provenance.item-padding" },
+    "style.item.margin": { "kind": "off", "note": "inter-toast spacing is owned by the GROUP's own gap in this family, not the item's margin — see style.group.gap" },
+    "style.item.min-height": { "kind": "off", "note": "content-driven, no min-height concept in any shadcn toast source checked (canonical or supplementary), a real gap" },
+    "style.item.width": { "kind": "off", "note": "the fixed width lives on the viewport/group, not the item — see style.group.width" },
+    "style.item.font": { "kind": "value", "value": "400 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif", "note": "[S-supplementary], see provenance.item-font" },
+    "style.item.color": { "kind": "alias", "slot": "item-fg" },
+
+    "style.icon.color": { "kind": "alias", "slot": "item-fg", "note": "[R] — canonical sonner's icons inherit currentColor by convention (external, not independently verified); modelled as the same indirection as style.item.color, the same convergence alert.shadcn.json's own icon colour row recorded" },
+    "style.icon.size": { "kind": "value", "value": "16px", "note": "[S] see provenance.icon-size — a rare case where the canonical wrapper itself gives a real value" },
+
+    "style.description.color": { "kind": "alias", "slot": "description-fg" },
+
+    "style.group.position": { "kind": "value", "value": { "position": "fixed", "bottom": "0", "right": "0", "top": "auto", "left": "auto" }, "note": "[S-supplementary] base style's ToastViewport: fixed inset-x-4 bottom-4 ... sm:right-4 sm:left-auto. Canonical sonner's own default is [R] but publicly documented as bottom-right too." },
+    "style.group.width": { "kind": "value", "value": "384px", "note": "[S-supplementary], see provenance.group-width" },
+    "style.group.gap": { "kind": "value", "value": "12px", "note": "[S-supplementary], see provenance.group-gap" },
+    "style.group.z-index": { "kind": "value", "value": "50", "note": "[S-supplementary], see provenance.group-zindex" },
+
+    "style.item.type@error": { "kind": "off", "note": "canonical sonner's default (non-richColors) theming keeps --normal-bg/--normal-border FIXED regardless of type — only the ICON glyph itself changes per type (structure.icon), the container does not. A real non-variation, the same shape alert.shadcn.json's own destructive-only-recolors-text finding recorded." },
+    "style.item.type@warning": { "kind": "off", "note": "same non-variation as style.item.type@error" },
+    "style.item.type@success": { "kind": "off", "note": "same non-variation as style.item.type@error" }
+  }
+}

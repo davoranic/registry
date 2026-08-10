@@ -39,6 +39,7 @@ import { Checkbox, CheckboxGroup, type CheckboxConfig } from "../skeleton/checkb
 import { Switch } from "../skeleton/switch"
 import { RadioGroup, RadioItem } from "../skeleton/radio-group"
 import { Slider } from "../skeleton/slider"
+import { Toast, ToastGroup } from "../skeleton/toast"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -48,6 +49,7 @@ import checkboxCfg from "../out/gen/checkbox-config.json"
 import switchCfg from "../out/gen/switch-config.json"
 import radioGroupCfg from "../out/gen/radio-group-config.json"
 import sliderCfg from "../out/gen/slider-config.json"
+import toastCfg from "../out/gen/toast-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -79,6 +81,23 @@ async function waitFor<T>(get: () => T | null | undefined, tries = 40): Promise<
     await tick()
   }
   return null
+}
+
+/* TOAST-SPECIFIC: this pipeline's first genuinely time-based behaviour needs
+ * a REAL wall-clock wait, not just more scheduler yields — settle()'s three
+ * MessageChannel ticks resolve almost instantly and would race Toast's own
+ * setTimeout-driven dismissal every time. Spins on tick() (NOT throttled,
+ * see above) while polling a real Date.now() budget, so it waits exactly as
+ * long as it needs to and no longer, regardless of how throttled the
+ * skeleton's OWN window.setTimeout is in this hidden tab (up to ~1/sec worst
+ * case) — the timeout budgets below are chosen generously for that reason. */
+async function waitUntilReal(check: () => boolean, timeoutMs: number): Promise<boolean> {
+  const start = Date.now()
+  while (Date.now() - start < timeoutMs) {
+    if (check()) return true
+    await tick()
+  }
+  return check()
 }
 
 function record(component: string, row: string, system: string, pass: boolean, detail: string) {
@@ -852,6 +871,151 @@ async function checkSlider(host: HTMLElement, system: string) {
   mount4.remove()
 }
 
+// ------------------------------------------------------------------- toast
+
+async function checkToast(host: HTMLElement, system: string) {
+  const cfg = (toastCfg as Record<string, any>)[system]
+
+  // 1 — behavior.auto-dismiss: THE real, time-driven TRANSITION (CLAUDE.md
+  // rule 10 applied to a timer, not a click). A short, explicit duration is
+  // passed to every column (the chassis's shared timer mechanism is not
+  // column-gated — see toast.template.json's own behavior.auto-dismiss
+  // note): the toast must actually leave the DOM after real elapsed time,
+  // not just report a prop change.
+  const mount1 = document.createElement("div")
+  mount1.setAttribute("data-theme", system)
+  host.appendChild(mount1)
+  const root1 = createRoot(mount1)
+  let dismissed1 = false
+  root1.render(
+    <Toast config={cfg} message="auto-dismiss test" duration={150} onClose={() => { dismissed1 = true; root1.unmount() }} />,
+  )
+  await settle()
+  const presentBeforeTimer = !!mount1.querySelector('[data-slot="toast-item"]')
+  const firedInTime = await waitUntilReal(() => dismissed1, 3000)
+  record(
+    "toast",
+    "behavior.auto-dismiss",
+    system,
+    presentBeforeTimer && firedInTime,
+    `mounted with duration=150ms; present immediately after mount=${presentBeforeTimer}; onClose fired within 3000ms=${firedInTime}`,
+  )
+  mount1.remove()
+
+  // 2 — the shared-mechanism CONTRAST: duration=undefined must NEVER fire
+  // onClose — reproducing Salt's own real "persistent by design" posture
+  // for free (toast.template.json's behavior.auto-dismiss note), regardless
+  // of which column is asked. Proves the timer is truly OPT-IN, not just
+  // slow.
+  const mount2 = document.createElement("div")
+  mount2.setAttribute("data-theme", system)
+  host.appendChild(mount2)
+  const root2 = createRoot(mount2)
+  let dismissed2 = false
+  root2.render(<Toast config={cfg} message="persistent test" onClose={() => { dismissed2 = true }} />)
+  await settle()
+  const stayedPersistent = !(await waitUntilReal(() => dismissed2, 900))
+  record(
+    "toast",
+    "behavior.dismiss",
+    system,
+    stayedPersistent,
+    `mounted with NO duration; onClose must NOT fire within 900ms — fired=${dismissed2}`,
+  )
+  root2.unmount()
+  mount2.remove()
+
+  // 3 — behavior.pause-on-interaction: a REAL pointerenter must delay the
+  // SAME timer past its own nominal duration, and a REAL pointerleave must
+  // resume it. Dispatched as a bubbling "pointerover"/"pointerout" pair
+  // (React's own delegation model for onPointerEnter/onPointerLeave), the
+  // in-page equivalent of the live Playwright .hover() this component's own
+  // build separately verified in a real browser.
+  const mount3 = document.createElement("div")
+  mount3.setAttribute("data-theme", system)
+  host.appendChild(mount3)
+  const root3 = createRoot(mount3)
+  let dismissed3 = false
+  root3.render(<Toast config={cfg} message="pause test" duration={250} onClose={() => { dismissed3 = true }} />)
+  await settle()
+  const item3 = mount3.querySelector('[data-slot="toast-item"]') as HTMLElement | null
+  item3?.dispatchEvent(new PointerEvent("pointerover", { bubbles: true, relatedTarget: document.body as any }))
+  await settle()
+  const stillTherePastNominal = !(await waitUntilReal(() => dismissed3, 600))
+  item3?.dispatchEvent(new PointerEvent("pointerout", { bubbles: true, relatedTarget: document.body as any }))
+  const resumedAndFired = await waitUntilReal(() => dismissed3, 3000)
+  record(
+    "toast",
+    "behavior.pause-on-interaction",
+    system,
+    stillTherePastNominal && resumedAndFired,
+    `duration=250ms; hovered before it elapsed, still present 600ms later (past nominal)=${stillTherePastNominal}; after pointerout, resumed and fired within 3000ms=${resumedAndFired}`,
+  )
+  mount3.remove()
+
+  // 4 — behavior.dismiss (manual path): a close-button click must remove
+  // the toast IMMEDIATELY, via the SAME onClose hook the timer uses —
+  // structure.close-gated, so this only runs where the column has the part.
+  if (cfg.close) {
+    const mount4 = document.createElement("div")
+    mount4.setAttribute("data-theme", system)
+    host.appendChild(mount4)
+    const root4 = createRoot(mount4)
+    let dismissed4 = false
+    root4.render(<Toast config={cfg} message="manual close test" onClose={() => { dismissed4 = true }} />)
+    await settle()
+    const closeBtn = mount4.querySelector('[data-slot="toast-close"]') as HTMLElement | null
+    closeBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }))
+    await settle()
+    record(
+      "toast",
+      "structure.close",
+      system,
+      !!closeBtn && dismissed4,
+      `close button present=${!!closeBtn}; onClose fired on click=${dismissed4}`,
+    )
+    root4.unmount()
+    mount4.remove()
+  } else {
+    record("toast", "structure.close", system, true, "CONFIRMED ABSENCE — structure.close is off for this column, no close button to click")
+  }
+
+  // 5 — behavior.stacking-order: appending three live toasts to a REAL
+  // ToastGroup must render them non-overlapping, in APPEND order (newest
+  // last in document order) — layout, not just count (RADIO-GROUP-MATRIX.md
+  // finding 8's lesson).
+  const mount5 = document.createElement("div")
+  mount5.setAttribute("data-theme", system)
+  host.appendChild(mount5)
+  const root5 = createRoot(mount5)
+  root5.render(
+    <ToastGroup config={cfg} className="conformance-stack">
+      <Toast config={cfg} message="one" />
+      <Toast config={cfg} message="two" />
+      <Toast config={cfg} message="three" />
+    </ToastGroup>,
+  )
+  await settle()
+  const groupEl = mount5.querySelector('[data-slot="toast-group"]') as HTMLElement | null
+  if (groupEl) groupEl.style.position = "static"
+  const items5 = [...mount5.querySelectorAll('[data-slot="toast-item"]')] as HTMLElement[]
+  const rects5 = items5.map((el) => el.getBoundingClientRect())
+  let nonOverlapping = rects5.length === 3
+  for (let i = 0; i < rects5.length - 1; i++) {
+    if (rects5[i].bottom > rects5[i + 1].top + 1) nonOverlapping = false
+  }
+  const messages5 = items5.map((el) => el.querySelector('[data-slot="toast-message"]')?.textContent)
+  record(
+    "toast",
+    "behavior.stacking-order",
+    system,
+    nonOverlapping && messages5.join(",") === "one,two,three",
+    `${rects5.length} toasts rendered; non-overlapping=${nonOverlapping}; order=${messages5.join(",")}`,
+  )
+  root5.unmount()
+  mount5.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -868,6 +1032,7 @@ async function run() {
     try { await checkSwitch(host, s) } catch (e) { record("switch", "(threw)", s, false, String(e)) }
     try { await checkRadioGroup(host, s) } catch (e) { record("radio-group", "(threw)", s, false, String(e)) }
     try { await checkSlider(host, s) } catch (e) { record("slider", "(threw)", s, false, String(e)) }
+    try { await checkToast(host, s) } catch (e) { record("toast", "(threw)", s, false, String(e)) }
   }
   host.remove()
 

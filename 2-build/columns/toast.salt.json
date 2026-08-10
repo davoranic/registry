@@ -1,0 +1,88 @@
+{
+  "system": "salt",
+  "component": "toast",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "item-bg": "rgb(255, 255, 255)",
+      "item-fg": "rgb(0, 0, 0)",
+      "type-info": "rgb(0, 120, 207)",
+      "type-error": "rgb(229, 33, 53)",
+      "type-warning": "rgb(199, 83, 0)",
+      "type-success": "rgb(0, 135, 93)",
+      "type-active": "var(--type-info)",
+      "item-elevation": "0 6px 10px 0 rgba(0,0,0,0.2)"
+    },
+    "dark": {
+      "item-bg": "rgb(16, 24, 32)",
+      "item-fg": "rgb(255, 255, 255)",
+      "item-elevation": "0 6px 10px 0 rgba(0,0,0,0.55)"
+    },
+    "byDensity": {
+      "high":   { "item-padding": "4px", "item-gap": "3px", "item-margin": "0 4px 4px 4px", "item-shape": "3px", "item-min-height": "24px", "icon-size": "12px", "group-width": "210px", "type-body": "400 11px/14px 'Open Sans', sans-serif" },
+      "medium": { "item-padding": "8px", "item-gap": "6px", "item-margin": "0 8px 8px 8px", "item-shape": "6px", "item-min-height": "36px", "icon-size": "12px", "group-width": "260px", "type-body": "400 12px/16px 'Open Sans', sans-serif" },
+      "low":    { "item-padding": "12px", "item-gap": "9px", "item-margin": "0 12px 12px 12px", "item-shape": "9px", "item-min-height": "48px", "icon-size": "14px", "group-width": "310px", "type-body": "400 14px/18px 'Open Sans', sans-serif" },
+      "touch":  { "item-padding": "16px", "item-gap": "12px", "item-margin": "0 16px 16px 16px", "item-shape": "12px", "item-min-height": "60px", "icon-size": "16px", "group-width": "360px", "type-body": "400 16px/20px 'Open Sans', sans-serif" }
+    }
+  },
+  "modeInvariant": ["type-info", "type-error", "type-warning", "type-success"],
+  "provenance": {
+    "item-bg": "Toast.css --toast-background: var(--salt-container-primary-background) -> characteristics/container.css -> palette-background-primary -> snow #FFFFFF light / jet #101820 dark. Identical slot/value to alert.salt.json's own container-bg (does NOT vary by type).",
+    "item-fg": "Toast.tsx div has no own color rule; the div inherits --salt-content-primary-foreground the same way Banner.css's own root text colour does — #000000 light / #FFFFFF dark. Identical slot/value to alert.salt.json's content-fg.",
+    "type-*": "Toast.css .saltToast-{status} { --toast-borderColor: var(--salt-status-{status}-borderColor); --toast-iconColor: var(--salt-status-{status}-foreground-decorative) } -> characteristics/status.css -> palette-{info,negative,warning,positive} base (500 stop), mode-invariant. Reused verbatim from alert.salt.json's own tone-* slots — Toast.css and Banner.css both consume the exact same status token family for the exact same purpose (border color AND icon color driven by ONE status value).",
+    "item-elevation": "Toast.css box-shadow: var(--salt-overlayable-shadow-popout) -> next/characteristics/overlayable.css -> next/palette/shadow.css --salt-shadow-mediumLow. Value reused from docs/foundations/elevation.md (0 6px 10px 0 rgba(0,0,0,0.2) light / 0.55 dark), the same reuse select.salt.json/tabs.salt.json/tooltip.salt.json all made for the identical slot.",
+    "byDensity.item-padding": "Toast.css padding: var(--saltToast-padding, var(--salt-spacing-100)) -> foundations/spacing.css spacing-100 unit, uniform on all sides (a real CONTRAST with Banner.css's own split spacing-50/spacing-100).",
+    "byDensity.item-gap": "Toast.css gap: var(--salt-spacing-75) -> foundations/spacing.css, 0.75x the density unit. Same slot family alert.salt.json's own banner-gap used.",
+    "byDensity.item-margin": "Toast.css margin: 0 var(--salt-spacing-100) var(--salt-spacing-100) var(--salt-spacing-100) -> foundations/spacing.css spacing-100 unit, all three non-top sides. `.saltToast:last-child { margin-bottom: var(--salt-spacing-200) }` is a real, sourced, LAST-CHILD-ONLY override not modelled here (this template has no last-child-specific row; declared, not silently dropped).",
+    "byDensity.item-shape": "Toast.css border-radius: var(--saltToast-borderRadius, var(--salt-palette-corner, 0)) -> next/palette/corner.css [data-corner=\"rounded\"] curve-150, the same rounded-edition pin alert/calendar/button all use.",
+    "byDensity.item-min-height": "Toast.css min-height: calc(var(--salt-size-base) + var(--salt-spacing-100)) -> foundations/size.css size-base + foundations/spacing.css spacing-100, both density-scaled. IDENTICAL formula and slot family to alert.salt.json's own banner-min-height (Banner.css and Toast.css derive this the same way).",
+    "byDensity.icon-size": "Toast.css .saltToast-iconContainer > .saltIcon margin-top calc includes max(var(--salt-size-icon), 12px) as its own clamp term — docs/foundations/sizes.md size-icon = 10/12/14/16 by density, clamped to a 12px floor -> 12/12/14/16. Same clamp select.salt.json's own toggle-icon-size derivation already established for the identical --salt-size-icon token.",
+    "byDensity.group-width": "ToastGroup.css [data-density] blocks: literal, non-derived per-density widths (210/260/310/360px) — NOT a multiple of the spacing/size unit, a real per-density LITERAL, unlike most of Salt's own density-scaled tokens.",
+    "byDensity.type-body": "characteristics/text.css 'Body text' block: --salt-text-fontFamily (Open Sans), -fontWeight (regular=400), -fontSize/-lineHeight (density-scaled) -> Toast.css font-family/-size/-weight/line-height. Identical slot/value family to alert.salt.json's own type-body.",
+    "zindex": "ToastGroup.css z-index: var(--salt-zIndex-flyover) -> docs/foundations/layers.md flyover = 1500, the same slot tabs.salt.json's own popup z-index already cites.",
+    "tokens-only-note": "packages/core/src/toast (Toast, ToastContent) and packages/lab/src/toast-group (ToastGroup) are both real, live, fully-inspectable Salt components — every structure/behavior/style cell in this column is [S] unless individually marked [R]."
+  },
+  "cells": {
+    "structure.icon": { "kind": "value", "value": true, "source": "Toast.tsx: {status && <div className={withBaseName(\"iconContainer\")}>{icon ? icon : <StatusIndicator status={status} />}</div>} — rendered ONLY when `status` (this chassis's `type`) is set" },
+    "structure.description": { "kind": "off", "note": "no dedicated title/description split — ToastContent's children are freeform; a two-line look is a content-formatting convention only (toast.stories.tsx 'Info'/'Error'/'Warning' stories nest a bold <Text> and a plain <div> inside ONE ToastContent, same convention as Banner's bold-first-line)" },
+    "structure.action": { "kind": "off", "note": "NO dedicated actions wrapper exists in Toast.tsx (unlike Banner's BannerActions) — action buttons in toast.stories.tsx's Error/Warning exports are ordinary <Button> children composed inside ToastContent's own FlowLayout, no distinct data-slot hook. A real structural CONTRAST with alert/banner, not an oversight — see TOAST-MATRIX.md Findings." },
+    "structure.close": { "kind": "off", "note": "no dedicated close part — an ordinary <Button appearance=\"transparent\" aria-label=\"Dismiss\"> composed as a free child (toast.stories.tsx, toast-group.stories.tsx's closeToast pattern), same composition convention Banner's own close used" },
+
+    "behavior.role": { "kind": "value", "value": "alert", "source": "Toast.tsx: role=\"alert\" HARDCODED, always — <div ... role=\"alert\" {...rest} ref={ref}>. A real CONTRAST with alert.salt.json's own Banner column, which has NO default role at all." },
+    "behavior.auto-dismiss": { "kind": "off", "note": "CONFIRMED OFF — no setTimeout/timer of any kind anywhere in Toast.tsx, ToastContent.tsx or ToastGroup.tsx (grepped directly). site/docs/components/toast/usage.mdx states directly: 'Users should always be able to close or dismiss a toast' — Salt toasts are PERSISTENT by design until manually dismissed. toast-group.stories.tsx's own ToastEntryType/useState array management confirms: every example toast holds its own `open` useState with NO automatic expiry." },
+    "behavior.pause-on-interaction": { "kind": "off", "note": "no timer exists to pause (see behavior.auto-dismiss)" },
+    "behavior.swipe-dismiss": { "kind": "off", "note": "no swipe/gesture code anywhere in Toast.tsx/ToastContent.tsx (grepped, confirmed absent)" },
+
+    "prop.type": { "kind": "value", "value": ["info", "error", "warning", "success"], "source": "Toast.tsx status?: ValidationStatus -> status-indicator/ValidationStatus.ts ValidationStatusValues, no forced default (undefined status renders no icon/colour at all, unlike Banner's default \"info\")" },
+    "prop.position": { "kind": "value", "value": ["bottom-right", "top-right"], "source": "ToastGroup.tsx placement?: \"top-right\" | \"bottom-right\", default \"bottom-right\" — bottom-right listed first per the value[0]-is-source-default convention" },
+
+    "style.item.background": { "kind": "alias", "slot": "item-bg", "note": "does NOT vary by type — only border/icon do (see style.item.type@error etc)" },
+    "style.item.border-color": { "kind": "alias", "slot": "type-active", "note": "status-driven indirection, identical mechanism to alert.salt.json's own border-color row" },
+    "style.item.border-width": { "kind": "value", "value": "1px", "source": "Toast.css border-width: var(--saltToast-borderWidth, var(--salt-size-fixed-100)) = 1px, density-invariant" },
+    "style.item.shape": { "kind": "alias", "slot": "item-shape" },
+    "style.item.elevation": { "kind": "alias", "slot": "item-elevation" },
+    "style.item.padding": { "kind": "alias", "slot": "item-padding" },
+    "style.item.gap": { "kind": "alias", "slot": "item-gap" },
+    "style.item.margin": { "kind": "alias", "slot": "item-margin", "note": "Salt-only: inter-toast spacing is owned by the ITEM's own margin, not the group (see style.group.gap being off for Salt)" },
+    "style.item.min-height": { "kind": "alias", "slot": "item-min-height" },
+    "style.item.width": { "kind": "off", "note": "the fixed width lives on the GROUP (ToastGroup.css --toastGroup-width), not the item — see style.group.width" },
+    "style.item.font": { "kind": "alias", "slot": "type-body" },
+    "style.item.color": { "kind": "alias", "slot": "item-fg" },
+
+    "style.icon.color": { "kind": "alias", "slot": "type-active", "note": "StatusIndicator resolves to the SAME palette-{status} value as the border — genuinely independent of the body text colour, identical mechanism to alert.salt.json's own icon colour" },
+    "style.icon.size": { "kind": "alias", "slot": "icon-size" },
+
+    "style.description.color": { "kind": "off", "note": "structure.description is off — no description part to colour" },
+
+    "style.group.position": { "kind": "value", "value": { "position": "fixed", "bottom": "0", "right": "0", "top": "auto", "left": "auto", "justify-content": "flex-end" }, "source": "ToastGroup.css .saltToastGroup-bottom-right { bottom: 0; right: 0; justify-content: flex-end } (the default placement)" },
+    "style.group.width": { "kind": "alias", "slot": "group-width" },
+    "style.group.gap": { "kind": "off", "note": "no gap property on ToastGroup.css's own root rule — inter-toast spacing is owned by the ITEM's own margin instead (see style.item.margin)" },
+    "style.group.z-index": { "kind": "value", "value": "1500", "source": "ToastGroup.css z-index: var(--salt-zIndex-flyover) = 1500" },
+
+    "style.item.type@error": { "kind": "value", "value": { "--type-active": "var(--type-error)" }, "source": "Toast.css .saltToast-error { --toast-borderColor: var(--salt-status-error-borderColor); --toast-iconColor: var(--salt-status-error-foreground-decorative) }" },
+    "style.item.type@warning": { "kind": "value", "value": { "--type-active": "var(--type-warning)" }, "source": "Toast.css .saltToast-warning" },
+    "style.item.type@success": { "kind": "value", "value": { "--type-active": "var(--type-success)" }, "source": "Toast.css .saltToast-success" }
+  }
+}
