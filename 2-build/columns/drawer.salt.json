@@ -1,0 +1,111 @@
+{
+  "system": "salt",
+  "component": "drawer",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "bg-primary": "rgb(255, 255, 255)",
+      "bg-secondary": "rgb(245, 247, 248)",
+      "bg-tertiary": "rgb(250, 248, 242)",
+      "scrim-bg": "rgba(255, 255, 255, 0.65)",
+      "shadow-modal": "0 12px 40px 0 rgba(0, 0, 0, 0.3)"
+    },
+    "dark": {
+      "bg-primary": "rgb(16, 24, 32)",
+      "bg-secondary": "rgb(26, 34, 41)",
+      "bg-tertiary": "rgb(38, 41, 43)",
+      "scrim-bg": "rgba(0, 0, 0, 0.65)",
+      "shadow-modal": "0 12px 40px 0 rgba(0, 0, 0, 0.65)"
+    }
+  },
+  "provenance": {
+    "canonical-source": "packages/core/src/drawer/{Drawer.tsx,Drawer.css,DrawerCloseButton.tsx,DrawerCloseButton.css} — all four files read in full. packages/core/src/scrim/{Scrim.tsx,Scrim.css} for the backdrop (the SAME component/file dialog.salt.json already cites — Drawer.tsx's own ConditionalScrimWrapper renders the identical <Scrim fixed>). packages/core/src/utils/{useFloatingUI/useFloatingUI.tsx,usePreventScroll.ts} read again specifically to CONFIRM Drawer.tsx never passes lockScroll (a real, negative finding — see behavior.scroll-lock). packages/core/stories/drawer/drawer.stories.tsx read in full for real usage patterns (no default width/height, aria-labelledby wired by hand, DrawerCloseButton composition). packages/core/src/side-panel/SidePanel.tsx read ONLY to fix the scope boundary against drawer/sheet (confirmed non-modal: role=\"region\", no Scrim, no focus trap, no aria-modal — see docs/DRAWER-MATRIX.md scope note). foundations/zindex.css and foundations/animation.css read for the stacking-layer and slide-keyframe evidence.",
+    "bg-primary / bg-secondary / bg-tertiary": "Drawer.css background: var(--drawer-background), reassigned per DrawerProps.variant class to container-{primary,secondary,tertiary}-background — the SAME three tokens table.salt.json's own bg-primary/bg-secondary/bg-tertiary slots already resolve (next/characteristics/container.css -> next/palette/background.css). Reused verbatim, not re-derived.",
+    "scrim-bg": "Scrim.css background — the identical rule dialog.salt.json's own scrim-bg slot resolves (--salt-overlayable-background -> palette-alpha-higher -> white-65a light / black-65a dark), because Drawer.tsx composes the SAME Scrim component. Salt's light-mode scrim is a 65%-opaque WHITE veil, not a dark wash.",
+    "shadow-modal": "Drawer.css box-shadow: var(--salt-overlayable-shadow-modal) — the identical token dialog.salt.json's own shadow-modal slot resolves (overlayable.css -> shadow-medium -> next/palette/shadow.css).",
+    "z-index-drawer": "foundations/zindex.css --salt-zIndex-drawer: 1200 (the panel's own z-index) and --salt-zIndex-modal: 1300 (Dialog's own, for comparison — Drawer sits on a LOWER stacking layer than Dialog). Scrim.css's own z-index rule, calc(var(--salt-zIndex-drawer) - 1) = 1199, is the SAME literal dialog.salt.json's scrim already carries.",
+    "animation-slide": "foundations/animation.css: --salt-animation-slide-in-{top,left,right,bottom} = `slide-in-<dir> var(--salt-animation-duration) var(--salt-animation-timing-function)` where duration = --salt-duration-perceptible = 300ms and timing-function = ease-in-out. transform-start: 100%, transform-end: 0, opacity-start: 0, opacity-end: 1 (foundations/animation.css lines 6-11). Drawer.css's OWN position-to-keyframe pairing has a real, sourced NAME MISMATCH for top/bottom (see docs/DRAWER-MATRIX.md Finding 2): `.saltDrawer-top` uses --salt-animation-slide-in-BOTTOM and `.saltDrawer-bottom` uses --salt-animation-slide-in-TOP, while `.saltDrawer-left`/`.saltDrawer-right` DO match their own position name. The keyframe BODIES are reproduced correctly regardless of which name Drawer.css reaches for: slide-in-left/-right translateX(+/-100% -> 0); slide-in-top/-bottom translateY(+/-100% -> 0) — each genuinely originates fully off-screen on ITS OWN anchor edge and animates to rest, which is the physically correct outcome despite the confusing top/bottom name swap.",
+    "no-panel-color": "CONFIRMED ABSENCE: Drawer.css declares no `color` property anywhere (the whole file was read: background, display, flex-direction, max-height, max-width, overflow, padding, box-shadow, z-index, position, top, box-sizing — no color, no font). Children inherit whatever ambient colour the page provides; this is a real difference from Dialog's own DialogContent, which DOES declare content-primary-foreground.",
+    "no-default-size": "CONFIRMED ABSENCE: Drawer.css sets only max-width:100%/max-height:100% (the base cap); there is no width or height default of any kind. Every real usage in drawer.stories.tsx sets width/height by hand via a style prop (style={{ width: 200 }}, style={{ height: 350 }}, etc) — a real, structural difference from Dialog's own size prop (small/medium/large), which Drawer simply does not have.",
+    "no-scroll-lock": "CONFIRMED ABSENCE: Drawer.tsx's own JSX never passes `lockScroll` to FloatingComponent — grepped the whole file, zero matches — unlike Dialog.tsx line 159, which passes it explicitly. useFloatingUI.tsx's own usePreventScroll({ isDisabled: !lockScroll || !open }) defaults isDisabled to true whenever lockScroll is falsy/undefined, so a Salt Drawer never locks page scroll. See docs/DRAWER-MATRIX.md Finding 4.",
+    "disable-dismiss-coupling": "Drawer.tsx: useDismiss(context, { enabled: !disableDismiss }) — a SINGLE `enabled` flag gates the WHOLE useDismiss hook (both Escape and outside-press together). Dialog.tsx instead writes useDismiss(context, { outsidePress: !disableDismiss }), which only ever gates outside-press — Dialog's Escape dismissal is NEVER disabled by disableDismiss. Two Salt components, the identical prop name, genuinely different real scope. See docs/DRAWER-MATRIX.md Finding 1.",
+    "no-header-title-description-footer": "CONFIRMED ABSENCE: packages/core/src/drawer/ contains no DrawerHeader/DrawerTitle/DrawerDescription/DrawerFooter export of any kind (directory listing: Drawer.tsx, Drawer.css, DrawerCloseButton.tsx, DrawerCloseButton.css only). Every real drawer.stories.tsx example that needs a title composes its own <H2>/<Text>/<StackLayout> by hand as plain children, and aria-labelledby is threaded through the spread {...rest} prop rather than generated by a context channel the way DialogHeader->DialogContext->Dialog works for Dialog.",
+    "no-drag-handle": "CONFIRMED ABSENCE: Drawer.css/Drawer.tsx have no drag/gesture/handle concept of any kind — Salt's Drawer has no drag-to-dismiss mechanism at all, unlike shadcn's vaul-based Drawer.",
+    "close-button-position": "DrawerCloseButton.css: `.saltDrawerCloseButton-container { position: relative; display: flex; justify-content: flex-end }` wraps a `.saltButton-secondary.saltDrawerCloseButton { position: fixed; margin-top: calc(var(--salt-spacing-300) * -1); margin-right: calc(var(--salt-spacing-300) * -1) }` — a negative-margin trick that visually pulls the button up and to the right by one spacing-300 step, landing it flush in the panel's own top-right corner over the panel's own uniform padding. A DIFFERENT mechanism from DialogCloseButton.css's own plain `position: absolute; top: 0; right: 0`, with the same visual outcome. DrawerCloseButton.tsx composes <Button appearance=\"transparent\"><CloseIcon/></Button> — DECLARED COMPOSITION, only the placement is modelled here."
+  },
+  "cells": {
+    "structure.scrim": { "kind": "value", "value": true, "source": "Drawer.tsx ConditionalScrimWrapper renders <Scrim fixed> around the floating component when showComponent && !disableScrim" },
+    "structure.panel": { "kind": "value", "value": true, "source": "Drawer.tsx's own FloatingComponent" },
+    "structure.header": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-header-title-description-footer" },
+    "structure.title": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-header-title-description-footer" },
+    "structure.description": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-header-title-description-footer" },
+    "structure.footer": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-header-title-description-footer" },
+    "structure.close-button": { "kind": "value", "value": "optional", "source": "DrawerCloseButton is a separate export the consumer adds; several real drawer.stories.tsx examples (Default, Position) have none at all" },
+    "structure.drag-handle": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-drag-handle" },
+
+    "behavior.role": { "kind": "value", "value": true, "source": "Drawer.tsx passes role={\"dialog\"} to FloatingComponent, the identical literal Dialog.tsx uses" },
+    "behavior.aria-modal": { "kind": "value", "value": true, "source": "Drawer.tsx aria-modal=\"true\" on FloatingComponent, byte-identical to Dialog.tsx" },
+    "behavior.background-suppression": { "kind": "value", "value": "inert", "source": "Drawer.tsx focusManagerProps={{ context, initialFocus, outsideElementsInert: true }} — the identical shape Dialog.tsx passes" },
+    "behavior.focus-trap": { "kind": "value", "value": true, "source": "the same FloatingFocusManager mechanism Dialog.tsx relies on, via focusManagerProps" },
+    "behavior.initial-focus": { "kind": "value", "value": "configurable", "source": "DrawerProps.initialFocus?: ComponentProps<typeof FloatingFocusManager>[\"initialFocus\"] — a tabbable index or ref, default 0" },
+    "behavior.focus-return": { "kind": "value", "value": true, "source": "FloatingFocusManager's own returnFocus default" },
+    "behavior.dismiss-escape": { "kind": "value", "value": true, "source": "Drawer.tsx useDismiss(context, { enabled: !disableDismiss }) — floating-ui's default escapeKey handling applies whenever the hook is enabled (disableDismiss defaults to undefined, so enabled)" },
+    "behavior.dismiss-outside": { "kind": "value", "value": true, "note": "COUPLED to Escape by the same `enabled` flag — see disable-dismiss-coupling", "source": "Drawer.tsx useDismiss(context, { enabled: !disableDismiss })" },
+    "behavior.scroll-lock": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-scroll-lock" },
+    "behavior.labelled-by": { "kind": "value", "value": "manual", "source": "no context channel exists; aria-labelledby is threaded through the spread {...rest} prop by the consumer — see no-header-title-description-footer" },
+    "behavior.described-by": { "kind": "off", "note": "CONFIRMED ABSENCE — no aria-describedby anywhere in packages/core/src/drawer, and no description part exists to associate" },
+    "behavior.exit-animation": { "kind": "value", "value": true, "source": "Drawer.tsx useEffect keeps showComponent true for `300); // var(--salt-duration-perceptible)` after open flips false — the identical pattern Dialog.tsx uses" },
+
+    "prop.position": { "kind": "value", "value": ["left", "top", "right", "bottom"], "source": "DrawerProps.position?: \"left\"|\"top\"|\"right\"|\"bottom\", default \"left\" — listed SOURCE-DEFAULT-FIRST" },
+    "prop.variant": { "kind": "value", "value": ["primary", "secondary", "tertiary"], "source": "DrawerProps.variant?: \"primary\"|\"secondary\"|\"tertiary\", default \"primary\" — listed SOURCE-DEFAULT-FIRST" },
+    "prop.disable-dismiss": { "kind": "value", "value": true, "note": "see disable-dismiss-coupling", "source": "DrawerProps.disableDismiss?: boolean" },
+    "prop.disable-scrim": { "kind": "value", "value": true, "source": "DrawerProps.disableScrim?: boolean" },
+
+    "slot.title": { "kind": "off", "note": "no dedicated part — consumer composes a plain <H2> child, not a registry-owned slot; see structure.title" },
+    "slot.description": { "kind": "off", "note": "same reasoning as slot.title" },
+    "slot.footer": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-header-title-description-footer" },
+
+    "style.scrim.background": { "kind": "alias", "slot": "scrim-bg" },
+    "style.scrim.z-index": { "kind": "value", "value": "1199", "source": "Scrim.css — see z-index-drawer" },
+    "style.scrim.animation": { "kind": "off", "note": "CONFIRMED ABSENCE — the same Scrim.css with no animation rule dialog.salt.json already found" },
+
+    "style.panel.background": { "kind": "alias", "slot": "bg-primary" },
+    "style.panel.background@secondary": { "kind": "alias", "slot": "bg-secondary" },
+    "style.panel.background@tertiary": { "kind": "alias", "slot": "bg-tertiary" },
+    "style.panel.shadow": { "kind": "alias", "slot": "shadow-modal" },
+    "style.panel.padding": { "kind": "value", "value": "24px", "source": "Drawer.css padding: var(--salt-spacing-300) — UNIFORM on all four sides, unlike Dialog's asymmetric top/bottom-only padding" },
+    "style.panel.z-index": { "kind": "value", "value": "1200", "source": "Drawer.css z-index: var(--salt-zIndex-drawer) — see z-index-drawer" },
+
+    "style.panel.size@left": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-default-size" },
+    "style.panel.size@right": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-default-size" },
+    "style.panel.size@top": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-default-size" },
+    "style.panel.size@bottom": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-default-size" },
+    "style.panel.inset-margin@top": { "kind": "off", "note": "no equivalent reserve" },
+    "style.panel.inset-margin@bottom": { "kind": "off", "note": "no equivalent reserve" },
+    "style.panel.corner@top": { "kind": "off", "note": "CONFIRMED ABSENCE — Drawer.css declares no border-radius on .saltDrawer at any position" },
+    "style.panel.corner@bottom": { "kind": "off", "note": "CONFIRMED ABSENCE — same reasoning" },
+    "style.panel.border@left": { "kind": "off", "note": "CONFIRMED ABSENCE — Drawer.css declares no border property at all" },
+    "style.panel.border@right": { "kind": "off", "note": "CONFIRMED ABSENCE — same reasoning" },
+    "style.panel.border@top": { "kind": "off", "note": "CONFIRMED ABSENCE — same reasoning" },
+    "style.panel.border@bottom": { "kind": "off", "note": "CONFIRMED ABSENCE — same reasoning" },
+
+    "style.panel.animation@left": { "kind": "value", "value": "drawer-slide-in-left 300ms ease-in-out", "source": "Drawer.css .saltDrawer-left.saltDrawer-enterAnimation { animation: var(--salt-animation-slide-in-left) } — see animation-slide" },
+    "style.panel.animation@right": { "kind": "value", "value": "drawer-slide-in-right 300ms ease-in-out", "source": "Drawer.css .saltDrawer-right.saltDrawer-enterAnimation { animation: var(--salt-animation-slide-in-right) }" },
+    "style.panel.animation@top": { "kind": "value", "value": "drawer-slide-in-from-above 300ms ease-in-out", "note": "REPRODUCES THE BODY OF --salt-animation-slide-in-BOTTOM (see animation-slide's own name-mismatch note) — the panel originates fully off-screen above and slides down", "source": "Drawer.css .saltDrawer-top.saltDrawer-enterAnimation { animation: var(--salt-animation-slide-in-bottom) }" },
+    "style.panel.animation@bottom": { "kind": "value", "value": "drawer-slide-in-from-below 300ms ease-in-out", "note": "REPRODUCES THE BODY OF --salt-animation-slide-in-TOP (see animation-slide's own name-mismatch note) — the panel originates fully off-screen below and slides up", "source": "Drawer.css .saltDrawer-bottom.saltDrawer-enterAnimation { animation: var(--salt-animation-slide-in-top) }" },
+
+    "style.header.padding": { "kind": "off", "note": "no header part exists" },
+    "style.title.font": { "kind": "off", "note": "CONFIRMED ABSENCE — see structure.title" },
+    "style.title.color": { "kind": "off" },
+    "style.description.font": { "kind": "off", "note": "CONFIRMED ABSENCE — see structure.description" },
+    "style.footer.padding": { "kind": "off", "note": "no footer part exists" },
+    "style.footer.gap": { "kind": "off" },
+
+    "style.close-button.position": {
+      "kind": "value",
+      "value": { "position": "fixed", "margin-top": "calc(24px * -1)", "margin-right": "calc(24px * -1)" },
+      "source": "DrawerCloseButton.css — see close-button-position"
+    },
+    "style.drag-handle.box": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-drag-handle" }
+  }
+}

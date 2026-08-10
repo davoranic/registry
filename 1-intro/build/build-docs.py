@@ -48,7 +48,7 @@ OUT = os.path.join(INTRO, "site", "index.html")
 # or harness/registry.tsx for calendar) — order matches CLAUDE.md's component
 # index table
 COMPONENTS = ["accordion", "alert", "badge", "button", "calendar", "card", "checkbox", "chip",
-              "combobox", "dialog", "dropdown-menu", "input", "popover", "progress", "radio-group",
+              "combobox", "dialog", "drawer", "dropdown-menu", "input", "popover", "progress", "radio-group",
               "select", "slider", "spinner", "switch", "table", "tabs", "toast", "toggle-group", "tooltip"]
 
 # order in the sidebar; slug -> source file

@@ -140,8 +140,18 @@ const TABBABLE =
 
 function tabbablesIn(root: HTMLElement | null): HTMLElement[] {
   if (!root) return []
+  // NOT `el.offsetParent !== null` — per spec, offsetParent is ALWAYS null
+  // for a position:fixed element (or an element with one as an ancestor)
+  // regardless of visibility, which would silently exclude a real,
+  // visible, focusable element from the trap. getClientRects().length is
+  // unaffected by positioning scheme and only reports 0 for elements that
+  // are genuinely not rendered (display:none, detached, etc.) — found via
+  // drawer.tsx's own DrawerCloseButton (position:fixed), see
+  // DRAWER-MATRIX.md's own finding; this component's own close button
+  // currently uses position:absolute so the bug was latent here, not
+  // live, but the fix is applied proactively rather than left as a trap.
   return Array.from(root.querySelectorAll<HTMLElement>(TABBABLE)).filter(
-    (el) => el.offsetParent !== null || el === document.activeElement,
+    (el) => el.getClientRects().length > 0 || el === document.activeElement,
   )
 }
 

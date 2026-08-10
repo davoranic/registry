@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **25 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **26 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover, combobox, toggle-group, table (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover, combobox, toggle-group, table, drawer (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -270,6 +270,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `chip` | [`CHIP-MATRIX.md`](CHIP-MATRIX.md) | 75 | 45 | 7 | 59 | ✓ |
 | `combobox` | [`COMBOBOX-MATRIX.md`](COMBOBOX-MATRIX.md) | 102 | 70 | 58 | 46 | ✓ |
 | `dialog` | [`DIALOG-MATRIX.md`](DIALOG-MATRIX.md) | 97 | 73 | 47 | 38 | ✓ |
+| `drawer` | [`DRAWER-MATRIX.md`](DRAWER-MATRIX.md) | 64 | 30 | 52 | 28 | ✓ |
 | `dropdown-menu` | [`DROPDOWN-MENU-MATRIX.md`](DROPDOWN-MENU-MATRIX.md) | 68 | 42 | 42 | 38 | ✓ |
 | `input` | [`INPUT-MATRIX.md`](INPUT-MATRIX.md) | 64 | 50 | 20 | 32 | — |
 | `popover` | [`POPOVER-MATRIX.md`](POPOVER-MATRIX.md) | 48 | 36 | 29 | 0 | ✓ |
@@ -473,7 +474,54 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `table` (component 24, row 25/79). 47 rows (salt 38,
+Last action: built `drawer` (component 25, row 26/79). 64 rows (salt 30,
+shadcn 52, m3 28). First, resolved a real scope-overlap question: `drawer`
+and `sheet` are genuinely DIFFERENT components in all three systems (Salt:
+`Drawer` modal vs `SidePanel` non-modal; shadcn: separate `drawer.tsx`
+(vaul-based) and `sheet.tsx` (Radix-based) files both exist in this
+clone; M3's `_md-comp-sheet-side.scss` itself splits into a
+`docked-modal-*` half, this row, and a `docked-standard-*` half,
+`sheet`'s row) — `sheet` stays a separate, not-yet-built future row.
+Reused dialog.tsx's proven focus-trap/background-suppression/dismiss/
+focus-return mechanisms directly rather than reinventing them; the
+defining difference is edge-anchored geometry (a real CSS transform
+slide, verified at both closed and open resting positions) instead of
+centered geometry. All four automated gates green, conformance 338/338
+(21 new).
+
+The building agent had real browser access and found and fixed a genuine
+bug itself: `tabbablesIn`'s `offsetParent !== null` filter (copied from
+dialog.tsx) silently excluded Salt's own close button from initial-focus
+targeting, because Salt's `DrawerCloseButton.css` genuinely uses
+`position:fixed` (its real negative-margin corner trick) and
+`offsetParent` is ALWAYS null for fixed-position elements per spec,
+regardless of visibility — confirmed live (focus fell to the panel `<div>`
+instead of the button), fixed with `getClientRects().length > 0`, which
+is unaffected by positioning scheme. **The build agent explicitly flagged
+that `dialog.tsx` carries the exact same latent bug** (never triggered
+there only because Dialog's own close button happens to use
+`position:absolute`) — the orchestrator applied the identical fix to
+`dialog.tsx` proactively during review rather than leaving it as a known
+trap, and re-ran the full conformance suite (338/338, every
+`dialog`-tagged assertion included) to confirm zero regression.
+
+Orchestrator's own live re-verification also caught and correctly
+resolved a SELF-INFLICTED test artifact, the same class of trap as
+DROPDOWN-MENU-MATRIX.md finding 7: an unscoped
+`document.querySelector('[data-slot="drawer-panel"]')` picked up the
+harness's OTHER, deliberately-`contained` forced-open demo instance on
+the same page (used so the screenshot demo doesn't cover the whole
+viewport) instead of the real, live, triggered instance — making a
+correctly-full-viewport-edge-flush drawer look like it was stuck at some
+arbitrary 900px boundary. Re-scoped to the actual `-live`-suffixed
+element and the true geometry was correct all along (`right: 1280`,
+exactly the real viewport width). Also independently re-verified: Salt
+genuinely never locks page scroll while shadcn/m3 genuinely do (checked
+on `document.documentElement`, NOT `document.body` — the skeleton's own
+lock target, a second near-miss in the same review pass), and Escape
+correctly closes and removes the panel from the DOM entirely.
+
+Previous action: built `table` (component 24, row 25/79). 47 rows (salt 38,
 shadcn 31, m3 32) — DELIBERATELY narrow scope: a static structural/visual
 table only (root/header/body/footer/row/header-cell/body-cell/caption
 plus their style), NOT a data-grid. Sorting, pagination, a real selection
@@ -737,8 +785,9 @@ like the same bug.
 
 `switch`, `radio-group`, `slider`, the button fix, the dialog finding, the
 uncited-slots re-scope, the tabs conformance fix, toast, dropdown-menu,
-accordion, popover, combobox, toggle-group, and table are all committed
-and pushed to `claude/next-component-7e5dex` (check `git log main..claude/
+accordion, popover, combobox, toggle-group, table, and drawer (plus its
+own proactive `dialog.tsx` `tabbablesIn` fix) are all committed and
+pushed to `claude/next-component-7e5dex` (check `git log main..claude/
 next-component-7e5dex` before assuming what's landed on `main` — this
 list is updated less reliably than that log).
 
@@ -775,8 +824,8 @@ clear the queue), updated as items close:**
    `button`, `card`, `chip`, `dialog`, `input`, `progress`, `calendar`
    (`registry.tsx`), `select`, `spinner`, `tabs`, `tooltip`. All 13
    corrected to `../out/gen/` and verified to build clean.
-6. **Continue components** — 54 canonical rows remain after `table` lands,
-   order per `1-intro/content/04-component-map.md`: rows with real
+6. **Continue components** — 53 canonical rows remain after `drawer`
+   lands, order per `1-intro/content/04-component-map.md`: rows with real
    cross-system character first.
 
 **Standing lessons for the next component's build prompt** (checkbox's two,
