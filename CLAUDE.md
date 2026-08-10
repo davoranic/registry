@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **23 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **24 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover, combobox (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover, combobox, toggle-group (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -281,6 +281,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `switch` | [`SWITCH-MATRIX.md`](SWITCH-MATRIX.md) | 53 | 41 | 30 | 38 | ✓ |
 | `tabs` | [`TABS-MATRIX.md`](TABS-MATRIX.md) | 98 | 64 | 54 | 44 | ✓ |
 | `toast` | [`TOAST-MATRIX.md`](TOAST-MATRIX.md) | 41 | 23 | 23 | 13 | ✓ |
+| `toggle-group` | [`TOGGLE-GROUP-MATRIX.md`](TOGGLE-GROUP-MATRIX.md) | 45 | 38 | 35 | 30 | ✓ |
 | `tooltip` | [`TOOLTIP-MATRIX.md`](TOOLTIP-MATRIX.md) | 38 | 27 | 16 | 11 | — |
 
 Numbers are rows the column expresses (not `off`). A high `off` count is not incompleteness — it is how much of another system's surface that system genuinely lacks, recorded with a citation.
@@ -471,7 +472,33 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `combobox` (component 22, row 23/79). 102 rows (salt
+Last action: built `toggle-group` (component 23, row 24/79). 45 rows
+(salt 38, shadcn 35, m3 30) — the first component in this pipeline where
+NO column needed a declared native-element approximation at the item
+level (every real source already renders a genuine `<button>`). All four
+automated gates green, conformance 278/278 (21 new). The building agent
+had real Playwright/Chromium access this run and did its own thorough
+live verification (icon sizing, the real deselect-on-click transition,
+multi-select independence, M3's checkmark marker settling); the
+orchestrator independently re-verified rather than trusting that report
+at face value — spot-checked deselect-on-repeat-click, shadcn's
+multi-select independent toggling, group-role divergence (shadcn
+radiogroup/group split by mode vs. M3's single hardcoded "group" role for
+BOTH modes), group-level disabled forwarding, and icon sizing (12-14px,
+no repeat of the popover SVG bug) — all confirmed correct, no new bugs
+found. Two real findings worth knowing before touching this component
+again: (1) Salt's `Value` type PERMITS an array but `role="radiogroup"`
+is hardcoded and `isSelected` uses strict `===`, so Salt's "multi-select"
+is a type artifact, not a working capability — `prop.selection-mode` is
+`["single"]` only for Salt. (2) The chassis DELIBERATELY makes
+already-selected-item-click deselect uniformly across all three columns,
+which is a genuine, SOURCED DIVERGENCE from Salt's own real
+`ToggleButtonGroup` (whose `select()` re-sets the same value and never
+fires `onChange` on a repeat click) — recorded explicitly in the
+skeleton's own file banner and TOGGLE-GROUP-MATRIX.md, not a silent
+retrofit.
+
+Previous action: built `combobox` (component 22, row 23/79). 102 rows (salt
 70, shadcn 58, m3 46) — a full three-way component after two consecutive
 total-M3-absence builds. All four automated gates green, conformance
 257/257. Two real corrections during the build itself (not orchestrator
@@ -673,10 +700,10 @@ like the same bug.
 
 `switch`, `radio-group`, `slider`, the button fix, the dialog finding, the
 uncited-slots re-scope, the tabs conformance fix, toast, dropdown-menu,
-accordion, popover, and combobox are all committed and pushed to
-`claude/next-component-7e5dex` (check `git log main..claude/next-
-component-7e5dex` before assuming what's landed on `main` — this list is
-updated less reliably than that log).
+accordion, popover, combobox, and toggle-group are all committed and
+pushed to `claude/next-component-7e5dex` (check `git log main..claude/
+next-component-7e5dex` before assuming what's landed on `main` — this
+list is updated less reliably than that log).
 
 **Standing priority order — deferred by explicit owner choice on
 2026-08-04 ("keep going, track gaps in a running list" over stopping to
@@ -711,7 +738,7 @@ clear the queue), updated as items close:**
    `button`, `card`, `chip`, `dialog`, `input`, `progress`, `calendar`
    (`registry.tsx`), `select`, `spinner`, `tabs`, `tooltip`. All 13
    corrected to `../out/gen/` and verified to build clean.
-6. **Continue components** — 56 canonical rows remain after `combobox`
+6. **Continue components** — 55 canonical rows remain after `toggle-group`
    lands, order per `1-intro/content/04-component-map.md`: rows with real
    cross-system character first.
 

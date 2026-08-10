@@ -1,0 +1,97 @@
+{
+  "system": "m3",
+  "component": "toggle-group",
+  "fontFaces": [
+    { "family": "Roboto", "weight": "500", "file": "fonts/roboto-500.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "fg-rest": "#1d1b20",
+      "fg-hover": "#1d1b20",
+      "outline": "#79747e",
+      "selected-container": "#e8def8",
+      "on-selected-container": "#1d192b",
+      "on-selected-container-hover": "#1d192b",
+      "disabled-content": "#1d1b20",
+      "type-fontFamily": "'Roboto', sans-serif"
+    },
+    "dark": {
+      "fg-rest": "#e6e0e9",
+      "fg-hover": "#e6e0e9",
+      "outline": "#938f99",
+      "selected-container": "#4a4458",
+      "on-selected-container": "#e8def8",
+      "on-selected-container-hover": "#e8def8",
+      "disabled-content": "#e6e0e9"
+    }
+  },
+  "modeInvariant": ["type-fontFamily"],
+  "provenance": {
+    "canonical-source": "labs/segmentedbutton/internal/{segmented-button.ts,outlined-segmented-button.ts,_shared.scss,_outlined-segmented-button.scss} and labs/segmentedbuttonset/internal/{segmented-button-set.ts,outlined-segmented-button-set.ts,_shared.scss,_outlined-segmented-button-set.scss}, ALL FIVE .ts FILES read in full. A GENUINE DIVERGENCE FROM MOST M3 COLUMNS IN THIS PIPELINE: material-web's labs/ directory ships a REAL, LIVE Lit component for this one (not tokens-only) — so structure/behavior rows here are [S], not the usual [R] material-web forces on every other M3 column. Tokens: tokens/versions/v0_192/_md-comp-outlined-segmented-button.scss (the pinned edition, per CLAUDE.md's standing decision) plus tokens/versions/latest/sass/_md-comp-outlined-segmented-button.scss for the edition diff. Resolution through versions/v0_192/{_md-sys-color.scss,_md-ref-palette.scss,_md-sys-shape.scss,_md-sys-state.scss,_md-sys-typescale.scss}. Cross-referenced against columns already resolved in this registry: secondary-container/on-secondary-container (chip.m3.json), on-surface/outline (radio-group.m3.json/combobox.m3.json) — all four hexes reused verbatim, not re-derived.",
+    "edition-pin": "versions/v0_192, per CLAUDE.md's standing decision. Diffed both editions directly: EVERY value in the outlined-segmented-button token function is byte-identical across editions — a small, no-op pin, matching radio-group's own finding rather than chip's/progress's own large deltas. The ONE real difference between editions is unrelated to colour: `latest` renames the SCSS function signature cosmetically but resolves through the identical md-sys-color/md-sys-shape/md-sys-state dependency chain.",
+    "only-one-variant-family": "CONFIRMED: `labs/segmentedbutton{,set}/` and `tokens/versions/v0_192/` both contain EXACTLY ONE segmented-button token file (`outlined-`) — no `filled-segmented-button` file or class exists anywhere, confirmed by directory listing both locations. M3 genuinely ships one visual treatment for this component, unlike button/chip/fab's own multi-family M3 columns.",
+    "real-live-component-not-tokens-only": "Unlike every other M3 column in this pipeline (whose structure/behavior rows are [R], inferred from tokens with no live component to read), THIS component has real, live, non-generated .ts source in material-web's labs/ directory — segmented-button.ts's render(), segmented-button-set.ts's setButtonSelected()/render(), and single-selection-controller-equivalent logic are all directly readable. Every structure/behavior cell in this column marked [S] is grepped from these files, not inferred from a token name.",
+    "fg-rest / fg-hover": "_shared.scss: .md3-segmented-button--unselected .md3-segmented-button__label-text { color: var(--_unselected-label-text-color) } -> unselected-label-text-color -> md-sys-color.on-surface -> _md-sys-color.scss values-light() neutral10 = #1d1b20 / values-dark() neutral90 = #e6e0e9, the SAME slot radio-group.m3.json's/combobox.m3.json's own on-surface already resolved. -hover: .md3-segmented-button--unselected:hover .md3-segmented-button__label-text { color: var(--_unselected-hover-label-text-color) } -> unselected-hover-label-text-color -> ALSO md-sys-color.on-surface, the SAME hex — token-name changes, resolved value does not, confirmed directly reading the token function's own map.",
+    "outline": "_outlined-segmented-button.scss .md3-segmented-button__outline { border-color: var(--_outline-color) } -> outline-color -> md-sys-color.outline -> _md-sys-color.scss values-light() neutral-variant50 -> #79747e / values-dark() neutral-variant60 -> #938f99, the SAME slot radio-group.m3.json's/combobox.m3.json's own outline already resolved.",
+    "selected-container / on-selected-container": "tokens/versions/v0_192/_md-comp-outlined-segmented-button.scss token function: 'selected-container-color': md-sys-color.secondary-container -> secondary90 #e8def8 light / secondary30 #4a4458 dark; 'selected-label-text-color'/'selected-focus-label-text-color': md-sys-color.on-secondary-container -> secondary10 #1d192b light / secondary90 #e8def8 dark — the SAME two slots chip.m3.json's own chip-bg-selected/chip-fg-selected already resolved, confirmed by direct token-function comparison. 'selected-hover-label-text-color' is the SAME on-secondary-container role — the identical numeric value, no separate hover shade.",
+    "disabled-content": "'disabled-label-text-color'/'disabled-icon-color'/'disabled-outline-color': ALL THREE resolve to md-sys-color.on-surface — the SAME on-surface hex used at rest, with the DIMMING done entirely via three separate opacity tokens (0.38/0.38/0.12) rather than a distinct disabled colour role.",
+    "hardcoded-spacing-workaround": "_outlined-segmented-button.scss's own mixin literally reads: `// b/198759625 - Remove spacing tokens once provided.` immediately above `$tokens: map.merge($tokens, ('spacing-leading': 12px, 'spacing-trailing': 12px))` — a real, sourced, self-documented technical-debt marker baked into material-web's own AUTHORED (non-generated) stylesheet, not the usual generated token function.",
+    "group-role-always-group": "segmented-button-set.ts render(): <span role=\"group\" ...> — a HARDCODED literal, not conditional on `multiselect` in any way, confirmed by reading the whole file.",
+    "item-role-always-pressed": "segmented-button.ts render(): <button ... aria-pressed=${this.selected} ...> — NO role attribute is ever written on the button; aria-pressed is the ENTIRE signal, in BOTH single- and multi-select modes, confirmed by reading the whole file (there is no branch anywhere checking a multiselect-equivalent flag before choosing an ARIA pattern).",
+    "no-keyboard-nav": "CONFIRMED ABSENCE, grepped the ENTIRE labs/segmentedbutton{,set}/ tree for \"keydown\"/\"KeyDown\"/\"ArrowLeft\"/\"ArrowRight\"/\"roving\": zero hits in any file. segmented-button.ts's own tabindex is a flat `${this.disabled ? '-1' : '0'}` with no group-aware roving logic.",
+    "checkmark-choreography": "_shared.scss: .md3-segmented-button--unselected .md3-segmented-button__checkmark { opacity: 0 }; .md3-segmented-button--selected.md3-segmented-button--with-label .md3-segmented-button__icon { opacity: 0 } — the leading icon fades OUT exactly as the checkmark fades IN when a labelled item is selected, so the two glyphs share one visual slot rather than stacking. The REAL animation (.md3-segmented-button--selecting/--deselecting) uses named @keyframes (stroke-dashoffset draw-in, 150ms + 50ms delay) — NOT reproduced literally in this registry's generated CSS, since gen-from-template.py cannot emit raw @keyframes and harness/chrome.css (where prior components appended their own) is off-limits to this build; approximated instead with a plain opacity/transform CSS transition on the same rest-vs-checked pair — see style.selected-marker.draw-in@checked's own template row note.",
+    "state-layer-opacities": "focus-state-layer-opacity 0.12, hover-state-layer-opacity 0.08, pressed-state-layer-opacity (reuses focus's value) 0.12 — the SAME 0.08/0.12/0.12 trio every prior M3 column in this pipeline has found, documented not rendered (style.state-layer, folded into the state.hover/.pressed notes rather than a separate row, matching this component's leaner row budget)."
+  },
+  "cells": {
+    "structure.group": { "kind": "value", "value": "span", "source": "segmented-button-set.ts render(): <span role=\"group\" class=\"md3-segmented-button-set\">" },
+    "structure.item": { "kind": "value", "value": true, "source": "segmented-button.ts render(): <button tabindex=... aria-pressed=... ?disabled=... class=\"md3-segmented-button\">" },
+    "structure.icon-slot": { "kind": "value", "value": "named-slot", "source": "segmented-button.ts: <slot name=\"icon\"></slot>, hasIcon detected via queryAssignedElements({slot: 'icon', flatten: true}) in update()" },
+    "structure.selected-marker": { "kind": "value", "value": "checkmark", "source": "segmented-button.ts renderLeadingWithLabel/renderLeadingWithoutLabel — a real <svg class=\"md3-segmented-button__checkmark\"> with a drawn <path>, see checkmark-choreography" },
+
+    "behavior.role": { "kind": "value", "value": "ALWAYS aria-pressed on a native button, NEVER role=\"radio\"/aria-checked, regardless of multiselect", "source": "see item-role-always-pressed" },
+    "behavior.group-role": { "kind": "value", "value": "ALWAYS role=\"group\", regardless of multiselect", "source": "see group-role-always-group" },
+    "behavior.arrow-navigation": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-keyboard-nav. Every enabled button is independently Tab-stoppable in sequence; there is no roving single tab-stop." },
+    "behavior.keyboard-activate": { "kind": "value", "value": "native <button> Space/Enter activation, no keydown override for activation", "source": "segmented-button.ts — no keydown handler bound anywhere (see no-keyboard-nav)" },
+
+    "prop.selection-mode": { "kind": "value", "value": ["single", "multiple"], "source": "SegmentedButtonSet.multiselect: boolean, default false (single) — setButtonSelected() branches directly on it" },
+    "prop.variant": { "kind": "off", "note": "CONFIRMED ABSENCE — see only-one-variant-family" },
+    "prop.size": { "kind": "off", "note": "container-height: 40px is a single hardcoded literal, no size axis" },
+    "prop.sentiment": { "kind": "off", "note": "CONFIRMED ABSENCE, no tone concept" },
+    "prop.orientation": { "kind": "off", "note": "CONFIRMED ABSENCE — _shared.scss's grid-auto-flow: column layout is hardcoded horizontal-only, no vertical token/class/property anywhere" },
+    "prop.disabled": { "kind": "value", "value": [false, true], "source": "SegmentedButton.disabled: boolean, plus programmatic getButtonDisabled(index)/setButtonDisabled(index, disabled) on the SET" },
+    "prop.group-disabled": { "kind": "off", "note": "CONFIRMED ABSENCE — SegmentedButtonSet's own @property list has exactly ONE field (multiselect); disabled must be set per-button or via the per-index setButtonDisabled helper, not one group-wide switch" },
+    "prop.validation": { "kind": "off", "note": "CONFIRMED ABSENCE, read the whole token file for both editions" },
+
+    "slot.item-content": { "kind": "value", "value": "label: string property, PLUS slot=\"icon\" for an icon — NOT children-based the way Salt/shadcn are", "source": "segmented-button.ts: @property() label = ''" },
+    "slot.composes": { "kind": "value", "value": true, "note": "SegmentedButton's own doc comment: 'intended **only** for use as a child of a SegmentedButtonSet component. It is **not** intended for use in any other context' — the structural reason the standalone `toggle` sibling row is declared out of scope, see the matrix doc's own scope note" },
+
+    "state.rest": { "kind": "value", "value": "NO background of any kind — unselected genuinely draws nothing; a separate .md3-segmented-button__outline span carries the 1px stroke", "note": "" },
+    "state.selected": { "kind": "value", "value": "background moves to secondary-container, text/icon to on-secondary-container, PLUS the checkmark glyph fades in (and the leading icon, if any, fades out)", "note": "" },
+    "state.hover": { "kind": "value", "value": "BOTH selected and unselected have their own real hover colour token, plus an 8%-opacity ripple state layer (documented not rendered)", "note": "" },
+    "state.focus": { "kind": "value", "value": "label/icon colour recolours to the focus token (numerically identical to hover) plus a separate md-focus-ring (documented not rendered)", "note": "" },
+    "state.pressed": { "kind": "value", "value": "label/icon colour recolours to the pressed token (numerically identical to hover/focus) plus a 12%-opacity ripple", "note": "" },
+    "state.disabled": { "kind": "value", "value": "three separate opacity tokens: icon/label 0.38, outline 0.12 — the same 0.38-content/0.12-container M3 convention every prior M3 column uses", "note": "" },
+
+    "style.group.gap": { "kind": "value", "value": "0", "source": "CONFIRMED ABSENCE of any gap declaration in the grid layout — see the template row's own note" },
+    "style.group.background": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.group.border": { "kind": "off", "note": "CONFIRMED ABSENCE, no group-level border — the 1px stroke lives per-item" },
+    "style.group.padding": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.item.height": { "kind": "value", "value": "40px", "source": "container-height: 40px, hardcoded, both editions" },
+    "style.item.padding": { "kind": "value", "value": "12px", "source": "see hardcoded-spacing-workaround" },
+    "style.item.gap": { "kind": "off", "note": "CONFIRMED ABSENCE of a `gap` property between icon and label; spacing is achieved via the graphic's own calculated width instead — see the template row's own note" },
+    "style.item.shape": { "kind": "value", "value": "9999px", "note": "applied by the SET to its first/last slotted child only (::slotted(:first-child)/(:last-child)); every middle item is square (border-radius: inherit, unset by default)", "source": "tokens/versions/v0_192/_md-comp-outlined-segmented-button.scss token function 'shape': md-sys-shape.corner-full" },
+    "style.item.border-width": { "kind": "off", "note": "the 1px stroke lives on a separate .md3-segmented-button__outline span, not a border-width property of the button itself — see the template row's own note" },
+    "style.item.rest": { "kind": "value", "value": { "background": "transparent", "color": "var(--fg-rest)" }, "source": "see state.rest" },
+    "style.item.selected": { "kind": "value", "value": { "background": "var(--selected-container)", "color": "var(--on-selected-container)" }, "source": "see selected-container / on-selected-container" },
+    "style.item.hover": { "kind": "value", "value": { "color": "var(--fg-hover)" }, "source": "unselected-hover-label-text-color -> on-surface, numerically identical to rest — see fg-rest / fg-hover" },
+    "style.item.focus": { "kind": "value", "value": { "color": "var(--fg-hover)" }, "source": "unselected-focus-label-text-color -> on-surface, numerically identical to hover" },
+    "style.item.pressed": { "kind": "value", "value": { "color": "var(--fg-hover)" }, "source": "unselected-pressed-label-text-color -> on-surface, numerically identical to hover/focus" },
+    "style.item.disabled": { "kind": "off", "note": "dimming happens PER-ELEMENT (icon/label/outline each carry their own opacity token) rather than on the item container as a whole — see the template row's own note" },
+    "style.item.validation": { "kind": "off", "note": "CONFIRMED ABSENCE" },
+    "style.item.transition": { "kind": "off", "note": "M3's own real motion on this component lives on the checkmark/icon choreography, not a general item-level transition — see style.selected-marker.draw-in@checked" },
+    "style.selected-marker.paint": { "kind": "value", "value": { "stroke": "var(--on-selected-container)", "fill": "none" }, "source": "selected-icon-color -> on-secondary-container; .md3-segmented-button__checkmark-path { stroke: var(--_selected-icon-color) }, fill=\"none\" is a literal in the real SVG markup" },
+    "style.selected-marker.draw-in@checked": { "kind": "value", "value": "opacity 140ms cubic-bezier(0.3, 0, 0, 1), transform 140ms cubic-bezier(0.3, 0, 0, 1)", "note": "DECLARED APPROXIMATION of the real stroke-dashoffset @keyframes draw-in — see checkmark-choreography and the template row's own note explaining why a literal keyframe animation could not be reproduced in this build" },
+    "style.root.font": { "kind": "value", "value": { "font-size": "0.875rem", "line-height": "1.25rem", "font-family": "var(--type-fontFamily)", "font-weight": "500" }, "source": "label-text-font/-size/-line-height/-weight -> md-sys-typescale.label-large, the same typescale radio-group.m3.json's own type-option row already used" },
+    "style.root.cursor": { "kind": "value", "value": "pointer", "source": "_shared.scss .md3-segmented-button:enabled { cursor: pointer }" }
+  }
+}
