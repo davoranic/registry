@@ -1,0 +1,253 @@
+{
+  "component": "table",
+  "openUiAnatomy": "no published Open UI table anatomy consulted directly — union built from the three clones: shadcn's Table/TableHeader/TableBody/TableFooter/TableRow/TableHead/TableCell/TableCaption (a thin data-slot-tagging wrapper around plain, real semantic <table>/<thead>/<tbody>/<tfoot>/<tr>/<th>/<td>/<caption> elements, wrapped in an own overflow <div data-slot=\"table-container\">), Salt's Table/TableContainer/THead/TBody/TFoot/TR/TH/TD (real semantic elements too, plus a real TableContext that forwards the root <table>'s own id as the container's aria-labelledby), and M3's data-table token family (tokens-only — material-web ships NO live data-table component anywhere in the clone, confirmed by directory listing; every M3 structure/behavior row is [R], reasoned from the real, dedicated token namespace's own vocabulary — header/footer/row-item — which itself presumes a conventional semantic table, not a div-based grid).",
+  "behavior": {
+    "pattern": "A STATIC, semantic data table: a header row of column labels, zero or more body rows of cells, an optional footer row, an optional caption — the union every real source already renders with genuine native table elements (a first for the structural spine of this pipeline: unlike select's/combobox's own popup-based anatomy, all three sources agree a <table> is the right primitive, not a div-based grid dressed up with ARIA). THE HEADLINE SCOPE QUESTION THIS MATRIX HAD TO ANSWER FIRST, from CLAUDE.md's own scoping instruction: does any real source's OWN base table primitive implement sorting, pagination, row selection, column resizing, or expandable rows as a working ENGINE, or does it only expose STYLE HOOKS a consumer wires externally? Answer, confirmed by reading the real source rather than assuming from a docs page's screenshots: shadcn's own docs state directly, verbatim, that a 'data table' is deliberately NOT a shadcn component — content/docs/components/base/data-table.mdx reads 'So instead of a data-table component, I thought it would be more helpful to provide a guide on how to build your own,' built on `@tanstack/react-table` (`apps/v4/package.json`, `\"@tanstack/react-table\": \"^8.9.1\"`, EXTERNAL and UNVENDORED — the identical boundary DROPDOWN-MENU-MATRIX.md/POPOVER-MATRIX.md/COMBOBOX-MATRIX.md/TOGGLE-GROUP-MATRIX.md already recorded for their own external dependencies) [S]. shadcn's base `table.tsx` DOES carry two real, reachable STYLE HOOKS that only become meaningful once a consumer wires an external engine: `TableRow`'s own class string includes `data-[state=selected]:bg-muted` (confirmed live-wired in the TanStack examples via `data-state={row.getIsSelected() && \"selected\"}`, `data-table.tsx`/`dashboard-01/components/data-table.tsx`) and `has-aria-expanded:bg-muted/50` (an expandable-row hook, also consumer-driven, out of scope — see the matrix doc's own scope note) [S]. Salt's `Table`/`TR`/`TH`/`TD` carry NO selection, sort, or expansion concept of any kind anywhere in the whole `packages/core/src/table/` tree — confirmed by reading every file in full [S, confirmed absence]. M3's data-table token file (`_md-comp-data-table.scss`) carries real, distinct `row-item-selected-container-color`/`row-item-unselected-container-color`/`row-item-selected-hover-state-layer-*` tokens — genuine DESIGN INTENT for a selected-row visual state — but zero sort/pagination/resize tokens of any kind, and (being tokens-only) no live component to wire a selection ENGINE into at all [S, token vocabulary read in full]. This chassis therefore builds the STYLE HOOKS honestly (a `TableRow` `selected`/`disabled` prop settable per-instance, matching shadcn's own real `data-state`/M3's own real selected-row tokens) without building a selection/sort/pagination ENGINE for any column — the same 'capability documented, engine not built' split TOGGLE-GROUP-MATRIX.md's own Salt multi-select finding first established for this pipeline, here inverted: there the type signature over-promised and the runtime under-delivered; here the STYLE layer genuinely delivers a real, usable hook and it is the ENGINE that is out of scope by the owner's own scoping instruction, not by a source defect.",
+    "chassis": "skeleton/table.tsx — written from the template's part union: a real semantic <table> (matching all three sources, no div-based grid approximation needed anywhere — the first component in this pipeline where every column already renders identical native elements at EVERY level of the anatomy, not just the leaf control toggle-group's own buttons achieved), wrapped in a real overflow <div data-slot=\"table-container\"> (Salt's own TableContainer performs a REAL, sourced, ResizeObserver-driven a11y upgrade — promoting the wrapper to role=\"region\"+tabIndex=0 ONLY when the table is actually overflowing its box, confirmed directly in TableContainer.tsx's own `checkOverflow`/`useResizeObserver` — while shadcn's own wrapper is a static, unconditional `overflow-x-auto` div with no JS enhancement of any kind; this chassis implements Salt's real mechanism behind a `overflowRegionSensing` config flag rather than silently flattening the two to the same behaviour). TableRow accepts `selected`/`disabled` boolean props that set `data-state=\"selected\"`/`data-disabled` (the shared registry mechanism every column's CSS reads where it has a real rule, and silently no-ops where a column has none — the SAME 'attribute always set, rule only where sourced' shape toggle-group's own disabled attribute already established) — a declared, STATIC demonstration of the real style hook, not an interactive selection/sort ENGINE (out of scope, see the matrix doc's own scope note)."
+  },
+  "skeletonParams": {
+    "variant": ["primary", "secondary", "tertiary"],
+    "zebra": [false, true],
+    "divider": ["primary", "secondary", "tertiary", "none"],
+    "align": ["left", "right"],
+    "stickyHeader": [false, true],
+    "stickyFooter": [false, true],
+    "captionSupported": [true, false],
+    "overflowRegionSensing": [true, false]
+  },
+  "base": {
+    "[data-slot=\"table-container\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "width": "100%",
+      "overflow-x": "auto"
+    },
+    "[data-slot=\"table-root\"]": {
+      "box-sizing": "border-box",
+      "width": "100%",
+      "border-collapse": "collapse",
+      "border-spacing": "0",
+      "caption-side": "bottom"
+    },
+    "[data-slot=\"table-header-cell\"]": {
+      "box-sizing": "border-box",
+      "position": "relative",
+      "vertical-align": "middle"
+    },
+    "[data-slot=\"table-cell\"]": {
+      "box-sizing": "border-box",
+      "vertical-align": "middle"
+    },
+    "[data-slot=\"table-header-cell\"][data-align=\"right\"], [data-slot=\"table-cell\"][data-align=\"right\"]": {
+      "text-align": "right"
+    },
+    "[data-slot=\"table-header-cell\"][data-align=\"left\"], [data-slot=\"table-cell\"][data-align=\"left\"]": {
+      "text-align": "left"
+    },
+    "[data-slot=\"table-header\"][data-sticky=\"true\"]": {
+      "position": "sticky",
+      "top": "0",
+      "z-index": "1"
+    },
+    "[data-slot=\"table-footer\"][data-sticky=\"true\"]": {
+      "position": "sticky",
+      "bottom": "0",
+      "z-index": "1"
+    }
+  },
+  "rows": [
+    { "id": "structure.container", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "A real overflow wrapper OUTSIDE the <table> itself, in all three. Salt [S]: `TableContainer` — a real, dedicated component (`packages/core/src/table/TableContainer.tsx`) rendering a `<div>` that forwards the table's own `id` as its `aria-labelledby` via `TableContext`, and dynamically decides its own `role`/`tabIndex` based on measured overflow (see behavior.overflow-region). shadcn [S]: `Table`'s own render literally wraps `<table>` in `<div data-slot=\"table-container\" className=\"relative w-full overflow-x-auto\">` — a static wrapper, no dynamic role/tabIndex. M3 [R]: material-web ships NO live component for this at all (tokens-only); a responsive horizontal-scroll wrapper is the general, standard convention every real data-table implementation (including Salt's and shadcn's own) already uses, and is assumed here rather than independently confirmable from a token file that has no layout-strategy concept to cite." },
+
+    { "id": "structure.root", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "A real, native `<table>` element in all three — Salt [S]: `Table.tsx`'s own `<table id={tableId} ...>`. shadcn [S]: `Table.tsx`'s own `<table data-slot=\"table\" className=\"w-full caption-bottom text-sm\">`. M3 [R]: no live component exists to confirm the literal tag, but the token namespace's own vocabulary (`header`, `footer`, `row-item`) presumes a conventional semantic table rather than a div-based ARIA grid — the same [R]-by-necessity M3 structure treatment radio-group's/badge's/card's own M3 columns already use for a tokens-only source." },
+
+    { "id": "structure.header", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "A real `<thead>` in all three. Salt [S]: `THead.tsx`'s own `<thead ...>`, a dedicated component with its own `sticky`/`divider`/`variant` props (see prop.sticky-header/style.header.divider/style.header.background). shadcn [S]: `TableHeader`'s own `<thead data-slot=\"table-header\" className=\"[&_tr]:border-b\">`. M3 [R]: `header-container-color`/`header-container-height`/`header-headline-*` tokens presume a distinct header region; no live element to cite the literal tag." },
+
+    { "id": "structure.body", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "A real `<tbody>` in all three. Salt [S]: `TBody.tsx`'s own `<tbody ...>`. shadcn [S]: `TableBody`'s own `<tbody data-slot=\"table-body\" className=\"[&_tr:last-child]:border-0\">`. M3 [R]: `row-item-*` tokens presume a body region distinct from header/footer; no live element to cite." },
+
+    { "id": "structure.footer", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "A real `<tfoot>` in all three, genuinely OPTIONAL per-instance (a consumer renders it only when they have footer content — the SAME 'structurally supported everywhere, consumer decides whether to use it' shape dialog's own optional actions row already established). Salt [S]: `TFoot.tsx`, a dedicated component with its OWN `sticky`/`divider`/`variant` props, independent of THead's (see prop.sticky-footer/style.footer.*). shadcn [S]: `TableFooter`'s own `<tfoot data-slot=\"table-footer\" className=\"border-t bg-muted/50 font-medium [&>tr]:last:border-b-0\">`. M3 [S, tokens]: `footer-container-color`/`footer-container-height`/`footer-supporting-text-*` — a real, distinct token namespace, confirming the capability even with no live element to cite the tag." },
+
+    { "id": "structure.row", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "A real `<tr>` in all three. Salt [S]: `TR.tsx`'s own `<tr ...>`, used identically inside thead/tbody/tfoot (Salt has no separate header-row/body-row component — the SAME `<TR>` composes into all three sections, per `table.stories.tsx`'s own usage). shadcn [S]: `TableRow`'s own `<tr data-slot=\"table-row\">`, likewise reused across all three sections. M3 [R]: `row-item-container-height` presumes a uniform row concept; no live element to cite." },
+
+    { "id": "structure.header-cell", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "A real `<th>` in all three, kept structurally DISTINCT from the body cell (CLAUDE.md rule 3 — never conflate a header cell with a body cell). Salt [S]: `TH.tsx`'s own `<th ...>`, with its own `textAlign` prop (see prop.align) — note Salt's own real source ALSO permits a `<th scope=\"row\">` inside `tbody` for a row-header pattern (`table.saltTable tbody th[scope=\"row\"] { font-weight: ...-strong }`), a real nuance not separately modelled as its own row (out of this build's narrow scope — a genuine but secondary axis, recorded here rather than silently dropped). shadcn [S]: `TableHead`'s own `<th data-slot=\"table-head\" className=\"h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground ...\">`. M3 [R]: `header-headline-*` tokens presume a distinct header-cell text role; no live element to cite the literal tag." },
+
+    { "id": "structure.body-cell", "piece": "structure", "policy": "locked", "channel": "info",
+      "note": "A real `<td>` in all three. Salt [S]: `TD.tsx`'s own `<td ...>`, with its own `textAlign` prop (see prop.align). shadcn [S]: `TableCell`'s own `<td data-slot=\"table-cell\" className=\"p-2 align-middle whitespace-nowrap ...\">`. M3 [R]: `row-item-label-text-*` tokens presume a distinct body-cell text role; no live element to cite." },
+
+    { "id": "structure.caption", "piece": "structure", "policy": "switchable", "channel": "config", "param": "captionSupported",
+      "note": "Salt [S]: a real, literal `<caption>` renders as plain children INSIDE `<Table>` (confirmed directly in `table.stories.tsx`'s own usage, `<Table ...><caption>Sample data table</caption>...</Table>`) — Salt's `Table` component has no DEDICATED caption sub-component, but the native element is genuinely supported (no CSS forbids it, no wrapper intercepts it). shadcn [S]: a dedicated `TableCaption` component, `<caption data-slot=\"table-caption\" className=\"mt-4 text-sm text-muted-foreground\">`. M3: **off** — CONFIRMED ABSENCE, the pinned token file (`_md-comp-data-table.scss`, read in full, both editions) has no caption/title namespace of any kind; MD3's own real product convention treats the HEADER region as the table's own title context, with no separate caption slot in this component's own token vocabulary." },
+
+    { "id": "behavior.overflow-region", "piece": "behavior", "policy": "switchable", "channel": "config", "param": "overflowRegionSensing",
+      "note": "A REAL, three-way divergence in how much JS each column's own overflow wrapper does. Salt [S]: `TableContainer.tsx`'s own `checkOverflow` (`element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth`), driven by a real `useResizeObserver` AND a `useIsomorphicLayoutEffect` on mount, DYNAMICALLY promotes the wrapper to `role=\"region\"` + `tabIndex=0` (with `aria-labelledby` forwarded from the table's own id via `TableContext`) ONLY while genuinely overflowing — demoting it back to a plain, non-interactive wrapper the instant it no longer overflows. shadcn [S]: the wrapper is UNCONDITIONALLY `overflow-x-auto`, with no `role`/`tabIndex`/measurement of any kind — confirmed by reading `Table.tsx`'s own five-line render in full. M3: **off** — [R], no live source to confirm any JS overflow-sensing mechanism (tokens-only); presumed absent rather than assumed present, matching the conservative default this pipeline applies whenever a capability cannot be independently confirmed." },
+
+    { "id": "behavior.row-selection", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "THE HEADLINE SCOPE FINDING OF THIS MATRIX — see the template's own `behavior.pattern` note for the full grep-confirmed account. None of the three real BASE table primitives implement a working selection ENGINE. shadcn [S]: the base `TableRow` DOES carry a real, reachable STYLE HOOK — `data-[state=selected]:bg-muted` — that only becomes meaningful once an external engine sets `data-state`; confirmed WIRED (not merely declared) in the real TanStack Table example, `data-state={row.getIsSelected() && \"selected\"}` (`app/(app)/examples/tasks/components/data-table.tsx:103` and `registry/new-york-v4/blocks/dashboard-01/components/data-table.tsx:321`), where `row.getIsSelected()` is TanStack's own row-model API, EXTERNAL and UNVENDORED. Salt [S]: CONFIRMED ABSENCE — no selection concept, style hook, or token of any kind anywhere in `packages/core/src/table/` (every file read in full). M3 [S, tokens]: `row-item-selected-container-color`/`row-item-unselected-container-color`/`row-item-selected-hover-state-layer-*` — real, DESIGNED colour tokens for a selected-row visual state, evidence of genuine intent, but no live component exists to wire a click-to-select mechanism into, and no data-attribute convention to cite (tokens do not carry interaction wiring). This chassis reproduces the STYLE HOOK (a `selected` prop on `TableRow` setting `data-state=\"selected\"`, styled where a column has a real rule — see style.row.selected) for all three columns as a STATIC, per-instance demonstration; it does NOT build a selection ENGINE (checkbox column, `onRowSelect` callback, select-all) — declared out of scope, see the matrix doc's own scope note." },
+
+    { "id": "prop.variant", "piece": "prop", "policy": "switchable", "channel": "config", "param": "variant",
+      "note": "Salt ONLY: `[\"primary\",\"secondary\",\"tertiary\"]`, SOURCE-DEFAULT-FIRST (`variant?: \"primary\"|\"secondary\"|\"tertiary\"`, default `\"primary\"`, confirmed directly in `Table.tsx`'s own destructuring) [S] — sets the table's own container-level tone family (`--table-background`), read by every row via `table tr { background: var(--table-background) }`. shadcn/M3: **off** — CONFIRMED ABSENCE of a table-level tone axis in either source (shadcn's own philosophy is compose-with-className rather than a typed prop; M3's token file has no tone-variant namespace, only one row-item colour family)." },
+
+    { "id": "prop.zebra", "piece": "prop", "policy": "switchable", "channel": "config", "param": "zebra",
+      "note": "Salt ONLY: `[false,true]`, SOURCE-DEFAULT-FIRST (`zebra?: boolean`, default `false`) [S] — alternates the background of ODD body rows. See style.row.zebra for a real DEAD-CSS finding this row's own cascade surfaced (`table.saltTable-zebra-tertiary` is unreachable — no code path in `Table.tsx` ever produces that class). shadcn/M3: **off** — CONFIRMED ABSENCE, no alternating-row concept in either real source." },
+
+    { "id": "prop.divider", "piece": "prop", "policy": "switchable", "channel": "config", "param": "divider",
+      "note": "Salt ONLY: `[\"primary\",\"secondary\",\"tertiary\",\"none\"]`, SOURCE-DEFAULT-FIRST at the TABLE ROOT level (`divider?: ...`, default `\"tertiary\"` — governs the BODY ROW divider colour, see style.row.divider) [S]. Salt's `THead`/`TFoot` each carry their OWN, independent `divider` prop (both defaulting to `\"primary\"`, a rounder/higher-contrast stop than the row default) — a real, sourced per-region axis this chassis does not separately expose as its own config row (a declared simplification for scope control; the header/footer's own fixed real default value is cited directly in style.header.divider/style.footer.divider's own notes rather than duplicating the whole enum a second and third time). shadcn/M3: **off** — CONFIRMED ABSENCE of a divider-variant axis in either source (shadcn's row divider is a fixed `border-b` utility class, not a switchable prop; M3's `row-item-outline-color`/`row-item-outline-width` are single fixed tokens, no variant family)." },
+
+    { "id": "prop.align", "piece": "prop", "policy": "switchable", "channel": "config", "param": "align",
+      "note": "Salt ONLY: `[\"left\",\"right\"]`, SOURCE-DEFAULT-FIRST (`textAlign?: \"left\"|\"right\"`, default `\"left\"`, a real, TYPED prop on BOTH `TH` and `TD` — confirmed directly in both files' own destructuring) [S]. shadcn: **off** — CONFIRMED ABSENCE of a dedicated, typed align prop: `TableHead`/`TableCell` accept only an arbitrary `className` (a consumer wanting right-alignment passes e.g. `className=\"text-right\"` directly, confirmed by reading both components' full prop lists) — a real capability exists via loose composition, but not as a first-class, validated prop the way Salt's own `textAlign` is; the SAME distinction TOGGLE-GROUP-MATRIX.md's own Salt multi-select finding drew, inverted (there a typed signature over-promised; here an UNtyped capability under-claims by this row's own stricter 'is it a real prop' test). M3: **off** — CONFIRMED ABSENCE, no alignment token exists anywhere in the pinned `_md-comp-data-table.scss` (read in full)." },
+
+    { "id": "prop.sticky-header", "piece": "prop", "policy": "switchable", "channel": "config", "param": "stickyHeader",
+      "note": "Salt ONLY: `[false,true]`, SOURCE-DEFAULT-FIRST (`THeadProps.sticky?: boolean`, default `false`, confirmed directly — `.saltTable-thead-sticky { position: sticky; top: 0 }`) [S]. shadcn/M3: **off** — CONFIRMED ABSENCE, no sticky-header class, prop, or token in either source (shadcn's `table.tsx` read in full has no `sticky`/`position` string anywhere; M3's token file has no position/layout concept, tokens do not carry layout strategy)." },
+
+    { "id": "prop.sticky-footer", "piece": "prop", "policy": "switchable", "channel": "config", "param": "stickyFooter",
+      "note": "Salt ONLY: `[false,true]`, SOURCE-DEFAULT-FIRST (`TFootProps.sticky?: boolean`, default `false`, confirmed directly — `.saltTable-tfoot-sticky { position: sticky; bottom: 0 }`), a genuinely INDEPENDENT prop from `prop.sticky-header` (two separate booleans on two separate real components, not one shared axis) [S]. shadcn/M3: **off** — CONFIRMED ABSENCE, same reasoning as prop.sticky-header." },
+
+    { "id": "slot.header-cell-content", "piece": "slot", "policy": "locked", "channel": "info",
+      "note": "Consumer-owned column label text, in all three. Salt/shadcn: plain `children: ReactNode` on `TH`/`TableHead`. M3 [R]: `header-headline-*` tokens presume a text content region; no live component to cite the exact API shape (string prop vs slotted children) the way toggle-group's own M3 `label` property was independently confirmable." },
+
+    { "id": "slot.body-cell-content", "piece": "slot", "policy": "locked", "channel": "info",
+      "note": "Consumer-owned cell content, in all three. Salt/shadcn: plain `children: ReactNode` on `TD`/`TableCell` — genuinely UNCONSTRAINED (either real source permits arbitrary JSX inside a cell, not just text, confirmed by `table.stories.tsx`'s own custom-cell examples and shadcn's own `data-table.tsx` rendering a `<Checkbox>`/`<DropdownMenu>` inside cells). M3 [R]: `row-item-label-text-*` tokens presume plain text content; no live component to confirm whether richer content is supported." },
+
+    { "id": "slot.caption-content", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Salt/shadcn: consumer-owned text (or richer JSX) inside `<caption>` — see structure.caption. M3: **off**, no caption concept exists to hold content (see structure.caption)." },
+
+    { "id": "slot.composes", "piece": "slot", "policy": "default", "channel": "info",
+      "note": "DECLARED COMPOSITION, all three genuinely reach OUTSIDE this component's own scope for anything beyond static structure/style. shadcn: `@tanstack/react-table` (external, unvendored) for sorting/pagination/filtering/visibility/row-selection — its own docs literally frame the whole `data-table` idea as 'a guide on how to build your own' rather than a shipped component (see the template's own `behavior.pattern` note) — PLUS a real, separate `checkbox` component (an already-built canonical row) composed into the selection-column pattern shown in its own examples, not modelled here. Salt: its own site examples (`site/src/examples/table/`) compose `Table` inside layout primitives (`FlexLayout`/`StackLayout`, Salt-only canonical rows, unbuilt) — not modelled here. M3: MD3's own real product convention composes a data table with icon-buttons for sort affordances (evidenced only by the `header-hover-sorting-icon-button-color` token existing at all — real evidence of a DESIGNED capability with zero live implementation in this clone to model, see the matrix doc's own scope note) and pagination controls — neither modelled here, both out of scope." },
+
+    { "id": "state.row.hover", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "A REAL, notable divergence — unlike almost every other Salt column in this pipeline (which typically carries a real actionable hover treatment), Salt's `Table.css` has NO `:hover` rule anywhere — confirmed by grepping the whole file for \"hover\" case-insensitively: zero matches [S, confirmed absence]. A plain, non-interactive Salt table row does not visually respond to the pointer at all. shadcn [S]: real, `hover:bg-muted/50` on every `TableRow`. M3 [S, tokens]: real, and richer than either sibling — BOTH `row-item-selected-hover-state-layer-color`/`-opacity` AND `row-item-unselected-hover-state-layer-color`/`-opacity` exist as their OWN distinct token pairs (both currently resolving to the same `on-surface` colour at the same `hover-state-layer-opacity` value, but structurally two separate, independently-tunable tokens, not one shared rule) — a state LAYER (translucent overlay), documented not literally composited as a separate layer in this build's simplified single-declaration CSS emission, matching this pipeline's established convention for M3 state layers elsewhere (badge/chip/checkbox's own hover rows)." },
+
+    { "id": "state.row.selected", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "See behavior.row-selection for the full capability account. Salt: **off** — confirmed absence, no selected-row concept anywhere in Table.css. shadcn: real, reachable STYLE HOOK (`data-[state=selected]:bg-muted`), consumer/external-engine-driven. M3: real, DESIGNED tokens (`row-item-selected-container-color`, a distinct, deeper surface tone than the unselected row's own `row-item-unselected-container-color`), no live wiring to attach them to." },
+
+    { "id": "state.row.disabled", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "A genuine THREE-WAY split, and the direction is notable: this is a row where M3's TOKENS-ONLY source is the ONE that carries real evidence, and both LIVE component sources (Salt, shadcn) confirm absence. M3 [S, tokens]: `row-item-disabled-label-text-color`/`-opacity` (0.38 — the SAME 0.38-content convention every other M3 column in this pipeline uses for disabled text) are real, dedicated tokens — genuine design intent for a disabled ROW (dimmed label text), even with no live component to wire an actual `disabled` prop into. Salt [S]: CONFIRMED ABSENCE, no disabled-row concept anywhere in `Table.css`/`TR.tsx` (Salt's OWN disabled convention, seen elsewhere in this pipeline on interactive controls, does not extend to a purely-informational table row). shadcn [S]: CONFIRMED ABSENCE, no `disabled:` variant anywhere on `TableRow`." },
+
+    { "id": "style.root.border", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-root\"]",
+      "declarations": { "border-style": "solid", "border-width": "$", "border-color": "$" },
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY [S, tokens]: a real WHOLE-TABLE outline — `outline-color`/`outline-width` (1px) — the container itself is stroked, distinct from any individual row's own divider. Salt: **off** — CONFIRMED ABSENCE, `Table.css`'s own `table.saltTable` rule sets `border-collapse: collapse` and a `border-radius`, but never a `border`/`outline` property on the table element itself — only sub-parts (thead/tfoot/rows) carry borders, via their own divider tokens. shadcn: **off** — CONFIRMED ABSENCE, no whole-table border class anywhere in `table.tsx`." },
+
+    { "id": "style.root.shape", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-root\"]",
+      "declarations": { "border-radius": "$" },
+      "note": "Salt [S]: `var(--salt-palette-corner, 0)` — the ROUNDED-edition pin this pipeline applies to every Salt column (`docs/foundations/shape.md`), `curve-150` = 3/6/9/12px by density (high/medium/low/touch) — but a real, worth-citing NUANCE: this same `--salt-palette-corner` custom property is only DEFINED under an explicit `[data-corner=\"rounded\"]` (or `\"sharp\"`) scope in `next/palette/corner.css`; absent that attribute on the theme root, the property is genuinely UNSET and Table.css's own `, 0` fallback literal applies — meaning an app that never opts into a corner mode renders a perfectly SQUARE table, matching the SHARP edition exactly, regardless of which corner mode this registry's own columns pin. M3 [S, tokens]: `container-shape` -> `corner-extra-small` = 4px, fixed (not density-scaled — M3 has no density axis). shadcn: **off** — CONFIRMED ABSENCE, no rounded/shape class anywhere on `<table>` or its container div." },
+
+    { "id": "style.root.font", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-root\"]",
+      "declarations": { "font-family": "$fontFamily", "font-size": "$fontSize", "line-height": "$lineHeight" },
+      "cellIsDeclarations": true,
+      "note": "The BASE typography set at the table-element level, inherited by header/body/footer text unless a more specific row overrides it. Salt [S]: `table.saltTable`'s own `font-family`/`font-size`/`line-height`, the plain BODY role, density-scaled. shadcn [S]: `<table>`'s own `text-sm` class (0.875rem / 1.25rem), plus the ambient shadcn root font-family (not table-specific). M3: **off** — CONFIRMED ABSENCE of a ROOT-level typography token; M3's token file only defines typography PER REGION (`header-headline-*`, `row-item-label-text-*`, `footer-supporting-text-*`), never once at a whole-table level — a real, structural difference from Salt's/shadcn's own single base-then-override cascade." },
+
+    { "id": "style.header.background", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-header\"]",
+      "declarations": { "background": "$" },
+      "note": "Salt [S]: `thead.saltTable-thead-{variant}` sets its own background per `prop.variant`-matching tone (defaulting to match the table's own `variant` when unset) — SOURCE DEFAULT `container-primary-background`. shadcn: **off** — CONFIRMED ABSENCE, no background class on `TableHeader`, it is transparent (inherits the page/table background). M3 [S, tokens]: `header-container-color` -> `surface`, a real, distinct token." },
+
+    { "id": "style.header.divider", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-header\"]",
+      "declarations": { "border-bottom": "1px solid $" },
+      "note": "Salt [S]: `thead.saltTable-thead tr { border-bottom: ... var(--table-header-divider-color) }`, where the divider colour follows THead's OWN `divider` prop (real, independent default `\"primary\"` — see prop.divider's own note on why this isn't separately exposed as its own config row) -> `separable-primary-borderColor`. shadcn [S]: `TableHeader`'s own `[&_tr]:border-b` — a fixed, unconditional bottom border on every row inside it (which in practice means the SAME border every body row gets, since shadcn draws the divider on the ROW not the section — see style.row.divider; recorded here too since the header's own bottom edge is visually the header/body seam). M3: **off** — CONFIRMED ABSENCE of a header-specific divider token distinct from the general `row-item-outline-*` family; the pinned token file has no `header.divider.*` namespace of its own (read in full, both editions)." },
+
+    { "id": "style.header.height", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"table-header\"]",
+      "declarations": { "height": "$", "min-height": "$" },
+      "note": "Salt [S]: `--table-header-height: calc(var(--salt-size-base) + var(--salt-spacing-100) + var(--salt-size-fixed-100))`, density-scaled 25/37/49/61px (high/medium/low/touch) — a real, sourced coincidence: this is the IDENTICAL formula `--table-row-height`/`--table-footer-height` also use (see style.body.row-height/style.footer.height), so header/body/footer rows are all the SAME height in Salt's own real source, not merely visually similar. shadcn [S]: `TableHead`'s own `h-10` = 40px, fixed. M3 [S, tokens]: `header-container-height` = 56px, fixed — the TALLEST of the three regions in M3's own token set (vs. 52px for both footer and row)." },
+
+    { "id": "style.header.text", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"table-header-cell\"]",
+      "declarations": { "color": "$color", "font-size": "$fontSize", "line-height": "$lineHeight", "font-weight": "$fontWeight" },
+      "cellIsDeclarations": true,
+      "note": "Salt [S]: `content-secondary-foreground` colour (a DIFFERENT, dimmer role than body text's own `content-primary-foreground` — see style.body.text), `text-label-fontSize`/`-lineHeight`/`-fontWeight-strong` (the LABEL role, not the plain body role body cells use — a real, sourced per-region typography split). shadcn [S]: `text-foreground font-medium`, inheriting the table's own `text-sm` size (no header-specific size override). M3 [S, tokens]: `header-headline-color` -> `on-surface-variant`, the FULL `title-small` typescale (500 weight, 0.875rem/1.25rem, 0.00625rem tracking) — a genuinely DIFFERENT typescale FAMILY from the body cell's own `body-medium` (see style.body.text), even though both happen to share the same 14px/20px pixel size in this edition." },
+
+    { "id": "style.header-cell.divider", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-header-cell\"] + [data-slot=\"table-header-cell\"]::before",
+      "cellIsDeclarations": true,
+      "note": "Salt ONLY [S]: a real VERTICAL rule BETWEEN adjacent header cells, drawn as a `::before` pseudo-element on every `th` that has a preceding sibling `th` (`table.saltTable th + th::before`) — a genuinely different mechanism from the row's own horizontal dividers, confirmed directly reading `Table.css`. Colour is `separable-tertiary-borderColor` — NOT the header's own `--table-header-divider-color` custom property (which is `primary` by default), a real, sourced coincidence-that-isn't: this vertical rule reuses the SAME raw token the ROW divider's own SOURCE DEFAULT already resolves to (both `separable-tertiary-borderColor`), even though the two rules serve visually unrelated purposes. shadcn/M3: **off** — CONFIRMED ABSENCE, neither source draws any vertical rule between header cells." },
+
+    { "id": "style.body.row-height", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-row\"]",
+      "declarations": { "height": "$", "min-height": "$" },
+      "note": "Salt [S]: the SAME `--table-row-height` formula as style.header.height (25/37/49/61px by density) — see that row's own note on the sourced coincidence. shadcn: **off** at the row level — CONFIRMED ABSENCE of an explicit height/min-height on `TableRow`; a shadcn row's height is genuinely IMPLICIT, derived only from its cells' own padding + line-height (`p-2` + `text-sm`'s line-height), not a declared token — a real, structural difference from Salt's/M3's own explicit row-height tokens. M3 [S, tokens]: `row-item-container-height` = 52px, fixed." },
+
+    { "id": "style.body.text", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"table-cell\"]",
+      "declarations": { "color": "$color", "font-size": "$fontSize", "line-height": "$lineHeight" },
+      "cellIsDeclarations": true,
+      "note": "Salt [S]: `content-primary-foreground` (the plain, high-contrast body role — brighter than the header cell's own `content-secondary-foreground`, see style.header.text), plain body `text-fontSize`/`-lineHeight` (NOT the label role the header uses). shadcn [S]: NO explicit colour class on `TableCell` at all — confirmed by reading its full prop/class list; body text genuinely INHERITS the ambient foreground colour rather than declaring its own, a real, structural difference from Salt's/M3's own explicit per-region colour tokens. M3 [S, tokens]: `row-item-label-text-color` -> `on-surface`, the FULL `body-medium` typescale (400 weight, 0.875rem/1.25rem, 0.015625rem tracking)." },
+
+    { "id": "style.footer.background", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"table-footer\"]",
+      "declarations": { "background": "$" },
+      "note": "Salt [S]: `tfoot.saltTable-tfoot-{variant}`, SOURCE DEFAULT `container-primary-background` (matching TFoot's own independent `variant` default when unset). shadcn [S]: real, `bg-muted/50` — unlike the header, the FOOTER genuinely does carry its own background in shadcn's real source. M3 [S, tokens]: `footer-container-color` -> `surface`, the SAME token role the header uses (a real, sourced coincidence — header and footer share one colour role in M3, unlike Salt's/shadcn's own header/footer treatments, which diverge from each other)." },
+
+    { "id": "style.footer.text", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"table-footer\"] [data-slot=\"table-cell\"]",
+      "declarations": { "color": "$color", "font-size": "$fontSize", "line-height": "$lineHeight", "font-weight": "$fontWeight" },
+      "cellIsDeclarations": true,
+      "note": "Salt [S]: `content-primary-foreground`, plain body size, but `text-fontWeight-strong` (BOLD, unlike the plain body cell's own regular weight — a real per-region weight bump Salt's own source applies only in the footer). shadcn [S]: `font-medium` on the whole `<tfoot>` (inherited by its cells), the SAME `text-sm` base size as the body. M3 [S, tokens]: `footer-supporting-text-color` -> `on-surface-variant` (the SAME dimmer role the header uses, NOT the body's own brighter `on-surface`), the `body-medium` typescale (regular weight, matching the body cell's own type scale, not a bolded variant the way Salt's is)." },
+
+    { "id": "style.footer.divider", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-footer\"]",
+      "declarations": { "border-top": "1px solid $" },
+      "note": "Salt [S]: `tfoot.saltTable-tfoot tr { border-top: ... var(--table-footer-divider-color) }`, following TFoot's own independent `divider` prop (real default `\"primary\"`) -> `separable-primary-borderColor`. shadcn [S]: real, `border-t` on `TableFooter` itself — a genuine TOP border on the footer section (distinct from the row-level `border-b` every other row gets). M3: **off** — CONFIRMED ABSENCE of a footer-specific divider token; the pinned token file's `footer.*` namespace has only `container.color`/`container.height`/`supporting-text.*`, no divider/outline key of its own (read in full, both editions)." },
+
+    { "id": "style.footer.height", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-footer\"]",
+      "declarations": { "height": "$", "min-height": "$" },
+      "note": "Salt [S]: the SAME `--table-footer-height` formula as style.header.height/style.body.row-height (25/37/49/61px by density) — all three Salt row-height custom properties are byte-identical formulas, see style.header.height's own note. shadcn: **off** — CONFIRMED ABSENCE of an explicit footer height, same implicit-from-padding reasoning as style.body.row-height. M3 [S, tokens]: `footer-container-height` = 52px, fixed — the SAME height as `row-item-container-height` (footer rows are the same height as body rows in M3, unlike the taller 56px header)." },
+
+    { "id": "style.row.background", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"table-row\"]",
+      "declarations": { "background": "$" },
+      "note": "The REST-state row background. Salt [S]: `table.saltTable tr { background: var(--table-background) }`, following `prop.variant` — SOURCE DEFAULT `container-primary-background`. shadcn: transparent — CONFIRMED, no background class on `TableRow` at rest (inherits page/table background); recorded as an explicit value (not `off`) since it IS the real, deliberate rest state, distinct from the interactive hover/selected overrides. M3 [S, tokens]: `row-item-unselected-container-color` -> `surface`, a real, dedicated token even for the plain rest state." },
+
+    { "id": "style.row.divider", "piece": "style", "policy": "locked", "channel": "css",
+      "selector": "[data-slot=\"table-row\"]",
+      "declarations": { "border-bottom": "1px solid $" },
+      "note": "Salt [S]: `table.saltTable tbody tr:not(:last-child) { border-bottom: ... var(--table-divider-color) }`, following the TABLE ROOT's own `divider` prop — SOURCE DEFAULT `\"tertiary\"` -> `separable-tertiary-borderColor` (a real, sourced coincidence: the SAME raw token style.header-cell.divider's own vertical rule also resolves to, for an unrelated purpose — see that row's own note). shadcn [S]: `border-b` on every `TableRow`, fixed -> `border-input` (unlike Salt/M3, this is not a variant-driven colour, always the same token). M3 [S, tokens]: `row-item-outline-color` -> `outline-variant`, `row-item-outline-width` = 1px — a real, dedicated per-row divider token pair, distinct from `outline-color`/`outline-width` (the WHOLE-TABLE outline, see style.root.border) even though both roles happen to share the SAME underlying colour token in this edition." },
+
+    { "id": "style.row.hover", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-row\"]:hover",
+      "declarations": { "background": "$" },
+      "note": "Salt: **off** — CONFIRMED ABSENCE, see state.row.hover's own note (no `:hover` rule anywhere in `Table.css`). shadcn [S]: `hover:bg-muted/50` -> `color-mix(in oklab, var(--muted-bg) 50%, transparent)` (Tailwind's own alpha-modifier compilation, the SAME mechanism this pipeline's other shadcn columns already use for a `/NN` class). M3 [S, tokens]: `row-item-unselected-hover-state-layer-color` (`on-surface`) at `hover-state-layer-opacity` (0.08) -> `color-mix(in oklab, var(--fg) 8%, var(--row-bg))`, a state-LAYER approximation (documented, not literally composited as a separate DOM layer — matching this pipeline's own established convention for M3 hover/focus/pressed state layers)." },
+
+    { "id": "style.row.selected", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-row\"][data-state=\"selected\"]",
+      "declarations": { "background": "$" },
+      "note": "Salt: **off** — CONFIRMED ABSENCE (see behavior.row-selection). shadcn [S]: `data-[state=selected]:bg-muted`, a real, reachable rule (consumer/external-engine-driven, see behavior.row-selection for the TanStack wiring citation). M3 [S, tokens]: `row-item-selected-container-color` -> `surface-container-highest` — a visibly DEEPER/more-saturated tone than the unselected row's own plain `surface` (style.row.background), unlike shadcn's `bg-muted` which is a comparatively subtle tint over its own transparent rest state." },
+
+    { "id": "style.row.disabled", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-row\"][data-disabled]",
+      "declarations": { "color": "$color", "opacity": "$opacity" },
+      "cellIsDeclarations": true,
+      "note": "M3 ONLY [S, tokens]: `row-item-disabled-label-text-color` (`on-surface`, the SAME hue as the rest-state text — dimming is carried entirely by opacity, not a colour swap) at `row-item-disabled-label-text-opacity` = 0.38, the same 0.38-content convention every other M3 column in this pipeline uses. Salt/shadcn: **off** — CONFIRMED ABSENCE, neither real source has a disabled-row concept (see state.row.disabled)." },
+
+    { "id": "style.row.zebra", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-root\"][data-zebra] [data-slot=\"table-body\"] [data-slot=\"table-row\"]:nth-of-type(odd)",
+      "declarations": { "background": "$" },
+      "note": "Salt ONLY [S]. A REAL DEAD-CODE FINDING surfaced while resolving this row: `Table.css` defines FOUR zebra rules — `.saltTable-zebra-tertiary`, `.saltTable-primary.saltTable-zebra`, `.saltTable-secondary.saltTable-zebra`, `.saltTable-tertiary.saltTable-zebra` — but `Table.tsx`'s own `clsx(...)` call only ever emits a bare `saltTable-zebra` class (`[withTableBaseName(\"zebra\")]: zebra`, NEVER concatenated with a variant suffix), so the selector `.saltTable-zebra-tertiary` can NEVER match any DOM this component actually renders — confirmed by reading the full class-list construction. The THREE reachable rules are the ones combining `saltTable-{variant}` WITH `saltTable-zebra` (both independently real classes). At the SOURCE DEFAULT `variant=\"primary\"`, the real, reachable zebra effect is: odd rows -> `container-secondary-background`. shadcn/M3: **off** — CONFIRMED ABSENCE, no alternating-row mechanism in either source." },
+
+    { "id": "style.cell.padding", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"table-header-cell\"], [data-slot=\"table-cell\"]",
+      "declarations": { "padding": "$" },
+      "note": "Salt [S]: `calc(var(--salt-spacing-75) + var(--salt-spacing-50)) var(--salt-spacing-100)` (vertical/horizontal), density-scaled — TH additionally adds `var(--salt-size-fixed-100)` (1px) to its own top padding alone (a real, minor per-cell-type nuance not separately modelled as its own row; this column's single cited value is TD's own symmetric formula). shadcn [S]: `p-2` = 8px all sides on `TableCell`; `TableHead` uses `px-2` (8px horizontal) plus a fixed `h-10` box instead of vertical padding — cited here as the horizontal 8px value, the SAME as the body cell's own. M3: **REGISTRY DEFAULT** — the pinned token file has NO cell-padding token of any kind (only `row-item-container-height`/`header-container-height`, which describe the BOX not its internal padding) — per CLAUDE.md's own rule that a `default`-policy row may never be left `off`, this column carries a LABELLED registry default, `12px 16px`, chosen to sit comfortably inside M3's own real 52px/56px row-height tokens at the `body-medium`/`title-small` line-heights already cited (matching the reasoning TOAST-MATRIX.md's own `style.item.padding`/`.gap` registry-default fix already established for this exact policy shape)." },
+
+    { "id": "style.cell.align", "piece": "style", "policy": "default", "channel": "css",
+      "selector": "[data-slot=\"table-header-cell\"], [data-slot=\"table-cell\"]",
+      "declarations": { "text-align": "$" },
+      "note": "Salt [S]: real, prop-driven (`prop.align`), SOURCE DEFAULT `\"left\"`. shadcn: **REGISTRY DEFAULT** `\"left\"` — no typed prop exists (see prop.align), but left-alignment is the unanimous, uncontested real behaviour of shadcn's own base `<th>`/`<td>` (`text-left` is literally in `TableHead`'s own class string; `TableCell` inherits the browser's native left-alignment with no override), so the registry default here MATCHES shadcn's own real rendered outcome rather than inventing one. M3: **REGISTRY DEFAULT** `\"left\"` — no token exists (see prop.align), matching MD3's own real published data-table convention (numeric columns right-aligned BY THE CONSUMER's own column configuration, not a component-level default) and the same native left-alignment every untouched HTML table cell renders." },
+
+    { "id": "style.caption.text", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"table-caption\"]",
+      "declarations": { "color": "$color", "font-size": "$fontSize", "margin-top": "$marginTop" },
+      "cellIsDeclarations": true,
+      "note": "Salt: **off** — CONFIRMED ABSENCE, `Table.css` (read in full) has no `caption`-scoped rule of any kind; a Salt `<caption>` renders in the browser's own default UA styling (centred, positioned per `caption-side`, ordinary body-size text) rather than any custom Salt typography. shadcn [S]: real, `mt-4 text-sm text-muted-foreground` on `TableCaption`. M3: **off**, no caption concept exists (see structure.caption)." }
+  ]
+}

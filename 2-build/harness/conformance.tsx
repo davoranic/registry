@@ -45,6 +45,7 @@ import { Accordion, type AccordionConfig, type AccordionItemModel } from "../ske
 import { Popover, type PopoverConfig } from "../skeleton/popover"
 import { Combobox, type ComboboxConfig, type ComboboxOptionModel } from "../skeleton/combobox"
 import { ToggleGroup, ToggleGroupItem, type ToggleGroupConfig } from "../skeleton/toggle-group"
+import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHeadCell, TableCell, type TableConfig } from "../skeleton/table"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -60,6 +61,8 @@ import accordionCfg from "../out/gen/accordion-config.json"
 import popoverCfg from "../out/gen/popover-config.json"
 import comboboxCfg from "../out/gen/combobox-config.json"
 import toggleGroupCfg from "../out/gen/toggle-group-config.json"
+import tableCfg from "../out/gen/table-config.json"
+import tablePanel from "../out/gen/table-panel.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -1843,6 +1846,203 @@ async function checkToggleGroup(host: HTMLElement, system: string) {
   mount5.remove()
 }
 
+// ------------------------------------------------------------------- table
+
+/* table has no config-channel gate for its pure-CSS state rows
+ * (state.row.selected/.disabled/.hover — a real data-attribute-driven
+ * style hook, not an instance prop the skeleton validates against
+ * skeletonParams). Rather than hardcoding `system === "salt"` branches
+ * (a pattern no other check-<name> function in this file uses), this
+ * reads the SAME per-row/per-system "kind" data gen-from-template.py
+ * already wrote to table-panel.json — the authoritative, already-generated
+ * record of whether a given system's cell for that row is `off` or real —
+ * so the expectation is derived from the pipeline's own data, not
+ * re-asserted from memory of which column happens to have which rule. */
+function tableCellKind(rowId: string, system: string): string {
+  const row = (tablePanel as any).rows.find((r: any) => r.id === rowId)
+  return row?.cells?.[system]?.kind ?? "off"
+}
+
+async function checkTable(host: HTMLElement, system: string) {
+  const cfg = (tableCfg as Record<string, TableConfig>)[system]
+
+  // 1 — structure.*: every real part renders with the right tag, scoped to
+  // this mount (lesson 9 — this page renders multiple demo instances).
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  mount.style.width = "150px"
+  host.appendChild(mount)
+  const root = createRoot(mount)
+
+  root.render(
+    <Table config={cfg} caption="Roster">
+      <TableHeader config={cfg}>
+        <TableRow>
+          <TableHeadCell config={cfg}>Name</TableHeadCell>
+          <TableHeadCell config={cfg}>Status</TableHeadCell>
+          <TableHeadCell config={cfg}>Role</TableHeadCell>
+          <TableHeadCell config={cfg} align="right">Amount</TableHeadCell>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell config={cfg}>Ava Chen</TableCell>
+          <TableCell config={cfg}>Active</TableCell>
+          <TableCell config={cfg}>Engineer</TableCell>
+          <TableCell config={cfg} align="right">$4,200.00</TableCell>
+        </TableRow>
+      </TableBody>
+      <TableFooter config={cfg}>
+        <TableRow>
+          <TableCell config={cfg} colSpan={3}>Total</TableCell>
+          <TableCell config={cfg} align="right">$4,200.00</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>,
+  )
+  await settle()
+
+  const container = mount.querySelector('[data-slot="table-container"]') as HTMLElement | null
+  const tableEl = mount.querySelector('[data-slot="table-root"]') as HTMLElement | null
+  const thead = mount.querySelector('[data-slot="table-header"]')
+  const tbody = mount.querySelector('[data-slot="table-body"]')
+  const tfoot = mount.querySelector('[data-slot="table-footer"]')
+  const rows = mount.querySelectorAll('[data-slot="table-row"]')
+  const headCells = mount.querySelectorAll('[data-slot="table-header-cell"]')
+  const bodyCells = mount.querySelectorAll('[data-slot="table-cell"]')
+  const caption = mount.querySelector('[data-slot="table-caption"]')
+
+  record("table", "structure.container", system, !!container, `container present=${!!container}`)
+  record("table", "structure.root", system, tableEl?.tagName === "TABLE", `root tag=${tableEl?.tagName}`)
+  record("table", "structure.header", system, thead?.tagName === "THEAD", `header tag=${thead?.tagName}`)
+  record("table", "structure.body", system, tbody?.tagName === "TBODY", `body tag=${tbody?.tagName}`)
+  record("table", "structure.footer", system, tfoot?.tagName === "TFOOT", `footer tag=${tfoot?.tagName}`)
+  record("table", "structure.row", system, rows.length === 3, `row count=${rows.length} (expected 3: header+body+footer)`)
+  record("table", "structure.header-cell", system, headCells.length === 4, `header-cell count=${headCells.length}`)
+  record("table", "structure.body-cell", system, bodyCells.length === 6, `body/footer-cell count=${bodyCells.length} (expected 6: 4 body cells + 2 footer cells — the footer's own "Total" cell uses colSpan=3 and counts as ONE element)`)
+
+  const expectCaption = Boolean(cfg.captionSupported)
+  record(
+    "table",
+    "structure.caption",
+    system,
+    Boolean(caption) === expectCaption,
+    `caption present=${Boolean(caption)} (expected ${expectCaption})`,
+  )
+
+  // 2 — prop.align: a right-aligned header cell resolves to text-align:right
+  // ONLY where the column's own config really supports the align axis
+  // (Salt); shadcn/M3 registry-default to left regardless of the
+  // align="right" prop passed to the component.
+  const amountHead = headCells[3] as HTMLElement
+  const supportsAlign = Boolean(cfg.align?.includes("right"))
+  const resolvedAlign = getComputedStyle(amountHead).textAlign
+  record(
+    "table",
+    "prop.align",
+    system,
+    supportsAlign ? resolvedAlign === "right" : resolvedAlign !== "right",
+    `align="right" requested; config supports align=${supportsAlign}; computed text-align="${resolvedAlign}"`,
+  )
+  root.unmount()
+
+  // 3 — behavior.overflow-region: a genuinely overflowing table, in a
+  // narrow container, promotes the wrapper to role="region"+tabIndex=0
+  // ONLY where the column's own config advertises overflowRegionSensing
+  // (Salt) — a real, measured ResizeObserver-driven upgrade, not a static
+  // class.
+  const root2 = createRoot(mount)
+  root2.render(
+    <Table config={cfg} aria-label="overflow check">
+      <TableHeader config={cfg}>
+        <TableRow>
+          <TableHeadCell config={cfg}>Column one</TableHeadCell>
+          <TableHeadCell config={cfg}>Column two</TableHeadCell>
+          <TableHeadCell config={cfg}>Column three</TableHeadCell>
+          <TableHeadCell config={cfg}>Column four</TableHeadCell>
+          <TableHeadCell config={cfg}>Column five</TableHeadCell>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell config={cfg}>A rather long cell value</TableCell>
+          <TableCell config={cfg}>A rather long cell value</TableCell>
+          <TableCell config={cfg}>A rather long cell value</TableCell>
+          <TableCell config={cfg}>A rather long cell value</TableCell>
+          <TableCell config={cfg}>A rather long cell value</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
+  )
+  await settle()
+  await settle()
+  const container2 = mount.querySelector('[data-slot="table-container"]') as HTMLElement | null
+  const sensing = Boolean(cfg.overflowRegionSensing)
+  const gotRegion = container2?.getAttribute("role") === "region" && container2?.getAttribute("tabindex") === "0"
+  record(
+    "table",
+    "behavior.overflow-region",
+    system,
+    sensing ? gotRegion : !gotRegion,
+    `sensing capability=${sensing}; role="${container2?.getAttribute("role")}" tabindex="${container2?.getAttribute("tabindex")}"`,
+  )
+  root2.unmount()
+  mount.remove()
+
+  // 4 — state.row.selected / .disabled / .hover: a selected/disabled row's
+  // own background/opacity must genuinely differ from an unselected,
+  // enabled sibling's WHERE the column has a real rule, and must resolve
+  // IDENTICALLY where it does not (confirmed absence, not a build defect)
+  // — expectation read from table-panel.json's own generated cell kind,
+  // not hardcoded per system.
+  const mount2 = document.createElement("div")
+  mount2.setAttribute("data-theme", system)
+  host.appendChild(mount2)
+  const root3 = createRoot(mount2)
+  root3.render(
+    <Table config={cfg} aria-label="row state check">
+      <TableBody>
+        <TableRow>
+          <TableCell config={cfg}>rest</TableCell>
+        </TableRow>
+        <TableRow selected>
+          <TableCell config={cfg}>selected</TableCell>
+        </TableRow>
+        <TableRow disabled>
+          <TableCell config={cfg}>disabled</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
+  )
+  await settle()
+  const [restRow, selectedRow, disabledRow] = mount2.querySelectorAll('[data-slot="table-row"]')
+  const restBg = getComputedStyle(restRow).backgroundColor
+  const selectedBg = getComputedStyle(selectedRow).backgroundColor
+  const restOpacity = getComputedStyle(restRow).opacity
+  const disabledOpacity = getComputedStyle(disabledRow).opacity
+
+  const selectedShouldDiffer = tableCellKind("style.row.selected", system) !== "off"
+  record(
+    "table",
+    "state.row.selected",
+    system,
+    selectedShouldDiffer ? selectedBg !== restBg : selectedBg === restBg,
+    `expect-real-rule=${selectedShouldDiffer}; rest bg="${restBg}" selected bg="${selectedBg}"`,
+  )
+
+  const disabledShouldDiffer = tableCellKind("style.row.disabled", system) !== "off"
+  record(
+    "table",
+    "state.row.disabled",
+    system,
+    disabledShouldDiffer ? disabledOpacity !== restOpacity : disabledOpacity === restOpacity,
+    `expect-real-rule=${disabledShouldDiffer}; rest opacity="${restOpacity}" disabled opacity="${disabledOpacity}"`,
+  )
+
+  root3.unmount()
+  mount2.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -1872,6 +2072,7 @@ async function run() {
     try { await checkCombobox(host, s) } catch (e) { record("combobox", "(threw)", s, false, String(e)) }
     try { await checkComboboxParts(host, s) } catch (e) { record("combobox", "(threw, parts)", s, false, String(e)) }
     try { await checkToggleGroup(host, s) } catch (e) { record("toggle-group", "(threw)", s, false, String(e)) }
+    try { await checkTable(host, s) } catch (e) { record("table", "(threw)", s, false, String(e)) }
   }
   host.remove()
 

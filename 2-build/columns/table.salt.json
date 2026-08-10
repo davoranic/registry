@@ -1,0 +1,118 @@
+{
+  "system": "salt",
+  "component": "table",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" },
+    { "family": "Open Sans", "weight": "600", "file": "fonts/open-sans-600.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "fg-header": "rgb(76, 81, 87)",
+      "fg-body": "rgb(0, 0, 0)",
+      "bg-primary": "rgb(255, 255, 255)",
+      "bg-secondary": "rgb(245, 247, 248)",
+      "bg-tertiary": "rgb(250, 248, 242)",
+      "divider-primary": "rgba(0, 0, 0, 0.4)",
+      "divider-tertiary": "rgba(0, 0, 0, 0.2)",
+      "type-fontFamily": "'Open Sans', sans-serif",
+      "type-fontWeight-strong": "600"
+    },
+    "dark": {
+      "fg-header": "rgb(177, 181, 185)",
+      "fg-body": "rgb(255, 255, 255)",
+      "bg-primary": "rgb(16, 24, 32)",
+      "bg-secondary": "rgb(26, 34, 41)",
+      "bg-tertiary": "rgb(38, 41, 43)",
+      "divider-primary": "rgba(255, 255, 255, 0.4)",
+      "divider-tertiary": "rgba(255, 255, 255, 0.2)"
+    },
+    "byDensity": {
+      "high":   { "row-height": "25px", "cell-padding-y": "5px",  "cell-padding-x": "4px",  "table-radius": "3px",  "type-fontSize": "11px", "type-lineHeight": "14px", "type-label-fontSize": "10px", "type-label-lineHeight": "13px" },
+      "medium": { "row-height": "37px", "cell-padding-y": "10px", "cell-padding-x": "8px",  "table-radius": "6px",  "type-fontSize": "12px", "type-lineHeight": "16px", "type-label-fontSize": "11px", "type-label-lineHeight": "14px" },
+      "low":    { "row-height": "49px", "cell-padding-y": "15px", "cell-padding-x": "12px", "table-radius": "9px",  "type-fontSize": "14px", "type-lineHeight": "18px", "type-label-fontSize": "12px", "type-label-lineHeight": "16px" },
+      "touch":  { "row-height": "61px", "cell-padding-y": "20px", "cell-padding-x": "16px", "table-radius": "12px", "type-fontSize": "16px", "type-lineHeight": "20px", "type-label-fontSize": "14px", "type-label-lineHeight": "18px" }
+    }
+  },
+  "modeInvariant": ["type-fontFamily", "type-fontWeight-strong"],
+  "provenance": {
+    "canonical-source": "packages/core/src/table/{Table.tsx,Table.css,TableContext.ts,TableContainer.tsx,THead.tsx,TBody.tsx,TFoot.tsx,TR.tsx,TH.tsx,TD.tsx,index.ts} — all eleven files read in full. packages/core/stories/table/table.stories.tsx (confirms real caption usage, THead/TFoot sticky/divider/variant prop wiring, and custom-cell composition). Resolution through packages/theme/css/next/characteristics/{content,container,separable,text}.css, next/palette/{background,foreground,alpha,corner}.css, next/foundations/{color,typography}.css, foundations/{size,spacing,curve}.css.",
+    "fg-header": "next/characteristics/content.css --salt-content-secondary-foreground: var(--salt-palette-foreground-secondary) -> next/palette/foreground.css --salt-color-gray-700 rgb(76,81,87) light / --salt-color-gray-300 rgb(177,181,185) dark. Table.css's own `table.saltTable thead { color: ... }` rule, inherited by every TH inside it — read via style.header.text.",
+    "fg-body": "next/characteristics/content.css --salt-content-primary-foreground: var(--salt-palette-foreground-primary) -> next/palette/foreground.css black rgb(0,0,0) light / white rgb(255,255,255) dark, the SAME token every prior Salt column's own body/rest text colour has used.",
+    "bg-primary": "next/characteristics/container.css --salt-container-primary-background: var(--salt-palette-background-primary) -> next/palette/background.css --salt-color-background-snow rgb(255,255,255) light / --salt-color-background-jet rgb(16,24,32) dark, the SAME slot toggle-group.salt.json's own group-bg already resolved.",
+    "bg-secondary": "container.css --salt-container-secondary-background: var(--salt-palette-background-secondary) -> background.css --salt-color-background-marble rgb(245,247,248) light / --salt-color-background-granite rgb(26,34,41) dark.",
+    "bg-tertiary": "container.css --salt-container-tertiary-background: var(--salt-palette-background-tertiary) -> background.css --salt-color-background-limestone rgb(250,248,242) light / --salt-color-background-leather rgb(38,41,43) dark.",
+    "divider-primary": "next/characteristics/separable.css --salt-separable-primary-borderColor: var(--salt-palette-alpha-contrast-mediumHigh) -> next/palette/alpha.css black-40a light / white-40a dark -> rgba(0,0,0,0.4) / rgba(255,255,255,0.4). THead's/TFoot's own real, independent `divider` prop default (\"primary\").",
+    "divider-tertiary": "separable.css --salt-separable-tertiary-borderColor: var(--salt-palette-alpha-contrast-mediumLow) -> alpha.css black-20a light / white-20a dark -> rgba(0,0,0,0.2) / rgba(255,255,255,0.2). Table ROOT's own `divider` prop default (\"tertiary\") — governs the body row divider AND (a real, sourced coincidence) the header-cell vertical rule's own colour, see style.header-cell.divider.",
+    "byDensity.row-height": "Table.css --table-header-height / --table-row-height / --table-footer-height: calc(var(--salt-size-base) + var(--salt-spacing-100) + var(--salt-size-fixed-100)) — ALL THREE custom properties are the byte-identical formula, confirmed by reading the whole file: foundations/size.css size-base (20/28/36/44 by density) + foundations/spacing.css spacing-100 (4/8/12/16) + foundations/size.css size-fixed-100 (1px, density-invariant) = 25/37/49/61px high/medium/low/touch.",
+    "byDensity.cell-padding-y": "Table.css td/th padding: calc(var(--salt-spacing-75) + var(--salt-spacing-50)) ... -> foundations/spacing.css spacing-75 (0.75x spacing-100) + spacing-50 (0.5x spacing-100) = 1.25x spacing-100 = 5/10/15/20px high/medium/low/touch. (TH additionally adds size-fixed-100 (1px) to its own top padding alone — a minor per-cell-type nuance, not separately slotted, see the template row's own note.)",
+    "byDensity.cell-padding-x": "Table.css td/th padding: ... var(--salt-spacing-100) -> 4/8/12/16px high/medium/low/touch — ALSO reused for style.header-cell.divider's own vertical-rule inset (`top: var(--salt-spacing-100)`), a real, sourced coincidence between two visually unrelated rules.",
+    "byDensity.table-radius": "Table.css border-radius: var(--salt-palette-corner, 0) -> next/palette/corner.css [data-corner=\"rounded\"] --salt-palette-corner: var(--salt-curve-150) -> foundations/curve.css 3/6/9/12px high/medium/low/touch — the ROUNDED-edition pin this pipeline applies to every Salt column (docs/foundations/shape.md). See the template row's own note on the real `, 0` fallback that applies when no data-corner scope is present at all.",
+    "byDensity.type-fontSize/lineHeight": "Table.css table.saltTable { font-size: var(--salt-text-fontSize); line-height: var(--salt-text-lineHeight) } -> next/characteristics/text.css, plain BODY role, density-scaled 11/14 . 12/16 . 14/18 . 16/20 (high/medium/low/touch) — the SAME numeric scale toggle-group's/radio-group's/checkbox's own root-font rows already used.",
+    "byDensity.type-label-fontSize/lineHeight": "Table.css thead { font-size: var(--salt-text-label-fontSize); line-height: var(--salt-text-label-lineHeight) } -> next/characteristics/text.css, the LABEL role (distinct from the plain body role body cells use) — density-scaled 10/13 . 11/14 . 12/16 . 14/18 (high/medium/low/touch).",
+    "type-fontWeight-strong": "foundations/typography.css --salt-typography-fontWeight-semiBold: 600 -> next/characteristics/text.css --salt-text-label-fontWeight-strong (header) and --salt-text-fontWeight-strong (footer, TH[scope=row]) both resolve to this SAME weight — mode-invariant, density-invariant.",
+    "no-hover-rule": "CONFIRMED ABSENCE — grepped the whole of Table.css case-insensitively for \"hover\": zero matches. No other Salt column in this pipeline has confirmed a total absence of any hover mechanism at all.",
+    "no-selection-rule": "CONFIRMED ABSENCE — grepped Table.css/TR.tsx/TH.tsx/TD.tsx in full for \"select\"/\"disabled\" in a ROW (not cell-content) context: no selected-row or disabled-row concept exists anywhere.",
+    "zebra-dead-code": "Table.css defines `.saltTable-zebra-tertiary` but Table.tsx's own clsx() call (`{ [withTableBaseName(\"zebra\")]: zebra }`) only ever emits a bare `saltTable-zebra` class, never `zebra-{variant}` — so that selector can never match real rendered output. See style.row.zebra's own note.",
+    "overflow-region": "TableContainer.tsx: checkOverflow() reads element.scrollHeight/clientHeight and scrollWidth/clientWidth via a real useResizeObserver + useIsomorphicLayoutEffect-on-mount, and only THEN sets role=\"region\"/tabIndex=0/aria-labelledby (forwarded from the table's own id via TableContext) — a genuinely dynamic, measured a11y upgrade, not a static class."
+  },
+  "cells": {
+    "structure.container": { "kind": "value", "value": "div", "source": "TableContainer.tsx <div ref={handleRef} className={clsx(withTableBaseName(\"container\"), className)} {...overflowProps}>" },
+    "structure.root": { "kind": "value", "value": true, "source": "Table.tsx <table id={tableId} className={clsx(withTableBaseName(), ...)} aria-labelledby={labelledBy} ...>" },
+    "structure.header": { "kind": "value", "value": true, "source": "THead.tsx <thead ref={ref} className={clsx(withTableBaseName(\"thead\"), ...)}>" },
+    "structure.body": { "kind": "value", "value": true, "source": "TBody.tsx <tbody ref={ref} className={clsx(withTableBaseName(\"tbody\"), ...)}>" },
+    "structure.footer": { "kind": "value", "value": true, "source": "TFoot.tsx <tfoot ref={ref} className={clsx(withTableBaseName(\"tfoot\"), ...)}>" },
+    "structure.row": { "kind": "value", "value": true, "source": "TR.tsx <tr ref={ref} className={clsx(withTableBaseName(\"tr\"), className)}> — reused identically inside thead/tbody/tfoot" },
+    "structure.header-cell": { "kind": "value", "value": true, "source": "TH.tsx <th ref={ref} className={clsx(withTableBaseName(\"th\"), withTableBaseName(\"th\",\"align\",textAlign), className)}>" },
+    "structure.body-cell": { "kind": "value", "value": true, "source": "TD.tsx <td ref={ref} className={clsx(withTableBaseName(\"td\"), withTableBaseName(\"td\",\"align\",textAlign), className)}>" },
+    "structure.caption": { "kind": "value", "value": true, "source": "table.stories.tsx: <Table ...><caption>Sample data table</caption>...</Table> — plain native children, no dedicated Caption component" },
+
+    "behavior.overflow-region": { "kind": "value", "value": true, "source": "see overflow-region" },
+    "behavior.row-selection": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-selection-rule" },
+
+    "prop.variant": { "kind": "value", "value": ["primary", "secondary", "tertiary"], "source": "TableProps.variant?: \"primary\"|\"secondary\"|\"tertiary\", default \"primary\"" },
+    "prop.zebra": { "kind": "value", "value": [false, true], "source": "TableProps.zebra?: boolean, default false" },
+    "prop.divider": { "kind": "value", "value": ["tertiary", "primary", "secondary", "none"], "source": "TableProps.divider?: \"primary\"|\"secondary\"|\"tertiary\"|\"none\", default \"tertiary\" (root/row level)" },
+    "prop.align": { "kind": "value", "value": ["left", "right"], "source": "THProps.textAlign / TDProps.textAlign, both default \"left\"" },
+    "prop.sticky-header": { "kind": "value", "value": [false, true], "source": "THeadProps.sticky?: boolean, default false" },
+    "prop.sticky-footer": { "kind": "value", "value": [false, true], "source": "TFootProps.sticky?: boolean, default false" },
+
+    "slot.header-cell-content": { "kind": "value", "value": "children: ReactNode", "source": "TH.tsx" },
+    "slot.body-cell-content": { "kind": "value", "value": "children: ReactNode, unconstrained (arbitrary JSX)", "source": "TD.tsx; table.stories.tsx's own custom-cell examples" },
+    "slot.caption-content": { "kind": "value", "value": "children: ReactNode (plain native <caption>)", "source": "table.stories.tsx" },
+    "slot.composes": { "kind": "value", "value": true, "note": "site/src/examples/table/ compose Table inside FlexLayout/StackLayout (Salt-only layout primitives, unbuilt canonical rows) — not modelled here" },
+
+    "state.row.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-hover-rule" },
+    "state.row.selected": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-selection-rule" },
+    "state.row.disabled": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-selection-rule" },
+
+    "style.root.border": { "kind": "off", "note": "CONFIRMED ABSENCE — table.saltTable has border-collapse/border-radius but never a border/outline property on the table element itself" },
+    "style.root.shape": { "kind": "alias", "slot": "table-radius" },
+    "style.root.font": { "kind": "value", "value": { "font-family": "var(--type-fontFamily)", "font-size": "var(--type-fontSize)", "line-height": "var(--type-lineHeight)" }, "source": "table.saltTable font-family/font-size/line-height" },
+
+    "style.header.background": { "kind": "alias", "slot": "bg-primary" },
+    "style.header.divider": { "kind": "alias", "slot": "divider-primary" },
+    "style.header.height": { "kind": "alias", "slot": "row-height" },
+    "style.header.text": { "kind": "value", "value": { "color": "var(--fg-header)", "font-size": "var(--type-label-fontSize)", "line-height": "var(--type-label-lineHeight)", "font-weight": "var(--type-fontWeight-strong)" }, "source": "thead { color: content-secondary-foreground; font-size/-line-height: text-label-*; font-weight: text-label-fontWeight-strong }" },
+    "style.header-cell.divider": { "kind": "value", "value": { "content": "\"\"", "position": "absolute", "z-index": "1", "display": "block", "left": "0", "width": "1px", "top": "var(--cell-padding-x)", "height": "calc(100% - (var(--cell-padding-x) * 2))", "background": "var(--divider-tertiary)" }, "source": "table.saltTable th + th::before { background: separable-tertiary-borderColor; width: size-fixed-100; top: spacing-100; height: calc(100% - spacing-200) }" },
+
+    "style.body.row-height": { "kind": "alias", "slot": "row-height" },
+    "style.body.text": { "kind": "value", "value": { "color": "var(--fg-body)", "font-size": "var(--type-fontSize)", "line-height": "var(--type-lineHeight)" }, "source": "table.saltTable { color: content-primary-foreground }; td inherits table's own font-size/line-height, no override" },
+
+    "style.footer.background": { "kind": "alias", "slot": "bg-primary" },
+    "style.footer.text": { "kind": "value", "value": { "color": "var(--fg-body)", "font-size": "var(--type-fontSize)", "line-height": "var(--type-lineHeight)", "font-weight": "var(--type-fontWeight-strong)" }, "source": "tfoot { color: content-primary-foreground; font-size/-line-height: text-fontSize/-lineHeight (plain body scale); font-weight: text-fontWeight-strong }" },
+    "style.footer.divider": { "kind": "alias", "slot": "divider-primary" },
+    "style.footer.height": { "kind": "alias", "slot": "row-height" },
+
+    "style.row.background": { "kind": "alias", "slot": "bg-primary" },
+    "style.row.divider": { "kind": "alias", "slot": "divider-tertiary" },
+    "style.row.hover": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-hover-rule" },
+    "style.row.selected": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-selection-rule" },
+    "style.row.disabled": { "kind": "off", "note": "CONFIRMED ABSENCE — see no-selection-rule" },
+    "style.row.zebra": { "kind": "alias", "slot": "bg-secondary", "note": "the REACHABLE zebra rule at the source-default variant=\"primary\" — see zebra-dead-code" },
+
+    "style.cell.padding": { "kind": "value", "value": "var(--cell-padding-y) var(--cell-padding-x)", "source": "td/th padding: calc(spacing-75 + spacing-50) spacing-100" },
+    "style.cell.align": { "kind": "value", "value": "left", "source": "THProps.textAlign / TDProps.textAlign default \"left\" — real, prop-driven" },
+
+    "style.caption.text": { "kind": "off", "note": "CONFIRMED ABSENCE — no caption-scoped rule anywhere in Table.css; renders with browser default UA caption styling" }
+  }
+}

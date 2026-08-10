@@ -1,0 +1,105 @@
+{
+  "system": "m3",
+  "component": "table",
+  "fontFaces": [
+    { "family": "Roboto", "weight": "400", "file": "fonts/roboto-400.woff2" },
+    { "family": "Roboto", "weight": "500", "file": "fonts/roboto-500.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "surface": "#fef7ff",
+      "on-surface": "#1d1b20",
+      "on-surface-variant": "#49454f",
+      "outline-variant": "#cac4d0",
+      "surface-container-highest": "#e6e0e9",
+      "type-fontFamily": "'Roboto', sans-serif",
+      "hover-opacity": "0.08",
+      "disabled-opacity": "0.38"
+    },
+    "dark": {
+      "surface": "#141218",
+      "on-surface": "#e6e0e9",
+      "on-surface-variant": "#cac4d0",
+      "outline-variant": "#49454f",
+      "surface-container-highest": "#36343b"
+    }
+  },
+  "modeInvariant": ["type-fontFamily", "hover-opacity", "disabled-opacity"],
+  "provenance": {
+    "canonical-source": "tokens/versions/v0_192/_md-comp-data-table.scss — read in full, both this pinned edition and tokens/versions/latest/sass/_md-comp-data-table.scss (diffed directly; the latest edition renames the export format from a Sass map function to flat $variables and adds several @deprecated legacy tokens — row-item-divider-thickness/-color, footer-outlined-select-text-field-container-height — none present in the pinned v0.192 edition and none modelled here). NO LIVE component exists anywhere in the clone for this row (confirmed: no data-table/*.ts under labs/ or elsewhere — a genuine divergence from toggle-group's own real labs/segmentedbutton{,set}/ source; every structure/behavior row here is [R] by necessity, the same tokens-only treatment badge/card/checkbox/radio-group's own M3 columns already use for THEIR structure rows). testing/table/internal/test-table.ts was read and REJECTED as a source — it is material-web's own internal visual-regression test scaffold (a generic Lit test harness for rendering arbitrary state/template grids), not a public data-table component, confirmed by reading its full ~100 lines. Resolution through versions/v0_192/{_md-sys-color.scss,_md-sys-shape.scss,_md-sys-state.scss,_md-sys-typescale.scss,_md-ref-palette.scss,_md-ref-typeface.scss}.",
+    "surface": "md-sys-color.surface -> _md-ref-palette.scss neutral98 #fef7ff light / neutral6 #141218 dark, the SAME slot calendar.m3.json's own surface already resolved.",
+    "on-surface": "md-sys-color.on-surface -> neutral10 #1d1b20 light / neutral90 #e6e0e9 dark, the SAME slot every prior M3 column's own on-surface resolves to.",
+    "on-surface-variant": "md-sys-color.on-surface-variant -> neutral-variant30 #49454f light / neutral-variant80 #cac4d0 dark, the SAME slot checkbox.m3.json's own on-surface-variant already resolved.",
+    "outline-variant": "md-sys-color.outline-variant -> neutral-variant80 #cac4d0 light / neutral-variant30 #49454f dark, the SAME slot card.m3.json's/tabs.m3.json's own outline-variant already resolved.",
+    "surface-container-highest": "md-sys-color.surface-container-highest -> neutral90 #e6e0e9 light / neutral22 #36343b dark, the SAME slot card.m3.json's own filled-variant fill already resolved.",
+    "hover-opacity": "md-sys-state.hover-state-layer-opacity -> versions/v0_192/_md-sys-state.scss = 0.08, identical in both editions — matches docs/foundations/state-layers.md, the SAME value every prior M3 column's own hover state layer uses.",
+    "disabled-opacity": "row-item-disabled-label-text-opacity: 0.38 — the SAME 0.38-content convention every other M3 column in this pipeline (checkbox, chip, radio-group, toggle-group, ...) uses for disabled text.",
+    "container-shape": "container-shape -> md-sys-shape.corner-extra-small -> versions/v0_192/_md-sys-shape.scss = 4px, fixed (M3 has no density axis).",
+    "header-container-height": "header-container-height: 56px, hardcoded literal in the token function (if($exclude-hardcoded-values, null, 56px)) — the TALLEST of the three region heights.",
+    "footer-container-height / row-item-container-height": "BOTH 52px, hardcoded literals — a real, sourced coincidence: footer rows and body rows share one height in M3's own token set, unlike the taller 56px header.",
+    "outline-width / row-item-outline-width": "BOTH 1px, hardcoded literals — two DISTINCT token keys (whole-table outline vs per-row divider) that happen to share both the same width AND (in this edition) the same colour role (outline-variant), see style.root.border / style.row.divider.",
+    "typescale-title-small": "md-sys-typescale.title-small -> versions/v0_192/_md-sys-typescale.scss: font md-ref-typeface.plain (Roboto), weight md-ref-typeface.weight-medium = 500, size 0.875rem = 14px, line-height 1.25rem = 20px, tracking 0.00625rem = 0.1px. Used for header-headline-*.",
+    "typescale-body-medium": "md-sys-typescale.body-medium -> same file: font Roboto, weight md-ref-typeface.weight-regular = 400, size 0.875rem = 14px, line-height 1.25rem = 20px, tracking 0.015625rem = 0.25px. Used for row-item-label-text-* AND footer-supporting-text-* — the SAME typescale for both regions, unlike Salt's own footer (which bolds its plain body scale) or the header (whose title-small is a genuinely different FAMILY, not just a size coincidence).",
+    "no-sort-pagination-tokens": "CONFIRMED — the pinned token file (read in full) has exactly one sort-adjacent key, header-hover-sorting-icon-button-color (on-surface) — a real colour token for a HYPOTHETICAL sorting icon button's hover state, with zero accompanying structure/behavior/size tokens of any kind (no icon size, no button dimensions, no aria-sort convention). No pagination token exists anywhere. See the matrix doc's own scope note."
+  },
+  "cells": {
+    "structure.container": { "kind": "value", "value": "div", "note": "[R] — no live component; the standard responsive horizontal-scroll wrapper convention, presumed rather than independently confirmable" },
+    "structure.root": { "kind": "value", "value": true, "note": "[R] — token namespace (header/footer/row-item) presumes a conventional semantic <table>; no live element to cite the literal tag" },
+    "structure.header": { "kind": "value", "value": true, "note": "[R, tokens] header-container-color/-height/header-headline-* presume a distinct header region" },
+    "structure.body": { "kind": "value", "value": true, "note": "[R, tokens] row-item-* tokens presume a body region distinct from header/footer" },
+    "structure.footer": { "kind": "value", "value": true, "note": "[S, tokens] footer-container-color/-height/footer-supporting-text-* — a real, distinct token namespace" },
+    "structure.row": { "kind": "value", "value": true, "note": "[R, tokens] row-item-container-height presumes a uniform row concept across header/body/footer" },
+    "structure.header-cell": { "kind": "value", "value": true, "note": "[R, tokens] header-headline-* presumes a distinct header-cell text role" },
+    "structure.body-cell": { "kind": "value", "value": true, "note": "[R, tokens] row-item-label-text-* presumes a distinct body-cell text role" },
+    "structure.caption": { "kind": "off", "note": "CONFIRMED ABSENCE — the pinned token file (read in full, both editions) has no caption/title namespace of any kind" },
+
+    "behavior.overflow-region": { "kind": "off", "note": "no live source to confirm any JS overflow-sensing mechanism (tokens-only); presumed absent rather than assumed present" },
+    "behavior.row-selection": { "kind": "value", "value": "real, DESIGNED colour tokens for a selected-row state (row-item-selected-container-color / row-item-unselected-container-color / row-item-selected-hover-state-layer-*), but no live component exists to wire an actual selection ENGINE into, and no data-attribute convention to cite", "note": "see no-sort-pagination-tokens for the contrasting absence on the sort side" },
+
+    "prop.variant": { "kind": "off", "note": "CONFIRMED ABSENCE — no tone-variant namespace, only one row-item colour family" },
+    "prop.zebra": { "kind": "off", "note": "CONFIRMED ABSENCE — no alternating-row concept" },
+    "prop.divider": { "kind": "off", "note": "CONFIRMED ABSENCE — row-item-outline-color/-width are single fixed tokens, no variant family" },
+    "prop.align": { "kind": "off", "note": "CONFIRMED ABSENCE — no alignment token exists anywhere in the pinned file" },
+    "prop.sticky-header": { "kind": "off", "note": "CONFIRMED ABSENCE — tokens do not carry layout strategy" },
+    "prop.sticky-footer": { "kind": "off", "note": "CONFIRMED ABSENCE — same reasoning as prop.sticky-header" },
+
+    "slot.header-cell-content": { "kind": "value", "value": "presumed text content (headline)", "note": "[R] — no live component to confirm the exact API shape" },
+    "slot.body-cell-content": { "kind": "value", "value": "presumed text content (label)", "note": "[R] — no live component to confirm whether richer content is supported" },
+    "slot.caption-content": { "kind": "off", "note": "no caption concept exists to hold content" },
+    "slot.composes": { "kind": "value", "value": true, "note": "MD3's own real product convention composes a data table with icon-buttons for sort affordances (evidenced only by header-hover-sorting-icon-button-color existing at all, see no-sort-pagination-tokens) and pagination controls — neither modelled, both out of scope" },
+
+    "state.row.hover": { "kind": "value", "value": "real, TWO distinct token pairs (selected/unselected), both resolving to on-surface at 0.08 opacity in this edition", "note": "see typescale/hover-opacity provenance" },
+    "state.row.selected": { "kind": "value", "value": "real, DESIGNED tokens, no live wiring — see behavior.row-selection", "note": "row-item-selected-container-color -> surface-container-highest, a visibly deeper tone than the unselected row's own surface" },
+    "state.row.disabled": { "kind": "value", "value": "real, dedicated tokens — row-item-disabled-label-text-color/-opacity", "note": "the SAME 0.38-content convention every other M3 column uses" },
+
+    "style.root.border": { "kind": "value", "value": { "border-color": "var(--outline-variant)", "border-width": "1px" }, "source": "outline-color -> outline-variant; outline-width: 1px" },
+    "style.root.shape": { "kind": "value", "value": "4px", "source": "container-shape -> corner-extra-small = 4px" },
+    "style.root.font": { "kind": "off", "note": "CONFIRMED ABSENCE of a root-level typography token; typography is defined PER REGION only (header-headline-*, row-item-label-text-*, footer-supporting-text-*), never once at a whole-table level" },
+
+    "style.header.background": { "kind": "alias", "slot": "surface" },
+    "style.header.divider": { "kind": "off", "note": "CONFIRMED ABSENCE of a header-specific divider token distinct from the general row-item-outline-* family (read in full, both editions)" },
+    "style.header.height": { "kind": "value", "value": "56px", "source": "header-container-height" },
+    "style.header.text": { "kind": "value", "value": { "color": "var(--on-surface-variant)", "font-size": "0.875rem", "line-height": "1.25rem", "font-weight": "500", "font-family": "var(--type-fontFamily)" }, "source": "header-headline-color -> on-surface-variant; header-headline-font/-size/-line-height/-weight -> md-sys-typescale.title-small" },
+    "style.header-cell.divider": { "kind": "off", "note": "CONFIRMED ABSENCE — no vertical rule between header cells in the token vocabulary" },
+
+    "style.body.row-height": { "kind": "value", "value": "52px", "source": "row-item-container-height" },
+    "style.body.text": { "kind": "value", "value": { "color": "var(--on-surface)", "font-size": "0.875rem", "line-height": "1.25rem", "font-family": "var(--type-fontFamily)" }, "source": "row-item-label-text-color -> on-surface; row-item-label-text-font/-size/-line-height -> md-sys-typescale.body-medium" },
+
+    "style.footer.background": { "kind": "alias", "slot": "surface" },
+    "style.footer.text": { "kind": "value", "value": { "color": "var(--on-surface-variant)", "font-size": "0.875rem", "line-height": "1.25rem", "font-weight": "400", "font-family": "var(--type-fontFamily)" }, "source": "footer-supporting-text-color -> on-surface-variant; footer-supporting-text-font/-size/-line-height/-weight -> md-sys-typescale.body-medium (regular weight, NOT bolded — unlike Salt's own footer)" },
+    "style.footer.divider": { "kind": "off", "note": "CONFIRMED ABSENCE — footer.* namespace has only container.color/container.height/supporting-text.*, no divider/outline key of its own (read in full, both editions)" },
+    "style.footer.height": { "kind": "value", "value": "52px", "source": "footer-container-height — the SAME height as row-item-container-height" },
+
+    "style.row.background": { "kind": "alias", "slot": "surface" },
+    "style.row.divider": { "kind": "alias", "slot": "outline-variant", "note": "row-item-outline-color -> outline-variant; row-item-outline-width: 1px" },
+    "style.row.hover": { "kind": "expression", "value": "color-mix(in oklab, var(--on-surface) 8%, var(--surface))", "source": "row-item-unselected-hover-state-layer-color -> on-surface, at hover-state-layer-opacity 0.08 — a state-layer approximation, documented not literally composited as a separate DOM layer" },
+    "style.row.selected": { "kind": "alias", "slot": "surface-container-highest", "note": "row-item-selected-container-color — a visibly deeper tone than the unselected row's own plain surface" },
+    "style.row.disabled": { "kind": "value", "value": { "color": "var(--on-surface)", "opacity": "var(--disabled-opacity)" }, "source": "row-item-disabled-label-text-color -> on-surface (same hue as rest — dimming carried entirely by opacity); row-item-disabled-label-text-opacity: 0.38" },
+    "style.row.zebra": { "kind": "off", "note": "CONFIRMED ABSENCE — no alternating-row mechanism" },
+
+    "style.cell.padding": { "kind": "value", "value": "12px 16px", "note": "REGISTRY DEFAULT — no cell-padding token exists in the pinned file (only container heights); chosen to sit comfortably inside the real 52px/56px row-height tokens at the body-medium/title-small line-heights already cited, matching the reasoning TOAST-MATRIX.md's own default-policy fix already established" },
+    "style.cell.align": { "kind": "value", "value": "left", "note": "REGISTRY DEFAULT — no alignment token exists (see prop.align); matches MD3's own real published convention of consumer-configured per-column alignment, and the same native left-alignment every untouched HTML table cell renders" },
+
+    "style.caption.text": { "kind": "off", "note": "no caption concept exists — see structure.caption" }
+  }
+}
