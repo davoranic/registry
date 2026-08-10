@@ -1,0 +1,65 @@
+{
+  "system": "m3",
+  "component": "popover",
+  "fontFaces": [],
+  "slots": {
+    "light": {},
+    "dark": {}
+  },
+  "modeInvariant": [],
+  "provenance": {
+    "total-absence": "CONFIRMED, TOTAL ABSENCE — the same shape ACCORDION-MATRIX.md's own M3 column established, not an edition gap (alert/progress/spinner's shape, where SOME tokens survive a version but not all) and not a tokens-only component (toast/snackbar's shape, where a real token family exists with no live component to read). Checked two ways per CLAUDE.md rule 7 ('grep returning nothing is not evidence of absence'): (1) `grep -rli 'popover'` across the WHOLE clone (`3-source/material-web`) returns exactly two files, both documentation assets for the MENU component's own usage guidance — `docs/components/images/menu/usage-popover.webp` and `docs/components/figures/menu/usage-popover.html` — neither a component nor a token file; (2) a `find -maxdepth 1 -type d` top-level directory listing of the whole clone (button, catalog, checkbox, chips, color, dialog, divider, elevation, fab, field, focus, icon, iconbutton, internal, labs, list, menu, migrations, progress, radio, ripple, sass, scripts, select, slider, switch, tabs, testing, textfield, tokens, types, typography) shows no popover-, flyout-, or bubble-shaped entry among them. `1-intro/content/04-component-map.md`'s own note ('menu/tooltip cover this') is a USE-CASE justification for why M3 designers don't need a dedicated popover pattern, not a token family this template could cite — it gives this column nothing to point to beyond the same confirmed absence."
+  },
+  "cells": {
+    "structure.trigger": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.anchor": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.popup": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.arrow": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.header": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.title": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.description": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.header-actions": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.close-button": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "structure.content": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "behavior.trigger-interaction": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "behavior.role": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "behavior.modal-focus-trap": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "behavior.initial-focus": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "behavior.dismiss-outside": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "behavior.dismiss-escape": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "behavior.focus-return": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "behavior.close-button-action": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "behavior.positioning-engine": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "prop.placement": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "prop.align": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "style.popup.background": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.color": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.border": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.shape": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.shadow": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.width": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.font": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.z-index": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.outline@focus": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.entrance-transition": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.popup.padding": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "style.content.padding": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "style.arrow.size": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.arrow.color": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "style.header.padding": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.header.gap": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "style.title.font": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "style.description.color": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+    "style.description.font": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" },
+
+    "style.close-button.position": { "kind": "off", "note": "CONFIRMED ABSENT — see total-absence" }
+  }
+}

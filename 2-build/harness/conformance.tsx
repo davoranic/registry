@@ -42,6 +42,7 @@ import { Slider } from "../skeleton/slider"
 import { Toast, ToastGroup } from "../skeleton/toast"
 import { DropdownMenu, type MenuNode } from "../skeleton/dropdown-menu"
 import { Accordion, type AccordionConfig, type AccordionItemModel } from "../skeleton/accordion"
+import { Popover, type PopoverConfig } from "../skeleton/popover"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -54,6 +55,7 @@ import sliderCfg from "../out/gen/slider-config.json"
 import toastCfg from "../out/gen/toast-config.json"
 import dropdownMenuCfg from "../out/gen/dropdown-menu-config.json"
 import accordionCfg from "../out/gen/accordion-config.json"
+import popoverCfg from "../out/gen/popover-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -1360,6 +1362,179 @@ async function checkAccordionArrowNav(host: HTMLElement, system: string) {
   mount.remove()
 }
 
+// ----------------------------------------------------------------- popover
+
+async function checkPopover(host: HTMLElement, system: string) {
+  const cfg = (popoverCfg as Record<string, PopoverConfig>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+
+  // 1 — behavior.trigger-interaction / structure.trigger / structure.popup:
+  // mount CLOSED, then a real click opens it (test the transition, not an
+  // already-open mount — the DIALOG-MATRIX.md lesson).
+  function Harness() {
+    const [open, setOpen] = React.useState(false)
+    return (
+      <Popover config={cfg} open={open} onOpenChange={setOpen} title="T" description="D">
+        <button>trigger</button>
+      </Popover>
+    )
+  }
+  root.render(<Harness />)
+  await settle()
+
+  const trigger = mount.querySelector("button") as HTMLElement
+  const isOpen = () => !!mount.querySelector('[data-slot="popover-popup"]')
+  record("popover", "structure.trigger", system, !!trigger, trigger ? "trigger rendered" : "no trigger found")
+  record("popover", "behavior.trigger-interaction", system, !isOpen(), "mounted CLOSED, as required for the next assertion to be a real transition")
+
+  trigger.click()
+  await waitFor(isOpen)
+  record("popover", "structure.popup", system, isOpen(), isOpen() ? "click opened the popup" : "did not open")
+
+  const popup = mount.querySelector('[data-slot="popover-popup"]') as HTMLElement
+  if (popup) {
+    // behavior.role — a real, independently-confirmed convergence (Salt
+    // useRole; shadcn Radix's own documented default), see POPOVER-MATRIX.md.
+    record("popover", "behavior.role", system, popup.getAttribute("role") === "dialog", "role=" + popup.getAttribute("role"))
+
+    // behavior.initial-focus: real DOM focus lands inside the popup on open
+    // (poll — it may land a tick after the popup commits, the dialog lesson).
+    await waitFor(() => popup.contains(document.activeElement))
+    const focusedInside = popup.contains(document.activeElement)
+    record("popover", "behavior.initial-focus", system, focusedInside,
+      focusedInside ? "focus moved into the popup" : "focus never entered the popup — active=" + (document.activeElement?.tagName || "?"))
+
+    // behavior.dismiss-escape + behavior.focus-return: Escape closes AND
+    // returns real focus to the trigger.
+    key(popup, "Escape")
+    await waitFor(() => !isOpen())
+    await waitFor(() => document.activeElement === trigger)
+    record("popover", "behavior.dismiss-escape", system, !isOpen(), isOpen() ? "Escape did not close" : "Escape closed it")
+    record("popover", "behavior.focus-return", system, document.activeElement === trigger,
+      "focus after close: " + (document.activeElement === trigger ? "returned to trigger" : (document.activeElement?.tagName || "?") + " (did not return)"))
+  }
+
+  root.unmount()
+  mount.remove()
+}
+
+async function checkPopoverDismiss(host: HTMLElement, system: string) {
+  const cfg = (popoverCfg as Record<string, PopoverConfig>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+  function Harness() {
+    const [open, setOpen] = React.useState(false)
+    return (
+      <Popover config={cfg} open={open} onOpenChange={setOpen}>
+        <button>trigger</button>
+      </Popover>
+    )
+  }
+  root.render(<Harness />)
+  await settle()
+
+  const trigger = mount.querySelector("button") as HTMLElement
+  const isOpen = () => !!mount.querySelector('[data-slot="popover-popup"]')
+
+  // behavior.dismiss-outside
+  trigger.click()
+  await waitFor(isOpen)
+  document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }))
+  await waitFor(() => !isOpen())
+  record("popover", "behavior.dismiss-outside", system, !isOpen(), isOpen() ? "outside press did NOT close it" : "outside press closed it")
+
+  // structure.close-button / behavior.close-button-action, where the column
+  // has the part (Salt only — see POPOVER-MATRIX.md Finding 3: this
+  // chassis, unlike Salt's own real OverlayPanelCloseButton, wires it
+  // automatically since it already owns its own open state).
+  if (cfg.closeButton) {
+    trigger.click()
+    await waitFor(isOpen)
+    const closeBtn = mount.querySelector('[data-slot="popover-close-button"]') as HTMLElement | null
+    closeBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }))
+    await waitFor(() => !isOpen())
+    record("popover", "structure.close-button", system, !!closeBtn && !isOpen(),
+      `close button present=${!!closeBtn}; click closed the popup=${!isOpen()}`)
+  } else {
+    record("popover", "structure.close-button", system, true, "CONFIRMED ABSENCE — structure.close-button is off for this column, no close button to click")
+  }
+
+  root.unmount()
+  mount.remove()
+}
+
+async function checkPopoverModalFocusTrap(host: HTMLElement, system: string) {
+  const cfg = (popoverCfg as Record<string, PopoverConfig>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+
+  // THE sharpest finding this component produced (POPOVER-MATRIX.md Finding
+  // 2): Salt's real Overlay traps focus AND inerts the rest of the page
+  // (floating-ui's own outsideElementsInert); shadcn's real, non-modal
+  // Popover does neither. A sibling OUTSIDE the popover is the real,
+  // DOM-observable proxy for "is the rest of the page inert right now" —
+  // more robust in this hidden-tab harness than simulating a full Tab-cycle
+  // sequence (environment rule 1: focus EVENTS are suppressed, though
+  // document.activeElement still updates).
+  function Harness() {
+    const [open, setOpen] = React.useState(false)
+    return (
+      <div>
+        <Popover config={cfg} open={open} onOpenChange={setOpen} title="Trap check">
+          <button>trigger</button>
+        </Popover>
+        <button data-slot="outside-sibling">outside</button>
+      </div>
+    )
+  }
+  root.render(<Harness />)
+  await settle()
+
+  const trigger = mount.querySelector("button") as HTMLElement
+  const isOpen = () => !!mount.querySelector('[data-slot="popover-popup"]')
+  trigger.click()
+  await waitFor(isOpen)
+
+  const outside = mount.querySelector('[data-slot="outside-sibling"]') as HTMLElement
+  const outsideIsInert = outside.hasAttribute("inert") || outside.closest("[inert]") !== null
+  record(
+    "popover",
+    "behavior.modal-focus-trap",
+    system,
+    outsideIsInert === Boolean(cfg.modalFocusTrap),
+    `config.modalFocusTrap=${Boolean(cfg.modalFocusTrap)}; outside sibling inert=${outsideIsInert} (expected ${Boolean(cfg.modalFocusTrap)})`,
+  )
+
+  // Tab-wrap half, only meaningful when the trap is actually on: focus the
+  // LAST tabbable inside the popup and Tab once more — it must wrap back to
+  // the FIRST tabbable inside the popup, never reaching the outside sibling.
+  const popup = mount.querySelector('[data-slot="popover-popup"]') as HTMLElement | null
+  if (popup && cfg.modalFocusTrap) {
+    const tabbables = [...popup.querySelectorAll<HTMLElement>('button,[href],input,[tabindex]:not([tabindex="-1"])')]
+    const target = tabbables[tabbables.length - 1] ?? popup
+    focusFor(target)
+    await settle()
+    key(target, "Tab")
+    await settle()
+    const stillInside = popup.contains(document.activeElement)
+    record("popover", "state.focus-trap-active", system, stillInside,
+      `Tab from the last tabbable must wrap back INSIDE the popup, not reach the outside sibling — active after Tab: ${popup.contains(document.activeElement) ? "inside" : (document.activeElement?.textContent || document.activeElement?.tagName || "?")}`)
+  } else {
+    record("popover", "state.focus-trap-active", system, true,
+      "CONFIRMED OFF for this column (behavior.modal-focus-trap) — Tab is free to leave the popup by design, nothing to trap")
+  }
+
+  root.unmount()
+  mount.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -1383,6 +1558,9 @@ async function run() {
     try { await checkAccordion(host, s) } catch (e) { record("accordion", "(threw)", s, false, String(e)) }
     try { await checkAccordionCollapsible(host, s) } catch (e) { record("accordion", "(threw, collapsible)", s, false, String(e)) }
     try { await checkAccordionArrowNav(host, s) } catch (e) { record("accordion", "(threw, arrow-nav)", s, false, String(e)) }
+    try { await checkPopover(host, s) } catch (e) { record("popover", "(threw)", s, false, String(e)) }
+    try { await checkPopoverDismiss(host, s) } catch (e) { record("popover", "(threw, dismiss)", s, false, String(e)) }
+    try { await checkPopoverModalFocusTrap(host, s) } catch (e) { record("popover", "(threw, modal-focus-trap)", s, false, String(e)) }
   }
   host.remove()
 

@@ -1,0 +1,98 @@
+{
+  "system": "shadcn",
+  "component": "popover",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "popup-bg": "oklch(1 0 0)",
+      "popup-fg": "oklch(0% 0 0)",
+      "popup-border": "oklch(0.922 0 0)",
+      "popup-shadow": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      "radius-popup": "calc(0.625rem * 0.8)",
+      "fg-muted": "oklch(0.556 0 0)"
+    },
+    "dark": {
+      "popup-bg": "oklch(0.205 0 0)",
+      "popup-fg": "oklch(0.985 0 0)",
+      "popup-border": "oklch(1 0 0 / 10%)",
+      "fg-muted": "oklch(0.708 0 0)"
+    }
+  },
+  "modeInvariant": ["popup-shadow", "radius-popup"],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/popover.tsx — six exported parts (Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverHeader, PopoverTitle, PopoverDescription), every one a thin data-slot wrapper around the external, unvendored `radix-ui` package's Popover primitive (package.json:80 \"radix-ui\": \"^1.4.3\", no node_modules/radix-ui anywhere in this clone) — the same external-package boundary DROPDOWN-MENU-MATRIX.md/ACCORDION-MATRIX.md/TOAST-MATRIX.md already recorded. Every STYLE value below comes from this file's own literal className strings, real, committed source, even though the code that sets the data-state attributes those classes key off lives externally. This column is genuinely RICHER in structure than dropdown-menu's or tooltip's own shadcn columns: it ships dedicated PopoverHeader/PopoverTitle/PopoverDescription sub-components (the same family shadcn's own Dialog has), a structural family neither of those two components has. See POPOVER-MATRIX.md §0.",
+    "popup-bg / popup-fg": "PopoverContent: `bg-popover text-popover-foreground` -> --popover/--popover-foreground (globals.css:105-106 light, :148-149 dark). Reused verbatim from dropdown-menu.shadcn.json's/select.shadcn.json's own identical slots.",
+    "popup-border": "PopoverContent's bare `border` utility, no colour class -> --border (globals.css:117/:160).",
+    "popup-shadow": "PopoverContent class `shadow-md`. [R] — Tailwind's documented default two-layer value; radix-ui is not vendored in this clone. Reused verbatim from dropdown-menu.shadcn.json's own popup-shadow.",
+    "popup-shape": "PopoverContent `rounded-md` -> --radius-md = calc(var(--radius)*0.8) = 8px (globals.css:50-51,100).",
+    "popup-width": "PopoverContent class `w-72` = 288px, a FIXED width applied regardless of content — a real, sourced contrast with Salt's own content-sized `width: max-content`. Demo files (popover-demo.tsx) sometimes override this per-instance with `className=\"w-80\"`, confirming the base w-72 is a real, overridable DEFAULT, not a hard cap.",
+    "popup-font-off": "CONFIRMED OFF — PopoverContent's own className string (`z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden ...`) has NO text-size utility of any kind, unlike dropdown-menu's own `text-sm` or tooltip's own `text-xs` root text sizing — children choose their own type entirely (the demo's own paragraph sets `text-sm` itself, not the component).",
+    "popup-zindex": "PopoverContent class `z-50` = 50.",
+    "popup-outline-hidden": "PopoverContent class `outline-hidden` — Tailwind's forced-colors-safe focus-outline-suppression utility (a transparent, still-technically-present outline for Windows High Contrast Mode, not a bare `outline:none`); approximated here as `outline: none` for this template's single-property row, a declared simplification of the exact Windows-high-contrast nuance.",
+    "popup-entrance-transition": "PopoverContent class `data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95` plus four `data-[side=*]:slide-in-from-*` variants — the SAME unvendored `tw-animate-css` caveat toast.shadcn.json/dropdown-menu.shadcn.json/tooltip.shadcn.json already carry (package.json dependency, no vendored keyframe CSS in this clone).",
+    "popup-padding": "PopoverContent class `p-4` = 16px uniform, applied directly to the content root (no separate inner wrapper — see structure.content).",
+    "header-padding-off": "CONFIRMED OFF — PopoverHeader's own className is `flex flex-col gap-1 text-sm`, no padding utility of its own; it inherits the popup root's own p-4 (a real, sourced contrast with Salt's OWN doubly-padded header-plus-content-wrapper structure, where OverlayHeader carries its own independent spacing-100 padding on top of OverlayPanelContent's own padding one level down).",
+    "header-gap": "PopoverHeader class `gap-1` = 4px.",
+    "title-font": "PopoverTitle class `font-medium` — ONLY a font-weight utility (500); no font-size/line-height/family utility of any kind, so size is left entirely UNSET/inherited from the ambient (popup-root-less, since popup-font is itself off) page font — a real, sourced contrast with dropdown-menu's own fully-specified item/label type.",
+    "description-color": "PopoverDescription class `text-muted-foreground` -> --muted-foreground (globals.css:112/:155), the SAME slot dropdown-menu.shadcn.json's own fg-muted already resolves.",
+    "description-font": "PopoverDescription: no dedicated className beyond inheriting PopoverHeader's own `text-sm` ancestor class — text-sm = 0.875rem/1.25rem; family read as the generic Tailwind stack per Button's own precedent (neither this nor PopoverHeader sets an explicit font-sans/Geist utility), the SAME convention tooltip.shadcn.json's/dropdown-menu.shadcn.json's own type rows use.",
+    "arrow-off": "CONFIRMED ABSENT — grepped popover.tsx in full plus every example/demo file under examples/{aria,base,radix}/popover-*.tsx: no PopoverPrimitive.Arrow anywhere.",
+    "header-actions-off": "CONFIRMED ABSENT — PopoverHeader's own className carries no trailing/actions slot of any kind, unlike shadcn's own DialogHeader (out of this component's scope, cited for contrast only).",
+    "close-button-off": "CONFIRMED ABSENT — no PopoverClose-equivalent part is exported or composed anywhere in popover.tsx, a real, structural contrast with shadcn's OWN Dialog (which DOES export DialogClose). See POPOVER-MATRIX.md Finding 3.",
+    "content-off": "CONFIRMED ABSENT — PopoverContent IS the content container itself; there is no separate inner scrollable wrapper the way Salt's OverlayPanelContent is.",
+    "modal-focus-trap-off": "Radix's own documented Popover.Root `modal` prop defaults to `false` — no focus trap, the rest of the page stays fully interactive while the popover is open. [R], Radix's own published API default, not independently confirmable at the exact mechanism level in this unvendored clone. See POPOVER-MATRIX.md Finding 2.",
+    "placement-align": "Radix's own `side`/`align`/`sideOffset` props on Popover.Content — popover.tsx destructures `align = \"center\"` and `sideOffset = 4` with explicit defaults [S]; `side` itself is passed through via `...props` with no override in this file, so its literal default (\"bottom\") is Radix Popper's own documented default [R]."
+  },
+  "cells": {
+    "structure.trigger": { "kind": "value", "value": true, "source": "PopoverTrigger" },
+    "structure.anchor": { "kind": "value", "value": true, "source": "PopoverAnchor, a real, dedicated exported part" },
+    "structure.popup": { "kind": "value", "value": true, "source": "PopoverContent, portalled" },
+    "structure.arrow": { "kind": "off", "note": "CONFIRMED ABSENT — see arrow-off provenance" },
+    "structure.header": { "kind": "value", "value": true, "source": "PopoverHeader" },
+    "structure.title": { "kind": "value", "value": true, "source": "PopoverTitle" },
+    "structure.description": { "kind": "value", "value": true, "source": "PopoverDescription" },
+    "structure.header-actions": { "kind": "off", "note": "CONFIRMED ABSENT — see header-actions-off provenance" },
+    "structure.close-button": { "kind": "off", "note": "CONFIRMED ABSENT — see close-button-off provenance" },
+    "structure.content": { "kind": "off", "note": "CONFIRMED ABSENT — see content-off provenance" },
+
+    "behavior.trigger-interaction": { "kind": "value", "value": true, "note": "[R] — external package, Radix Trigger's own documented click default" },
+    "behavior.role": { "kind": "value", "value": "dialog", "note": "[R] — Radix's own documented convention for Popover.Content" },
+    "behavior.modal-focus-trap": { "kind": "off", "note": "CONFIRMED OFF — see modal-focus-trap-off provenance" },
+    "behavior.initial-focus": { "kind": "value", "value": "content root focuses on open (Radix's own documented default)", "note": "[R]" },
+    "behavior.dismiss-outside": { "kind": "value", "value": true, "note": "[R] — Radix's DismissableLayer" },
+    "behavior.dismiss-escape": { "kind": "value", "value": true, "note": "[R]" },
+    "behavior.focus-return": { "kind": "value", "value": true, "note": "[R] — general APG/Radix convention" },
+    "behavior.close-button-action": { "kind": "off", "note": "no close-button part exists to wire — see structure.close-button" },
+    "behavior.positioning-engine": { "kind": "value", "value": "Radix's own Popper primitive (external, unvendored)", "note": "[R]" },
+
+    "prop.placement": { "kind": "value", "value": ["top", "right", "bottom", "left"], "note": "Radix's own `side` prop, passed through via ...props, no override in popover.tsx itself; default \"bottom\" [R], Radix Popper's own documented default" },
+    "prop.align": { "kind": "value", "value": ["start", "center", "end"], "source": "PopoverContent's own align prop, explicitly destructured with default \"center\"" },
+
+    "style.popup.background": { "kind": "alias", "slot": "popup-bg" },
+    "style.popup.color": { "kind": "alias", "slot": "popup-fg" },
+    "style.popup.border": { "kind": "value", "value": { "border": "1px solid var(--popup-border)" }, "source": "PopoverContent's bare border utility -> --border" },
+    "style.popup.shape": { "kind": "alias", "slot": "radius-popup" },
+    "style.popup.shadow": { "kind": "alias", "slot": "popup-shadow" },
+    "style.popup.width": { "kind": "value", "value": "288px", "source": "class w-72" },
+    "style.popup.font": { "kind": "off", "note": "CONFIRMED OFF — see popup-font-off provenance" },
+    "style.popup.z-index": { "kind": "value", "value": "50", "source": "class z-50" },
+    "style.popup.outline@focus": { "kind": "value", "value": "none", "note": "approximation of Tailwind's outline-hidden utility — see popup-outline-hidden provenance" },
+    "style.popup.entrance-transition": { "kind": "value", "value": "fade-in-and-zoom-in 150ms ease-out", "note": "REGISTRY RENDERING APPROXIMATION — see popup-entrance-transition provenance; tw-animate-css's real keyframe/duration isn't vendored in this clone" },
+    "style.popup.padding": { "kind": "value", "value": "16px", "source": "class p-4" },
+
+    "style.content.padding": { "kind": "off", "note": "no separate content wrapper exists — see structure.content" },
+
+    "style.arrow.size": { "kind": "off", "note": "no arrow part — see structure.arrow" },
+    "style.arrow.color": { "kind": "off", "note": "no arrow part — see structure.arrow" },
+
+    "style.header.padding": { "kind": "off", "note": "CONFIRMED OFF — see header-padding-off provenance" },
+    "style.header.gap": { "kind": "value", "value": "4px", "source": "class gap-1" },
+
+    "style.title.font": { "kind": "value", "value": { "font-weight": "500" }, "source": "class font-medium; size/family left unset — see title-font provenance" },
+
+    "style.description.color": { "kind": "alias", "slot": "fg-muted" },
+    "style.description.font": { "kind": "value", "value": "400 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif", "source": "inherited text-sm — see description-font provenance" },
+
+    "style.close-button.position": { "kind": "off", "note": "no close-button part — see structure.close-button" }
+  }
+}
