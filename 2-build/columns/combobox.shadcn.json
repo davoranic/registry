@@ -1,0 +1,513 @@
+{
+  "system": "shadcn",
+  "component": "combobox",
+  "fontFaces": [],
+  "slots": {
+    "light": {
+      "field-bg": "transparent",
+      "fg": "oklch(0% 0 0)",
+      "fg-secondary": "oklch(0.556 0 0)",
+      "border-base": "oklch(0.922 0 0)",
+      "popup-border": "oklch(1 0 0 / 10%)",
+      "popup-bg": "oklch(1 0 0)",
+      "popup-fg": "oklch(0% 0 0)",
+      "accent-bg": "oklch(0.97 0 0)",
+      "accent-fg": "oklch(0.205 0 0)",
+      "focus": "oklch(0.708 0 0)",
+      "danger": "oklch(0.577 0.245 27.325)",
+      "shadow-color": "rgb(0 0 0 / 0.05)",
+      "popup-shadow": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      "radius-control": "calc(0.625rem * 0.8)",
+      "radius-popup": "calc(0.625rem * 0.8)",
+      "radius-option": "calc(0.625rem * 0.6)",
+      "type-body": "400 0.875rem/1.25rem ui-sans-serif, system-ui, sans-serif",
+      "type-group-label": "400 0.75rem/1rem ui-sans-serif, system-ui, sans-serif",
+      "ring-alpha": "50%",
+      "ring-alpha-invalid": "20%",
+      "bg-current": "var(--field-bg)",
+      "border-current": "var(--border-base)",
+      "border-current-active": "var(--focus)",
+      "ring-current": "var(--focus)",
+      "ring-alpha-current": "var(--ring-alpha)",
+      "combobox-trigger-width": "0px"
+    },
+    "dark": {
+      "field-bg": "color-mix(in oklab, oklch(1 0 0 / 15%) 30%, transparent)",
+      "fg": "oklch(0.985 0 0)",
+      "fg-secondary": "oklch(0.708 0 0)",
+      "border-base": "oklch(1 0 0 / 15%)",
+      "popup-border": "oklch(1 0 0 / 10%)",
+      "popup-bg": "oklch(0.205 0 0)",
+      "popup-fg": "oklch(0.985 0 0)",
+      "accent-bg": "oklch(0.371 0 0)",
+      "accent-fg": "oklch(0.985 0 0)",
+      "focus": "oklch(0.556 0 0)",
+      "danger": "oklch(0.704 0.191 22.216)",
+      "ring-alpha-invalid": "40%"
+    }
+  },
+  "modeInvariant": [
+    "shadow-color",
+    "popup-shadow",
+    "popup-border"
+  ],
+  "provenance": {
+    "canonical-source": "apps/v4/registry/new-york-v4/ui/combobox.tsx \u2014 sixteen exported parts, over @base-ui/react's Combobox primitive (external, unvendored \u2014 package.json dependency \"@base-ui/react\": \"1.6.0\", no node_modules/@base-ui/ anywhere under 3-source/). Every STYLE value below comes from this file plus apps/v4/registry/new-york-v4/ui/input-group.tsx, which ComboboxInput composes for its own trigger chrome (InputGroup/InputGroupAddon/InputGroupButton/InputGroupInput). See COMBOBOX-MATRIX.md's own scope note for the real, sourced correction to this build's starting hypothesis (shadcn ships a dedicated primitive now, not only the older compose-Command-in-a-Popover pattern).",
+    "field-bg": "InputGroup's own class `dark:bg-input/30`, no light-mode background class at all \u2014 transparent in light, identical derivation to select.shadcn.json's own field-bg (though select ALSO composes a dark hover variant; combobox's InputGroup does not \u2014 see no-hover provenance below).",
+    "fg": "ComboboxInput composes InputGroupInput -> Input, which sets no text-colour class; the ambient --foreground applies, identical to select's own fg.",
+    "fg-secondary": "--muted-foreground. THREE consumers: ComboboxLabel's text-muted-foreground, ComboboxEmpty's text-muted-foreground, and the placeholder attribute's own ambient colour (Input's own ::placeholder rule, not overridden here).",
+    "border-base": "InputGroup's own class `border border-input` -> --input, identical token chain to select's own border-base.",
+    "popup-border": "ComboboxContent's own class `ring-1 ring-foreground/10` \u2014 a REAL, SOURCED DIVERGENCE from select's shadcn popup, which uses a bare `border` utility -> --border. combobox.tsx composes a RING here instead of a border utility; --foreground/10% resolves to the SAME numeric alpha in both modes (oklch(...)/10%), which is why this slot is recorded modeInvariant unlike select's own popup-border, whose --border token genuinely differs by mode.",
+    "popup-bg / popup-fg": "ComboboxPrimitive.Popup's own class `bg-popover text-popover-foreground` -> --popover / --popover-foreground, identical to select's own popup-bg/-fg.",
+    "accent-bg / accent-fg": "ComboboxItem's own class `data-highlighted:bg-accent data-highlighted:text-accent-foreground` -> --accent / --accent-foreground, the SAME mechanism select's shadcn column documents (base-ui's own internal highlighted-index concept driving the data attribute, not real DOM focus \u2014 see COMBOBOX-MATRIX.md behavior.focus-model).",
+    "focus": "InputGroup's own class `has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[...]:ring-[3px] has-[...]:ring-ring/50` -> --ring. The has-[] selector reacts to InputGroupInput's own data-slot=\"input-group-control\" attribute receiving :focus-visible \u2014 confirmed by reading input-group.tsx directly.",
+    "danger": "InputGroup's own class `has-[[data-slot][aria-invalid=true]]:border-destructive has-[...]:ring-destructive/20 dark:has-[...]:ring-destructive/40` -> --destructive, same two-alpha structure as select's own danger slot.",
+    "shadow-color / popup-shadow": "InputGroup's own class `shadow-xs`; ComboboxContent's own class `shadow-md`. Same values and same [R] Tailwind-default caveat select.shadcn.json's own popup-shadow entry records (package not vendored).",
+    "radius-control / radius-popup / radius-option": "InputGroup's own class `rounded-md` (trigger); ComboboxContent's own class `rounded-md` (popup); ComboboxItem's own class `rounded-sm` (option) \u2014 identical values to select's own radius family.",
+    "type-body / type-group-label": "ComboboxItem's own class `text-sm`; ComboboxLabel's own class `text-xs` with no weight utility \u2014 identical values to select's own type-body/type-group-label.",
+    "no-hover-on-trigger": "CONFIRMED ABSENCE: neither InputGroup's own className (read in full) nor combobox.tsx's own ComboboxInput/ComboboxTrigger className strings carry any `hover:` utility of any kind \u2014 a real, sourced CONTRAST with select.shadcn.json's own field-bg-hover row (select's trigger DOES react to the pointer, in dark mode only). combobox's trigger is inert to hover in both modes, matching shadcn's plain Input's own no-hover finding (INPUT-MATRIX.md finding 5) rather than select's own exception to it.",
+    "no-item-aligned": "ComboboxContent's own destructured `side = \"bottom\"`, `align = \"start\"` defaults \u2014 no item-aligned/overlay mode exists for this primitive at all, unlike select's Radix-based Content, whose default IS item-aligned. See COMBOBOX-MATRIX.md Finding 3.",
+    "anchor-width-popup": "ComboboxContent's own class `w-(--anchor-width)` \u2014 base-ui's Positioner publishes this custom property as the measured anchor's own width, and the popup is tied to it BY DEFAULT (unlike select's Radix Content, whose min-w-[8rem] fixed floor applies unless position=\"popper\"). A real, sourced structural divergence recorded on style.popup.min-width.",
+    "duration-100-animation": "ComboboxContent's own class `duration-100` alongside `data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95` \u2014 a real, sourced 100ms duration utility SET EXPLICITLY on this component, unlike select's shadcn popup (which relies on tw-animate-css's own undeclared 150ms default with no duration utility of its own). Recorded as [S] for the number (a literal Tailwind duration-100 utility, not a package default), [R] only for the easing curve (still tw-animate-css's own ease-out, unvendored).",
+    "clear-and-trigger-buttons": "ComboboxClear/ComboboxTrigger both compose InputGroupButton size=\"icon-xs\" variant=\"ghost\" \u2014 a 16px icon box (Button's own size-icon-xs class family, reused rather than re-derived from button.shadcn.json), no border, no background at rest.",
+    "empty-state": "ComboboxEmpty's own class `py-2 text-center text-sm text-muted-foreground`, shown via `group-data-empty/combobox-content:flex` when base-ui's own internal empty-items state is true."
+  },
+  "cells": {
+    "structure.trigger": {
+      "kind": "value",
+      "value": true,
+      "source": "combobox.tsx ComboboxInput renders ComboboxPrimitive.Input via InputGroupInput -> a real <input> element"
+    },
+    "structure.indicator": {
+      "kind": "value",
+      "value": [
+        "box"
+      ],
+      "note": "structurally always a full border \u2014 InputGroup's own chrome, no underline mechanism of any kind anywhere in combobox.tsx or input-group.tsx",
+      "source": "input-group.tsx InputGroup class `rounded-md border border-input`"
+    },
+    "structure.toggle-button": {
+      "kind": "value",
+      "value": "static",
+      "source": "combobox.tsx ComboboxTrigger, data-slot=\"combobox-trigger\", a single static ChevronDownIcon, never swapped"
+    },
+    "structure.clear-button": {
+      "kind": "value",
+      "value": true,
+      "source": "combobox.tsx ComboboxClear, data-slot=\"combobox-clear\", opt-in via ComboboxInput's own showClear prop (default false), holds an XIcon"
+    },
+    "structure.popup": {
+      "kind": "value",
+      "value": true,
+      "source": "combobox.tsx ComboboxPrimitive.Portal > Positioner > Popup, data-slot=\"combobox-content\""
+    },
+    "structure.option-group": {
+      "kind": "value",
+      "value": true,
+      "source": "combobox.tsx ComboboxGroup + ComboboxLabel"
+    },
+    "structure.separator": {
+      "kind": "value",
+      "value": true,
+      "source": "combobox.tsx ComboboxSeparator"
+    },
+    "structure.empty-state": {
+      "kind": "value",
+      "value": true,
+      "source": "combobox.tsx ComboboxEmpty \u2014 a real, dedicated part with no equivalent in Salt or M3"
+    },
+    "structure.selected-marker": {
+      "kind": "value",
+      "value": "check",
+      "source": "combobox.tsx ComboboxItem renders ComboboxItemIndicator holding a CheckIcon, absolutely positioned right-2, pr-8 reserved on every item"
+    },
+    "structure.popup-anchor": {
+      "kind": "value",
+      "value": "below",
+      "source": "combobox.tsx ComboboxContent side=\"bottom\" (default), align=\"start\" (default) \u2014 see the no-item-aligned provenance entry"
+    },
+    "behavior.pointer-activates-option": {
+      "kind": "value",
+      "value": true,
+      "note": "[R] \u2014 data-highlighted styling implies pointer-move highlighting, not independently confirmable at the event level (unvendored)",
+      "source": "combobox.tsx ComboboxItem data-highlighted:bg-accent"
+    },
+    "behavior.status-inheritance": {
+      "kind": "off",
+      "note": "no context channel"
+    },
+    "behavior.empty-readonly-marker": {
+      "kind": "off",
+      "note": "no equivalent"
+    },
+    "behavior.readonly-suppresses-popup": {
+      "kind": "off",
+      "note": "ComboboxInput's own destructured props are only disabled/showTrigger/showClear \u2014 no readOnly prop exists"
+    },
+    "behavior.multiselect": {
+      "kind": "value",
+      "value": true,
+      "note": "DECLARED OUT OF SCOPE \u2014 see COMBOBOX-MATRIX.md scope note",
+      "source": "base-ui's own `multiple` prop plus combobox.tsx's ComboboxChips/ComboboxChip/ComboboxChipsInput"
+    },
+    "prop.variant": {
+      "kind": "off"
+    },
+    "prop.validation-status": {
+      "kind": "value",
+      "value": [
+        "error"
+      ],
+      "note": "a single boolean (aria-invalid), not an enum",
+      "source": "input-group.tsx InputGroup: has-[[data-slot][aria-invalid=true]]:border-destructive has-[...]:ring-destructive/20 dark:has-[...]:ring-destructive/40"
+    },
+    "prop.disabled": {
+      "kind": "value",
+      "value": [
+        true,
+        false
+      ],
+      "source": "combobox.tsx ComboboxInput disabled = false destructured, forwarded to InputGroupInput -> Input's own disabled styling"
+    },
+    "prop.read-only": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENT \u2014 no readOnly prop on ComboboxInput"
+    },
+    "prop.placeholder": {
+      "kind": "value",
+      "value": true,
+      "source": "combobox.tsx ComboboxInput placeholder prop passed straight to the native <input>"
+    },
+    "slot.group-label": {
+      "kind": "value",
+      "value": true
+    },
+    "slot.empty-state-text": {
+      "kind": "value",
+      "value": true
+    },
+    "state.read-only": {
+      "kind": "off"
+    },
+    "style.trigger.background": {
+      "kind": "alias",
+      "slot": "bg-current"
+    },
+    "style.trigger.background@box": {
+      "kind": "off",
+      "note": "box is shadcn's only mode"
+    },
+    "style.trigger.color": {
+      "kind": "alias",
+      "slot": "fg"
+    },
+    "style.trigger.font": {
+      "kind": "alias",
+      "slot": "type-body"
+    },
+    "style.trigger.letter-spacing": {
+      "kind": "off"
+    },
+    "style.trigger.min-height": {
+      "kind": "value",
+      "value": "36px",
+      "source": "input-group.tsx InputGroup class h-9"
+    },
+    "style.trigger.padding": {
+      "kind": "value",
+      "value": "0 12px",
+      "source": "InputGroup composes InputGroupInput, which inherits Input's own horizontal padding via the has-[>[data-align]] rules; combobox.tsx's own ComboboxInput sets no extra padding class"
+    },
+    "style.trigger.gap": {
+      "kind": "value",
+      "value": "8px",
+      "source": "InputGroupAddon's own class gap-2"
+    },
+    "style.trigger.shape": {
+      "kind": "alias",
+      "slot": "radius-control"
+    },
+    "style.trigger.shape@box": {
+      "kind": "off"
+    },
+    "style.trigger.cursor": {
+      "kind": "off",
+      "note": "no cursor utility on the input itself; the browser's native text-input cursor applies, which IS text \u2014 same rendered result as Salt's explicit token, but shadcn declares nothing"
+    },
+    "style.trigger.transition": {
+      "kind": "value",
+      "value": "color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+      "note": "property list [S]; duration/easing [R] \u2014 Tailwind defaults, package not vendored",
+      "source": "input-group.tsx InputGroup class transition-[color,box-shadow]"
+    },
+    "style.trigger.border@box": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--border-current)"
+      },
+      "source": "input-group.tsx InputGroup class `border border-input`"
+    },
+    "style.indicator.border@underline": {
+      "kind": "off"
+    },
+    "style.trigger.background@hover": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE \u2014 see no-hover-on-trigger provenance; a real contrast with select's own dark-mode hover"
+    },
+    "style.trigger.border@box-hover": {
+      "kind": "off"
+    },
+    "style.indicator.border@underline-hover": {
+      "kind": "off"
+    },
+    "style.trigger.border@box-focus": {
+      "kind": "value",
+      "value": {
+        "border-color": "var(--border-current-active)"
+      },
+      "source": "input-group.tsx InputGroup class has-[[data-slot=input-group-control]:focus-visible]:border-ring"
+    },
+    "style.indicator.border@underline-focus": {
+      "kind": "off"
+    },
+    "style.trigger.focus": {
+      "kind": "value",
+      "value": {
+        "outline": "none",
+        "box-shadow": "0 0 0 3px color-mix(in oklab, var(--ring-current) var(--ring-alpha-current), transparent), 0 1px 2px 0 var(--shadow-color)"
+      },
+      "source": "input-group.tsx InputGroup class has-[...]:ring-[3px] has-[...]:ring-ring/50, layered after shadow-xs the same way select.shadcn.json's own style.trigger.focus documents"
+    },
+    "style.trigger.background@readonly": {
+      "kind": "off"
+    },
+    "style.trigger.background@disabled": {
+      "kind": "off",
+      "note": "one blanket opacity via the composed Input's own disabled styling"
+    },
+    "style.trigger.background@box-disabled": {
+      "kind": "off"
+    },
+    "style.trigger.color@disabled": {
+      "kind": "off"
+    },
+    "style.trigger.disabled": {
+      "kind": "value",
+      "value": {
+        "opacity": "0.5",
+        "cursor": "not-allowed"
+      },
+      "source": "combobox.tsx ComboboxInput forwards disabled to InputGroupInput -> Input, which carries disabled:opacity-50 disabled:cursor-not-allowed"
+    },
+    "style.value.placeholder": {
+      "kind": "value",
+      "value": {
+        "color": "var(--fg-secondary)"
+      },
+      "source": "the composed Input's own ::placeholder rule -> text-muted-foreground"
+    },
+    "style.toggle-button.size": {
+      "kind": "value",
+      "value": {
+        "width": "16px",
+        "height": "16px"
+      },
+      "source": "combobox.tsx ComboboxTrigger's own [&_svg:not([class*='size-'])]:size-4 rule, matching the chevron"
+    },
+    "style.toggle-button.color": {
+      "kind": "value",
+      "value": {
+        "color": "var(--fg-secondary)"
+      },
+      "source": "combobox.tsx ChevronDownIcon className text-muted-foreground"
+    },
+    "style.clear-button.size": {
+      "kind": "value",
+      "value": {
+        "width": "16px",
+        "height": "16px"
+      },
+      "source": "combobox.tsx ComboboxClear composes InputGroupButton size=\"icon-xs\" \u2014 see the clear-and-trigger-buttons provenance entry"
+    },
+    "style.popup.background": {
+      "kind": "alias",
+      "slot": "popup-bg"
+    },
+    "style.popup.color": {
+      "kind": "alias",
+      "slot": "popup-fg"
+    },
+    "style.popup.border": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--popup-border)"
+      },
+      "note": "a RING utility (ring-1 ring-foreground/10), not the bare `border` utility select's own popup uses \u2014 see the popup-border provenance entry",
+      "source": "combobox.tsx ComboboxContent class ring-1 ring-foreground/10"
+    },
+    "style.popup.shape": {
+      "kind": "alias",
+      "slot": "radius-popup"
+    },
+    "style.popup.shadow": {
+      "kind": "alias",
+      "slot": "popup-shadow"
+    },
+    "style.popup.padding": {
+      "kind": "value",
+      "value": "4px",
+      "source": "combobox.tsx ComboboxList class p-1"
+    },
+    "style.popup.min-width": {
+      "kind": "value",
+      "value": "var(--combobox-trigger-width, 0px)",
+      "note": "a REAL structural divergence from select's shadcn column: this popup is tied to the anchor's own width by default (w-(--anchor-width)), not a fixed 8rem floor \u2014 see the anchor-width-popup provenance entry",
+      "source": "combobox.tsx ComboboxContent class w-(--anchor-width)"
+    },
+    "style.popup.z-index": {
+      "kind": "value",
+      "value": "50",
+      "source": "combobox.tsx ComboboxPositioner class isolate z-50"
+    },
+    "style.popup.animation": {
+      "kind": "value",
+      "value": "combobox-popup-in 100ms ease-out",
+      "note": "100ms IS [S] (a literal duration-100 utility); ease-out is [R] \u2014 see the duration-100-animation provenance entry",
+      "source": "combobox.tsx ComboboxContent class duration-100 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95"
+    },
+    "style.option.background": {
+      "kind": "value",
+      "value": "transparent"
+    },
+    "style.option.color": {
+      "kind": "off"
+    },
+    "style.option.font": {
+      "kind": "alias",
+      "slot": "type-body"
+    },
+    "style.option.min-height": {
+      "kind": "off"
+    },
+    "style.option.padding": {
+      "kind": "value",
+      "value": "6px 32px 6px 8px",
+      "source": "combobox.tsx ComboboxItem class py-1.5 pr-8 pl-2"
+    },
+    "style.option.gap": {
+      "kind": "value",
+      "value": "8px",
+      "source": "combobox.tsx ComboboxItem class gap-2"
+    },
+    "style.option.cursor": {
+      "kind": "value",
+      "value": "default",
+      "source": "combobox.tsx ComboboxItem class cursor-default"
+    },
+    "style.option.background@hover": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE \u2014 highlight is data-highlighted, not hover:"
+    },
+    "style.option.active": {
+      "kind": "value",
+      "value": {
+        "background-color": "var(--accent-bg)",
+        "color": "var(--accent-fg)"
+      },
+      "source": "combobox.tsx ComboboxItem class data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+    },
+    "style.option.focus-visible": {
+      "kind": "off"
+    },
+    "style.option.disabled": {
+      "kind": "value",
+      "value": {
+        "opacity": "0.5",
+        "pointer-events": "none"
+      },
+      "source": "combobox.tsx ComboboxItem class data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+    },
+    "style.option.selected": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE \u2014 marked only by the checkmark, see structure.selected-marker"
+    },
+    "style.selected-marker.box": {
+      "kind": "value",
+      "value": {
+        "right": "8px",
+        "width": "16px",
+        "height": "16px"
+      },
+      "source": "combobox.tsx ComboboxItemIndicator span class absolute right-2 flex size-4, holding a size-4 CheckIcon"
+    },
+    "style.group-label.font": {
+      "kind": "alias",
+      "slot": "type-group-label"
+    },
+    "style.group-label.color": {
+      "kind": "alias",
+      "slot": "fg-secondary"
+    },
+    "style.group-label.padding": {
+      "kind": "value",
+      "value": {
+        "padding": "6px 8px"
+      },
+      "source": "combobox.tsx ComboboxLabel class px-2 py-1.5"
+    },
+    "style.group.border-top": {
+      "kind": "off"
+    },
+    "style.separator": {
+      "kind": "value",
+      "value": {
+        "height": "1px",
+        "margin": "4px -4px",
+        "background-color": "var(--popup-border)",
+        "pointer-events": "none"
+      },
+      "source": "combobox.tsx ComboboxSeparator class -mx-1 my-1 h-px bg-border"
+    },
+    "style.empty.color": {
+      "kind": "alias",
+      "slot": "fg-secondary",
+      "source": "combobox.tsx ComboboxEmpty class text-muted-foreground"
+    },
+    "style.empty.font": {
+      "kind": "value",
+      "value": "0.875rem/1.25rem",
+      "source": "combobox.tsx ComboboxEmpty class text-sm"
+    },
+    "style.empty.padding": {
+      "kind": "value",
+      "value": "8px 0",
+      "source": "combobox.tsx ComboboxEmpty class py-2"
+    },
+    "style.trigger.variant@secondary": {
+      "kind": "off"
+    },
+    "style.trigger.variant@tertiary": {
+      "kind": "off"
+    },
+    "style.trigger.status@error": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--danger)",
+        "--border-current-active": "var(--danger)",
+        "--ring-current": "var(--danger)",
+        "--ring-alpha-current": "var(--ring-alpha-invalid)"
+      },
+      "source": "input-group.tsx InputGroup class has-[[data-slot][aria-invalid=true]]:border-destructive has-[...]:ring-destructive/20 dark:has-[...]:ring-destructive/40"
+    },
+    "style.trigger.status@warning": {
+      "kind": "off"
+    },
+    "style.trigger.status@success": {
+      "kind": "off"
+    }
+  }
+}

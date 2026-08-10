@@ -1,0 +1,638 @@
+{
+  "system": "salt",
+  "component": "combobox",
+  "fontFaces": [
+    {
+      "family": "Open Sans",
+      "weight": "400",
+      "file": "fonts/open-sans-400.woff2"
+    },
+    {
+      "family": "Open Sans",
+      "weight": "600",
+      "file": "fonts/open-sans-600.woff2"
+    }
+  ],
+  "slots": {
+    "light": {
+      "field-bg": "rgb(255, 255, 255)",
+      "field-bg-secondary": "rgb(245, 247, 248)",
+      "field-bg-tertiary": "rgb(250, 248, 242)",
+      "field-bg-disabled": "rgba(255, 255, 255, 0.4)",
+      "field-bg-secondary-disabled": "rgba(245, 247, 248, 0.4)",
+      "field-bg-tertiary-disabled": "rgba(250, 248, 242, 0.4)",
+      "field-bg-readonly": "transparent",
+      "fg": "rgb(0, 0, 0)",
+      "fg-disabled": "rgba(0, 0, 0, 0.4)",
+      "fg-secondary": "rgb(76, 81, 87)",
+      "border": "rgb(114, 119, 125)",
+      "border-hover": "rgb(0, 120, 207)",
+      "border-active": "rgb(0, 69, 126)",
+      "border-readonly": "rgba(114, 119, 125, 0.1)",
+      "border-disabled": "rgba(114, 119, 125, 0.4)",
+      "accent": "rgb(0, 120, 207)",
+      "accent-weakest": "rgb(234, 246, 255)",
+      "accent-weaker": "rgb(199, 222, 255)",
+      "status-error": "rgb(229, 33, 53)",
+      "status-warning": "rgb(199, 83, 0)",
+      "status-success": "rgb(0, 135, 93)",
+      "status-error-bg": "rgb(255, 236, 234)",
+      "status-warning-bg": "rgb(255, 236, 217)",
+      "status-success-bg": "rgb(234, 245, 242)",
+      "popup-bg": "rgb(255, 255, 255)",
+      "popup-shadow": "0 6px 10px 0 rgba(0, 0, 0, 0.2)",
+      "separator-color": "rgba(0, 0, 0, 0.2)",
+      "popup-gap": "1px",
+      "bg-current": "var(--field-bg)",
+      "bg-current-disabled": "var(--field-bg-disabled)",
+      "bg-current-readonly": "var(--field-bg-readonly)",
+      "border-current": "var(--border)",
+      "border-current-hover": "var(--border-hover)",
+      "border-current-active": "var(--border-active)",
+      "outline-current": "var(--border-active)",
+      "combobox-trigger-width": "0px"
+    },
+    "dark": {
+      "field-bg": "rgb(16, 24, 32)",
+      "field-bg-secondary": "rgb(26, 34, 41)",
+      "field-bg-tertiary": "rgb(38, 41, 43)",
+      "field-bg-disabled": "rgba(16, 24, 32, 0.4)",
+      "field-bg-secondary-disabled": "rgba(26, 34, 41, 0.4)",
+      "field-bg-tertiary-disabled": "rgba(38, 41, 43, 0.4)",
+      "fg": "rgb(255, 255, 255)",
+      "fg-disabled": "rgba(255, 255, 255, 0.4)",
+      "fg-secondary": "rgb(177, 181, 185)",
+      "border-active": "rgb(154, 189, 245)",
+      "accent-weakest": "rgb(0, 23, 54)",
+      "accent-weaker": "rgb(0, 45, 89)",
+      "status-error-bg": "rgb(69, 0, 2)",
+      "status-warning-bg": "rgb(66, 32, 0)",
+      "status-success-bg": "rgb(0, 41, 21)",
+      "popup-bg": "rgb(16, 24, 32)",
+      "popup-shadow": "0 6px 10px 0 rgba(0, 0, 0, 0.55)",
+      "separator-color": "rgba(255, 255, 255, 0.2)"
+    },
+    "byDensity": {
+      "high": {
+        "control-height": "20px",
+        "field-padding": "0 4px",
+        "trigger-gap": "2px",
+        "corner-weak": "2px",
+        "popup-corner": "3px",
+        "type-body": "400 11px/14px 'Open Sans', sans-serif",
+        "type-group-label": "600 10px/13px 'Open Sans', sans-serif",
+        "toggle-icon-size": "12px",
+        "option-min-height": "24px",
+        "option-padding": "5px 4px",
+        "option-gap": "4px"
+      },
+      "medium": {
+        "control-height": "28px",
+        "field-padding": "0 8px",
+        "trigger-gap": "4px",
+        "corner-weak": "4px",
+        "popup-corner": "6px",
+        "type-body": "400 12px/16px 'Open Sans', sans-serif",
+        "type-group-label": "600 11px/14px 'Open Sans', sans-serif",
+        "toggle-icon-size": "12px",
+        "option-min-height": "36px",
+        "option-padding": "10px 8px",
+        "option-gap": "8px"
+      },
+      "low": {
+        "control-height": "36px",
+        "field-padding": "0 12px",
+        "trigger-gap": "6px",
+        "corner-weak": "6px",
+        "popup-corner": "9px",
+        "type-body": "400 14px/18px 'Open Sans', sans-serif",
+        "type-group-label": "600 12px/16px 'Open Sans', sans-serif",
+        "toggle-icon-size": "14px",
+        "option-min-height": "48px",
+        "option-padding": "15px 12px",
+        "option-gap": "12px"
+      },
+      "touch": {
+        "control-height": "44px",
+        "field-padding": "0 16px",
+        "trigger-gap": "8px",
+        "corner-weak": "8px",
+        "popup-corner": "12px",
+        "type-body": "400 16px/20px 'Open Sans', sans-serif",
+        "type-group-label": "600 14px/18px 'Open Sans', sans-serif",
+        "toggle-icon-size": "16px",
+        "option-min-height": "60px",
+        "option-padding": "20px 16px",
+        "option-gap": "16px"
+      }
+    }
+  },
+  "modeInvariant": [
+    "border",
+    "border-hover",
+    "border-readonly",
+    "border-disabled",
+    "accent",
+    "status-error",
+    "status-warning",
+    "status-success",
+    "field-bg-readonly"
+  ],
+  "provenance": {
+    "primary-source": "packages/core/src/combo-box/{ComboBox.tsx,useComboBox.ts} for the trigger and selection model; packages/core/src/pill-input/{PillInput.tsx,PillInput.css} for the editable field chassis; packages/core/src/option/{Option.tsx,Option.css,OptionList.tsx,OptionList.css,OptionGroup.tsx,OptionGroup.css} for the popup and its contents \u2014 the IDENTICAL shared components select.salt.json already extracted, confirmed by import path (ComboBox.tsx: `import { OptionList } from \"../option/OptionList\"`, the literal same module Dropdown.tsx imports). Every style.popup.*/style.option.*/style.group-label.*/style.group.border-top/style.separator value below is REUSED VERBATIM from select.salt.json rather than re-derived \u2014 see COMBOBOX-MATRIX.md Finding 1.",
+    "field-bg / field-bg-secondary / field-bg-tertiary": "PillInput.css .saltPillInput-{primary,secondary,tertiary} { --pillInput-background: var(--salt-editable-{variant}-background) } \u2014 the IDENTICAL token chain Dropdown.css uses for its own --dropdown-background, so the resolved colours are identical to select.salt.json's own field-bg family.",
+    "field-bg-*-disabled": "--pillInput-background-disabled (secondary/tertiary blocks only set this key; primary's disabled state is read via .saltPillInput-disabled's OWN --pillInput-background-disabled fallback) -> editable-{variant}-background-disabled, identical resolution to select.",
+    "field-bg-readonly": "--pillInput-background-readonly -> editable-background-readonly -> --salt-color-transparent, identical to select's own readonly background.",
+    "fg / fg-disabled": "PillInput.css: color: var(--saltPillInput-color, var(--salt-content-primary-foreground)); .saltPillInput-disabled sets color: var(--saltPillInput-color-disabled, var(--salt-content-primary-foreground-disabled)) -> black-40a / white-40a. Identical to select's own fg family.",
+    "fg-secondary": "PillInput.css .saltPillInput-input::placeholder { color: var(--salt-content-secondary-foreground); font-weight: var(--salt-text-fontWeight-small) } \u2014 the SAME token select's own placeholder and group-label rows use.",
+    "border / border-hover / border-active": ".saltPillInput-primary { --pillInput-borderColor: var(--salt-editable-borderColor); --pillInput-borderColor-hover: var(--salt-editable-borderColor-hover); --pillInput-borderColor-active: var(--salt-editable-borderColor-active) } \u2014 the IDENTICAL token chain Dropdown.css uses, so the resolved colours are identical to select's own border family.",
+    "border-readonly / border-disabled": ".saltPillInput-bordered.saltPillInput-readOnly/-disabled hang these off CLASSES here (not the [aria-readonly]/:disabled attribute/pseudo-class Dropdown.css uses) but resolve through the identical editable-borderColor-readonly/-disabled tokens.",
+    "accent / accent-weakest / accent-weaker": "IDENTICAL to select's own \u2014 OptionList/Option are the same shared components.",
+    "status-*": "PillInput.css .saltPillInput-{error,warning,success} { --pillInput-borderColor/-borderColor-active/-borderColor-hover/-outlineColor: var(--salt-status-{s}-borderColor); --pillInput-background/-background-readonly: var(--salt-status-{s}-background) } \u2014 the IDENTICAL token chain Dropdown.css uses. Note PillInput's status blocks additionally reassign background-readonly directly (Dropdown's own status blocks do this too, matching select.salt.json's own style.trigger.status@error cell).",
+    "popup-bg / popup-shadow / separator-color / popup-gap / popup-corner": "IDENTICAL to select.salt.json's own values \u2014 same OptionList.css/OptionGroup.css source files, same shared components.",
+    "byDensity.control-height": "PillInput.css min-height: var(--saltPillInput-minHeight, var(--salt-size-base)) -> 20/28/36/44px, identical to select's own field, though note PillInput ALSO sets a min-width default of 4em inline (--saltPillInput-minWidth) unlike Dropdown, which hardcodes it as a bare literal \u2014 same resolved value, different override mechanism.",
+    "byDensity.field-padding": "PillInput.css padding-left/-right: var(--saltPillInput-paddingLeft/-paddingRight, var(--salt-spacing-100)) \u2014 identical zero-vertical-padding shape to select's trigger.",
+    "byDensity.trigger-gap": "PillInput.css .saltPillInput-inputWrapper { gap: var(--salt-spacing-50) } \u2014 HALF select's own field-gap (spacing-100). A real, sourced divergence between the two Salt trigger chassis: PillInput's internal wrapper (holding pills + the input) uses the half-step spacing scale, where Dropdown's trigger content uses the full step. spacing-50 = half of spacing-100 (foundations/spacing.md's own halving relationship, the same relationship spacing-25 = quarter already established for select's own option-padding formula) -> 2/4/6/8px by density.",
+    "byDensity.corner-weak / popup-corner / type-body / type-group-label / toggle-icon-size / option-min-height / option-padding": "IDENTICAL to select.salt.json's own byDensity values \u2014 PillInput.css's own border-radius: var(--salt-palette-corner-weak, 0) matches Dropdown.css exactly, and every option/group/icon value is read from the SAME shared Option/OptionGroup/Icon files select already extracted.",
+    "combobox-trigger-width": "Renamed slot for the same inline mechanism select's own popup-min-width uses (ComboBox.tsx's floating-ui size() middleware writes --overlay-minWidth = the trigger's own measured width, read by OptionList.css as min-width). The skeleton measures the trigger field and sets --combobox-trigger-width inline on the popup; this slot carries only the 0px fallback, per the SAME fix select.salt.json's own popup-min-width provenance entry documents (a var() inside a custom-property declaration resolves where it is DECLARED, not where it is used).",
+    "aria": "trigger input: role={readOnly?\"textbox\":\"combobox\"} (see COMBOBOX-MATRIX.md Finding 6 \u2014 this role FLIPS, unlike select's trigger which stays role=\"combobox\" regardless of readOnly), aria-expanded, aria-activedescendant, aria-controls (only while open), aria-readonly (only when readOnly). Popup: role=\"listbox\" on the FloatingComponent. Option: role=\"option\", aria-selected, aria-disabled, tabIndex={-1} \u2014 identical to select's own aria shape."
+  },
+  "cells": {
+    "structure.trigger": {
+      "kind": "value",
+      "value": true,
+      "source": "ComboBox.tsx renders PillInput, whose inner <input> carries role={readOnly?\"textbox\":\"combobox\"}"
+    },
+    "structure.indicator": {
+      "kind": "value",
+      "value": [
+        "underline",
+        "box"
+      ],
+      "note": "ordered with the real default first, identical to select's own row. ComboBox.tsx: bordered = false forwarded to PillInput; PillInput.css renders .saltPillInput-activationIndicator unconditionally.",
+      "source": "ComboBox.tsx bordered?: boolean, default false; PillInput.css .saltPillInput-bordered vs .saltPillInput-activationIndicator"
+    },
+    "structure.toggle-button": {
+      "kind": "value",
+      "value": "swap",
+      "source": "ComboBox.tsx showOptionsButton: aria-expanded={openState} ... {openState ? <CollapseIcon aria-hidden/> : <ExpandIcon aria-hidden/>} \u2014 a real, nested Button, tabIndex={-1}, inside PillInput's endAdornment"
+    },
+    "structure.clear-button": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENT \u2014 grepped ComboBox.tsx and PillInput.tsx in full, no clear/reset affordance of any kind exists"
+    },
+    "structure.popup": {
+      "kind": "value",
+      "value": true,
+      "source": "ComboBox.tsx <OptionList aria-multiselectable={multiselect} open={...} ...>{children}</OptionList> \u2014 the identical shared part select.salt.json documents"
+    },
+    "structure.option-group": {
+      "kind": "value",
+      "value": true,
+      "source": "packages/core/src/option/OptionGroup.tsx, the identical shared part select uses"
+    },
+    "structure.separator": {
+      "kind": "off",
+      "note": "no separator component; the same border-top-on-the-group job select's Salt column documents"
+    },
+    "structure.empty-state": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENT \u2014 ComboBox.tsx renders children directly with no empty-list branch of any kind"
+    },
+    "structure.selected-marker": {
+      "kind": "value",
+      "value": "fill",
+      "source": "shared Option component \u2014 no glyph in single-select, identical to select's Salt column"
+    },
+    "structure.popup-anchor": {
+      "kind": "value",
+      "value": "below",
+      "source": "ComboBox.tsx useFloatingUI({ placement: \"bottom-start\", middleware: [offset(1), size(...), flip(...)] })"
+    },
+    "behavior.pointer-activates-option": {
+      "kind": "value",
+      "value": true,
+      "source": "Option.tsx handleMouseOver -> setActive(optionValue), identical mechanism to select's Salt column"
+    },
+    "behavior.status-inheritance": {
+      "kind": "value",
+      "value": true,
+      "source": "ComboBox.tsx const { a11yProps, disabled: formFieldDisabled, readOnly: formFieldReadOnly } = useFormFieldProps(); disabled = Boolean(disabledProp) || formFieldDisabled; readOnly = Boolean(readOnlyProp) || formFieldReadOnly"
+    },
+    "behavior.empty-readonly-marker": {
+      "kind": "value",
+      "value": "\u2014",
+      "source": "ComboBox.tsx forwards emptyReadOnlyMarker straight through to PillInput's own default \"\u2014\""
+    },
+    "behavior.readonly-suppresses-popup": {
+      "kind": "value",
+      "value": true,
+      "source": "ComboBox.tsx: useFloatingUI({ open: openState && !readOnly && hasValidChildren, ... }); handleOpenChange early-returns `if (readOnly || focusNotBlur) return`; handleKeyDown early-returns `if (readOnly) { return }`; PillInput role prop flips to \"textbox\" -- see the aria provenance entry and COMBOBOX-MATRIX.md Finding 6"
+    },
+    "behavior.multiselect": {
+      "kind": "value",
+      "value": true,
+      "note": "DECLARED OUT OF SCOPE \u2014 see COMBOBOX-MATRIX.md scope note",
+      "source": "ComboBox.tsx multiselect prop, PillInput's own pills/onPillRemove"
+    },
+    "prop.variant": {
+      "kind": "value",
+      "value": [
+        "primary",
+        "secondary",
+        "tertiary"
+      ],
+      "source": "ComboBox.tsx variant = \"primary\" forwarded straight to PillInput"
+    },
+    "prop.validation-status": {
+      "kind": "value",
+      "value": [
+        "error",
+        "warning",
+        "success"
+      ],
+      "source": "ComboBoxProps extends UseComboBoxProps<Item> & Omit<PillInputProps,...>, which carries validationStatus?: FormFieldValidationStatus"
+    },
+    "prop.disabled": {
+      "kind": "value",
+      "value": [
+        true,
+        false
+      ],
+      "source": "ComboBox.tsx disabled = Boolean(disabledProp) || formFieldDisabled"
+    },
+    "prop.read-only": {
+      "kind": "value",
+      "value": [
+        true,
+        false
+      ],
+      "source": "ComboBox.tsx readOnly = Boolean(readOnlyProp) || formFieldReadOnly"
+    },
+    "prop.placeholder": {
+      "kind": "value",
+      "value": true,
+      "source": "PillInputProps placeholder, forwarded through ComboBox's ...rest spread"
+    },
+    "slot.group-label": {
+      "kind": "value",
+      "value": true
+    },
+    "state.read-only": {
+      "kind": "value",
+      "value": true
+    },
+    "style.trigger.background": {
+      "kind": "alias",
+      "slot": "bg-current"
+    },
+    "style.trigger.background@box": {
+      "kind": "off",
+      "note": "bordered declares only a border, same as select's Salt column"
+    },
+    "style.trigger.color": {
+      "kind": "alias",
+      "slot": "fg"
+    },
+    "style.trigger.font": {
+      "kind": "alias",
+      "slot": "type-body"
+    },
+    "style.trigger.letter-spacing": {
+      "kind": "value",
+      "value": "0",
+      "source": "PillInput.css letter-spacing: var(--saltPillInput-letterSpacing, 0)"
+    },
+    "style.trigger.min-height": {
+      "kind": "alias",
+      "slot": "control-height"
+    },
+    "style.trigger.padding": {
+      "kind": "alias",
+      "slot": "field-padding"
+    },
+    "style.trigger.gap": {
+      "kind": "alias",
+      "slot": "trigger-gap"
+    },
+    "style.trigger.shape": {
+      "kind": "alias",
+      "slot": "corner-weak"
+    },
+    "style.trigger.shape@box": {
+      "kind": "off"
+    },
+    "style.trigger.cursor": {
+      "kind": "value",
+      "value": "text",
+      "source": "PillInput.css .saltPillInput:hover { cursor: var(--salt-cursor-text) } \u2014 see COMBOBOX-MATRIX.md Finding 6's sibling note: a real divergence from select's own pointer cursor, because this trigger is an editable field, not a button"
+    },
+    "style.trigger.transition": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE \u2014 no transition/animation rule anywhere in PillInput.css"
+    },
+    "style.trigger.border@box": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--border-current)"
+      },
+      "source": "PillInput.css .saltPillInput-bordered { border: var(--pillInput-borderWidth) var(--salt-borderStyle-solid) var(--pillInput-borderColor) }"
+    },
+    "style.indicator.border@underline": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "var(--border-current)"
+      },
+      "source": "PillInput.css .saltPillInput-activationIndicator { border-bottom: var(--salt-size-fixed-100) solid var(--pillInput-borderColor) }"
+    },
+    "style.trigger.background@hover": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE \u2014 PillInput.css changes only the cursor on hover, never the background, identical to select's own Salt column"
+    },
+    "style.trigger.border@box-hover": {
+      "kind": "value",
+      "value": {
+        "border-color": "var(--border-current-hover)"
+      },
+      "source": "PillInput.css .saltPillInput-bordered.saltPillInput:hover { border-color: var(--pillInput-borderColor-hover) }"
+    },
+    "style.indicator.border@underline-hover": {
+      "kind": "value",
+      "value": {
+        "border-bottom-color": "var(--border-current-hover)"
+      },
+      "source": "PillInput.css .saltPillInput:hover .saltPillInput-activationIndicator { border-bottom-color: var(--pillInput-borderColor-hover) }"
+    },
+    "style.trigger.border@box-focus": {
+      "kind": "value",
+      "value": {
+        "border-color": "var(--border-current-active)"
+      },
+      "source": "PillInput.css .saltPillInput-bordered.saltPillInput-focused { border-color: var(--pillInput-borderColor-active) }"
+    },
+    "style.indicator.border@underline-focus": {
+      "kind": "value",
+      "value": {
+        "border-bottom-width": "2px",
+        "border-bottom-color": "var(--border-current-active)"
+      },
+      "source": "PillInput.css .saltPillInput-focused .saltPillInput-activationIndicator { border-bottom: var(--salt-size-fixed-200) solid var(--pillInput-borderColor-active) }"
+    },
+    "style.trigger.focus": {
+      "kind": "value",
+      "value": {
+        "outline": "2px dotted var(--outline-current)"
+      },
+      "source": "PillInput.css .saltPillInput-focused { outline: var(--saltPillInput-outline, var(--salt-focused-outlineWidth) var(--salt-focused-outlineStyle) var(--pillInput-outlineColor)) } -> 2px dotted, reassigned to the status colour"
+    },
+    "style.trigger.background@readonly": {
+      "kind": "alias",
+      "slot": "bg-current-readonly",
+      "source": "PillInput.css .saltPillInput.saltPillInput-readOnly { background: var(--pillInput-background-readonly) }"
+    },
+    "style.trigger.background@disabled": {
+      "kind": "alias",
+      "slot": "bg-current-disabled",
+      "source": "PillInput.css .saltPillInput-disabled { background: var(--pillInput-background-disabled) }"
+    },
+    "style.trigger.background@box-disabled": {
+      "kind": "off"
+    },
+    "style.trigger.color@disabled": {
+      "kind": "alias",
+      "slot": "fg-disabled",
+      "source": "PillInput.css .saltPillInput-disabled { color: var(--saltPillInput-color-disabled, var(--salt-content-primary-foreground-disabled)) }"
+    },
+    "style.trigger.disabled": {
+      "kind": "value",
+      "value": {
+        "cursor": "not-allowed"
+      },
+      "source": "PillInput.css .saltPillInput-disabled { cursor: var(--salt-cursor-disabled) }"
+    },
+    "style.value.placeholder": {
+      "kind": "value",
+      "value": {
+        "color": "var(--fg-secondary)",
+        "font-weight": "300"
+      },
+      "source": "PillInput.css .saltPillInput-input::placeholder { color: var(--salt-content-secondary-foreground); font-weight: var(--salt-text-fontWeight-small) }"
+    },
+    "style.toggle-button.size": {
+      "kind": "value",
+      "value": {
+        "width": "var(--toggle-icon-size)",
+        "height": "var(--toggle-icon-size)"
+      },
+      "source": "DECLARED COMPOSITION \u2014 same Icon.css clamp select's own row uses (max(size-icon, 12px))"
+    },
+    "style.toggle-button.color": {
+      "kind": "off",
+      "note": "currentColor, no .saltIcon-primary/-secondary applied, inherits the field's own colour"
+    },
+    "style.clear-button.size": {
+      "kind": "off"
+    },
+    "style.popup.background": {
+      "kind": "alias",
+      "slot": "popup-bg"
+    },
+    "style.popup.color": {
+      "kind": "alias",
+      "slot": "fg"
+    },
+    "style.popup.border": {
+      "kind": "value",
+      "value": {
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "var(--accent)"
+      },
+      "source": "IDENTICAL to select.salt.json's own style.popup.border \u2014 OptionList.css border: var(--salt-size-fixed-100) solid var(--salt-selectable-borderColor-selected)"
+    },
+    "style.popup.shape": {
+      "kind": "alias",
+      "slot": "popup-corner"
+    },
+    "style.popup.shadow": {
+      "kind": "alias",
+      "slot": "popup-shadow"
+    },
+    "style.popup.padding": {
+      "kind": "value",
+      "value": "0",
+      "source": "IDENTICAL to select.salt.json \u2014 .saltOptionList-container declares no padding"
+    },
+    "style.popup.min-width": {
+      "kind": "alias",
+      "slot": "combobox-trigger-width"
+    },
+    "style.popup.z-index": {
+      "kind": "value",
+      "value": "1500",
+      "source": "IDENTICAL to select.salt.json \u2014 OptionList.css z-index: var(--salt-zIndex-flyover)"
+    },
+    "style.popup.animation": {
+      "kind": "off",
+      "note": "CONFIRMED ABSENCE, identical to select.salt.json"
+    },
+    "style.option.background": {
+      "kind": "value",
+      "value": "transparent"
+    },
+    "style.option.color": {
+      "kind": "alias",
+      "slot": "fg"
+    },
+    "style.option.font": {
+      "kind": "alias",
+      "slot": "type-body"
+    },
+    "style.option.min-height": {
+      "kind": "alias",
+      "slot": "option-min-height"
+    },
+    "style.option.padding": {
+      "kind": "alias",
+      "slot": "option-padding"
+    },
+    "style.option.gap": {
+      "kind": "alias",
+      "slot": "option-gap",
+      "note": "Option.css gap: var(--salt-spacing-100) \u2014 the FULL spacing step, NOT the trigger's own halved gap (trigger-gap/spacing-50). Identical resolved values to select.salt.json's own style.option.gap (4/8/12/16 by density)."
+    },
+    "style.option.cursor": {
+      "kind": "value",
+      "value": "pointer"
+    },
+    "style.option.background@hover": {
+      "kind": "value",
+      "value": {
+        "background-color": "var(--accent-weakest)"
+      }
+    },
+    "style.option.active": {
+      "kind": "value",
+      "value": {
+        "background-color": "var(--accent-weakest)"
+      }
+    },
+    "style.option.focus-visible": {
+      "kind": "value",
+      "value": {
+        "outline": "2px dotted var(--border-active)",
+        "outline-offset": "-2px"
+      }
+    },
+    "style.option.disabled": {
+      "kind": "value",
+      "value": {
+        "opacity": "0.4",
+        "cursor": "not-allowed",
+        "color": "var(--fg)",
+        "background-color": "transparent"
+      }
+    },
+    "style.option.selected": {
+      "kind": "value",
+      "value": {
+        "background-color": "var(--accent-weaker)",
+        "z-index": "1",
+        "box-shadow": "-2px 0 0 0 var(--accent-weakest), -1px 0 0 1px var(--accent), 0 -1px 0 var(--accent)"
+      },
+      "source": "IDENTICAL to select.salt.json's own style.option.selected \u2014 shared Option component"
+    },
+    "style.selected-marker.box": {
+      "kind": "off"
+    },
+    "style.group-label.font": {
+      "kind": "alias",
+      "slot": "type-group-label"
+    },
+    "style.group-label.color": {
+      "kind": "alias",
+      "slot": "fg-secondary"
+    },
+    "style.group-label.padding": {
+      "kind": "value",
+      "value": {
+        "padding": "var(--option-padding)",
+        "min-height": "var(--option-min-height)"
+      }
+    },
+    "style.group.border-top": {
+      "kind": "value",
+      "value": {
+        "border-top": "1px solid var(--separator-color)"
+      }
+    },
+    "style.separator": {
+      "kind": "off"
+    },
+    "style.empty.color": {
+      "kind": "off"
+    },
+    "style.empty.font": {
+      "kind": "off"
+    },
+    "style.empty.padding": {
+      "kind": "off"
+    },
+    "style.trigger.variant@secondary": {
+      "kind": "value",
+      "value": {
+        "--bg-current": "var(--field-bg-secondary)",
+        "--bg-current-disabled": "var(--field-bg-secondary-disabled)"
+      },
+      "source": "PillInput.css .saltPillInput-secondary"
+    },
+    "style.trigger.variant@tertiary": {
+      "kind": "value",
+      "value": {
+        "--bg-current": "var(--field-bg-tertiary)",
+        "--bg-current-disabled": "var(--field-bg-tertiary-disabled)"
+      },
+      "source": "PillInput.css .saltPillInput-tertiary"
+    },
+    "style.trigger.status@error": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-error)",
+        "--border-current-hover": "var(--status-error)",
+        "--border-current-active": "var(--status-error)",
+        "--outline-current": "var(--status-error)",
+        "--bg-current": "var(--status-error-bg)",
+        "--bg-current-readonly": "var(--status-error-bg)"
+      },
+      "source": "PillInput.css .saltPillInput-error"
+    },
+    "style.trigger.status@warning": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-warning)",
+        "--border-current-hover": "var(--status-warning)",
+        "--border-current-active": "var(--status-warning)",
+        "--outline-current": "var(--status-warning)",
+        "--bg-current": "var(--status-warning-bg)",
+        "--bg-current-readonly": "var(--status-warning-bg)"
+      },
+      "source": "PillInput.css .saltPillInput-warning"
+    },
+    "style.trigger.status@success": {
+      "kind": "value",
+      "value": {
+        "--border-current": "var(--status-success)",
+        "--border-current-hover": "var(--status-success)",
+        "--border-current-active": "var(--status-success)",
+        "--outline-current": "var(--status-success)",
+        "--bg-current": "var(--status-success-bg)",
+        "--bg-current-readonly": "var(--status-success-bg)"
+      },
+      "source": "PillInput.css .saltPillInput-success"
+    }
+  }
+}

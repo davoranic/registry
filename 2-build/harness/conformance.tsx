@@ -43,6 +43,7 @@ import { Toast, ToastGroup } from "../skeleton/toast"
 import { DropdownMenu, type MenuNode } from "../skeleton/dropdown-menu"
 import { Accordion, type AccordionConfig, type AccordionItemModel } from "../skeleton/accordion"
 import { Popover, type PopoverConfig } from "../skeleton/popover"
+import { Combobox, type ComboboxConfig, type ComboboxOptionModel } from "../skeleton/combobox"
 
 import dialogCfg from "../out/gen/dialog-config.json"
 import selectCfg from "../out/gen/select-config.json"
@@ -56,6 +57,7 @@ import toastCfg from "../out/gen/toast-config.json"
 import dropdownMenuCfg from "../out/gen/dropdown-menu-config.json"
 import accordionCfg from "../out/gen/accordion-config.json"
 import popoverCfg from "../out/gen/popover-config.json"
+import comboboxCfg from "../out/gen/combobox-config.json"
 
 type Result = { component: string; row: string; system: string; pass: boolean; detail: string }
 
@@ -1535,6 +1537,133 @@ async function checkPopoverModalFocusTrap(host: HTMLElement, system: string) {
   mount.remove()
 }
 
+// --------------------------------------------------------------- combobox
+
+const CB_OPTIONS: ComboboxOptionModel[] = [
+  { value: "apple", label: "Apple" },
+  { value: "apricot", label: "Apricot" },
+  { value: "banana", label: "Banana" },
+  { value: "cherry", label: "Cherry" },
+]
+
+async function checkCombobox(host: HTMLElement, system: string) {
+  const cfg = (comboboxCfg as Record<string, ComboboxConfig>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+
+  root.render(<Combobox config={cfg} options={CB_OPTIONS} />)
+  await settle()
+
+  // SCOPED to this mount, per CLAUDE.md lesson 9 (an unscoped global
+  // querySelector on a page with multiple demo instances is a proven trap
+  // — DROPDOWN-MENU-MATRIX.md finding 7 / TABS-MATRIX.md finding 15).
+  const input = mount.querySelector('[data-slot="combobox-input"]') as HTMLInputElement
+  const isOpen = () => !!mount.querySelector('[data-slot="combobox-popup"]')
+  const optionCount = () => mount.querySelectorAll('[data-slot="combobox-option"]').length
+
+  // behavior.focus-model: real DOM focus lands on the input on a real
+  // focus, and — the sharpest assertion this component needs — STAYS there
+  // through open + arrow-key navigation. Never moves to a button or an
+  // option, unlike select's/dropdown-menu's own moved-focus mechanics.
+  focusFor(input)
+  await settle()
+  record("combobox", "behavior.open-trigger", system, isOpen(), isOpen() ? "focus opened the popup" : "focus did not open the popup")
+  record("combobox", "behavior.focus-model", system, document.activeElement === input,
+    "after focusing the input: active=" + (document.activeElement === input ? "input (correct — virtual focus)" : (document.activeElement?.tagName || "?") + " (WRONG — real focus left the input)"))
+
+  // behavior.filter / behavior.registry-filter-default: typing "ban"
+  // filters to exactly one match (case-insensitive substring, the
+  // registry's own declared default — see COMBOBOX-MATRIX.md Finding 2).
+  const setValue = (v: string) => {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!.set!
+    setter.call(input, v)
+    input.dispatchEvent(new Event("input", { bubbles: true }))
+  }
+  setValue("ban")
+  await settle()
+  const count = optionCount()
+  record("combobox", "behavior.registry-filter-default", system, count === 1,
+    `query "ban" -> ${count} option(s) rendered (expected exactly 1, Banana)`)
+  record("combobox", "behavior.focus-model", system, document.activeElement === input,
+    "focus after typing: " + (document.activeElement === input ? "still on the input (correct)" : "moved away (WRONG)"))
+
+  // behavior.enter-commits: ArrowDown highlights the (only) filtered
+  // option, real DOM focus is STILL on the input throughout, Enter commits
+  // it into the input's own value and closes the popup.
+  key(input, "ArrowDown")
+  await settle()
+  const highlighted = mount.querySelector('[data-slot="combobox-option"][data-active]')
+  record("combobox", "behavior.pointer-activates-option", system, !!highlighted,
+    highlighted ? "ArrowDown set an active/highlighted option" : "no option became active")
+  key(input, "Enter")
+  await waitFor(() => !isOpen())
+  record("combobox", "behavior.enter-commits", system, input.value === "Banana" && !isOpen(),
+    `after Enter: input.value="${input.value}" (expected "Banana"), open=${isOpen()}`)
+  record("combobox", "behavior.focus-model", system, document.activeElement === input,
+    "focus after commit: " + (document.activeElement === input ? "still on the input (correct)" : "moved away (WRONG)"))
+
+  // behavior.dismiss-escape
+  focusFor(input)
+  await waitFor(isOpen)
+  key(input, "Escape")
+  await waitFor(() => !isOpen())
+  record("combobox", "behavior.dismiss-escape", system, !isOpen(), isOpen() ? "Escape did not close" : "Escape closed it")
+
+  // behavior.dismiss-outside
+  focusFor(input)
+  await waitFor(isOpen)
+  document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }))
+  await waitFor(() => !isOpen())
+  record("combobox", "behavior.dismiss-outside", system, !isOpen(), isOpen() ? "outside press did NOT close it" : "outside press closed it")
+
+  root.unmount()
+  mount.remove()
+}
+
+async function checkComboboxParts(host: HTMLElement, system: string) {
+  const cfg = (comboboxCfg as Record<string, ComboboxConfig>)[system]
+  const mount = document.createElement("div")
+  mount.setAttribute("data-theme", system)
+  host.appendChild(mount)
+  const root = createRoot(mount)
+
+  // structure.empty-state: a query matching nothing, forced open.
+  root.render(
+    <Combobox config={cfg} options={CB_OPTIONS} initialQuery="zzz-no-match" forceOpen emptyStateText="No items found." />,
+  )
+  await settle()
+  const empty = mount.querySelector('[data-slot="combobox-empty"]')
+  if (cfg.emptyState) {
+    record("combobox", "structure.empty-state", system, !!empty && empty.textContent === "No items found.",
+      `config.emptyState=true; empty element present=${!!empty}, text="${empty?.textContent}"`)
+  } else {
+    record("combobox", "structure.empty-state", system, !empty,
+      "CONFIRMED OFF for this column — structure.empty-state; no empty element should render")
+  }
+  root.unmount()
+
+  // structure.clear-button: a real input value shows a real clear button
+  // that, when clicked, empties the field and returns focus to the input.
+  const root2 = createRoot(mount)
+  root2.render(<Combobox config={cfg} options={CB_OPTIONS} defaultValue="apple" />)
+  await settle()
+  const input2 = mount.querySelector('[data-slot="combobox-input"]') as HTMLInputElement
+  if (cfg.clearButton) {
+    const clearBtn = mount.querySelector('[data-slot="combobox-clear-button"]') as HTMLElement | null
+    clearBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }))
+    await settle()
+    record("combobox", "structure.clear-button", system, !!clearBtn && input2.value === "",
+      `clear button present=${!!clearBtn}; input value after click="${input2.value}" (expected "")`)
+  } else {
+    record("combobox", "structure.clear-button", system, true,
+      "CONFIRMED OFF for this column — structure.clear-button, no clear button to click")
+  }
+  root2.unmount()
+  mount.remove()
+}
+
 // ------------------------------------------------------------------- run
 
 async function run() {
@@ -1561,6 +1690,8 @@ async function run() {
     try { await checkPopover(host, s) } catch (e) { record("popover", "(threw)", s, false, String(e)) }
     try { await checkPopoverDismiss(host, s) } catch (e) { record("popover", "(threw, dismiss)", s, false, String(e)) }
     try { await checkPopoverModalFocusTrap(host, s) } catch (e) { record("popover", "(threw, modal-focus-trap)", s, false, String(e)) }
+    try { await checkCombobox(host, s) } catch (e) { record("combobox", "(threw)", s, false, String(e)) }
+    try { await checkComboboxParts(host, s) } catch (e) { record("combobox", "(threw, parts)", s, false, String(e)) }
   }
   host.remove()
 
