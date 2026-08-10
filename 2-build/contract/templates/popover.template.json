@@ -1,0 +1,239 @@
+{
+  "component": "popover",
+  "openUiAnatomy": "no published Open UI popover anatomy — union of shadcn's canonical 'popover' (a thin data-slot wrapper around the external, unvendored `radix-ui` Popover primitive — the SAME external-package boundary DROPDOWN-MENU-MATRIX.md/ACCORDION-MATRIX.md/TOAST-MATRIX.md already recorded for their own shadcn columns) and Salt's real, live `Overlay`/`OverlayTrigger`/`OverlayPanel`/`OverlayHeader`/`OverlayPanelContent`/`OverlayPanelCloseButton` family (`packages/core/src/overlay/`). M3 is a CONFIRMED, TOTAL ABSENCE — the same shape ACCORDION-MATRIX.md's own M3 column established, not an edition gap (alert/progress/spinner) and not a tokens-only component (toast/snackbar): no popover, flyout, or bubble component or token family exists anywhere in `3-source/material-web` (verified by a name grep across the whole clone AND a top-level directory listing — button, checkbox, chips, dialog, divider, fab, field, iconbutton, list, menu, progress, radio, select, slider, switch, tabs, textfield, tokens, typography — no popover-shaped entry; the only two files matching 'popover' anywhere in the clone are documentation images/figures for the MENU component's own usage guidance, `docs/components/{images,figures}/menu/usage-popover.*`, not a component). `04-component-map.md`'s own claim that 'menu/tooltip cover this' for M3 is a USE-CASE justification, not a token family — it does not give this template anything to cite, so M3 is off on every row exactly as accordion's M3 column is. See Finding 1 for what that forces on every row's policy.",
+  "behavior": {
+    "pattern": "A trigger opens a floating panel holding ARBITRARY consumer content (contrast dropdown-menu's fixed action-item list and tooltip's non-interactive text-only bubble — see POPOVER-MATRIX.md §0 for the three-way distinction). Click opens (not hover, unlike tooltip). The panel MAY compose an optional header (title + description + actions), an optional dedicated scrollable content wrapper, an optional close button, and an optional arrow — all real, sourced, and asymmetric across systems (see structure rows). The SHARPEST behavioural finding this component produced: Salt's real Overlay is NOT a lightweight non-modal popup the way shadcn's canonical (non-modal-by-default) Popover is — it renders `role=\"dialog\"`, `aria-modal=\"true\"\", and passes `outsideElementsInert: true` to floating-ui's own `FloatingFocusManager`, whose own default `modal` option is `true` — meaning Salt's Overlay TRAPS focus and inerts the rest of the page exactly like a non-full-screen dialog, while shadcn's Popover (Radix's own documented `modal` default `false`) lets focus and pointer interaction continue reaching the rest of the page while the popover is open. Modelled as `behavior.modal-focus-trap`, a real, config-gated structural divergence, not a style deviation.",
+    "chassis": "skeleton/popover.tsx — written from the template's part union; inherits from no design system. The trigger CLONES the consumer's child element (`React.cloneElement`, the SAME technique tooltip.tsx already uses and the one Salt's real `OverlayTrigger` itself performs via `cloneElement`/`getRefFromChildren`) rather than rendering a bare new `<button>` the way dropdown-menu.tsx does — popover's trigger is consumer-supplied content (usually a Button), not a chassis-owned element. POSITIONING is the same DECLARED GAP tooltip.tsx already carries (see behavior.positioning-engine): a `getBoundingClientRect()` placement calculation with a fixed offset, no flip/shift/collision detection, in place of Salt's real `@floating-ui/react` middleware stack or shadcn's real (external, unvendored) Radix Popper primitive. DISMISS-OUTSIDE is a real document-level pointerdown listener, the SAME proven pattern dropdown-menu.tsx/select.tsx already carry (their own declared floating-position-engine gap note applies identically here)."
+  },
+  "skeletonParams": {
+    "anchor": [true, false],
+    "arrow": [true, false],
+    "header": [true, false],
+    "title": [true, false],
+    "description": [true, false],
+    "headerActions": [true, false],
+    "closeButton": [true, false],
+    "content": [true, false],
+    "modalFocusTrap": [true, false],
+    "placement": ["top", "bottom", "left", "right"],
+    "align": ["start", "center", "end"]
+  },
+  "base": {
+    "[data-slot=\"popover\"]": {
+      "display": "inline-block",
+      "position": "relative"
+    },
+    "[data-slot=\"popover-popup\"]": {
+      "position": "fixed",
+      "box-sizing": "border-box",
+      "display": "flex",
+      "flex-direction": "column",
+      "overflow": "hidden"
+    },
+    "[data-slot=\"popover-arrow\"]": {
+      "position": "absolute",
+      "pointer-events": "none",
+      "overflow": "visible"
+    },
+    "[data-slot=\"popover-popup\"][data-placement=\"top\"] [data-slot=\"popover-arrow\"]": {
+      "top": "100%",
+      "left": "50%",
+      "transform": "translate(-50%, 0)"
+    },
+    "[data-slot=\"popover-popup\"][data-placement=\"bottom\"] [data-slot=\"popover-arrow\"]": {
+      "bottom": "100%",
+      "left": "50%",
+      "transform": "translate(-50%, 0) rotate(180deg)"
+    },
+    "[data-slot=\"popover-popup\"][data-placement=\"left\"] [data-slot=\"popover-arrow\"]": {
+      "left": "100%",
+      "top": "50%",
+      "transform": "translate(0, -50%) rotate(-90deg)"
+    },
+    "[data-slot=\"popover-popup\"][data-placement=\"right\"] [data-slot=\"popover-arrow\"]": {
+      "right": "100%",
+      "top": "50%",
+      "transform": "translate(0, -50%) rotate(90deg)"
+    },
+    "[data-slot=\"popover-header\"]": {
+      "display": "flex",
+      "flex-direction": "row",
+      "align-items": "flex-start",
+      "box-sizing": "border-box",
+      "width": "100%"
+    },
+    "[data-slot=\"popover-header-text\"]": {
+      "display": "flex",
+      "flex-direction": "column",
+      "flex": "1 1 auto",
+      "min-width": "0"
+    },
+    "[data-slot=\"popover-header-actions\"]": {
+      "display": "flex",
+      "flex": "0 0 auto",
+      "align-items": "flex-start"
+    },
+    "[data-slot=\"popover-title\"]": {
+      "margin": "0"
+    },
+    "[data-slot=\"popover-description\"]": {
+      "margin": "0"
+    },
+    "[data-slot=\"popover-close-button\"]": {
+      "box-sizing": "border-box",
+      "position": "absolute",
+      "right": "0",
+      "top": "0",
+      "z-index": "1",
+      "display": "inline-flex",
+      "align-items": "center",
+      "justify-content": "center",
+      "margin": "0",
+      "padding": "0",
+      "border": "0",
+      "background": "none",
+      "color": "inherit",
+      "cursor": "pointer",
+      "font": "inherit"
+    },
+    "[data-slot=\"popover-close-button\"] svg": {
+      "display": "block",
+      "width": "1em",
+      "height": "1em"
+    },
+    "[data-slot=\"popover-content\"]": {
+      "box-sizing": "border-box",
+      "overflow-y": "auto",
+      "position": "relative"
+    }
+  },
+  "rows": [
+    { "id": "structure.trigger", "piece": "structure", "policy": "switchable", "channel": "info",
+      "note": "Salt: `OverlayTrigger`, clones the consumer's child and merges floating-ui's own reference props onto it [S]. shadcn: `PopoverTrigger`, wraps/clones its child via Radix (`asChild`) [S]. M3: off — see §0." },
+    { "id": "structure.anchor", "piece": "structure", "policy": "switchable", "channel": "config", "param": "anchor",
+      "note": "A SEPARATE positioning reference, distinct from the element that receives click/focus. shadcn: on — `PopoverAnchor`, a real, dedicated exported part [S]. Salt: CONFIRMED OFF — `OverlayTrigger` IS both the reference (`useForkRef(getRefFromChildren(children), reference)`) and the trigger in one; no separate anchor concept exists anywhere in `packages/core/src/overlay/` [S, confirmed absent]. M3: off." },
+    { "id": "structure.popup", "piece": "structure", "policy": "switchable", "channel": "info",
+      "note": "Salt: `OverlayPanel`, `role=\"dialog\"` (via `Overlay`'s own `useRole`) [S]. shadcn: `PopoverContent`, portalled [S]. M3: off." },
+    { "id": "structure.arrow", "piece": "structure", "policy": "switchable", "channel": "config", "param": "arrow",
+      "note": "Salt: on — `OverlayPanel.tsx` renders `FloatingArrow` UNCONDITIONALLY, not opt-in the way tooltip's Salt column gates it with `hideArrow` [S]. shadcn: CONFIRMED OFF — grepped `popover.tsx` and every example/demo file under `examples/{aria,base,radix}/popover-*.tsx`: no `PopoverPrimitive.Arrow` anywhere, unlike shadcn's own dropdown-menu/select which at least have SOME pointer concept elsewhere in this pipeline — popover's canonical shadcn column has NO arrow of any kind [S, confirmed absent]. M3: off." },
+    { "id": "structure.header", "piece": "structure", "policy": "switchable", "channel": "config", "param": "header",
+      "note": "An optional heading REGION wrapping title/description/actions, distinct from the title itself (rule 3 — never conflate them). Salt: `OverlayHeader`, real, opt-in composed part [S]. shadcn: `PopoverHeader`, real, exported part — NOTE this is a genuinely richer shadcn column than dropdown-menu's or tooltip's: shadcn's canonical Popover ships dedicated header/title/description sub-components the way its own Dialog does, a structural family dropdown-menu's own trigger/item shape never had [S]. M3: off." },
+    { "id": "structure.title", "piece": "structure", "policy": "switchable", "channel": "config", "param": "title",
+      "note": "Salt: `OverlayHeader`'s own `header` prop, rendered as an `<H2 styleAs=\"h4\">` [S]. shadcn: `PopoverTitle` [S]. M3: off." },
+    { "id": "structure.description", "piece": "structure", "policy": "switchable", "channel": "config", "param": "description",
+      "note": "Salt: `OverlayHeader`'s own `description` prop, rendered via `<Text color=\"secondary\">` [S]. shadcn: `PopoverDescription` [S]. M3: off." },
+    { "id": "structure.header-actions", "piece": "structure", "policy": "switchable", "channel": "config", "param": "headerActions",
+      "note": "A real slot for consumer-owned controls (typically a close button) inside the header row, distinct from `structure.close-button` (a specific, pre-built close control — see that row). Salt: on — `OverlayHeader`'s own `actions` prop, a real, dedicated `actionsContainer` div [S]. shadcn: CONFIRMED OFF — grepped `popover.tsx`'s `PopoverHeader`: `className=\"flex flex-col gap-1 text-sm\"`, no actions/trailing slot of any kind, unlike shadcn's own `DialogHeader` (out of this component's scope, cited for contrast only) [S, confirmed absent]. M3: off." },
+    { "id": "structure.close-button", "piece": "structure", "policy": "switchable", "channel": "config", "param": "closeButton",
+      "note": "A specific, pre-styled close control, distinct from the generic `header-actions` slot it may be placed inside. Salt: on — `OverlayPanelCloseButton`, a real, dedicated, opt-in composed `Button` [S]. shadcn: CONFIRMED OFF — grepped `popover.tsx` in full: no `PopoverClose`-equivalent part is exported or composed anywhere, a real, structural CONTRAST with shadcn's OWN `Dialog` (which DOES export `DialogClose`) [S, confirmed absent — see Finding 3]. M3: off." },
+    { "id": "structure.content", "piece": "structure", "policy": "switchable", "channel": "config", "param": "content",
+      "note": "A dedicated scrollable BODY wrapper, distinct from the popup root itself. Salt: on — `OverlayPanelContent`, a real part with its own scroll-shadow state classes (`-overflow`/`-scroll-top`/`-scroll-bottom`, toggled by a real `onScrollCapture` handler) [S]. shadcn: CONFIRMED OFF — `PopoverContent` IS the content container itself; there is no separate inner wrapper, padding lands directly on the root (see style.popup.padding) [S, confirmed absent]. M3: off." },
+
+    { "id": "behavior.trigger-interaction", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Click opens (NOT hover — the structural line CLAUDE.md's scope note draws against tooltip). Salt: `useClick(context)` [S]. shadcn: click [R], Radix Trigger's own documented default. M3: off." },
+    { "id": "behavior.role", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt: `role=\"dialog\"` — `Overlay.tsx`'s own `useRole(context, { role: \"dialog\" })` [S]. shadcn: `role=\"dialog\"` [R] — Radix's own documented convention for `Popover.Content`, a genuine CONVERGENCE with Salt's independently-confirmed choice (the same shape DROPDOWN-MENU-MATRIX.md's `behavior.role` convergence and TOOLTIP-MATRIX.md's own three-way `role=\"tooltip\"` convergence already recorded — here it is `role=\"dialog\"`, not `role=\"tooltip\"`/`role=\"menu\"`, because a popover is closer in ARIA terms to a non-modal dialog than to either). M3: off." },
+    { "id": "behavior.modal-focus-trap", "piece": "behavior", "policy": "switchable", "channel": "config", "param": "modalFocusTrap",
+      "note": "THE SHARPEST FINDING this component produced — see behavior.pattern and Finding 2. Salt: ON — `OverlayPanel.tsx` passes `focusManagerProps={{ context, outsideElementsInert: true }}` to floating-ui's `FloatingFocusManager`, whose own default `modal` option is `true` (not overridden), so Salt's Overlay TRAPS Tab focus inside the panel and makes the rest of the page inert to pointer/focus — real, sourced, and NOT the same as a merely-visible popup [S]. shadcn: OFF — Radix's own documented `Popover.Root` `modal` prop defaults to `false`: no focus trap, the rest of the page stays fully interactive while the popover is open [R, Radix's own published default]. M3: off." },
+    { "id": "behavior.initial-focus", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt: `FloatingFocusManager`'s own default `initialFocus` (index `0`, i.e. the floating panel element itself — `OverlayPanel.tsx` passes no `initialFocus` override) [S]. shadcn: Radix moves focus onto the content root on open, per its own documented `Popover.Content` behaviour [R]. M3: off." },
+    { "id": "behavior.dismiss-outside", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt: `useDismiss(context)`, called with no options — floating-ui's own default `outsidePress: true` [S]. shadcn: Radix's `DismissableLayer` [R]. M3: off." },
+    { "id": "behavior.dismiss-escape", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt: `useDismiss(context)`'s own default `escapeKey: true` [S]. shadcn: [R], same external-package boundary as every other Radix-derived behaviour row in this pipeline. M3: off." },
+    { "id": "behavior.focus-return", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt: `FloatingFocusManager`'s own default `returnFocus: true` (not overridden) [S]. shadcn: [R], general APG/Radix convention, the same citation shape dropdown-menu's own `behavior.focus-return` row used. M3: off." },
+    { "id": "behavior.close-button-action", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "Salt: CONFIRMED NOT AUTOMATIC — grepped `OverlayPanelCloseButton.tsx` in full: it is a plain styled `Button` with no `useOverlayContext()` call and no built-in click handler; EVERY real usage in `overlay.stories.tsx` (`CloseButton`, `LongContent`, `WithActions`) wires its `onClick` to `setOpen(false)` BY HAND — the consumer, not the component, owns the wiring [S, confirmed]. This chassis, as the union component that already owns its own open state (unlike Salt's `Overlay`, which is a headless context provider), completes this real, sourced gap by wiring its own built-in close button directly to its internal close function — a deliberate, LABELLED registry completion, not a silent liberty (see Finding 3), the same shape TOAST-MATRIX.md's own registry-default padding/gap correction used for a `default`-policy row (here it is a behavioural completion of a real, confirmed-manual mechanism, not a value substitution). shadcn: off, no close-button part exists to wire (see structure.close-button). M3: off." },
+    { "id": "behavior.positioning-engine", "piece": "behavior", "policy": "switchable", "channel": "info",
+      "note": "DECLARED GAP, the same shape TOOLTIP-MATRIX.md's own `behavior.positioning-engine` row already established. Salt: composes `@floating-ui/react` directly — `offset(11)`, `flip()`, `shift({ limiter: limitShift() })`, `arrow({ element: arrowRef })` middleware (`Overlay.tsx`) [S]. shadcn: composes Radix's own `Popper` primitive (external, unvendored — architecturally similar, a distinct implementation) [R]. M3: [R], not sourced. NONE of the three is reimplemented here — the skeleton (`skeleton/popover.tsx`) uses a minimal `getBoundingClientRect()` placement calculation with a fixed offset and no flip/shift/collision detection, the SAME approximation tooltip.tsx already carries. Salt's real `11px` gap and shadcn's real `sideOffset=4` default are NOT separately modelled as a config'd numeric row (a scope trim, consistent with dropdown-menu's own submenu-hover-delay registry-default treatment, but here folded into this same declared gap rather than given its own row, since neither value is reachable without the real engine this skeleton deliberately does not reimplement)." },
+
+    { "id": "prop.placement", "piece": "prop", "policy": "switchable", "channel": "config", "param": "placement",
+      "note": "Salt: `Overlay`'s own `placement?: \"top\"|\"bottom\"|\"left\"|\"right\"`, default `\"top\"` [S] — the SAME 4-cardinal-only scope trim tooltip's own `prop.placement` row already used (Salt's real floating-ui placement enum has 12 values incl. -start/-end variants). shadcn: real — Radix's own `side` prop, `top|right|bottom|left` (spread via `...props`, not destructured/defaulted in `popover.tsx` itself), default `\"bottom\"` [S for the prop's real existence and pass-through; R for the literal default value, Radix Popper's own documented default]. M3: off." },
+    { "id": "prop.align", "piece": "prop", "policy": "switchable", "channel": "config", "param": "align",
+      "note": "shadcn only: `PopoverContent`'s own `align` prop, explicitly destructured with a default of `\"center\"` in `popover.tsx` itself [S] — a real, cross-axis alignment concept Salt's own 4-directional `placement` has no equivalent for. Salt: CONFIRMED OFF, no align/cross-axis concept anywhere in `packages/core/src/overlay/` [S, confirmed absent]. M3: off." },
+
+    { "id": "slot.trigger", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Consumer-owned anchor element in both real systems — Salt clones `children`; shadcn wraps/clones via Radix `asChild`. Out of this component's own style/state scope, the same convention tooltip's own `slot.trigger` row used." },
+    { "id": "slot.title-text", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Consumer-owned heading text, where `structure.title` is on." },
+    { "id": "slot.description-text", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Consumer-owned supporting text, where `structure.description` is on." },
+    { "id": "slot.content", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "Consumer-owned body content, ARBITRARY in both real systems (the whole reason this is a separate component from dropdown-menu's fixed action-item list) — Salt's own stories nest `StackLayout`/`Checkbox`/`CheckboxGroup`/`Button` composites; shadcn's own demo nests `Label`/`Input` form controls." },
+    { "id": "slot.composes", "piece": "slot", "policy": "switchable", "channel": "info",
+      "note": "The close button's own icon composes a future registry icon-set component; rendered as a neutral placeholder glyph here, the same convention every prior component's `PlaceholderIcon`/`Glyph` used." },
+
+    { "id": "state.closed-open", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "The panel's own mounted/unmounted visual state — the only state this component's root recognises, the same invariant tooltip's own `state.closed-open` row records." },
+    { "id": "state.focus-trap-active", "piece": "state", "policy": "switchable", "channel": "info",
+      "note": "Only meaningful where `behavior.modal-focus-trap` is on. Salt: Tab/Shift+Tab cycle WITHIN the panel, wrapping at both ends, and the rest of the page is inert to pointer/focus. shadcn: Tab is free to leave the panel and reach the rest of the (still-interactive) page — see Finding 2." },
+
+    { "id": "style.popup.background", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "background": "$" },
+      "note": "Salt: `container-primary-background`, the SAME slot dropdown-menu's own `popup-bg` and dialog's own panel background already resolve [S]. shadcn: `bg-popover` [S]. M3: off." },
+    { "id": "style.popup.color", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "color": "$" },
+      "note": "Salt: `OverlayPanel.css`'s own `color: var(--saltOverlay-text-color, var(--salt-content-primary-foreground))` [S]. shadcn: `text-popover-foreground` [S]. M3: off." },
+    { "id": "style.popup.border", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "cellIsDeclarations": true,
+      "note": "Salt: real, `border: 1px solid var(--popup-border)` where `popup-border` resolves through `container-primary-borderColor` -> `palette-alpha-contrast-medium` — the SAME chain (and the SAME resolved rgba value) tooltip.salt.json's own `border` slot already established [S]. shadcn: real, `border` utility -> `--border` [S]. M3: off." },
+    { "id": "style.popup.shape", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "border-radius": "$" },
+      "note": "Salt: `border-radius: var(--saltOverlay-borderRadius, var(--salt-palette-corner, 0))`, the SAME rounded-edition pin dropdown-menu's own `popup-shape` row uses [S]. shadcn: `rounded-md` = 8px [S]. M3: off." },
+    { "id": "style.popup.shadow", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "box-shadow": "$" },
+      "note": "Salt: `box-shadow: var(--saltOverlay-boxShadow, var(--salt-overlayable-shadow-popout))`, the SAME slot select/tabs/tooltip/toast/dropdown-menu all reuse verbatim [S]. shadcn: `shadow-md` [S]. M3: off." },
+    { "id": "style.popup.width", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "width": "$" },
+      "note": "A genuine structural contrast, see Finding 4. Salt: `OverlayPanel.css`'s own literal `width: max-content` — CONTENT-SIZED, no fixed cap of any kind [S]. shadcn: `w-72` = 288px, a FIXED width applied regardless of content [S]. M3: off." },
+    { "id": "style.popup.font", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "font": "$" },
+      "note": "Salt: `OverlayPanel.css`'s own `font-family`/`font-size`/`font-weight`/`line-height` rules, the same `type-body` family every prior Salt column's root text uses [S]. shadcn: CONFIRMED OFF — `PopoverContent`'s own className string has NO text-size utility of any kind (contrast dropdown-menu's `text-sm`, tooltip's `text-xs`): children choose their own type entirely [S, confirmed absent — a real, sourced contrast, see Finding 5]. M3: off." },
+    { "id": "style.popup.z-index", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "z-index": "$" },
+      "note": "Salt: `z-index: var(--saltOverlay-zIndex, var(--salt-zIndex-flyover))` = 1500, the SAME slot every prior popup component in this pipeline cites [S]. shadcn: `z-50` = 50 [S]. M3: off." },
+    { "id": "style.popup.outline@focus", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]:focus-visible", "declarations": { "outline": "$" },
+      "note": "shadcn: real, `outline-hidden` — suppresses the UA default focus ring on the (focusable, non-modal) content root [S]. Salt: CONFIRMED OFF — `OverlayPanel.css` sets no outline override of its own on the panel itself (its focus story is carried entirely by `FloatingFocusManager`'s own sentinel elements, not a CSS outline rule) [S, confirmed absent]. M3: off." },
+    { "id": "style.popup.entrance-transition", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "animation": "$" },
+      "note": "Salt: real, TOKENIZED — `OverlayPanelContent.css`'s own `animation: var(--salt-animation-fade-in-center)`, a genuine contrast with tooltip's OWN Salt column (`Tooltip.css` has ZERO animation rules — tooltip's Finding 3 in TOOLTIP-MATRIX.md) [S]. shadcn: `data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95` etc., the SAME unvendored `tw-animate-css` caveat toast/dropdown-menu/tooltip's own shadcn columns already carry [R]. M3: off." },
+    { "id": "style.popup.padding", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-popup\"]", "declarations": { "padding": "$" },
+      "note": "shadcn: real, `p-4` = 16px, applied DIRECTLY to the popup root because no separate content wrapper exists (see structure.content) [S]. Salt: CONFIRMED OFF here — Salt's own padding is real but lives one level down, on the dedicated content wrapper instead (see style.content.padding); the root panel itself (`OverlayPanel.css`) sets no padding of its own [S, structural — relocated, not missing]. M3: off." },
+
+    { "id": "style.content.padding", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-content\"]", "declarations": { "padding": "$" },
+      "note": "Salt only (structure.content). `OverlayPanelContent.css`'s own `padding: var(--saltOverlay-content-padding, var(--salt-spacing-100))`, by density [S]. shadcn: off, no separate content wrapper exists (see style.popup.padding). M3: off." },
+
+    { "id": "style.arrow.size", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-arrow\"]", "cellIsDeclarations": true,
+      "note": "Salt only (structure.arrow). `OverlayPanel.tsx`'s own literal `<FloatingArrow ... height={6} width={12} strokeWidth={1} />` — a flat, hardcoded, density-invariant 12x6 (2:1) literal, real width AND height both set so the shape is not distorted into a square [S]. shadcn/M3: off, no arrow part." },
+    { "id": "style.arrow.color", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-arrow\"]", "cellIsDeclarations": true,
+      "note": "Salt only. `OverlayPanel.tsx`'s own `fill=\"var(--overlay-background)\"` (the SAME token as the panel's own background) `stroke=\"var(--overlay-borderColor)\"` (the SAME token as the panel's own border) `strokeWidth={1}` [S]. shadcn/M3: off." },
+
+    { "id": "style.header.padding", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-header\"]", "declarations": { "padding": "$" },
+      "note": "Salt: real, `OverlayHeader.css`'s own `padding: var(--salt-spacing-100)`, by density [S]. shadcn: CONFIRMED OFF — `PopoverHeader`'s own className (`flex flex-col gap-1 text-sm`) carries no padding of its own; it inherits the popup root's own `p-4` instead [S, confirmed absent — a real contrast with Salt's doubly-padded header-plus-content-wrapper structure]. M3: off." },
+    { "id": "style.header.gap", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-header\"]", "declarations": { "gap": "$" },
+      "note": "Salt: `OverlayHeader.css`'s own `gap: var(--salt-spacing-100)`, by density [S]. shadcn: `gap-1` = 4px [S]. M3: off." },
+
+    { "id": "style.title.font", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-title\"]", "cellIsDeclarations": true,
+      "note": "Salt: `H2 styleAs=\"h4\"` — the `h4` type role (weight-semiBold), by density, the SAME `h4` family accordion's own `OverlayHeader`-adjacent title text does NOT use elsewhere in this pipeline (a fresh type role for this registry) [S]. shadcn: `font-medium`, size/line-height left UNSET/inherited — a real, sourced contrast with dropdown-menu's own explicitly-sized item/label text [S]. M3: off." },
+
+    { "id": "style.description.color", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-description\"]", "declarations": { "color": "$" },
+      "note": "Salt: `<Text color=\"secondary\">` -> `content-secondary-foreground`, the SAME slot dropdown-menu's own `group-label-fg` and dialog's own `fg-secondary` already resolve [S]. shadcn: `text-muted-foreground` [S]. M3: off." },
+    { "id": "style.description.font", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-description\"]", "declarations": { "font": "$" },
+      "note": "Salt: the `Text` component's own default body role, by density [S]. shadcn: `text-sm` [S]. M3: off." },
+
+    { "id": "style.close-button.position", "piece": "style", "policy": "switchable", "channel": "css",
+      "selector": "[data-slot=\"popover-close-button\"]", "cellIsDeclarations": true,
+      "note": "Salt only (structure.close-button). `OverlayPanelCloseButton.css`'s own `position: absolute; right: 0; z-index: 1` [S]. shadcn/M3: off, no close-button part." }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "system": "salt",
+  "component": "popover",
+  "fontFaces": [
+    { "family": "Open Sans", "weight": "400", "file": "fonts/open-sans-400.woff2" },
+    { "family": "Open Sans", "weight": "600", "file": "fonts/open-sans-400.woff2" }
+  ],
+  "slots": {
+    "light": {
+      "popup-bg": "rgb(255, 255, 255)",
+      "popup-fg": "rgb(0, 0, 0)",
+      "popup-border": "rgba(0, 0, 0, 0.3)",
+      "popup-shadow": "0 6px 10px 0 rgba(0,0,0,0.2)",
+      "header-desc-fg": "rgb(76, 81, 87)"
+    },
+    "dark": {
+      "popup-bg": "rgb(16, 24, 32)",
+      "popup-fg": "rgb(255, 255, 255)",
+      "popup-border": "rgba(255, 255, 255, 0.3)",
+      "popup-shadow": "0 6px 10px 0 rgba(0,0,0,0.55)",
+      "header-desc-fg": "rgb(177, 181, 185)"
+    },
+    "byDensity": {
+      "high":   { "popup-shape": "2px", "content-padding": "4px", "header-padding": "4px", "header-gap": "4px", "type-body": "400 11px/14px 'Open Sans', sans-serif", "type-h4": "600 11px/14px 'Open Sans', sans-serif" },
+      "medium": { "popup-shape": "4px", "content-padding": "8px", "header-padding": "8px", "header-gap": "8px", "type-body": "400 12px/16px 'Open Sans', sans-serif", "type-h4": "600 12px/16px 'Open Sans', sans-serif" },
+      "low":    { "popup-shape": "6px", "content-padding": "12px", "header-padding": "12px", "header-gap": "12px", "type-body": "400 14px/18px 'Open Sans', sans-serif", "type-h4": "600 14px/18px 'Open Sans', sans-serif" },
+      "touch":  { "popup-shape": "8px", "content-padding": "16px", "header-padding": "16px", "header-gap": "16px", "type-body": "400 16px/20px 'Open Sans', sans-serif", "type-h4": "600 16px/20px 'Open Sans', sans-serif" }
+    }
+  },
+  "modeInvariant": [],
+  "provenance": {
+    "tokens-only-note": "packages/core/src/overlay/ (Overlay/OverlayContext/OverlayTrigger/OverlayPanel/OverlayHeader/OverlayPanelContent/OverlayPanelCloseButton) is REAL, live, fully-inspectable Salt component source — every cell below is [S] unless individually marked [R]. See POPOVER-MATRIX.md §0 for how the seven files relate and Finding 2 for the sharpest behavioural divergence this column produced (Overlay's own role=\"dialog\" + modal focus trap).",
+    "popup-bg / popup-fg": "OverlayPanel.css: background: var(--overlay-background) -> --saltOverlay-background (unset) -> var(--salt-container-primary-background) -> palette-background-primary -> snow rgb(255,255,255)/jet rgb(16,24,32), the SAME chain dropdown-menu.salt.json's own popup-bg already resolved. color: var(--saltOverlay-text-color, var(--salt-content-primary-foreground)) -> black/white.",
+    "popup-border": "OverlayPanel.css: border-color: var(--overlay-borderColor) -> --saltOverlay-borderColor (unset) -> var(--salt-container-primary-borderColor) -> next/characteristics/container.css --salt-container-primary-borderColor: var(--salt-palette-alpha-contrast-medium) -> foundations/alpha.css black-30a/white-30a = rgba(0,0,0,0.3)/rgba(255,255,255,0.3) — the IDENTICAL chain and resolved value TOOLTIP-MATRIX.md's own 'border' slot already established for its default-path tooltip border (both read the same container-primary-borderColor -> alpha-contrast-medium indirection).",
+    "popup-shadow": "OverlayPanel.css box-shadow: var(--saltOverlay-boxShadow, var(--salt-overlayable-shadow-popout)) -> next/characteristics/overlayable.css -> next/palette/shadow.css --salt-shadow-mediumLow, the SAME slot/value select.salt.json/tabs.salt.json/tooltip.salt.json/toast.salt.json/dropdown-menu.salt.json all reuse verbatim (docs/foundations/elevation.md).",
+    "popup-shape": "OverlayPanel.css border-radius: var(--saltOverlay-borderRadius, var(--salt-palette-corner, 0)) -> next/palette/corner.css [data-corner=\"rounded\"] -> curve-150 (the SAME rounder-than-controls stop dropdown-menu.salt.json's own popup-shape already used), by density: 2/4/6/8px (high/medium/low/touch), foundations/curve.css.",
+    "popup-width": "CONFIRMED, OverlayPanel.css's own literal `width: max-content` — content-sized, no fixed cap of any kind, mode- and density-invariant by construction.",
+    "popup-font": "OverlayPanel.css: font-family: var(--salt-text-fontFamily); font-size: var(--saltOverlay-fontSize, var(--salt-text-fontSize)); font-weight: var(--saltOverlay-fontWeight, var(--salt-text-fontWeight)); line-height: var(--saltOverlay-lineHeight, var(--salt-text-lineHeight)) — the SAME body-role text family (type-body) dropdown-menu.salt.json's own trigger/item text and toast.salt.json's own message text already use, by density.",
+    "popup-zindex": "OverlayPanel.css z-index: var(--saltOverlay-zIndex, var(--salt-zIndex-flyover)) -> docs/foundations/layers.md flyover = 1500, the SAME slot every prior popup component in this pipeline cites.",
+    "popup-outline-off": "CONFIRMED OFF — OverlayPanel.css sets no outline/box-shadow override for :focus/:focus-visible on the panel root itself; the focus story is carried entirely by floating-ui's own FloatingFocusManager sentinel elements, not a CSS rule on the panel.",
+    "popup-entrance-transition": "OverlayPanelContent.css's own real, TOKENIZED `animation: var(--salt-animation-fade-in-center)` — a genuine contrast with the plain tooltip's own zero-animation Salt column (TOOLTIP-MATRIX.md Finding 3): this component's Salt column DOES animate, unlike the plain tooltip's.",
+    "popup-padding-off": "CONFIRMED OFF at the popup ROOT level — OverlayPanel.css sets no padding property of its own; Salt's real padding lives one level down, on OverlayPanelContent (see content-padding).",
+    "content-padding": "OverlayPanelContent.css's own `padding: var(--saltOverlay-content-padding, var(--salt-spacing-100))`, by density: 4/8/12/16px (high/medium/low/touch), foundations/spacing.css.",
+    "arrow-size": "OverlayPanel.tsx's own literal `<FloatingArrow ... height={6} width={12} strokeWidth={1} />` — flat, hardcoded, density-invariant. NOTE, deliberately NOT treated as the same 'frozen density-token snapshot' deviation the plain tooltip's own Salt arrow required (TOOLTIP-MATRIX.md's own finding there was specific to TooltipBase.tsx's own literal matching SliderTooltip.css's density-tokenised sibling): Overlay.tsx is independent source with no sibling component in this clone that tokenises the SAME arrow a different way, so this column takes the literal at face value rather than importing a deviation rationale that has no evidence here.",
+    "arrow-color": "OverlayPanel.tsx's own `fill=\"var(--overlay-background)\"` (identical token to popup-bg) `stroke=\"var(--overlay-borderColor)\"` (identical token to popup-border) `strokeWidth={1}`.",
+    "header-padding / header-gap": "OverlayHeader.css: padding: var(--salt-spacing-100); gap: var(--salt-spacing-100) — by density, the SAME spacing-100 token content-padding already resolves (a real, structural coincidence: header and content share one spacing scale, not one value reused across two different tokens).",
+    "header-desc-fg": "OverlayHeader.tsx's own `<Text color=\"secondary\">` for the description -> content-secondary-foreground -> palette-foreground-secondary -> gray-700 rgb(76,81,87) light / gray-300 rgb(177,181,185) dark, the SAME slot dropdown-menu.salt.json's own group-label-fg and dialog.salt.json's own fg-secondary already resolve.",
+    "type-h4": "OverlayHeader.tsx's own `<H2 styleAs=\"h4\">` for the title -> next/characteristics/text.css's own [data-heading-font=\"Open Sans\"] block: h4-fontFamily -> Open Sans, h4-fontWeight -> typography-fontWeight-semiBold = 600, h4-fontSize/-lineHeight by density: 11/14, 12/16, 14/18, 16/20px (high/medium/low/touch) — a FRESH type role this pipeline has not cited before (every prior Salt column's own bold/strong text used fontWeight-strong on the BODY role, not a dedicated h4 heading role).",
+    "close-button-position": "OverlayPanelCloseButton.css's own literal `position: absolute; right: 0; z-index: 1`.",
+    "close-button-not-automatic": "CONFIRMED — OverlayPanelCloseButton.tsx is a plain styled Button with no useOverlayContext() call and no built-in click handler of its own; every real usage in overlay.stories.tsx (CloseButton/LongContent/WithActions) wires onClick to setOpen(false) BY HAND. See POPOVER-MATRIX.md Finding 3 for how this chassis completes the gap.",
+    "role-dialog-and-modal-focus-trap": "Overlay.tsx's own useRole(context, { role: \"dialog\" }); OverlayPanel.tsx passes focusManagerProps={{ context, outsideElementsInert: true }} to floating-ui's FloatingFocusManager, whose own default modal option is true (not overridden anywhere in this file) — Salt's Overlay is a REAL focus-trapping, page-inerting overlay, not a lightweight popup. See POPOVER-MATRIX.md Finding 2, the sharpest cross-system divergence this component produced.",
+    "dismiss-and-focus-defaults": "Overlay.tsx: useDismiss(context) called with NO options -> floating-ui's own defaults (outsidePress: true, escapeKey: true). FloatingFocusManager's own defaults (initialFocus: 0, returnFocus: true) are likewise not overridden anywhere in OverlayPanel.tsx.",
+    "positioning-engine": "Overlay.tsx composes @floating-ui/react directly: offset(11), flip(), shift({ limiter: limitShift() }), arrow({ element: arrowRef }) middleware — a real, sourced, DECLARED GAP not reimplemented by this skeleton (see behavior.positioning-engine).",
+    "placement": "Overlay.tsx's own placement?: \"top\"|\"bottom\"|\"left\"|\"right\" prop, default \"top\" — the SAME 4-cardinal-only scope trim TOOLTIP-MATRIX.md's own prop.placement row already used against Salt's fuller 12-value floating-ui enum.",
+    "align-off": "CONFIRMED OFF — no align/cross-axis concept anywhere in packages/core/src/overlay/; Overlay's own placement prop is 4-directional only, with no separate start/center/end axis the way shadcn's align prop has."
+  },
+  "cells": {
+    "structure.trigger": { "kind": "value", "value": true, "source": "OverlayTrigger clones the consumer's child and merges floating-ui's own reference props onto it" },
+    "structure.anchor": { "kind": "off", "note": "CONFIRMED ABSENT — OverlayTrigger IS both the reference and the trigger in one; no separate anchor concept exists anywhere in packages/core/src/overlay/" },
+    "structure.popup": { "kind": "value", "value": true, "source": "OverlayPanel, role=\"dialog\" (via Overlay's own useRole)" },
+    "structure.arrow": { "kind": "value", "value": true, "source": "OverlayPanel.tsx renders FloatingArrow UNCONDITIONALLY, not opt-in" },
+    "structure.header": { "kind": "value", "value": true, "source": "OverlayHeader, real, opt-in composed part" },
+    "structure.title": { "kind": "value", "value": true, "source": "OverlayHeader's own header prop, rendered as <H2 styleAs=\"h4\">" },
+    "structure.description": { "kind": "value", "value": true, "source": "OverlayHeader's own description prop, rendered via <Text color=\"secondary\">" },
+    "structure.header-actions": { "kind": "value", "value": true, "source": "OverlayHeader's own actions prop, a real, dedicated actionsContainer div" },
+    "structure.close-button": { "kind": "value", "value": true, "source": "OverlayPanelCloseButton, a real, dedicated, opt-in composed Button" },
+    "structure.content": { "kind": "value", "value": true, "source": "OverlayPanelContent, a real part with its own scroll-shadow state classes" },
+
+    "behavior.trigger-interaction": { "kind": "value", "value": true, "source": "useClick(context)" },
+    "behavior.role": { "kind": "value", "value": "dialog", "source": "Overlay.tsx's own useRole(context, { role: \"dialog\" })" },
+    "behavior.modal-focus-trap": { "kind": "value", "value": true, "source": "OverlayPanel.tsx: focusManagerProps={{ context, outsideElementsInert: true }}, FloatingFocusManager's own default modal:true not overridden — see role-dialog-and-modal-focus-trap provenance" },
+    "behavior.initial-focus": { "kind": "value", "value": "panel itself (FloatingFocusManager default initialFocus=0)", "source": "OverlayPanel.tsx passes no initialFocus override" },
+    "behavior.dismiss-outside": { "kind": "value", "value": true, "source": "useDismiss(context), floating-ui's own default outsidePress:true" },
+    "behavior.dismiss-escape": { "kind": "value", "value": true, "source": "useDismiss(context), floating-ui's own default escapeKey:true" },
+    "behavior.focus-return": { "kind": "value", "value": true, "source": "FloatingFocusManager's own default returnFocus:true, not overridden" },
+    "behavior.close-button-action": { "kind": "off", "note": "CONFIRMED NOT AUTOMATIC — see close-button-not-automatic provenance; every real usage wires onClick to setOpen(false) by hand, the consumer's responsibility, not the component's" },
+    "behavior.positioning-engine": { "kind": "value", "value": "@floating-ui/react: offset(11), flip(), shift({limiter:limitShift()}), arrow()", "source": "Overlay.tsx middleware array" },
+
+    "prop.placement": { "kind": "value", "value": ["top", "bottom", "left", "right"], "note": "Overlay.tsx's own placement prop, default \"top\"" },
+    "prop.align": { "kind": "off", "note": "CONFIRMED ABSENT — see align-off provenance" },
+
+    "style.popup.background": { "kind": "alias", "slot": "popup-bg" },
+    "style.popup.color": { "kind": "alias", "slot": "popup-fg" },
+    "style.popup.border": { "kind": "value", "value": { "border": "1px solid var(--popup-border)" }, "source": "OverlayPanel.css border-color: var(--overlay-borderColor)" },
+    "style.popup.shape": { "kind": "alias", "slot": "popup-shape" },
+    "style.popup.shadow": { "kind": "alias", "slot": "popup-shadow" },
+    "style.popup.width": { "kind": "value", "value": "max-content", "source": "OverlayPanel.css: width: max-content" },
+    "style.popup.font": { "kind": "alias", "slot": "type-body" },
+    "style.popup.z-index": { "kind": "value", "value": "1500", "source": "OverlayPanel.css z-index: var(--saltOverlay-zIndex, var(--salt-zIndex-flyover))" },
+    "style.popup.outline@focus": { "kind": "off", "note": "CONFIRMED OFF — see popup-outline-off provenance" },
+    "style.popup.entrance-transition": { "kind": "value", "value": "fade-in-center 300ms ease-in-out", "source": "OverlayPanelContent.css animation: var(--salt-animation-fade-in-center) -> foundations/animation.css: fade-in-center var(--salt-animation-duration) var(--salt-animation-timing-function) -> var(--salt-duration-perceptible)=300ms, ease-in-out" },
+    "style.popup.padding": { "kind": "off", "note": "CONFIRMED OFF at the root level — see popup-padding-off provenance; the real padding is one level down, see style.content.padding" },
+
+    "style.content.padding": { "kind": "alias", "slot": "content-padding" },
+
+    "style.arrow.size": { "kind": "value", "value": { "width": "12px", "height": "6px" }, "source": "OverlayPanel.tsx: <FloatingArrow height={6} width={12} strokeWidth={1} />" },
+    "style.arrow.color": { "kind": "value", "value": { "fill": "var(--popup-bg)", "stroke": "var(--popup-border)", "stroke-width": "1px" }, "source": "OverlayPanel.tsx fill/stroke props" },
+
+    "style.header.padding": { "kind": "alias", "slot": "header-padding" },
+    "style.header.gap": { "kind": "alias", "slot": "header-gap" },
+
+    "style.title.font": { "kind": "value", "value": { "font": "var(--type-h4)" }, "source": "H2 styleAs=\"h4\" resolves the full h4 shorthand (weight/size/family/line-height) via the type-h4 slot" },
+
+    "style.description.color": { "kind": "alias", "slot": "header-desc-fg" },
+    "style.description.font": { "kind": "alias", "slot": "type-body" },
+
+    "style.close-button.position": { "kind": "value", "value": { "position": "absolute", "right": "0", "top": "0", "z-index": "1" }, "source": "OverlayPanelCloseButton.css" }
+  }
+}

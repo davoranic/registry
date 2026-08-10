@@ -17,9 +17,9 @@ derivations, because four components had each derived level-1 independently and
 one diverged). Treat foundations as evidence, not scripture: re-grep before you
 rely on a row.
 
-Phase 2 (per-component matrices) is **21 of 79 canonical rows built** —
+Phase 2 (per-component matrices) is **22 of 79 canonical rows built** —
 button, calendar, spinner, tooltip, alert, input, select, dialog, tabs, card,
-badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion (progress covers two rows). Each has a matrix doc, a
+badge, progress, chip, checkbox, switch, radio-group, slider, toast, dropdown-menu, accordion, popover (progress covers two rows). Each has a matrix doc, a
 template, three columns, a skeleton, a `<name>-check` harness, and has been
 rendered and driven in a browser. `2-build/out/index.html` reports progress against
 `1-intro/content/04-component-map.md`, the scope of record.
@@ -271,6 +271,7 @@ Each doc is the record for that component: scope note, the six segments, finding
 | `dialog` | [`DIALOG-MATRIX.md`](DIALOG-MATRIX.md) | 97 | 73 | 47 | 38 | ✓ |
 | `dropdown-menu` | [`DROPDOWN-MENU-MATRIX.md`](DROPDOWN-MENU-MATRIX.md) | 68 | 42 | 42 | 38 | ✓ |
 | `input` | [`INPUT-MATRIX.md`](INPUT-MATRIX.md) | 64 | 50 | 20 | 32 | — |
+| `popover` | [`POPOVER-MATRIX.md`](POPOVER-MATRIX.md) | 48 | 36 | 29 | 0 | ✓ |
 | `progress` | [`PROGRESS-MATRIX.md`](PROGRESS-MATRIX.md) | 51 | 40 | 23 | 24 | ✓ |
 | `radio-group` | [`RADIO-GROUP-MATRIX.md`](RADIO-GROUP-MATRIX.md) | 54 | 45 | 34 | 28 | ✓ |
 | `select` | [`SELECT-MATRIX.md`](SELECT-MATRIX.md) | 113 | 84 | 53 | 51 | — |
@@ -469,7 +470,47 @@ contradicted me, and was right.
 
 ## WHERE WE STOPPED — resume here
 
-Last action: built `accordion` (component 20, row 21/79). 59 rows (salt 37,
+Last action: built `popover` (component 21, row 22/79). 48 rows (salt 36,
+shadcn 29, m3 0 — the second consecutive TOTAL M3 absence, same shape as
+accordion: no popover/flyout/bubble component or token family exists
+anywhere in `3-source/material-web`). All four automated gates green.
+The building agent had NO browser access this run (confirmed, flagged
+honestly in its own report rather than faking visual verification) — so
+orchestrator live-driving was the FIRST time this component was ever
+actually rendered, and it found two real bugs:
+- **A real geometry bug**, the exact "structure row with no size" trap
+  (POPOVER-MATRIX.md Finding 9): the close button's icon SVG had
+  `width="100%" height="100%"` with no sizing rule anywhere on its
+  container, so it rendered as a giant black X filling most of the
+  popup, plainly visible on a full-page screenshot. Root cause: popover's
+  template never copied `dialog.template.json`'s own already-solved
+  `[data-slot="dialog-close"] svg { width:1em; height:1em }` pattern.
+  Fixed by adding the equivalent base rules. `check-structure.py`'s own
+  size-check gate did NOT catch this — a real false NEGATIVE worth
+  remembering, not just gate B's usual false positives.
+- **A real `behavior.focus-return` bug** (Finding 10): closing the popup
+  left focus on `<body>` in all three columns. Root cause: the skeleton
+  faithfully mirrors floating-ui's real `returnFocus:true` (restore
+  whatever had focus before open), but a plain `element.click()` (used
+  by this project's own conformance test, and by Safari's real
+  mouse-click-doesn't-focus-buttons quirk) never actually focuses the
+  clicked element the way a real click or keyboard activation does — so
+  the captured "previous focus" was `<body>`, and restoring focus to
+  `<body>` is a no-op. Fixed with a fallback to the trigger ref when the
+  captured previous-focus is `<body>`, which fixes the test artifact AND
+  the real Safari edge case without abandoning the cited library
+  semantic. Conformance went from 221/224 to 224/224 after the fix.
+Also independently re-verified live: the modal-focus-trap contrast (the
+sharpest structural finding — Salt's real `Overlay` is genuinely modal,
+`aria-modal="true"` + `outsideElementsInert:true`, trapping Tab and
+inerting the rest of the page; shadcn's real Popover is genuinely
+non-modal, Tab reaches outside content freely) — confirmed correct in
+BOTH directions, using isolated per-theme pages after an earlier same-page
+test cross-contaminated (Salt's still-open trap was inerting shadcn's own
+stage on the same page — a scoping artifact in the REVIEW, not a bug,
+same lesson as DROPDOWN-MENU-MATRIX.md finding 7).
+
+Previous action: built `accordion` (component 20, row 21/79). 59 rows (salt 37,
 shadcn 32, m3 0 — a genuine FIRST for this pipeline: not an edition gap or
 a tokens-only component like alert/progress/spinner/toast, but a TOTAL,
 confirmed absence — no accordion/expansion-panel/disclosure component or
@@ -607,10 +648,11 @@ instances across every component, logged in Known-open work, NOT audited
 like the same bug.
 
 `switch`, `radio-group`, `slider`, the button fix, the dialog finding, the
-uncited-slots re-scope, the tabs conformance fix, toast, dropdown-menu, and
-accordion are all committed and pushed to `claude/next-component-7e5dex`
-(check `git log main..claude/next-component-7e5dex` before assuming what's
-landed on `main` — this list is updated less reliably than that log).
+uncited-slots re-scope, the tabs conformance fix, toast, dropdown-menu,
+accordion, and popover are all committed and pushed to
+`claude/next-component-7e5dex` (check `git log main..claude/next-
+component-7e5dex` before assuming what's landed on `main` — this list is
+updated less reliably than that log).
 
 **Standing priority order — deferred by explicit owner choice on
 2026-08-04 ("keep going, track gaps in a running list" over stopping to
@@ -645,7 +687,7 @@ clear the queue), updated as items close:**
    `button`, `card`, `chip`, `dialog`, `input`, `progress`, `calendar`
    (`registry.tsx`), `select`, `spinner`, `tabs`, `tooltip`. All 13
    corrected to `../out/gen/` and verified to build clean.
-6. **Continue components** — 58 canonical rows remain after `accordion`
+6. **Continue components** — 57 canonical rows remain after `popover`
    lands, order per `1-intro/content/04-component-map.md`: rows with real
    cross-system character first.
 
